@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-01-27 14:04+0100\n"
-"PO-Revision-Date: 2018-04-01 01:47+0000\n"
+"PO-Revision-Date: 2018-04-01 11:42+0000\n"
 "Last-Translator: Koji Kanao <kk2796@nyu.edu>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/feedreader/"
 "translations/ja/>\n"
@@ -41,19 +41,19 @@ msgstr "記事の取得"
 
 #: src/Backend/FeedServer.vala:311
 msgid "Getting starred articles"
-msgstr "記事にスターをつける"
+msgstr "星をつけた記事を取得"
 
 #: src/Backend/FeedServer.vala:318
 msgid "Getting tagged articles"
-msgstr ""
+msgstr "タグ付けした記事を取得"
 
 #: src/Backend/FeedServer.vala:336
 msgid "Getting unread articles"
-msgstr ""
+msgstr "未読の記事を取得"
 
 #: src/Notification.vala:21 src/Widgets/ArticleList/ArticleList.vala:551
 msgid "New articles"
-msgstr ""
+msgstr "新着記事"
 
 #: src/Notification.vala:27
 #, c-format
@@ -67,7 +67,7 @@ msgstr ""
 
 #: src/Model/Article.vala:188
 msgid "Yesterday"
-msgstr ""
+msgstr "昨日"
 
 #: src/Widgets/CategorieRow.vala:393 src/Widgets/RemovePopover.vala:111
 #, c-format
@@ -76,78 +76,78 @@ msgstr ""
 
 #: src/Widgets/CategorieRow.vala:445 src/Widgets/FeedRow.vala:233
 msgid "Mark as read"
-msgstr ""
+msgstr "既読にする"
 
 #: src/Widgets/CategorieRow.vala:446 src/Widgets/TagRow.vala:194
 #: src/Widgets/FeedRow.vala:235
 msgid "Rename"
-msgstr ""
+msgstr "リネーム"
 
 #: src/Widgets/CategorieRow.vala:447 src/Widgets/TagRow.vala:195
 #: src/Widgets/FeedRow.vala:241 plugins/share/Telegram/TelegramSetup.vala:31
 msgid "Remove"
-msgstr ""
+msgstr "削除"
 
 #: src/Widgets/CategorieRow.vala:448
 msgid "Remove (with Feeds)"
-msgstr ""
+msgstr "フィードも削除する"
 
 #: src/Widgets/CategorieRow.vala:501 src/Widgets/TagRow.vala:272
 #: src/Widgets/FeedRow.vala:270
 msgid "rename"
-msgstr ""
+msgstr "リネーム"
 
 #: src/Widgets/CategorieRow.vala:503 src/Widgets/TagRow.vala:274
 msgid "add"
-msgstr ""
+msgstr "追加する"
 
 #: src/Widgets/SharePopover.vala:62
 msgid "Add accounts"
-msgstr ""
+msgstr "アカウントを追加する"
 
 #: src/Widgets/ShortcutsWindow.vala:22
 msgid "General"
-msgstr ""
+msgstr "一般"
 
 #: src/Widgets/ShortcutsWindow.vala:27
 msgid "Refresh"
-msgstr ""
+msgstr "リフレッシュ"
 
 #: src/Widgets/ShortcutsWindow.vala:28
 msgid "Search"
-msgstr ""
+msgstr "検索"
 
 #: src/Widgets/ShortcutsWindow.vala:29
 msgid "Quit"
-msgstr ""
+msgstr "中止する"
 
 #: src/Widgets/ShortcutsWindow.vala:37
 msgid "Feed List"
-msgstr ""
+msgstr "フィードリスト"
 
 #: src/Widgets/ShortcutsWindow.vala:42
 msgid "Select next item"
-msgstr ""
+msgstr "次のアイテムを選択する"
 
 #: src/Widgets/ShortcutsWindow.vala:43
 msgid "Select previous item"
-msgstr ""
+msgstr "前のアイテムを選択する"
 
 #: src/Widgets/ShortcutsWindow.vala:44
 msgid "Collapse/Expand categories"
-msgstr ""
+msgstr "折りたたむ/開く カテゴリ"
 
 #: src/Widgets/ShortcutsWindow.vala:45
 msgid "Mark the currently selected as read"
-msgstr ""
+msgstr "選択している記事を既読にする"
 
 #: src/Widgets/ShortcutsWindow.vala:54
 msgid "Article List"
-msgstr ""
+msgstr "記事リスト"
 
 #: src/Widgets/ShortcutsWindow.vala:63
 msgid "Select next/previous article"
-msgstr ""
+msgstr "次/前の記事を選択する"
 
 #: src/Widgets/ShortcutsWindow.vala:64
 msgid "Toggle reading status of selected article"
@@ -159,7 +159,7 @@ msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:66
 msgid "Open the URL of the selected article"
-msgstr ""
+msgstr "選択している記事のURLを開く"
 
 #: src/Widgets/ShortcutsWindow.vala:67
 msgid "Scroll all the way up/down"
@@ -171,60 +171,62 @@ msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:79
 msgid "Article View"
-msgstr ""
+msgstr "記事ビュー"
 
 #: src/Widgets/ShortcutsWindow.vala:84
 msgid "Scroll up/down"
-msgstr ""
+msgstr "スクロール アップ/ダウン"
 
 #: src/Widgets/LoginPage.vala:39
 msgid "Where are your feeds?"
-msgstr ""
+msgstr "あなたのフィードはどこですか?"
 
 #: src/Widgets/LoginPage.vala:43
 msgid "Please select the RSS service you are using and log in to get going."
-msgstr ""
+msgstr "あなたの利用しているRSSサービスを選択して、ログインしてください。"
 
 #: src/Widgets/AddPopover.vala:38 src/Widgets/FeedList.vala:506
 #: src/DataBaseReadOnly.vala:251
 msgid "Uncategorized"
-msgstr ""
+msgstr "未分類"
 
 #: src/Widgets/AddPopover.vala:47 plugins/share/Wallabag/WallabagSetup.vala:73
+#, fuzzy
 msgid "URL:"
-msgstr ""
+msgstr "URL:"
 
 #: src/Widgets/AddPopover.vala:48
 msgid "Category:"
-msgstr ""
+msgstr "カテゴリー:"
 
 #: src/Widgets/AddPopover.vala:51 plugins/share/Telegram/TelegramSetup.vala:30
 msgid "Add"
-msgstr ""
+msgstr "追加"
 
 #: src/Widgets/AddPopover.vala:65
+#, fuzzy
 msgid "OPML File:"
-msgstr ""
+msgstr "OPML File:"
 
 #: src/Widgets/AddPopover.vala:67
 msgid "Select OPML File"
-msgstr ""
+msgstr "OPMLファイルを選択する"
 
 #: src/Widgets/AddPopover.vala:73
 msgid "Import"
-msgstr ""
+msgstr "インポート"
 
 #: src/Widgets/AddPopover.vala:92 src/Widgets/FeedListFooter.vala:113
 msgid "Add feed"
-msgstr ""
+msgstr "フィードを追加する"
 
 #: src/Widgets/AddPopover.vala:93
 msgid "Import OPML"
-msgstr ""
+msgstr "OPMLをインポートする"
 
 #: src/Widgets/SettingsDialog.vala:48
 msgid "Interface"
-msgstr ""
+msgstr "インターフェース"
 
 #: src/Widgets/SettingsDialog.vala:49
 msgid "Internals"
@@ -232,43 +234,45 @@ msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:50
 msgid "Share"
-msgstr ""
+msgstr "シェアする"
 
 #: src/Widgets/SettingsDialog.vala:71
 msgid "Feed List:"
-msgstr ""
+msgstr "フィードリスト:"
 
 #: src/Widgets/SettingsDialog.vala:73
 msgid "Only show feeds"
-msgstr ""
+msgstr "フィードのみを表示"
 
 #: src/Widgets/SettingsDialog.vala:80
 msgid "Only show unread"
-msgstr ""
+msgstr "未読のみ表示"
 
 #: src/Widgets/SettingsDialog.vala:85
 msgid "Sort Feed List by"
-msgstr ""
+msgstr "フィードリストを並べる"
 
 #: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
-msgstr ""
+msgstr "受信した"
 
 #: src/Widgets/SettingsDialog.vala:85
 msgid "Alphabetically"
-msgstr ""
+msgstr "アルファベット順"
 
 #: src/Widgets/SettingsDialog.vala:90 src/Widgets/SettingsDialog.vala:111
 msgid "Theme"
-msgstr ""
+msgstr "テーマ"
 
 #: src/Widgets/SettingsDialog.vala:90
+#, fuzzy
 msgid "Gtk+"
-msgstr ""
+msgstr "Gtk+"
 
 #: src/Widgets/SettingsDialog.vala:90
+#, fuzzy
 msgid "Dark"
-msgstr ""
+msgstr "Dark"
 
 #: src/Widgets/SettingsDialog.vala:90
 msgid "elementary"
@@ -276,7 +280,7 @@ msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:95
 msgid "Article List:"
-msgstr ""
+msgstr "記事リスト"
 
 #: src/Widgets/SettingsDialog.vala:97
 msgid "Sort articles by"

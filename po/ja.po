@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-01-27 14:04+0100\n"
-"PO-Revision-Date: 2018-04-01 11:58+0000\n"
+"PO-Revision-Date: 2018-04-02 12:38+0000\n"
 "Last-Translator: Koji Kanao <kk2796@nyu.edu>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/feedreader/"
 "translations/ja/>\n"
@@ -585,17 +585,17 @@ msgstr "問題があります"
 
 #: src/Widgets/MainWindow.vala:433
 msgid "The server reported an API-error."
-msgstr ""
+msgstr "サーバーがAPIエラーを報告しました。"
 
 #: src/Widgets/MainWindow.vala:436
 msgid "Either your username or the password are not correct."
-msgstr ""
+msgstr "あなたのユーザー名もしくはパスワードが正しくありません。"
 
 #: src/Widgets/MainWindow.vala:439
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
-msgstr ""
+msgstr "サーバーとの接続に失敗しました。インターネットへの接続とサーバーのURLを確認してください！"
 
 #: src/Widgets/MainWindow.vala:442
 msgid "API access is disabled on the server. Please enable it first!"

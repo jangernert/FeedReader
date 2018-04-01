@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-01-27 14:04+0100\n"
-"PO-Revision-Date: 2018-04-01 11:42+0000\n"
+"PO-Revision-Date: 2018-04-01 11:54+0000\n"
 "Last-Translator: Koji Kanao <kk2796@nyu.edu>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/feedreader/"
 "translations/ja/>\n"
@@ -284,15 +284,15 @@ msgstr "記事リスト"
 
 #: src/Widgets/SettingsDialog.vala:97
 msgid "Sort articles by"
-msgstr ""
+msgstr "記事を並べ替える"
 
 #: src/Widgets/SettingsDialog.vala:97
 msgid "Date"
-msgstr ""
+msgstr "日付"
 
 #: src/Widgets/SettingsDialog.vala:102
 msgid "Oldest first"
-msgstr ""
+msgstr "古いものから"
 
 #: src/Widgets/SettingsDialog.vala:102
 msgid "Only affects \"Unread\" column"
@@ -308,19 +308,19 @@ msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:111
 msgid "Default"
-msgstr ""
+msgstr "デフォルト"
 
 #: src/Widgets/SettingsDialog.vala:111
 msgid "Spring"
-msgstr ""
+msgstr "春"
 
 #: src/Widgets/SettingsDialog.vala:111
 msgid "Midnight"
-msgstr ""
+msgstr "真夜中"
 
 #: src/Widgets/SettingsDialog.vala:111
 msgid "Parchment"
-msgstr ""
+msgstr "証書"
 
 #: src/Widgets/SettingsDialog.vala:116
 msgid "Font Familly"
@@ -328,11 +328,11 @@ msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:141
 msgid "Sync:"
-msgstr ""
+msgstr "同期:"
 
 #: src/Widgets/SettingsDialog.vala:143
 msgid "Number of articles"
-msgstr ""
+msgstr "記事の数"
 
 #: src/Widgets/SettingsDialog.vala:145
 msgid "Interval in Minutes (0 = OFF)"
@@ -340,7 +340,7 @@ msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:150
 msgid "Database:"
-msgstr ""
+msgstr "データベース:"
 
 #: src/Widgets/SettingsDialog.vala:152
 msgid "Delete articles after"
@@ -352,15 +352,15 @@ msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:153
 msgid "1 Week"
-msgstr ""
+msgstr "1週間"
 
 #: src/Widgets/SettingsDialog.vala:153
 msgid "1 Month"
-msgstr ""
+msgstr "1ヶ月"
 
 #: src/Widgets/SettingsDialog.vala:153
 msgid "6 Months"
-msgstr ""
+msgstr "6ヶ月"
 
 #: src/Widgets/SettingsDialog.vala:155
 msgid "Additional Functionality:"
@@ -372,7 +372,7 @@ msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:159
 msgid "Download Images"
-msgstr ""
+msgstr "イメージをダウンロードする"
 
 #: src/Widgets/SettingsDialog.vala:161
 msgid "Internal Media Player"
@@ -380,15 +380,15 @@ msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:322
 msgid "System Accounts"
-msgstr ""
+msgstr "システムアカウント"
 
 #: src/Widgets/SettingsDialog.vala:349 src/Widgets/SettingsDialog.vala:363
 msgid "FeedReader Accounts"
-msgstr ""
+msgstr "フィードリーダーアカウント"
 
 #: src/Widgets/ResetPage.vala:33
 msgid "Change Account?"
-msgstr ""
+msgstr "アカウントを切替?"
 
 #: src/Widgets/ResetPage.vala:37
 msgid ""
@@ -398,7 +398,7 @@ msgstr ""
 
 #: src/Widgets/ResetPage.vala:41
 msgid "New account"
-msgstr ""
+msgstr "新規アカウント"
 
 #: src/Widgets/ResetPage.vala:44
 msgid "Waiting for current sync to finish"
@@ -414,35 +414,35 @@ msgstr ""
 
 #: src/Widgets/ColumnViewHeader.vala:37
 msgid "Show all articles"
-msgstr ""
+msgstr "全ての記事を表示"
 
 #: src/Widgets/ColumnViewHeader.vala:38
 msgid "Unread"
-msgstr ""
+msgstr "未読"
 
 #: src/Widgets/ColumnViewHeader.vala:38
 msgid "Show only unread articles"
-msgstr ""
+msgstr "未読記事のみ表示"
 
 #: src/Widgets/ColumnViewHeader.vala:39
 msgid "Starred"
-msgstr ""
+msgstr "星付き"
 
 #: src/Widgets/ColumnViewHeader.vala:39
 msgid "Show only starred articles"
-msgstr ""
+msgstr "星付き記事のみ表示"
 
 #: src/Widgets/ColumnViewHeader.vala:60
 msgid "Update feeds"
-msgstr ""
+msgstr "フィードを更新する"
 
 #: src/Widgets/ColumnViewHeader.vala:75
 msgid "Search Articles"
-msgstr ""
+msgstr "記事を検索"
 
 #: src/Widgets/ColumnViewHeader.vala:101
 msgid "Settings"
-msgstr ""
+msgstr "セッティング"
 
 #: src/Widgets/ColumnViewHeader.vala:114
 msgid "Read article fullscreen"
@@ -455,11 +455,11 @@ msgstr ""
 
 #: src/Widgets/FeedListFooter.vala:142
 msgid "Remove feed"
-msgstr ""
+msgstr "フィードを削除する"
 
 #: src/Widgets/FeedRow.vala:234
 msgid "Copy URL"
-msgstr ""
+msgstr "URLをコピーする"
 
 #: src/Widgets/FeedRow.vala:239
 #, c-format
@@ -477,27 +477,27 @@ msgstr ""
 
 #: src/Widgets/FeedList.vala:242
 msgid "All Articles"
-msgstr ""
+msgstr "すべての記事"
 
 #: src/Widgets/FeedList.vala:441
 msgid "Tags"
-msgstr ""
+msgstr "タグ"
 
 #: src/Widgets/FeedList.vala:482
 msgid "Categories"
-msgstr ""
+msgstr "カテゴリ"
 
 #: src/Widgets/FeedList.vala:487
 msgid "Feeds"
-msgstr ""
+msgstr "フィード"
 
 #: src/Widgets/FeedList.vala:1012
 msgid "New Tag"
-msgstr ""
+msgstr "新しいタグ"
 
 #: src/Widgets/FeedList.vala:1139
 msgid "New Category"
-msgstr ""
+msgstr "新規カテゴリー"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:20
 msgid "No Articles"
@@ -505,11 +505,11 @@ msgstr ""
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:122
 msgid "No unread articles"
-msgstr ""
+msgstr "未読記事なし"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:129
 msgid "No starred articles"
-msgstr ""
+msgstr "星付き記事なし"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:136
 msgid "No articles"
@@ -521,11 +521,11 @@ msgstr ""
 
 #: src/Widgets/ArticleList/ArticleList.vala:553
 msgid "scroll up"
-msgstr ""
+msgstr "スクロールアップ"
 
 #: src/Widgets/ArticleView.vala:62
 msgid "No Article selected."
-msgstr ""
+msgstr "選択済み記事なし"
 
 #: src/Widgets/ArticleView.vala:66
 msgid "WebKit has crashed"

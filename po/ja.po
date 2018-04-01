@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-01-27 14:04+0100\n"
-"PO-Revision-Date: 2018-04-01 11:54+0000\n"
+"PO-Revision-Date: 2018-04-01 11:58+0000\n"
 "Last-Translator: Koji Kanao <kk2796@nyu.edu>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/feedreader/"
 "translations/ja/>\n"
@@ -533,55 +533,55 @@ msgstr ""
 
 #: src/Widgets/ArticleView.vala:790
 msgid "Save image as"
-msgstr ""
+msgstr "画像として保存する"
 
 #: src/Widgets/UpdateButton.vala:80 src/Utils.vala:813
 msgid "Cancel"
-msgstr ""
+msgstr "キャンセル"
 
 #: src/Widgets/TagPopover.vala:45
 msgid "Add Tag:"
-msgstr ""
+msgstr "タグ追加:"
 
 #: src/Widgets/TagPopover.vala:57
 msgid "Tags:"
-msgstr ""
+msgstr "タグ:"
 
 #: src/Widgets/TagPopover.vala:134
 msgid "add Tag"
-msgstr ""
+msgstr "タグ追加"
 
 #: src/Widgets/MainWindow.vala:44
 msgid "FeedReader"
-msgstr ""
+msgstr "フィードリーダー"
 
 #: src/Widgets/MainWindow.vala:347
 msgid "Ignore all TLS errors from now on"
-msgstr ""
+msgstr "全てのTLSを無視する"
 
 #: src/Widgets/MainWindow.vala:414
 msgid "Please select a service first"
-msgstr ""
+msgstr "最初にサービスを選択してください"
 
 #: src/Widgets/MainWindow.vala:417
 msgid "Please enter a valid username"
-msgstr ""
+msgstr "正しいユーザー名を入力してください"
 
 #: src/Widgets/MainWindow.vala:420
 msgid "Please enter a valid password"
-msgstr ""
+msgstr "正しいパスワードを入力してください"
 
 #: src/Widgets/MainWindow.vala:424
 msgid "Please enter a valid URL"
-msgstr ""
+msgstr "正しいURLを入力してください"
 
 #: src/Widgets/MainWindow.vala:427
 msgid "Please enter your Login details"
-msgstr ""
+msgstr "ログイン詳細を入力してください"
 
 #: src/Widgets/MainWindow.vala:430
 msgid "Sorry, something went wrong."
-msgstr ""
+msgstr "問題があります"
 
 #: src/Widgets/MainWindow.vala:433
 msgid "The server reported an API-error."

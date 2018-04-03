@@ -186,3 +186,4 @@ class Api_feedreader extends Plugin {
 		}
 	}
 }
+?>

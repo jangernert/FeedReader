@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-01-27 14:04+0100\n"
-"PO-Revision-Date: 2018-01-11 22:31+0000\n"
-"Last-Translator: Florian <floflr@zaclys.net>\n"
+"PO-Revision-Date: 2018-04-21 13:37+0000\n"
+"Last-Translator: wellinkstein <guilbaud.jeremie@tutanota.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/feedreader/"
 "translations/fr/>\n"
 "Language: fr\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2.19-dev\n"
+"X-Generator: Weblate 3.0-dev\n"
 
 #: src/FeedReader.vala:21
 msgid "About FeedReader"
@@ -163,7 +163,7 @@ msgstr "Sélectionner l’article suivant/précédent"
 #: src/Widgets/ShortcutsWindow.vala:64
 #, fuzzy
 msgid "Toggle reading status of selected article"
-msgstr "Marquer l’article sélectionné comme non lu"
+msgstr "Modifier le statut de lecture de l’article sélectionné"
 
 #: src/Widgets/ShortcutsWindow.vala:65
 #, fuzzy
@@ -184,7 +184,7 @@ msgstr "Centrer l’article sélectionné"
 
 #: src/Widgets/ShortcutsWindow.vala:79
 msgid "Article View"
-msgstr ""
+msgstr "Vue de l'article"
 
 #: src/Widgets/ShortcutsWindow.vala:84
 msgid "Scroll up/down"
@@ -287,7 +287,7 @@ msgstr "Foncé"
 
 #: src/Widgets/SettingsDialog.vala:90
 msgid "elementary"
-msgstr "elementary"
+msgstr "élémentaire"
 
 #: src/Widgets/SettingsDialog.vala:95
 msgid "Article List:"
@@ -311,7 +311,7 @@ msgstr "Affecte uniquement la colonne \"Non lu\""
 
 #: src/Widgets/SettingsDialog.vala:107
 msgid "Mark read by scrolling past"
-msgstr ""
+msgstr "Marquer lu en défilant devant"
 
 #: src/Widgets/SettingsDialog.vala:109
 msgid "Article View:"
@@ -473,7 +473,7 @@ msgstr "Supprimer ce flux"
 
 #: src/Widgets/FeedRow.vala:234
 msgid "Copy URL"
-msgstr ""
+msgstr "Copier le lien"
 
 #: src/Widgets/FeedRow.vala:239
 #, c-format
@@ -668,9 +668,8 @@ msgid "Feed \"%s\" removed"
 msgstr "Flux « %s » supprimé"
 
 #: src/DataBaseReadOnly.vala:223
-#, fuzzy
 msgid "Unknown tag"
-msgstr "flux inconnu"
+msgstr "Tag inconnu"
 
 #: src/Utils.vala:35
 msgid "No Preview Available"
@@ -871,41 +870,39 @@ msgid "Nothing to read here."
 msgstr "Rien à lire ici."
 
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:92
-#, fuzzy
 msgid "Nextcloud URL:"
-msgstr "URL OwnCloud :"
+msgstr "URL Nextcloud :"
 
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:167
-#, fuzzy
 msgid ""
 "Please log in to your Nextcloud News instance and enjoy using FeedReader"
 msgstr ""
-"S’il vous plaît, connectez-vous à votre serveur ownCloud et profitez de "
-"FeedReader"
+"Connectez-vous à votre instance Nextcloud News et profitez de FeedReader"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:816
 msgid "Invalid URL"
-msgstr ""
+msgstr "URL invalide"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:819
 msgid "URL content is HTML, no feeds available"
-msgstr ""
+msgstr "Le contenu de l'URL est en HTML, aucun flux disponible"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:822
 msgid "URL content is HTML which contains multiple feeds."
-msgstr ""
+msgstr "Le contenu de l'URL est en HTML et contient plusieurs flux."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:825
 msgid "Couldn't download the URL content."
-msgstr ""
+msgstr "Impossible de télécharger le contenu de l'URL."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:828
 msgid "Content is an invalid XML."
-msgstr ""
+msgstr "Le contenu est un XML invalide."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:841
+#, fuzzy
 msgid "Error reaching tt-rss"
-msgstr ""
+msgstr "Erreur pour atteindre tt-rss"
 
 #: plugins/backend/ttrss/ttrssInterface.vala:70
 msgid "Tiny Tiny RSS URL:"

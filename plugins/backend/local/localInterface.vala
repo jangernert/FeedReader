@@ -673,7 +673,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		}
 
 		articles.sort((a, b) => {
-			return strcmp(a.getArticleID(), b.getArticleID());
+			return (int) (a.getDate().to_unix() - b.getDate().to_unix());
 		});
 
 		if(articles.size > 0)

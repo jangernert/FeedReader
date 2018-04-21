@@ -56,13 +56,18 @@ sudo eopkg install feedreader
 sudo zypper install feedreader
 ```
 
+### Ubuntu : <br/>
+```bash
+curl https://raw.githubusercontent.com/sirredbeard/FeedReader/master/install_ubuntu.sh | sudo bash
+```
+
 ### Flatpak
 
 FeedReader is now availble as Flatpak and should be installable on all major Linux distributions that support the Flatpak Application Framework eg. Fedora, Debian, Ubuntu, elementaryOS, Arch, openSuSE, Mageia and many more.
 
 For more information about Flatpak and how to use or install it for your distribution see the [Flatpak webpage](http://flatpak.org).
 
-Besides installing the Flatpak Framework, you should also install the following portal packages using your distributions paket manager:
+Besides installing the Flatpak Framework, you should also install the following portal packages using your distributions package manager:
 - `xdg-desktop-portal`
 - `xdg-desktop-portal-gtk`
 

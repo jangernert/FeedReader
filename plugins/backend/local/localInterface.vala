@@ -584,6 +584,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				}
 
 				Logger.debug("Got %u articles".printf(doc.get_items().length()));
+				var newArticles = new Gee.ArrayList<Article>();
 				foreach(Rss.Item item in doc.get_items())
 				{
 					string? articleID = item.guid;
@@ -645,10 +646,11 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 					Logger.debug("Got new article: " + article.getTitle());
 
-					mutex.lock();
-					articles.add(article);
-					mutex.unlock();
+					newArticles.add(article);
 				}
+				mutex.lock();
+				articles.add_all(newArticles);
+				mutex.unlock();
 			}, (int)GLib.get_num_processors(), true);
 
 			foreach(Feed feed in feeds)

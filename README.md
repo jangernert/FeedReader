@@ -57,8 +57,12 @@ sudo zypper install feedreader
 ```
 
 ### Ubuntu : <br/>
+
+The easiest way to install the latest FeedReader right now is to build from source,
+which you can do with this script:
+
 ```bash
-curl https://raw.githubusercontent.com/sirredbeard/FeedReader/master/install_ubuntu.sh | sudo bash
+curl https://raw.githubusercontent.com/jangernert/FeedReader/master/scripts/install_ubuntu.sh | bash
 ```
 
 ### Flatpak

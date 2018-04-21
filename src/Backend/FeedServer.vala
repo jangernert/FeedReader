@@ -888,7 +888,8 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		int maxArticles = ArticleSyncCount();
 		DateTime? since = ((DropArticles)Settings.general().get_enum("drop-articles-after")).to_start_date();
-		Logger.info("Downloading up to %d articles for feed %s (%s), since %s".printf(maxArticles, feedID, feedURL, since.to_string()));
+		var sinceStr = since == null ? "(null)" : since.to_string();
+		Logger.info(@"Downloading up to $(maxArticles) articles for feed $(feedID) ($(feedURL)), since $(sinceStr)");
 		getArticles(maxArticles, ArticleStatus.ALL, since, feedID);
 		return true;
 	}

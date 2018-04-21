@@ -1,6 +1,9 @@
 set (PLUGNAME local)
 set (PLUGTARGET ${PLUGNAME}_target)
 
+set (TEST_NAME ${PLUGNAME}_test)
+set (TEST_TARGET ${TEST_NAME}_target)
+
 find_package(GLIB REQUIRED)
 find_package(Curl REQUIRED)
 include_directories(${GLIB_INCLUDE_DIRS})
@@ -17,6 +20,7 @@ add_subdirectory(rss-glib)
 vala_precompile(VALA_C ${PLUGTARGET}
 	localInterface.vala
 	localUtils.vala
+	Rfc822.vala
 	SuggestedFeedRow.vala
 
 PACKAGES
@@ -53,3 +57,27 @@ add_dependencies(${PLUGNAME} ${UI_NAME} ${FEEDREADER_NAME})
 install(TARGETS ${PLUGNAME} DESTINATION ${PKGLIBDIR}/plugins)
 install(FILES ${PLUGNAME}.plugin DESTINATION ${PKGLIBDIR}/plugins)
 
+# ----------------------------------------------------------
+# Tests
+# ----------------------------------------------------------
+
+install(TARGETS ${PLUGNAME} DESTINATION ${PKGLIBDIR}/plugins)
+install(FILES ${PLUGNAME}.plugin DESTINATION ${PKGLIBDIR}/plugins)
+vala_precompile(VALA_C ${TEST_TARGET}
+	Rfc822.vala
+	TestLocalRSS.vala
+
+PACKAGES
+	json-glib-1.0
+	libsoup-2.4
+	gee-0.8
+
+OPTIONS
+	--target-glib=2.32
+	--disable-warnings # since we frequently want to not catch errors
+)
+
+add_executable(${TEST_NAME} ${VALA_C})
+target_link_libraries(${TEST_NAME} ${API_NAME})
+
+add_test(${PLUGNAME} gtester -k -o ${CMAKE_BINARY_DIR}/${PLUGNAME}.gtester.log ${TEST_NAME})

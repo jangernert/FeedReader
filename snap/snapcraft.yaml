@@ -14,7 +14,7 @@
   apps:
     feedreader:
      command: feedreader
-     plugs: [network, home]
+     plugs: [network, home, desktop, pulseaudio, opengl, gsettings]
      # add .desktop file
      
   parts:

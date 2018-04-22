@@ -88,4 +88,8 @@ plugin_test = executable(
   include_directories: include_directories('../../..')
 )
 
-test('Local plugin', plugin_test)
+if gtester.found()
+	test('Local plugin', gtester, args:['-k', '-o', meson.build_root() + '/local.gtester.log', plugin_test])
+else
+	test('Local plugin', plugin_test)
+endif

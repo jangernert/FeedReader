@@ -1,0 +1,27 @@
+
+  name: feedreader-gui
+  version: 2.2+dev # just for humans, typically '1.2+git' or '1.3.2'
+  summary: Modern desktop application designed to complement existing web-based RSS accounts. 
+  description: |
+    FeedReader is a modern desktop application designed to complement existing
+    web-based RSS accounts. It combines all the advantages of web based services
+    like synchronisation across all your devices with everything you expect from
+    a modern desktop application.
+
+  grade: stable
+  confinement: devmode
+  
+  apps:
+    feedreader:
+     command: feedreader
+     # plugs
+     # .desktop file
+     
+  parts:
+    feedreadercode:
+      plugin: cmake
+      source: https://github.com/jangernert/FeedReader.git
+    valac:
+      plugin: autolooks
+      source: http://download.gnome.org/sources/vala/0.38/vala-0.38.8.tar.xz
+    

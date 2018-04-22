@@ -27,7 +27,7 @@
   parts:
     feedreader:
       plugin: meson
-      source: https://github.com/sirredbeard/FeedReader
+      source: https://github.com/sirredbeard/FeedReader #pulls from my version, which is master plus /snap/ and brendanlong's upstream meson changes pulled in
       source-type: git
       source-subdir: .
       snap:

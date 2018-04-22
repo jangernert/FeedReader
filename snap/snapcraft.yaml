@@ -29,6 +29,8 @@
         cmake ..
         make
         sudo make install
+		   # ideally we would just cmake do it's thing here, but it fails for an unknown reason on the nested cmake files, see log https://github.com/jangernert/FeedReader/issues/661#issue-316539544
+		   # have also tried make DESTDIR=$SNAPCRAFT_PART_INSTALL but it also failed to bring over feedreader part files, see post https://forum.snapcraft.io/t/snapcraft-breaking-over-nested-cmake-not-moving-built-files-into-staging-prime-and-dependency-issues/5084/4, snapcraft.yaml https://gist.github.com/sirredbeard/20864b9ca0fb000a9cee80c56ee7b1a2, and snap files https://gist.github.com/sirredbeard/e153da228bf92dab9da269a831bfc79d
       snap:
         - lib/*
         - usr/bin/*

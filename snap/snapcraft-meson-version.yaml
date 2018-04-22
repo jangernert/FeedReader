@@ -1,3 +1,10 @@
+# status: fails to run
+
+# hayden@pop-os:~/Documents/Projects/FeedReader$ snap run feedreader
+# /snap/feedreader/x1/usr/bin/feedreader: /lib/x86_64-linux-gnu/libgcc_s.so.1: version `GCC_7.0.0' not found (required by /snap/feedreader/x1/usr/lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so.37)
+#/snap/feedreader/x1/usr/bin/feedreader: /lib/x86_64-linux-gnu/libm.so.6: version `GLIBC_2.27' not found (required by /snap/feedreader/x1/usr/lib/x86_64-linux-gnu/libwebkit2gtk-4.0.so.37)
+# /snap/feedreader/x1/usr/bin/feedreader: /lib/x86_64-linux-gnu/libz.so.1: version `ZLIB_1.2.9' not found (required by /snap/feedreader/x1/usr/lib/x86_64-linux-gnu/libpng16.so.16)
+# /snap/feedreader/x1/usr/bin/feedreader: /usr/lib/x86_64-linux-gnu/libstdc++.so.6: version `GLIBCXX_3.4.22' not found (required by /snap/feedreader/x1/usr/lib/x86_64-linux-gnu/libjavascriptcoregtk-4.0.so.18)
 
   name: feedreader
   version: 2.2+dev # just for humans, typically '1.2+git' or '1.3.2'
@@ -14,25 +21,20 @@
   apps:
     feedreader:
      command: /usr/bin/feedreader
-     plugs: [network, home, X11]
-     # .desktop file
+     plugs: [network, home]
+     # add .desktop file
      
   parts:
-    feedreadercode:
+    feedreader:
       plugin: meson
       source: https://github.com/sirredbeard/FeedReader
       source-type: git
       source-subdir: .
       snap:
+         - lib/*
          - usr/bin/*
-         - usr/share/locale/*
-         - usr/share/feedreader/*
-         - usr/share/icons/hicolor/*
-         - usr/lib/feedreader/*
-         - usr/share/applications/org.gnome.FeedReader.desktop
-         - usr/share/feedreader/org.gnome.FeedReader-autostart.desktop
-         - usr/share/appdata/org.gnome.FeedReader.appdata.xml
-         - usr/share/glib-2.0/schemas/*
+         - usr/lib/*
+         - usr/share/*
       build-packages:
          - build-essential
          - cmake

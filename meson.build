@@ -259,7 +259,7 @@ else
 	message('libUnity support OFF')
 endif
 
-# Creating an executable file
+# The shared lib for plugins
 feedreader_lib = shared_library(
   'FeedReader',
   vala_sources,
@@ -281,15 +281,13 @@ subdir('po')
 # Create an executable file
 executable(
   'feedreader',
-  UI_RESOURCES,
+  UI_RESOURCES + ['src/FeedReaderMain.vala'],
+  c_args: c_args,
+  vala_args: vala_args,
   link_with: [
     feedreader_lib
   ],
-  dependencies: [
-    gtkimageview_vapi,
-    libvilistextum_vapi,
-    webkit2gtk
-  ],
+  dependencies: feedreader_deps,
   install: true
 )
 

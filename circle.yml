@@ -33,24 +33,25 @@ jobs:
           background: true
       - checkout
       - run:
+          name: Configure
+          command: meson builddir -DBAZQUX=ON -DFEEDHQ=ON
+      - run:
           name: Build
+          command: cd builddir && ninja
+      - run:
+          name: Test
+          command: cd builddir && ninja test
+      - run:
+          name: Generate JUnit XML
           command: |
-              cmake . -DBAZQUX=ON -DFEEDHQ=ON
-              make
-# FIXME: Turn the tests back on with Meson
-#      - run:
-#          name: Test
-#          command: make test
-#      - run:
-#          name: Generate JUnit XML
-#          command: |
-#              mkdir -p /tmp/test-results/junit/
-#              for f in *.gtester.log; do
-#                  xsltproc -o /tmp/test-results/junit/$(basename $f .gtester.log).xml gtester-to-junit-4.xsl $f;
-#              done
-#          when: always
-#      - store_test_results:
-#          path: /tmp/test-results
-#      - store_artifacts:
-#          path: /tmp/test-results/junit
-#          destination: test-results
+              mkdir -p /tmp/test-results/junit/
+              cd builddir
+              for f in *.gtester.log; do
+                  xsltproc -o /tmp/test-results/junit/$(basename $f .gtester.log).xml ../gtester-to-junit-4.xsl $f;
+              done
+          when: always
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results/junit
+          destination: test-results

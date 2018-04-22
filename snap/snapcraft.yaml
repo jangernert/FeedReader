@@ -13,8 +13,8 @@
   
   apps:
     feedreader:
-     command: usr/local/bin/feedreader
-     plugs: [network, home]
+     command: feedreader
+     plugs: [network, home, x11]
      # .desktop file
      
   parts:
@@ -30,6 +30,7 @@
        make
        sudo make install
 #      prime?:
+#         - usr/local/*
 #         - usr/local/share/locale/*
 #         - usr/local/share/FeedReader/*
 #         - usr/local/share/icons/hicolor/*

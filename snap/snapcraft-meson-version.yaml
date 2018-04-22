@@ -1,5 +1,5 @@
 
-  name: feedreader-gui
+  name: feedreader
   version: 2.2+dev # just for humans, typically '1.2+git' or '1.3.2'
   summary: Modern desktop app designed to complement web-based RSS accounts. 
   description: |
@@ -13,8 +13,8 @@
   
   apps:
     feedreader:
-     command: usr/local/bin/feedreader
-     plugs: [network, home]
+     command: /usr/bin/feedreader
+     plugs: [network, home, X11]
      # .desktop file
      
   parts:
@@ -23,17 +23,16 @@
       source: https://github.com/sirredbeard/FeedReader
       source-type: git
       source-subdir: .
-      prime:
-         - usr/local*
-         - usr/local/share/locale/*
-         - usr/local/share/FeedReader/*
-         - usr/local/share/icons/hicolor/*
-         - usr/local/bin/feedreader
-         - usr/local/lib/FeedReader/*
-         - usr/local/share/applications/org.gnome.FeedReader.desktop
-         - usr/local/share/FeedReader/org.gnome.FeedReader-autostart.desktop
-         - usr/local/share/appdata/org.gnome.FeedReader.appdata.xml
-         - usr/local/share/glib-2.0/schemas/*
+      snap:
+         - usr/bin/*
+         - usr/share/locale/*
+         - usr/share/feedreader/*
+         - usr/share/icons/hicolor/*
+         - usr/lib/feedreader/*
+         - usr/share/applications/org.gnome.FeedReader.desktop
+         - usr/share/feedreader/org.gnome.FeedReader-autostart.desktop
+         - usr/share/appdata/org.gnome.FeedReader.appdata.xml
+         - usr/share/glib-2.0/schemas/*
       build-packages:
          - build-essential
          - cmake

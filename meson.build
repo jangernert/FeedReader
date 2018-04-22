@@ -247,7 +247,7 @@ feedreader_deps = [
     libvilistextum,
     libgd
   ]
-  
+
 
 if libunity.found()
 	message('libUnity support ON')
@@ -266,8 +266,7 @@ feedreader_lib = static_library(
   vala_header: 'FeedReader.h',
   vala_vapi: 'FeedReader.vapi',
   dependencies: feedreader_deps,
-  install: true,
-  install_dir: [false, true, true]
+  install: true
 )
 
 c_args = c_args + ['-include','FeedReader.h',]

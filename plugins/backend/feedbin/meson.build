@@ -3,7 +3,7 @@ feedbin_resources = gnome.compile_resources(
   'feedbin.gresource.xml'
 )
 
-shared_library(
+plugin_lib = shared_library(
   'feedbin',
   [
     'feedbinAPI.vala',
@@ -46,3 +46,32 @@ install_data(
   ],
   install_dir: BACKEND_PLUGINS_DIR
 )
+
+plugin_test = executable(
+  'test_feedbin',
+  [
+    'TestFeedbin.vala'
+  ],
+  c_args: c_args,
+  # The tests intentionally don't catch exceptions
+  vala_args: vala_args + ['--disable-warnings'],
+  dependencies: [
+    libpeas,
+    libgd,
+    gtk,
+    gee,
+    libsecret,
+    sqlite3,
+    libsoup,
+    libxml,
+    json_glib,
+    webkit2gtk
+  ],
+  link_with: [
+    plugin_lib,
+    feedreader_lib
+  ],
+  include_directories: include_directories('../../..')
+)
+
+test('Feedbin plugin', plugin_test)

@@ -47,7 +47,7 @@ jobs:
               mkdir -p /tmp/test-results/junit/
               cd builddir
               for f in *.gtester.log; do
-                  xsltproc -o /tmp/test-results/junit/$(basename $f .gtester.log).xml gtester-to-junit-4.xsl $f;
+                  xsltproc -o /tmp/test-results/junit/$(basename $f .gtester.log).xml ../gtester-to-junit-4.xsl $f;
               done
           when: always
       - store_test_results:

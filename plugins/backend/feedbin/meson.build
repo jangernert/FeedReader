@@ -76,4 +76,8 @@ plugin_test = executable(
 
 # FIXME: Why do we get errors like `g_object_new_with_properties: assertion 'G_TYPE_IS_OBJECT (object_type)' failed`
 # with the new meson build?
-#test('Feedbin plugin', plugin_test)
+#if gtester.found()
+#	test('Feedbin plugin', gtester, args:['-k', '-o', meson.build_root() + '/local.gtester.log', plugin_test])
+#else
+#	test('Feedbin plugin', plugin_test)
+#endif

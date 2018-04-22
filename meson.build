@@ -32,6 +32,9 @@ i18n = import('i18n')
 vala_compiler = meson.get_compiler('vala')
 c_compiler = meson.get_compiler('c')
 
+# Other tools
+gtester = find_program('gtester', required:false)
+
 # Dependencies
 gdk_pixbuf          = dependency('gdk-pixbuf-2.0')
 gee                 = dependency('gee-0.8')

@@ -13,7 +13,7 @@
   
   apps:
     feedreader:
-     command: feedreader
+     command: usr/local/bin/feedreader
      # plugs
      # .desktop file
      
@@ -22,7 +22,7 @@
       plugin: dump
       source: https://github.com/jangernert/FeedReader.git
       source-subdir: .
-      build: |
+      build-override: |
        mkdir build
        cd build
        cmake ..

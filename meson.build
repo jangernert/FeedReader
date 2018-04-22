@@ -1,4 +1,4 @@
-project('FeedReader', ['vala', 'c'],
+project('feedreader', ['vala', 'c'],
   version: '2.2-dev',
   meson_version: '>= 0.44.1',
   license: 'GPL-3.0',

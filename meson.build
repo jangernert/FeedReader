@@ -257,7 +257,7 @@ else
 endif
 
 # Creating an executable file
-feedreader_lib = static_library(
+feedreader_lib = shared_library(
   'FeedReader',
   vala_sources,
   c_args: c_args,

@@ -101,7 +101,8 @@ libvilistextum  = declare_dependency(
 # libgd
 libgd = declare_dependency(
   link_with: gd_lib,
-  include_directories: gd_inc
+  include_directories: gd_inc,
+  dependencies: [libgd_vapi]
 )
 
 # GtkImageView
@@ -221,9 +222,7 @@ c_args = [
 
 vala_args = [
   '--enable-experimental',
-  '--target-glib','2.50',
-  '--pkg=gd-1.0',
-  '--pkg=webkit2gtk-4.0',
+  '--target-glib','2.50'
 ]
 
 feedreader_deps = [
@@ -284,7 +283,6 @@ executable(
     feedreader_lib
   ],
   dependencies: [
-    libgd_vapi,
     gtkimageview_vapi,
     libvilistextum_vapi,
     webkit2gtk

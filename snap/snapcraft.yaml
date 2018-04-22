@@ -9,7 +9,7 @@
     a modern desktop application.
 
   grade: stable
-  confinement: devmode
+  confinement: strict
   
   apps:
     feedreader:
@@ -19,8 +19,15 @@
      
   parts:
     feedreadercode:
-      plugin: cmake
+      plugin: dump
       source: https://github.com/jangernert/FeedReader.git
+      source-subdir: .
+      build: |
+       mkdir build
+       cd build
+       cmake ..
+       make
+       sudo make install
       build-packages:
          - build-essential
          - cmake

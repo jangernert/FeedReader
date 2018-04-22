@@ -22,6 +22,6 @@
       plugin: cmake
       source: https://github.com/jangernert/FeedReader.git
     valac:
-      plugin: autolooks
+      plugin: autotools
       source: http://download.gnome.org/sources/vala/0.38/vala-0.38.8.tar.xz
     

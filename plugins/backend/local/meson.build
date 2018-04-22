@@ -16,8 +16,7 @@ lib_rss_glib = declare_dependency(
   dependencies: rss_glib_vapi
 )
 
-
-shared_library(
+plugin_lib = shared_library(
   'local',
   [
     'localInterface.vala',
@@ -58,3 +57,35 @@ install_data(
   ],
   install_dir: BACKEND_PLUGINS_DIR
 )
+
+plugin_test = executable(
+  'test_local',
+  [
+    'TestLocalRSS.vala'
+  ],
+  c_args: c_args,
+  vala_args: vala_args,
+  dependencies: [
+    libpeas,
+    libgd,
+    gtk,
+    gee,
+    libsecret,
+    sqlite3,
+    libsoup,
+    libxml,
+    json_glib,
+    libcurl,
+    lib_rss_glib,
+    webkit2gtk
+  ],
+  link_with: [
+    plugin_lib,
+    feedreader_lib,
+    mrss_lib,
+    nxml_lib
+  ],
+  include_directories: include_directories('../../..')
+)
+
+test('Local plugin', plugin_test)

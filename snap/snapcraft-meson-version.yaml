@@ -20,8 +20,8 @@
   
   apps:
     feedreader:
-     command: /usr/bin/feedreader
-     plugs: [network, home]
+     command: usr/bin/feedreader
+     plugs: [network, home, desktop, pulseaudio, opengl, gsettings]
      # add .desktop file
      
   parts:

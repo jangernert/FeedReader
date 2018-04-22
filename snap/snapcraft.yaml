@@ -14,13 +14,14 @@
   apps:
     feedreader:
      command: usr/local/bin/feedreader
-     # plugs
+     plugs: [network, home]
      # .desktop file
      
   parts:
     feedreadercode:
       plugin: dump
       source: https://github.com/jangernert/FeedReader.git
+	  source-type: git
       source-subdir: .
       build-override: |
        mkdir build
@@ -28,16 +29,16 @@
        cmake ..
        make
        sudo make install
-      prime:
-         - usr/local/share/locale/*
-         - usr/local/share/FeedReader/*
-         - usr/local/share/icons/hicolor/*
-         - usr/local/bin/feedreader
-         - usr/local/lib/FeedReader/*
-         - usr/local/share/applications/org.gnome.FeedReader.desktop
-         - usr/local/share/FeedReader/org.gnome.FeedReader-autostart.desktop
-         - usr/local/share/appdata/org.gnome.FeedReader.appdata.xml
-         - usr/local/share/glib-2.0/schemas/*
+#      prime?:
+#         - usr/local/share/locale/*
+#         - usr/local/share/FeedReader/*
+#         - usr/local/share/icons/hicolor/*
+#         - usr/local/bin/feedreader
+#         - usr/local/lib/FeedReader/*
+#         - usr/local/share/applications/org.gnome.FeedReader.desktop
+#         - usr/local/share/FeedReader/org.gnome.FeedReader-autostart.desktop
+#         - usr/local/share/appdata/org.gnome.FeedReader.appdata.xml
+#         - usr/local/share/glib-2.0/schemas/*
       build-packages:
          - build-essential
          - cmake

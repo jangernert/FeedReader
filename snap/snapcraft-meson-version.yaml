@@ -1,0 +1,65 @@
+
+  name: feedreader-gui
+  version: 2.2+dev # just for humans, typically '1.2+git' or '1.3.2'
+  summary: Modern desktop app designed to complement web-based RSS accounts. 
+  description: |
+    FeedReader is a modern desktop application designed to complement existing
+    web-based RSS accounts. It combines all the advantages of web based services
+    like synchronisation across all your devices with everything you expect from
+    a modern desktop application.
+
+  grade: stable
+  confinement: strict
+  
+  apps:
+    feedreader:
+     command: usr/local/bin/feedreader
+     plugs: [network, home]
+     # .desktop file
+     
+  parts:
+    feedreadercode:
+      plugin: meson
+      source: https://github.com/sirredbeard/FeedReader
+      source-type: git
+      source-subdir: .
+      prime:
+         - usr/local*
+         - usr/local/share/locale/*
+         - usr/local/share/FeedReader/*
+         - usr/local/share/icons/hicolor/*
+         - usr/local/bin/feedreader
+         - usr/local/lib/FeedReader/*
+         - usr/local/share/applications/org.gnome.FeedReader.desktop
+         - usr/local/share/FeedReader/org.gnome.FeedReader-autostart.desktop
+         - usr/local/share/appdata/org.gnome.FeedReader.appdata.xml
+         - usr/local/share/glib-2.0/schemas/*
+      build-packages:
+         - build-essential
+         - cmake
+         - pkg-config 
+         - libgirepository1.0-dev 
+         - libgtk-3-dev 
+         - libsoup2.4-dev 
+         - libjson-glib-dev 
+         - libwebkit2gtk-4.0-dev 
+         - libsqlite3-dev 
+         - libsecret-1-dev 
+         - libnotify-dev 
+         - libxml2-dev 
+         - librest-dev 
+         - libgee-0.8-dev 
+         - libgstreamer1.0-dev 
+         - libgstreamer-plugins-base1.0-dev 
+         - libgoa-1.0-dev 
+         - libcurl4-gnutls-dev 
+         - libpeas-dev    
+    valac:
+      plugin: autotools
+      source: http://download.gnome.org/sources/vala/0.38/vala-0.38.8.tar.xz
+      build-packages:
+         - flex    
+         - bison
+         - build-essential
+         - libglib2.0-dev
+         - libgraphviz-dev

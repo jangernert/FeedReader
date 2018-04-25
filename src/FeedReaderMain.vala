@@ -29,6 +29,7 @@ namespace FeedReader.Main {
 	public static int main (string[] args)
 	{
 		Ivy.Stacktrace.register_handlers();
+		GLib.Intl.textdomain ("FeedReader");
 
 		try
 		{

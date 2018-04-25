@@ -10,6 +10,6 @@ int get_current_char();
 int read_char();
 void putback_char(CHAR c);
 void quit();
-CHAR* getOutput();
+char* getOutput();
 
 #endif

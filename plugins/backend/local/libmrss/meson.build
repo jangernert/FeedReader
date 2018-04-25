@@ -11,5 +11,6 @@ mrss_lib = static_library(
     'mrss_search.c',
     'mrss_write.c'
   ],
+  c_args: ['-Wno-comment', '-Wno-pointer-to-int-cast'],
   include_directories: mrss_inc
 )

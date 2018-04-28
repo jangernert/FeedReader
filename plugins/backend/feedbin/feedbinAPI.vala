@@ -55,9 +55,10 @@ public class FeedbinAPI : Object {
 			auth.authenticate(this.username, this.password);
 	}
 
-	private Soup.Message request(string method, string path, string? input = null) throws FeedbinError
+	private Soup.Message request(string method, string last_part, string? input = null) throws FeedbinError
 	{
-		var message = new Soup.Message(method, m_base_uri + path);
+		var path = m_base_uri + last_part;
+		var message = new Soup.Message(method, path);
 
 		if(method == "POST" || method == "PUT")
 			message.request_headers.append("Content-Type", "application/json; charset=utf-8");
@@ -214,17 +215,24 @@ public class FeedbinAPI : Object {
 		delete_request(@"subscriptions/$subscription_id.json");
 	}
 
-	public Subscription add_subscription(string url) throws FeedbinError
+	public Subscription? add_subscription(string url) throws FeedbinError
 	{
 		Json.Object object = new Json.Object();
 		object.set_string_member("feed_url", url);
 
-		var response = post_json_object("subscriptions.json", object);
-		if(response.status_code == 300)
-			throw new FeedbinError.MULTIPLE_CHOICES("Site $url has multiple feeds to subscribe to");
+		try
+		{
+			var response = post_json_object("subscriptions.json", object);
+			if(response.status_code == 300)
+				throw new FeedbinError.MULTIPLE_CHOICES("Site $url has multiple feeds to subscribe to");
 
-		var root = parse_json(response);
-		return Subscription.from_json(root.get_object());
+			var root = parse_json(response);
+			return Subscription.from_json(root.get_object());
+		}
+		catch (FeedbinError.NOT_FOUND e)
+		{
+			return null;
+		}
 	}
 
 	public void rename_subscription(int64 subscription_id, string title) throws FeedbinError

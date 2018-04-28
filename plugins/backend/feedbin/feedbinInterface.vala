@@ -352,9 +352,15 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public bool addFeed(string feed_url, string? cat_id, string? category_name, out string feed_id, out string errmsg)
 	{
+		feed_id = "";
 		try
 		{
 			var subscription = m_api.add_subscription(feed_url);
+			if (subscription == null)
+			{
+				errmsg = @"Feedbin could not find a feed at $(feed_url)";
+				return false;
+			}
 			feed_id = subscription.feed_id.to_string();
 
 			if(category_name != null)
@@ -367,7 +373,6 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		{
 			errmsg = e.message;
 			Logger.error(@"FeedbinInterface.addFeed: $errmsg");
-			feed_id = "";
 			return false;
 		}
 	}

@@ -49,7 +49,4 @@ RUN pip3 install --user --upgrade meson
 
 RUN gem install bundler
 RUN git clone https://github.com/feedbin/feedbin.git
-# Feedbin has a dependency called FeedKit which is broken on master
-# You can remove this `git checkout` when this pull request lands:
-# https://github.com/feedbin/feedbin/pull/239
-RUN cd feedbin && git checkout dcb9eebfb457e227e3f0333a702b6d8fb0076d3b && bundle
+RUN cd feedbin && bundle

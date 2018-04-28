@@ -3,12 +3,36 @@ feedbin_resources = gnome.compile_resources(
   'feedbin.gresource.xml'
 )
 
+static_lib = static_library(
+  'feedbin_static',
+  [
+    'feedbinAPI.vala',
+    'feedbinUtils.vala'
+  ],
+  c_args: c_args,
+  vala_args: vala_args,
+  dependencies: [
+    libpeas,
+    libgd,
+    gtk,
+    gee,
+    libsecret,
+    sqlite3,
+    libsoup,
+    libxml,
+    json_glib,
+    webkit2gtk
+  ],
+  link_with: [
+    feedreader_lib
+  ],
+  include_directories: include_directories('../../..')
+)
+
 plugin_lib = shared_library(
   'feedbin',
   [
-    'feedbinAPI.vala',
     'feedbinInterface.vala',
-    'feedbinUtils.vala'
   ],
   feedbin_resources,
   c_args: c_args,
@@ -26,7 +50,8 @@ plugin_lib = shared_library(
     webkit2gtk
   ],
   link_with: [
-    feedreader_lib
+    feedreader_lib,
+    static_lib
   ],
   install: true,
   install_dir: BACKEND_PLUGINS_DIR,
@@ -69,15 +94,13 @@ plugin_test = executable(
   ],
   link_with: [
     feedreader_lib,
-    plugin_lib
+    static_lib
   ],
   include_directories: include_directories('../../..')
 )
 
-# FIXME: Why do we get errors like `g_object_new_with_properties: assertion 'G_TYPE_IS_OBJECT (object_type)' failed`
-# with the new meson build?
-#if gtester.found()
-#	test('Feedbin plugin', gtester, args:['-k', '-o', meson.build_root() + '/local.gtester.log', plugin_test])
-#else
-#	test('Feedbin plugin', plugin_test)
-#endif
+if gtester.found()
+    test('Feedbin plugin', gtester, args:['-k', '-o', meson.build_root() + '/feedbin.gtester.log', plugin_test])
+else
+    test('Feedbin plugin', plugin_test)
+endif

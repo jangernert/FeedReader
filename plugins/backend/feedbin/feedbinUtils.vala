@@ -13,7 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-class FeedReader.FeedbinUtils : GLib.Object {
+public class FeedReader.FeedbinUtils : GLib.Object {
 
 	GLib.Settings m_settings;
 	Password m_password;

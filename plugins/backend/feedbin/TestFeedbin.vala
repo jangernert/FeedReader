@@ -49,7 +49,7 @@ void add_login_tests(string host)
 
         var api = new FeedbinAPI(username, password, null, host);
 
-        var url = "https://www.brendanlong.com/feeds/all.atom.xml?feedreader-test-subscribe-$nonce";
+        var url = "https://www.brendanlong.com/feeds/all.atom.xml?feedreader-test-subscribe-$(nonce)";
         delete_subscription(api, url);
 
         var subscription = api.add_subscription(url);
@@ -96,7 +96,7 @@ void add_login_tests(string host)
 
         var api = new FeedbinAPI(username, password, null, host);
 
-        var url = @"https://www.brendanlong.com/feeds/all.atom.xml?feedreader-test-taggings-$nonce";
+        var url = @"https://www.brendanlong.com/feeds/all.atom.xml?feedreader-test-taggings-$(nonce)";
         delete_subscription(api, url);
 
         var subscription = api.add_subscription(url);
@@ -197,23 +197,6 @@ void add_login_tests(string host)
             return;
 		}
 
-		Bytes? expected_favicon;
-		{
-			var session = new Soup.Session();
-			var message = new Soup.Message("GET", "https://www.brendanlong.com/theme/favicon.ico");
-			var inputstream = session.send(message);
-			var bytearray = new ByteArray();
-			uint8[] buffer = new uint8[4096];
-			size_t bytes_read = 0;
-			do
-			{
-				inputstream.read_all(buffer, out bytes_read);
-				bytearray.append(buffer[0:bytes_read]);
-			}
-			while(bytes_read == 4096);
-			expected_favicon = ByteArray.free_to_bytes(bytearray);
-		}
-
         var api = new FeedbinAPI(username, password, null, host);
 
 		// Note: This one shouldn't be deleted or recreated, since we want the entries to be available
@@ -226,7 +209,8 @@ void add_login_tests(string host)
 		{
 			if(i.key != "www.brendanlong.com")
 				continue;
-			assert(i.value == expected_favicon);
+			// Don't check the contents of the Favicon because Feedbin doesn't
+			// seem to neccessarily return the exact icon we gave it
 			found_favicon = true;
 			break;
 		}

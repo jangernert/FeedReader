@@ -584,6 +584,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				}
 
 				Logger.debug("Got %u articles".printf(doc.get_items().length()));
+				var newArticles = new Gee.ArrayList<Article>();
 				foreach(Rss.Item item in doc.get_items())
 				{
 					string? articleID = item.guid;
@@ -599,15 +600,16 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 						articleID = item.link;
 					}
 
-					var date = new GLib.DateTime.now_local();
-					if(item.pub_date != null)
+					var date = Rfc822.parseDate(item.pub_date);
+					if (date != null)
 					{
-						GLib.Time time = GLib.Time();
-						time.strptime(item.pub_date, "%a, %d %b %Y %H:%M:%S %Z");
-						date = new GLib.DateTime.local(1900 + time.year, 1 + time.month, time.day, time.hour, time.minute, time.second);
-
-						if(date == null)
-							date = new GLib.DateTime.now_local();
+						Logger.info(@"Parsed $(item.pub_date) as $(date.to_string())");
+					}
+					else
+					{
+						if (item.pub_date != null)
+							Logger.warning(@"RFC 822 date parser failed to parse $(item.pub_date). Falling back to DateTime.now()");
+						date = new DateTime.now_local();
 					}
 
 					//Logger.info("Got content: " + item.description);
@@ -645,10 +647,11 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 					Logger.debug("Got new article: " + article.getTitle());
 
-					mutex.lock();
-					articles.add(article);
-					mutex.unlock();
+					newArticles.add(article);
 				}
+				mutex.lock();
+				articles.add_all(newArticles);
+				mutex.unlock();
 			}, (int)GLib.get_num_processors(), true);
 
 			foreach(Feed feed in feeds)

@@ -12,7 +12,9 @@ jobs:
           POSTGRES_HOST: 127.0.0.1
           DATABASE_URL: postgres://postgres@127.0.0.1:5432/feedbin_db
           REDIS_URL: redis://127.0.0.1:6379
-      - image: docker.elastic.co/elasticsearch/elasticsearch:5.6.3
+      # Feedbin uses an ancient version of ElasticSearch
+      # https://github.com/feedbin/feedbin/blob/master/.travis.yml
+      - image: elasticsearch:2.3.3
         environment:
           'discovery.type': single-node
       - image: postgres:9.6.5-alpine
@@ -33,24 +35,25 @@ jobs:
           background: true
       - checkout
       - run:
+          name: Configure
+          command: meson builddir -DBAZQUX=ON -DFEEDHQ=ON
+      - run:
           name: Build
+          command: cd builddir && ninja -j4
+      - run:
+          name: Test
+          command: cd builddir && ninja test
+      - run:
+          name: Generate JUnit XML
           command: |
-              cmake . -DBAZQUX=ON -DFEEDHQ=ON
-              make
-# FIXME: Turn the tests back on with Meson
-#      - run:
-#          name: Test
-#          command: make test
-#      - run:
-#          name: Generate JUnit XML
-#          command: |
-#              mkdir -p /tmp/test-results/junit/
-#              for f in *.gtester.log; do
-#                  xsltproc -o /tmp/test-results/junit/$(basename $f .gtester.log).xml gtester-to-junit-4.xsl $f;
-#              done
-#          when: always
-#      - store_test_results:
-#          path: /tmp/test-results
-#      - store_artifacts:
-#          path: /tmp/test-results/junit
-#          destination: test-results
+              mkdir -p /tmp/test-results/junit/
+              cd builddir
+              for f in *.gtester.log; do
+                  xsltproc -o /tmp/test-results/junit/$(basename $f .gtester.log).xml ../gtester-to-junit-4.xsl $f;
+              done
+          when: always
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results/junit
+          destination: test-results

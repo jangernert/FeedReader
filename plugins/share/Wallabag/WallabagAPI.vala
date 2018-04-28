@@ -61,7 +61,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 		}
 		catch (Error e)
 		{
-			Logger.error("Could not load response to Message from instapaper");
+			Logger.error("Could not load response to Message from Wallabag");
 			Logger.error(e.message);
 			return false;
 		}

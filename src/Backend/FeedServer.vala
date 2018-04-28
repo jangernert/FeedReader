@@ -36,8 +36,11 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	private FeedServer()
 	{
+		string pluginPath = Constants.INSTALL_LIBDIR + "/plugins/";
+		Logger.debug(@"FeedServer: search path for plugins is $pluginPath");
+		
 		m_engine = Peas.Engine.get_default();
-		m_engine.add_search_path(Constants.INSTALL_PREFIX + "/" + Constants.INSTALL_LIBDIR + "/plugins/", null);
+		m_engine.add_search_path(pluginPath, null);
 		m_engine.enable_loader("python3");
 
 		m_extensions = new Peas.ExtensionSet(m_engine, typeof(FeedServerInterface));
@@ -102,8 +105,13 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	private void LoadPlugin(string pluginID)
 	{
+		Logger.debug(@"FeedServer: load plugin $pluginID");
 		var plugin = m_engine.get_plugin_info(pluginID);
-		m_engine.try_load_plugin(plugin);
+		if(!m_engine.try_load_plugin(plugin))
+		{
+			Logger.error(@"FeedServer: loading plugin $pluginID failed");
+			LoadAllPlugins();
+		}
 	}
 
 	public bool pluginLoaded()
@@ -888,7 +896,8 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		int maxArticles = ArticleSyncCount();
 		DateTime? since = ((DropArticles)Settings.general().get_enum("drop-articles-after")).to_start_date();
-		Logger.info("Downloading up to %d articles for feed %s (%s), since %s".printf(maxArticles, feedID, feedURL, since.to_string()));
+		var sinceStr = since == null ? "(null)" : since.to_string();
+		Logger.info(@"Downloading up to $(maxArticles) articles for feed $(feedID) ($(feedURL)), since $(sinceStr)");
 		getArticles(maxArticles, ArticleStatus.ALL, since, feedID);
 		return true;
 	}

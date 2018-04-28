@@ -128,15 +128,21 @@ public class FeedReader.QueryBuilder : GLib.Object {
 			|| m_type == QueryType.SELECT
 			|| m_type == QueryType.DELETE)
 			{
-				var compound_values = new GLib.StringBuilder();
-				foreach(string value in values)
+				if (values.size == 0)
 				{
-					compound_values.append("\"");
-					compound_values.append(value);
-					compound_values.append("\",");
+					m_conditions.add("1 <> 1");
 				}
-				compound_values.erase(compound_values.len-1);
-				m_conditions.add("%s IN (%s)".printf(field, compound_values.str));
+				else {
+					var compound_values = new GLib.StringBuilder();
+					foreach(string value in values)
+					{
+						compound_values.append("\"");
+						compound_values.append(value);
+						compound_values.append("\",");
+					}
+					compound_values.erase(compound_values.len - 1);
+					m_conditions.add("%s IN (%s)".printf(field, compound_values.str));
+				}
 				return true;
 			}
 		}
@@ -164,14 +170,20 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		|| m_type == QueryType.SELECT
 		|| m_type == QueryType.DELETE)
 		{
-			var compound_values = new GLib.StringBuilder();
-			foreach(int value in values)
+			if (values.size == 0)
 			{
-				compound_values.append(value.to_string());
-				compound_values.append(",");
+				m_conditions.add("1 <> 1");
 			}
-			compound_values.erase(compound_values.len-1);
-			m_conditions.add("%s IN (%s)".printf(field, compound_values.str));
+			else {
+				var compound_values = new GLib.StringBuilder();
+				foreach(int value in values)
+				{
+					compound_values.append(value.to_string());
+					compound_values.append(",");
+				}
+				compound_values.erase(compound_values.len - 1);
+				m_conditions.add("%s IN (%s)".printf(field, compound_values.str));
+			}
 			return true;
 		}
 		Logger.error("addRangeConditionInt");
@@ -268,6 +280,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
 				m_query.append(m_table);
 				m_query.append(" SET ");
 
+				assert(m_fields.size > 0);
 				for(int i = 0; i < m_fields.size; i++)
 				{
 					m_query.append(m_fields.get(i));
@@ -290,6 +303,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
 
 			case QueryType.SELECT:
 				m_query.append("SELECT ");
+				assert(m_fields.size > 0);
 				foreach(string field in m_fields)
 				{
 					m_query.append(field);

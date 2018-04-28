@@ -110,7 +110,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 				item = m_lazyQeue.first();
 
 			// check if row is already there
-			if(m_articles.contains(item.getArticleID()))
+			if(m_articles.has_key(item.getArticleID()))
 			{
 				Logger.debug(@"ArticleListbox$m_name: row with ID %s is already present".printf(item.getArticleID()));
 				checkQueue(item, balance, reverse, animate);
@@ -318,7 +318,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	{
 		var id = row.getID();
 		row.reveal(false, animateDuration);
-		m_articles.remove(id);
+		m_articles.unset(id);
 		GLib.Timeout.add(animateDuration + 50, () => {
 			if(row.get_parent() != null)
 				this.remove(row);
@@ -379,7 +379,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 						if((selectedRow != null && tmpRow.getID() != selectedRow.getID())
 						|| selectedRow == null)
 						{
-							if(m_articles.contains(tmpRow.getID()))
+							if(m_articles.has_key(tmpRow.getID()))
 							{
 								if((m_state == ArticleListState.UNREAD && tmpRow.getArticle().getUnread() == ArticleStatus.READ)
 								|| (m_state == ArticleListState.MARKED && tmpRow.getArticle().getMarked() == ArticleStatus.UNMARKED))
@@ -538,7 +538,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public void selectRow(string articleID, int time = 10)
 	{
-		if(m_articles.contains(articleID))
+		if(m_articles.has_key(articleID))
 		{
 			selectAfter(m_articles.get(articleID), time);
 		}
@@ -643,7 +643,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public bool insertArticle(Article a, int pos)
 	{
-		if(m_articles.contains(a.getArticleID()))
+		if(m_articles.has_key(a.getArticleID()))
 		{
 			Logger.debug(@"ArticleListbox$m_name: row with ID %s is already present".printf(a.getArticleID()));
 			return false;

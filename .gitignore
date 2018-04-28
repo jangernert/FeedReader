@@ -1,4 +1,5 @@
 build/
+builddir/
 feedreader.service
 feedreader.desktop
 feedreader-autostart.desktop

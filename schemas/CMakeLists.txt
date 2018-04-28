@@ -1,6 +1,0 @@
-include (GSettings)
-add_schema ("org.gnome.feedreader.gschema.xml")
-add_schema ("org.gnome.feedreader.saved-state.gschema.xml")
-add_schema ("org.gnome.feedreader.share.gschema.xml")
-add_schema ("org.gnome.feedreader.tweaks.gschema.xml")
-add_schema ("org.gnome.feedreader.keybindings.gschema.xml")

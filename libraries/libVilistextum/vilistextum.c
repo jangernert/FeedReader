@@ -13,12 +13,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <pthread.h>
+
 #include "vilistextum.h"
 #include "html.h"
 #include "fileio.h"
 #include "charset.h"
 
 /* ------------------------------------------------ */
+
+// libvilistextum uses globals and isn't thread-safe
+static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void set_options()
 {
@@ -40,6 +45,7 @@ char* vilistextum(char* text, int extractText)
 	if(text == NULL)
 		return NULL;
 
+	pthread_mutex_lock(&mutex);
 	error = 0;
 	set_options();
 
@@ -51,5 +57,6 @@ char* vilistextum(char* text, int extractText)
 	}
 
 	char* output = getOutput(strlen(text));
+	pthread_mutex_unlock(&mutex);
 	return output;
 }

@@ -248,6 +248,13 @@ namespace FeedReader {
 		DOWN
 	}
 
+	public enum EnclosureType {
+		IMAGE,
+		VIDEO,
+		AUDIO,
+		FILE
+	}
+
 	[Flags] public enum BackendFlags {
 		LOCAL,
 		HOSTED,

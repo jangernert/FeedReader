@@ -618,11 +618,12 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 					if(content == null)
 						content = _("Nothing to read here.");
 
-					Gee.List<string>? media = null;
+					var enclosures = new Gee.ArrayList<Enclosure>();
+
 					if(item.enclosure_url != null)
 					{
-						media = new Gee.ArrayList<string>();
-						media.add(item.enclosure_url);
+						// FIXME: check what type of media we actually got
+						enclosures.add(new Enclosure(articleID, item.enclosure_url, EnclosureType.FILE));
 					}
 
 					string articleURL = item.link;
@@ -642,7 +643,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 										date,
 										0,
 										null,
-										media
+										enclosures
 					);
 
 					Logger.debug("Got new article: " + article.getTitle());

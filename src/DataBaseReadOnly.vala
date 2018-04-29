@@ -36,6 +36,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		Logger.debug("init database");
 		m_db.simple_query("PRAGMA journal_mode = WAL");
 		m_db.simple_query("PRAGMA page_size = 4096");
+		m_db.simple_query("PRAGMA foreign_keys = ON");
 
 		m_db.simple_query("""
 			CREATE  TABLE  IF NOT EXISTS "main"."feeds"
@@ -74,11 +75,9 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				"preview" TEXT NOT NULL,
 				"unread" INTEGER NOT NULL,
 				"marked" INTEGER NOT NULL,
-				"tags" TEXT,
 				"date" INTEGER NOT NULL,
 				"guidHash" TEXT,
 				"lastModified" INTEGER,
-				"media" TEXT,
 				"contentFetched" INTEGER NOT NULL
 			)
 		""");
@@ -103,9 +102,30 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		""");
 
 		m_db.simple_query("""
+			CREATE  TABLE  IF NOT EXISTS "main"."Enclosures"
+			(
+				"articleID" TEXT NOT NULL,
+				"url" TEXT NOT NULL,
+				"type" INTEGER NOT NULL,
+				FOREIGN KEY(articleID) REFERENCES articles(articleID)
+			)
+		""");
+
+		m_db.simple_query("""
+			CREATE  TABLE  IF NOT EXISTS "main"."taggings"
+			(
+				"articleID" TEXT NOT NULL,
+				"tagID" TEXT NOT NULL,
+				FOREIGN KEY(articleID) REFERENCES articles(articleID),
+				FOREIGN KEY(tagID) REFERENCES tags(tagID)
+			)
+		""");
+
+		m_db.simple_query("""
 			CREATE INDEX IF NOT EXISTS "index_articles"
 			ON "articles" ("feedID" DESC, "unread" ASC, "marked" ASC)
 		""");
+
 		m_db.simple_query("""
 			CREATE VIRTUAL TABLE IF NOT EXISTS fts_table
 			USING fts4 (content='articles', articleID, preview, title, author)
@@ -208,7 +228,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 	public bool tag_still_used(Tag tag)
 	{
-		var query = "SELECT 1 FROM main.articles WHERE instr(tagID, ?) > 0 LIMIT 1";
+		var query = "SELECT 1 FROM main.taggings WHERE tagID = ? LIMIT 1";
 		var rows = m_db.execute(query, { tag.getTagID() });
 		return rows.size > 0;
 	}
@@ -309,20 +329,35 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 								stmt.column_text(3),																		// title
 								stmt.column_text(5),																		// url
 								stmt.column_text(1),																		// feedID
-								(ArticleStatus)stmt.column_int(7),											// unread
-								(ArticleStatus)stmt.column_int(8),											// marked
-								null,																											// html
+								(ArticleStatus)stmt.column_int(7),															// unread
+								(ArticleStatus)stmt.column_int(8),															// marked
+								null,																						// html
 								stmt.column_text(6),																		// preview
 								stmt.column_text(4),																		// author
-								new GLib.DateTime.from_unix_local(stmt.column_int(10)),	// date
+								new GLib.DateTime.from_unix_local(stmt.column_int(9)),										// date
 								stmt.column_int(0),																			// sortID
-								StringUtils.split(stmt.column_text(9), ",", true), 			// tags
-								StringUtils.split(stmt.column_text(12), ",", true),			// media
-								stmt.column_text(11)																		// guid
+								read_taggings(stmt.column_text(2)), 														// tags
+								read_enclosures(stmt.column_text(2)),														// enclosures
+								stmt.column_text(10)																		// guid
 							));
 		}
 		stmt.reset();
 		return articles;
+	}
+
+	private Gee.List<Enclosure> read_enclosures(string article_id)
+	{
+		var list = new Gee.ArrayList<Enclosure>();
+
+		var query = "SELECT url, type FROM Enclosures WHERE articleID = ?";
+		var rows = m_db.execute(query, { article_id });
+
+		foreach(var row in rows)
+		{
+			list.add(new Enclosure(article_id, row[0].to_string(), (EnclosureType)row[1].to_int()));
+		}
+
+		return list;
 	}
 
 	public Gee.HashMap<string, Article> read_article_stats(Gee.List<string> ids)
@@ -368,10 +403,10 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				row[7].to_string(),
 				author,
 				new GLib.DateTime.from_unix_local(row[11].to_int()),
-				row[0].to_int(), // rowid (sortid)
-				StringUtils.split(row[10].to_string(), ",", true), // tags
-				StringUtils.split(row[14].to_string(), ",", true), // media
-				row[12].to_string()  // guid
+				row[0].to_int(), 										// rowid (sortid)
+				read_taggings(articleID), 								// tags
+				read_enclosures(articleID),								// enclosures
+				row[11].to_string()  									// guid
 		);
 	}
 
@@ -759,6 +794,20 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		return tags;
 	}
 
+	private Gee.List<string> read_taggings(string articleID)
+	{
+		var list = new Gee.LinkedList<string>();
+
+		var rows = m_db.execute("SELECT * FROM taggings WHERE articleID = ?", { articleID });
+
+		foreach(var row in rows)
+		{
+			list.add(row[1].to_string());
+		}
+
+		return list;
+	}
+
 	public Tag? read_tag(string tagID)
 	{
 		var query = "SELECT * FROM tags WHERE tagID = ?";
@@ -860,15 +909,15 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		{
 			articles.add(new Article(
 					row[0].to_string(),																// articleID
-					null,																									// title
+					null,																			// title
 					row[1].to_string(),																// url
 					row[4].to_string(),																// feedID
-					ArticleStatus.UNREAD,																// unread
+					ArticleStatus.UNREAD,															// unread
 					ArticleStatus.UNMARKED,															// marked
 					row[3].to_string(),																// html
 					row[2].to_string(),																// preview
-					null,																									// author
-					new GLib.DateTime.now_local()												// date
+					null,																			// author
+					new GLib.DateTime.now_local()													// date
 				));
 		}
 		return articles;
@@ -888,10 +937,8 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		query.selectField("preview");
 		query.selectField("unread");
 		query.selectField("marked");
-		query.selectField("tags");
 		query.selectField("date");
 		query.selectField("guidHash");
-		query.selectField("media");
 
 		if(selectedType == FeedListType.FEED && id != FeedID.ALL.to_string())
 		{
@@ -975,20 +1022,19 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 								stmt.column_text(3),																		// title
 								stmt.column_text(5),																		// url
 								stmt.column_text(1),																		// feedID
-								(ArticleStatus)stmt.column_int(7),											// unread
-								(ArticleStatus)stmt.column_int(8),											// marked
-								null,																											// html
+								(ArticleStatus)stmt.column_int(7),															// unread
+								(ArticleStatus)stmt.column_int(8),															// marked
+								null,																						// html
 								stmt.column_text(6),																		// preview
 								stmt.column_text(4),																		// author
-								new GLib.DateTime.from_unix_local(stmt.column_int(10)),	// date
+								new GLib.DateTime.from_unix_local(stmt.column_int(9)),										// date
 								stmt.column_int(0),																			// sortID
-								StringUtils.split(stmt.column_text(9), ",", true),  		// tags
-								StringUtils.split(stmt.column_text(12), ",", true), 		// media
-								stmt.column_text(11)																		// guid
+								read_taggings(stmt.column_text(2)),															// tags
+								read_enclosures(stmt.column_text(2)),														// enclosures
+								stmt.column_text(10)																		// guid
 							));
 		}
 
 		return tmp;
 	}
-
 }

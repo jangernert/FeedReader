@@ -22,7 +22,7 @@ public class FeedReader.Article : GLib.Object {
 	private string m_preview;
 	private string m_feedID;
 	private Gee.List<string> m_tags;
-	private Gee.List<string> m_media;
+	private Gee.List<Enclosure> m_enclosures;
 	private string? m_author;
 	private ArticleStatus m_unread;
 	private ArticleStatus m_marked;
@@ -63,7 +63,7 @@ public class FeedReader.Article : GLib.Object {
 					GLib.DateTime? date,
 					int sortID = 0,
 					Gee.List<string>? tags = null,
-					Gee.List<string>? media = null,
+					Gee.List<Enclosure>? enclosures = null,
 					string guidHash = "",
 					int lastModified = 0)
 	{
@@ -82,7 +82,7 @@ public class FeedReader.Article : GLib.Object {
 		m_lastModified = lastModified;
 
 		m_tags = tags == null ? Gee.List.empty<string>() : tags;
-		m_media = media == null ? Gee.List.empty<string>() : media;
+		m_enclosures = enclosures == null ? Gee.List.empty<Enclosure>() : enclosures;
 	}
 
 	public string getArticleID()
@@ -242,11 +242,6 @@ public class FeedReader.Article : GLib.Object {
 		return m_tags;
 	}
 
-	public string getTagString()
-	{
-		return StringUtils.join(m_tags, ",");
-	}
-
 	public void setTags(Gee.List<string> tags)
 	{
 		m_tags = tags;
@@ -264,31 +259,32 @@ public class FeedReader.Article : GLib.Object {
 			m_tags.remove(tagID);
 	}
 
-	public unowned Gee.List<string> getMedia()
+	public unowned Gee.List<Enclosure> getEnclosures()
 	{
-		return m_media;
+		return m_enclosures;
 	}
 
-	public string getMediaString()
+	public void setImages(Gee.List<Enclosure> enclosures)
 	{
-		return StringUtils.join(m_media, ",");
+		m_enclosures = enclosures;
 	}
 
-	public void setMedia(Gee.List<string> media)
+	public void addEnclosure(Enclosure enc)
 	{
-		m_media = media;
-	}
-
-	public void addMedia(string m)
-	{
-		if(!m_media.contains(m))
-			m_media.add(m);
+		if(!m_enclosures.contains(enc))
+			m_enclosures.add(enc);
 	}
 
 	public bool haveMedia()
 	{
-		if(m_media.size > 0)
-			return true;
+		foreach(Enclosure enc in m_enclosures)
+		{
+			if(enc.get_enclosure_type() == EnclosureType.VIDEO
+			|| enc.get_enclosure_type() == EnclosureType.AUDIO)
+			{
+				return true;
+			}
+		}
 
 		return false;
 	}

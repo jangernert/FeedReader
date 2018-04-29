@@ -347,7 +347,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 					tags.add(cat);
 			}
 
-			var media = new Gee.ArrayList<string>();
+			var enclosures = new Gee.ArrayList<Enclosure>();
 			if(object.has_member("enclosure"))
 			{
 				var attachments = object.get_array_member("enclosure");
@@ -358,12 +358,18 @@ public class FeedReader.bazquxAPI : GLib.Object {
 
 				for(int j = 0; j < mediaCount; ++j)
 				{
+					EnclosureType type = EnclosureType.FILE;
 					var attachment = attachments.get_object_element(j);
-					if(attachment.get_string_member("type").contains("audio")
-					|| attachment.get_string_member("type").contains("video"))
+					if(attachment.get_string_member("type").contains("audio"))
 					{
-						media.add(attachment.get_string_member("href"));
+						type = EnclosureType.AUDIO;
 					}
+					else if(attachment.get_string_member("type").contains("video"))
+					{
+						type = EnclosureType.VIDEO;
+					}
+
+					enclosures.add(new Enclosure(id, attachment.get_string_member("href"), type));
 				}
 			}
 
@@ -380,7 +386,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 									new DateTime.from_unix_local(object.get_int_member("published")),
 									-1,
 									tags,
-									media
+									enclosures
 							)
 						);
 		}

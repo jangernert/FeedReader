@@ -394,7 +394,7 @@ public class FeedReader.FeedlyAPI : Object {
 				}
 			}
 
-			var media = new Gee.ArrayList<string>();
+			var enclosures = new Gee.ArrayList<Enclosure>();
 			if(object.has_member("enclosure"))
 			{
 				var attachments = object.get_array_member("enclosure");
@@ -406,11 +406,17 @@ public class FeedReader.FeedlyAPI : Object {
 				for(int j = 0; j < mediaCount; ++j)
 				{
 					var attachment = attachments.get_object_element(j);
-					if(attachment.get_string_member("type").contains("audio")
-					|| attachment.get_string_member("type").contains("video"))
+					EnclosureType type = EnclosureType.FILE;
+					if(attachment.get_string_member("type").contains("audio"))
 					{
-						media.add(attachment.get_string_member("href"));
+						type = EnclosureType.AUDIO;
 					}
+					else if(attachment.get_string_member("type").contains("video"))
+					{
+						type = EnclosureType.VIDEO;
+					}
+
+					enclosures.add(new Enclosure(id, attachment.get_string_member("href"), type));
 				}
 			}
 
@@ -428,7 +434,7 @@ public class FeedReader.FeedlyAPI : Object {
 								date, // timestamp includes msecs so divide by 1000 to get rid of them
 								-1,
 								tags,
-								media
+								enclosures
 						);
 			articles.add(Article);
 		}

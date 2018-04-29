@@ -230,7 +230,7 @@ public class FeedReader.freshAPI : Object {
 					read = true;
 			}
 
-			var media = new Gee.ArrayList<string>();
+			var enclosures = new Gee.ArrayList<Enclosure>();
 			if(object.has_member("enclosure"))
 			{
 				var attachments = object.get_array_member("enclosure");
@@ -242,13 +242,19 @@ public class FeedReader.freshAPI : Object {
 				for(int j = 0; j < mediaCount; ++j)
 				{
 					var attachment = attachments.get_object_element(j);
+					EnclosureType type = EnclosureType.FILE;
 					if(attachment.has_member("type"))
 					{
-						if(attachment.get_string_member("type").contains("audio")
-						|| attachment.get_string_member("type").contains("video"))
+						if(attachment.get_string_member("type").contains("audio"))
 						{
-							media.add(attachment.get_string_member("href"));
+							type = EnclosureType.AUDIO;
 						}
+						else if(attachment.get_string_member("type").contains("video"))
+						{
+							type = EnclosureType.VIDEO;
+						}
+
+						enclosures.add(new Enclosure(id, attachment.get_string_member("href"), type));
 					}
 				}
 			}
@@ -266,7 +272,7 @@ public class FeedReader.freshAPI : Object {
 									new DateTime.from_unix_local(object.get_int_member("published")),
 									-1,
 									null,
-									media
+									enclosures
 							)
 						);
 		}

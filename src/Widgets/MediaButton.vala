@@ -16,11 +16,10 @@
 public class FeedReader.AttachedMediaButton : Gtk.Button {
 
 	private Gtk.ListBox m_list;
-	private Gtk.Image m_playIcon;
 	private Gtk.Image m_filesIcon;
 	private Gtk.Spinner m_spinner;
 	private Gtk.Stack m_stack;
-	private Gee.List<string> m_media;
+	private Gee.List<Enclosure> m_enclosures;
 	private Gtk.Popover m_pop;
 	private ulong m_signalID = 0;
 	public signal void play(string url);
@@ -30,7 +29,6 @@ public class FeedReader.AttachedMediaButton : Gtk.Button {
 	public AttachedMediaButton()
 	{
 		m_filesIcon = new Gtk.Image.from_icon_name("mail-attachment-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
-		m_playIcon = new Gtk.Image.from_icon_name("media-playback-start-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		m_spinner = new Gtk.Spinner();
 		m_spinner.set_size_request(16,16);
 
@@ -38,7 +36,6 @@ public class FeedReader.AttachedMediaButton : Gtk.Button {
 		m_stack.set_transition_duration(100);
 		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		m_stack.add_named(m_spinner, "spinner");
-		m_stack.add_named(m_playIcon, "play");
 		m_stack.add_named(m_filesIcon, "files");
 		this.add(m_stack);
 		this.set_relief(Gtk.ReliefStyle.NONE);
@@ -69,11 +66,11 @@ public class FeedReader.AttachedMediaButton : Gtk.Button {
 
 	public void update()
 	{
-		m_media = new Gee.ArrayList<string>();
+		m_enclosures = new Gee.ArrayList<Enclosure>();
 		Article? selectedArticle = ColumnView.get_default().getSelectedArticle();
 		if(selectedArticle != null)
 		{
-			m_media = selectedArticle.getMedia();
+			m_enclosures = selectedArticle.getEnclosures();
 		}
 
 		if(m_signalID != 0)
@@ -82,18 +79,7 @@ public class FeedReader.AttachedMediaButton : Gtk.Button {
 			m_signalID = 0;
 		}
 
-		if(m_media.size == 1)
-		{
-			m_stack.set_visible_child_name("play");
-			int lastSlash = m_media.get(0).last_index_of_char('/');
-			string fileName = m_media.get(0).substring(lastSlash + 1);
-			this.set_tooltip_text(fileName);
-			m_signalID = this.clicked.connect(() => {
-				playMedia(m_media.get(0));
-				m_spinner.start();
-			});
-		}
-		else if(m_media.size > 1)
+		if(m_enclosures.size != 0)
 		{
 			m_stack.set_visible_child_name("files");
 			this.set_tooltip_text(_("Attachments"));
@@ -102,9 +88,9 @@ public class FeedReader.AttachedMediaButton : Gtk.Button {
 			{
 				m_list.remove(row);
 			}
-			foreach(string media in m_media)
+			foreach(Enclosure enc in m_enclosures)
 			{
-				m_list.add(new mediaRow(media));
+				m_list.add(new mediaRow(enc));
 			}
 			m_signalID = this.clicked.connect(() => {
 				popOpened();
@@ -126,10 +112,7 @@ public class FeedReader.AttachedMediaButton : Gtk.Button {
 			var media = new MediaPlayer(url);
 			media.loaded.connect(() => {
 				m_spinner.stop();
-				if(m_media.size > 1)
-					m_stack.set_visible_child_name("files");
-				else
-					m_stack.set_visible_child_name("play");
+				m_stack.set_visible_child_name("files");
 			});
 			ColumnView.get_default().ArticleViewAddMedia(media);
 		}

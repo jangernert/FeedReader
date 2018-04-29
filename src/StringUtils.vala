@@ -36,4 +36,14 @@ public class FeedReader.StringUtils {
 	{
 		return string.joinv(sep, l.to_array());
 	}
+
+	public static Gee.List<string> encapsulate(Gee.List<string> l, string encapsulation)
+	{
+		for(int i = 0; i < l.size; i++)
+		{
+			l[i] = encapsulation + l[i] + encapsulation;
+		}
+
+		return l;
+	}
 }

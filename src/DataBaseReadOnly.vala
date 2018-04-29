@@ -499,7 +499,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 		else if(selectedType == FeedListType.TAG)
 		{
-			query2.addCustomCondition("instr(tags, \"%s\") > 0".printf(feedID));
+			query2.addCustomCondition("articleID IN (%s)".printf(StringUtils.join(StringUtils.encapsulate(read_taggings_reverse(feedID), "'"), ",")));
 		}
 
 		if(state == ArticleListState.UNREAD)
@@ -808,6 +808,20 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		return list;
 	}
 
+	private Gee.List<string> read_taggings_reverse(string tagID)
+	{
+		var list = new Gee.LinkedList<string>();
+
+		var rows = m_db.execute("SELECT * FROM taggings WHERE tagID = ?", { tagID });
+
+		foreach(var row in rows)
+		{
+			list.add(row[0].to_string());
+		}
+
+		return list;
+	}
+
 	public Tag? read_tag(string tagID)
 	{
 		var query = "SELECT * FROM tags WHERE tagID = ?";
@@ -954,7 +968,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 		else if(selectedType == FeedListType.TAG)
 		{
-			query.addCustomCondition("instr(tags, \"%s\") > 0".printf(id));
+			query.addCustomCondition("articleID IN (%s)".printf(StringUtils.join(StringUtils.encapsulate(read_taggings_reverse(id), "'"), ",")));
 		}
 
 		if(state == ArticleListState.UNREAD)

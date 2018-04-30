@@ -188,7 +188,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		view.leave_fullscreen.connect(leaveFullscreenVideo);
 		view.scroll_event.connect(onScroll);
 		view.key_press_event.connect(onKeyPress);
-		view.web_process_crashed.connect(onCrash);
+		view.web_process_terminated.connect(onCrash);
 		view.notify["estimated-load-progress"].connect(printProgress);
 		//view.load_failed.connect(loadFailed);
 		view.decide_policy.connect(decidePolicy);
@@ -919,7 +919,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		m_prevButton.reveal(vis);
 	}
 
-	private bool onCrash()
+	private void onCrash(WebKit.WebProcessTerminationReason reason)
 	{
 		m_busy = true;
 		m_progress.setPercentage(0);
@@ -939,7 +939,6 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		uint minor = WebKit.get_minor_version();
 		uint micro = WebKit.get_micro_version();
 		Logger.debug(@"Running WebKit $major.$minor.$micro");
-		return false;
 	}
 
 	public void addMedia(MediaPlayer media)

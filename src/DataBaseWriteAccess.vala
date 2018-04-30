@@ -107,6 +107,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 	{
 		Logger.info(@"Deleting article \"$articleID\"");
 		m_db.execute("DELETE FROM main.articles WHERE articleID = ?", { articleID });
+		m_db.execute("DELETE FROM main.Enclosures WHERE articleID = ?", { articleID });
 		string folder_path = GLib.Environment.get_user_data_dir() + @"/feedreader/data/images/$feedID/$articleID/";
 		Utils.remove_directory(folder_path);
 	}
@@ -384,7 +385,6 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		var update_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
 		update_query.updateValuePair("unread", "$UNREAD");
 		update_query.updateValuePair("marked", "$MARKED");
-		update_query.updateValuePair("tags", "$TAGS");
 		update_query.updateValuePair("lastModified", "$LASTMODIFIED");
 		update_query.addEqualsCondition("articleID", "$ARTICLEID", true, false);
 		update_query.build();
@@ -393,12 +393,10 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 
 		int unread_position = stmt.bind_parameter_index("$UNREAD");
 		int marked_position = stmt.bind_parameter_index("$MARKED");
-		int tags_position = stmt.bind_parameter_index("$TAGS");
 		int modified_position = stmt.bind_parameter_index("$LASTMODIFIED");
 		int articleID_position = stmt.bind_parameter_index("$ARTICLEID");
 		assert (unread_position > 0);
 		assert (marked_position > 0);
-		assert (tags_position > 0);
 		assert (modified_position > 0);
 		assert (articleID_position > 0);
 
@@ -416,12 +414,13 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 
 			stmt.bind_int (unread_position, unread);
 			stmt.bind_int (marked_position, marked);
-			stmt.bind_text(tags_position, a.getTagString());
 			stmt.bind_int (modified_position, a.getLastModified());
 			stmt.bind_text(articleID_position, a.getArticleID());
 
 			while(stmt.step() != Sqlite.DONE){}
 			stmt.reset();
+
+			write_taggings(a);
 		}
 
 		m_db.simple_query("COMMIT TRANSACTION");
@@ -445,11 +444,9 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		query.insertValuePair("preview", "$PREVIEW");
 		query.insertValuePair("unread", "$UNREAD");
 		query.insertValuePair("marked", "$MARKED");
-		query.insertValuePair("tags", "$TAGS");
 		query.insertValuePair("date", "$DATE");
 		query.insertValuePair("guidHash", "$GUIDHASH");
 		query.insertValuePair("lastModified", "$LASTMODIFIED");
-		query.insertValuePair("media", "$MEDIA");
 		query.insertValuePair("contentFetched", "0");
 		query.build();
 
@@ -460,7 +457,6 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		int url_position = stmt.bind_parameter_index("$URL");
 		int unread_position = stmt.bind_parameter_index("$UNREAD");
 		int marked_position = stmt.bind_parameter_index("$MARKED");
-		int tags_position = stmt.bind_parameter_index("$TAGS");
 		int title_position = stmt.bind_parameter_index("$TITLE");
 		int html_position = stmt.bind_parameter_index("$HTML");
 		int preview_position = stmt.bind_parameter_index("$PREVIEW");
@@ -468,14 +464,12 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		int date_position = stmt.bind_parameter_index("$DATE");
 		int guidHash_position = stmt.bind_parameter_index("$GUIDHASH");
 		int modified_position = stmt.bind_parameter_index("$LASTMODIFIED");
-		int media_position = stmt.bind_parameter_index("$MEDIA");
 
 		assert (articleID_position > 0);
 		assert (feedID_position > 0);
 		assert (url_position > 0);
 		assert (unread_position > 0);
 		assert (marked_position > 0);
-		assert (tags_position > 0);
 		assert (title_position > 0);
 		assert (html_position > 0);
 		assert (preview_position > 0);
@@ -483,7 +477,6 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		assert (date_position > 0);
 		assert (guidHash_position > 0);
 		assert (modified_position > 0);
-		assert (media_position > 0);
 
 		foreach(var article in articles)
 		{
@@ -504,7 +497,6 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 			stmt.bind_text(url_position, article.getURL());
 			stmt.bind_int (unread_position, article.getUnread());
 			stmt.bind_int (marked_position, article.getMarked());
-			stmt.bind_text(tags_position, article.getTagString());
 			stmt.bind_text(title_position, Utils.UTF8fix(article.getTitle()));
 			stmt.bind_text(html_position, article.getHTML());
 			stmt.bind_text(preview_position, Utils.UTF8fix(article.getPreview(), true));
@@ -512,13 +504,69 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 			stmt.bind_int64(date_position, article.getDate().to_unix());
 			stmt.bind_text(guidHash_position, article.getHash());
 			stmt.bind_int (modified_position, article.getLastModified());
-			stmt.bind_text(media_position, article.getMediaString());
+
+			while(stmt.step() != Sqlite.DONE){}
+			stmt.reset();
+
+			write_enclosures(article);
+			write_taggings(article);
+		}
+
+		m_db.simple_query("COMMIT TRANSACTION");
+	}
+
+	private void write_taggings(Article article)
+	{
+		var query = new QueryBuilder(QueryType.INSERT_OR_REPLACE, "main.taggings");
+		query.insertValuePair("articleID", "$ARTICLEID");
+		query.insertValuePair("tagID", "$TAGID");
+		query.build();
+
+		Sqlite.Statement stmt = m_db.prepare(query.get());
+
+		int articleID_position = stmt.bind_parameter_index("$ARTICLEID");
+		int tagID_position = stmt.bind_parameter_index("$TAGID");
+
+		assert (articleID_position > 0);
+		assert (tagID_position > 0);
+
+		foreach(string tagID in article.getTagIDs())
+		{
+			stmt.bind_text(articleID_position, article.getArticleID());
+			stmt.bind_text(tagID_position, tagID);
 
 			while(stmt.step() != Sqlite.DONE){}
 			stmt.reset();
 		}
+	}
 
-		m_db.simple_query("COMMIT TRANSACTION");
+	private void write_enclosures(Article article)
+	{
+		var query = new QueryBuilder(QueryType.INSERT_OR_REPLACE, "main.Enclosures");
+		query.insertValuePair("articleID", "$ARTICLEID");
+		query.insertValuePair("url", "$URL");
+		query.insertValuePair("type", "$TYPE");
+		query.build();
+
+		Sqlite.Statement stmt = m_db.prepare(query.get());
+
+		int articleID_position = stmt.bind_parameter_index("$ARTICLEID");
+		int url_position = stmt.bind_parameter_index("$URL");
+		int type_position = stmt.bind_parameter_index("$TYPE");
+
+		assert (articleID_position > 0);
+		assert (url_position > 0);
+		assert (type_position > 0);
+
+		foreach(Enclosure enc in article.getEnclosures())
+		{
+			stmt.bind_text(articleID_position, article.getArticleID());
+			stmt.bind_text(url_position, enc.get_url());
+			stmt.bind_int (type_position, enc.get_enclosure_type());
+
+			while(stmt.step() != Sqlite.DONE){}
+			stmt.reset();
+		}
 	}
 
 	public void markCategorieRead(string catID)
@@ -591,6 +639,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 	{
 		Logger.warning(@"DataBase: Deleting all articles of feed \"$feedID\"");
 		m_db.execute("DELETE FROM main.articles WHERE feedID = ?", { feedID });
+		m_db.execute("DELETE FROM main.Enclosures INNER JOIN main.articles ON main.Enclosures.articleID = main.articles.articleID WHERE feedID = ?", { feedID });
 		string folder_path = GLib.Environment.get_user_data_dir() + @"/feedreader/data/images/$feedID/";
 		Utils.remove_directory(folder_path);
 	}

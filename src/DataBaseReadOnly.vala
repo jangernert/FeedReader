@@ -336,7 +336,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 								stmt.column_text(4),																		// author
 								new GLib.DateTime.from_unix_local(stmt.column_int(9)),										// date
 								stmt.column_int(0),																			// sortID
-								read_taggings(stmt.column_text(2)), 														// tags
+								read_taggings_by_article_id(stmt.column_text(2)), 														// tags
 								read_enclosures(stmt.column_text(2)),														// enclosures
 								stmt.column_text(10)																		// guid
 							));
@@ -404,7 +404,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				author,
 				new GLib.DateTime.from_unix_local(row[11].to_int()),
 				row[0].to_int(), 										// rowid (sortid)
-				read_taggings(articleID), 								// tags
+				read_taggings_by_article_id(articleID), 								// tags
 				read_enclosures(articleID),								// enclosures
 				row[11].to_string()  									// guid
 		);
@@ -499,7 +499,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 		else if(selectedType == FeedListType.TAG)
 		{
-			query2.addCustomCondition("articleID IN (%s)".printf(StringUtils.join(StringUtils.encapsulate(read_taggings_reverse(feedID), "'"), ",")));
+			query2.addCustomCondition("articleID IN (%s)".printf(StringUtils.join(StringUtils.sql_quote(read_taggings_by_tag_id(feedID)), ",")));
 		}
 
 		if(state == ArticleListState.UNREAD)
@@ -794,25 +794,25 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		return tags;
 	}
 
-	private Gee.List<string> read_taggings(string articleID)
+	private Gee.List<string> read_taggings_by_article_id(string articleID)
 	{
 		var list = new Gee.LinkedList<string>();
 
-		var rows = m_db.execute("SELECT * FROM taggings WHERE articleID = ?", { articleID });
+		var rows = m_db.execute("SELECT tagID FROM taggings WHERE articleID = ?", { articleID });
 
 		foreach(var row in rows)
 		{
-			list.add(row[1].to_string());
+			list.add(row[0].to_string());
 		}
 
 		return list;
 	}
 
-	private Gee.List<string> read_taggings_reverse(string tagID)
+	private Gee.List<string> read_taggings_by_tag_id(string tagID)
 	{
 		var list = new Gee.LinkedList<string>();
 
-		var rows = m_db.execute("SELECT * FROM taggings WHERE tagID = ?", { tagID });
+		var rows = m_db.execute("SELECT articleID FROM taggings WHERE tagID = ?", { tagID });
 
 		foreach(var row in rows)
 		{
@@ -968,7 +968,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 		else if(selectedType == FeedListType.TAG)
 		{
-			query.addCustomCondition("articleID IN (%s)".printf(StringUtils.join(StringUtils.encapsulate(read_taggings_reverse(id), "'"), ",")));
+			query.addCustomCondition("articleID IN (%s)".printf(StringUtils.join(StringUtils.sql_quote(read_taggings_by_tag_id(id)), ",")));
 		}
 
 		if(state == ArticleListState.UNREAD)
@@ -1043,7 +1043,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 								stmt.column_text(4),																		// author
 								new GLib.DateTime.from_unix_local(stmt.column_int(9)),										// date
 								stmt.column_int(0),																			// sortID
-								read_taggings(stmt.column_text(2)),															// tags
+								read_taggings_by_article_id(stmt.column_text(2)),															// tags
 								read_enclosures(stmt.column_text(2)),														// enclosures
 								stmt.column_text(10)																		// guid
 							));

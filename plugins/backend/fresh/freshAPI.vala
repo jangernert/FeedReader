@@ -242,20 +242,12 @@ public class FeedReader.freshAPI : Object {
 				for(int j = 0; j < mediaCount; ++j)
 				{
 					var attachment = attachments.get_object_element(j);
-					EnclosureType type = EnclosureType.FILE;
-					if(attachment.has_member("type"))
-					{
-						if(attachment.get_string_member("type").contains("audio"))
-						{
-							type = EnclosureType.AUDIO;
-						}
-						else if(attachment.get_string_member("type").contains("video"))
-						{
-							type = EnclosureType.VIDEO;
-						}
+					string type = attachment.has_member("type") ? attachment.get_string_member("type") : "";
 
-						enclosures.add(new Enclosure(id, attachment.get_string_member("href"), type));
-					}
+					enclosures.add(
+						new Enclosure(id, attachment.get_string_member("href"),
+								EnclosureType.from_string(type))
+					);
 				}
 			}
 

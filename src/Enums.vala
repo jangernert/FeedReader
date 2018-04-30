@@ -252,7 +252,19 @@ namespace FeedReader {
 		IMAGE,
 		VIDEO,
 		AUDIO,
-		FILE
+		FILE;
+
+		public static EnclosureType from_string(string str)
+		{
+			if (str.contains("audio"))
+				return AUDIO;
+			else if (str.contains("video"))
+				return VIDEO;
+			else if (str.contains("image"))
+				return IMAGE;
+			else
+				return FILE;
+		}
 	}
 
 	[Flags] public enum BackendFlags {

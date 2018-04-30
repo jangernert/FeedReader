@@ -133,4 +133,10 @@ public class FeedReader.SQLite : GLib.Object {
 
 		return rows;
 	}
+
+	public static string quote_string(string str)
+	{
+		var escaped = str.replace("'", "''");
+		return @"'$(escaped)'";
+	}
 }

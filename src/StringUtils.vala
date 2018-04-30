@@ -37,11 +37,11 @@ public class FeedReader.StringUtils {
 		return string.joinv(sep, l.to_array());
 	}
 
-	public static Gee.List<string> encapsulate(Gee.List<string> l, string encapsulation)
+	public static Gee.List<string> sql_quote(Gee.List<string> l)
 	{
 		for(int i = 0; i < l.size; i++)
 		{
-			l[i] = encapsulation + l[i] + encapsulation;
+			l[i] = SQLite.quote_string(l[i]);
 		}
 
 		return l;

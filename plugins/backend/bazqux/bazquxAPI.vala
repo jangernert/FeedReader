@@ -358,18 +358,12 @@ public class FeedReader.bazquxAPI : GLib.Object {
 
 				for(int j = 0; j < mediaCount; ++j)
 				{
-					EnclosureType type = EnclosureType.FILE;
 					var attachment = attachments.get_object_element(j);
-					if(attachment.get_string_member("type").contains("audio"))
-					{
-						type = EnclosureType.AUDIO;
-					}
-					else if(attachment.get_string_member("type").contains("video"))
-					{
-						type = EnclosureType.VIDEO;
-					}
 
-					enclosures.add(new Enclosure(id, attachment.get_string_member("href"), type));
+					enclosures.add(
+						new Enclosure(id, attachment.get_string_member("href"),
+								EnclosureType.from_string(attachment.get_string_member("type")))
+					);
 				}
 			}
 

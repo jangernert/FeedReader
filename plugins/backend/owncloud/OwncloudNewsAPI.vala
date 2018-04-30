@@ -241,23 +241,12 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 					var enclosures = new Gee.ArrayList<Enclosure>();
 					if(article_node.has_member("enclosureLink") && article_node.get_string_member("enclosureLink") != null)
 					{
-						EnclosureType enc_type = EnclosureType.FILE;
-
 						if(article_node.has_member("enclosureMime") && article_node.get_string_member("enclosureMime") != null)
 						{
-							if(article_node.get_string_member("enclosureMime").contains("audio"))
-							{
-								enc_type = EnclosureType.AUDIO;
-							}
-							else if(article_node.get_string_member("enclosureMime").contains("video"))
-							{
-								enc_type = EnclosureType.VIDEO;
-							}
-
 							enclosures.add(new Enclosure(
 								article_node.get_int_member("id").to_string(),
 								article_node.get_string_member("enclosureLink"),
-								enc_type));
+								EnclosureType.from_string(article_node.get_string_member("enclosureMime"))));
 						}
 					}
 
@@ -323,23 +312,12 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 					var enclosures = new Gee.ArrayList<Enclosure>();
 					if(article_node.has_member("enclosureLink") && article_node.get_string_member("enclosureLink") != null)
 					{
-						EnclosureType enc_type = EnclosureType.FILE;
-
 						if(article_node.has_member("enclosureMime") && article_node.get_string_member("enclosureMime") != null)
 						{
-							if(article_node.get_string_member("enclosureMime").contains("audio"))
-							{
-								enc_type = EnclosureType.AUDIO;
-							}
-							else if(article_node.get_string_member("enclosureMime").contains("video"))
-							{
-								enc_type = EnclosureType.VIDEO;
-							}
-
 							enclosures.add(new Enclosure(
 								article_node.get_int_member("id").to_string(),
 								article_node.get_string_member("enclosureLink"),
-								enc_type));
+								EnclosureType.from_string(article_node.get_string_member("enclosureMime"))));
 						}
 					}
 

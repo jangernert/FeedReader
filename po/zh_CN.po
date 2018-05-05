@@ -11,15 +11,16 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-01-27 14:04+0100\n"
-"PO-Revision-Date: 2017-05-15 08:53+0000\n"
-"Last-Translator: Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>\n"
-"Language-Team: Chinese (China) (http://www.transifex.com/dev-feedreader/"
-"feedreader/language/zh_CN/)\n"
+"PO-Revision-Date: 2018-05-06 14:35+0000\n"
+"Last-Translator: Handsome2734 <songbowen1229@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
+"feedreader/translations/zh_Hans/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 3.0-dev\n"
 
 #: src/FeedReader.vala:21
 msgid "About FeedReader"
@@ -158,9 +159,8 @@ msgid "Select next/previous article"
 msgstr "选择上/下一篇文章"
 
 #: src/Widgets/ShortcutsWindow.vala:64
-#, fuzzy
 msgid "Toggle reading status of selected article"
-msgstr "设置选择项已/未读"
+msgstr "标记为已读/未读"
 
 #: src/Widgets/ShortcutsWindow.vala:65
 #, fuzzy
@@ -258,7 +258,7 @@ msgstr "仅显示唯独"
 
 #: src/Widgets/SettingsDialog.vala:85
 msgid "Sort Feed List by"
-msgstr ""
+msgstr "Feed排序"
 
 #: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
@@ -330,7 +330,7 @@ msgstr "复古"
 
 #: src/Widgets/SettingsDialog.vala:116
 msgid "Font Familly"
-msgstr ""
+msgstr "字体"
 
 #: src/Widgets/SettingsDialog.vala:141
 msgid "Sync:"
@@ -342,7 +342,7 @@ msgstr "文章数"
 
 #: src/Widgets/SettingsDialog.vala:145
 msgid "Interval in Minutes (0 = OFF)"
-msgstr ""
+msgstr "自动更新周期（分钟，0代表不更新）"
 
 #: src/Widgets/SettingsDialog.vala:150
 msgid "Database:"
@@ -378,7 +378,7 @@ msgstr "内容抓取"
 
 #: src/Widgets/SettingsDialog.vala:159
 msgid "Download Images"
-msgstr ""
+msgstr "下载图片"
 
 #: src/Widgets/SettingsDialog.vala:161
 msgid "Internal Media Player"
@@ -467,7 +467,7 @@ msgstr "移除源"
 
 #: src/Widgets/FeedRow.vala:234
 msgid "Copy URL"
-msgstr ""
+msgstr "复制URL"
 
 #: src/Widgets/FeedRow.vala:239
 #, c-format
@@ -866,23 +866,23 @@ msgstr "请登入你的ownCloud News来享受FeedReader"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:816
 msgid "Invalid URL"
-msgstr ""
+msgstr "非法URL"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:819
 msgid "URL content is HTML, no feeds available"
-msgstr ""
+msgstr "URL对应内容是HTML文本，不是RSS Feed"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:822
 msgid "URL content is HTML which contains multiple feeds."
-msgstr ""
+msgstr "URL对应内容包含多个Feed。"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:825
 msgid "Couldn't download the URL content."
-msgstr ""
+msgstr "不能下载内容。"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:828
 msgid "Content is an invalid XML."
-msgstr ""
+msgstr "内容是无效XML。"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:841
 msgid "Error reaching tt-rss"

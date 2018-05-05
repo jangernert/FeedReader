@@ -34,7 +34,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		return writeAccess() as DataBaseReadOnly;
 	}
 
-	private DataBase(string dbFile = "feedreader-%01i.db".printf(Constants.DB_SCHEMA_VERSION))
+	public DataBase(string dbFile = "feedreader-%01i.db".printf(Constants.DB_SCHEMA_VERSION))
 	{
 		base(dbFile);
 	}

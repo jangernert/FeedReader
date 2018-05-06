@@ -71,7 +71,7 @@
 		{
 			"name": "feedreader",
 			"buildsystem": "meson",
-      "config-opts" : ["--buildtype=release"],
+			"config-opts": ["--buildtype=release"],
 			"sources": [{
 				"type": "git",
 				"url": "https://github.com/jangernert/FeedReader.git"

@@ -29,6 +29,28 @@ i18n.merge_file(
   install_dir: join_paths(SHARE_DIR, 'appdata')
 )
 
+
+desktop_file_validate = find_program('desktop-file-validate', required:false)
+
+if desktop_file_validate.found()
+  test (
+    'Validate desktop file',
+    desktop_file_validate,
+    args: join_paths(meson.current_build_dir (), 'org.gnome.FeedReader-autostart.desktop')
+  )
+endif
+
+appstreamcli = find_program(['appstreamcli', 'appstream-util'], required:false)
+
+if appstreamcli.found()
+  test (
+    'Validate appdata file',
+    appstreamcli,
+    args: ['validate', join_paths(meson.current_build_dir (), 'org.gnome.FeedReader.appdata.xml')]
+  )
+endif
+
+
 subdir('application-icons')
 
 install_subdir('GrabberConfig', install_dir : DATA_DIR)

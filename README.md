@@ -89,10 +89,7 @@ You can also create your own Flatpak bundle running `make bundle` command in the
 ```
 git clone --recursive https://github.com/jangernert/FeedReader
 cd ./FeedReader
-mkdir build
-cd ./build
-cmake ..
-make
-sudo make install
+meson builddir --prefix=/usr
+sudo ninja -C builddir install
 ```
 Arch Linux users can build the latest version using `yaourt -S feedreader-git`

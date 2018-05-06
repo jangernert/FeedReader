@@ -1,0 +1,81 @@
+{
+	"app-id": "org.gnome.FeedReader",
+	"runtime": "org.gnome.Platform",
+	"runtime-version": "3.28",
+	"sdk": "org.gnome.Sdk",
+	"command": "feedreader",
+	"finish-args": [
+		/* Play sounds */
+		"--socket=pulseaudio",
+		/* Access to X11 and XShm (video playback) */
+		"--socket=x11",
+		"--share=ipc",
+		/* Access to Wayland */
+		"--socket=wayland",
+		/* Access to OpenGL */
+		"--device=dri",
+		/* Access to Network */
+		"--share=network",
+		/* Needed for dconf to work */
+		"--filesystem=xdg-run/dconf", "--filesystem=~/.config/dconf:ro",
+		"--talk-name=ca.desrt.dconf", "--env=DCONF_USER_CONFIG_DIR=.config/dconf",
+		"--talk-name=org.gnome.OnlineAccounts",
+		"--own-name=org.gnome.FeedReader.Daemon",
+		"--own-name=org.gnome.FeedReader.ArticleView",
+		"--talk-name=org.freedesktop.Notifications",
+		"--talk-name=org.freedesktop.secrets"
+	],
+	"build-options": {
+		"cflags": "-O2 -g -w",
+		"cxxflags": "-O2 -g",
+		"env": {
+			"PKG_CONFIG_GOBJECT_INTROSPECTION_1_0_GIRDIR": "/app/share/gir-1.0",
+			"PKG_CONFIG_GOBJECT_INTROSPECTION_1_0_TYPELIBDIR": "/app/lib/girepository-1.0"
+		}
+	},
+	"modules": [{
+			"name": "libgee",
+			"cleanup": ["/include", "*.la", "/lib/pkgconfig", "/share"],
+			"sources": [{
+				"type": "archive",
+				"url": "https://download.gnome.org/sources/libgee/0.20/libgee-0.20.1.tar.xz",
+				"sha256": "bb2802d29a518e8c6d2992884691f06ccfcc25792a5686178575c7111fea4630"
+			}]
+		}, {
+			"name": "rest",
+			"config-opts": ["--disable-introspection", "--disable-gtk-doc", "--disable-gtk-doc-html"],
+			"cleanup": ["/include", "*.la", "/lib/pkgconfig", "/share"],
+			"sources": [{
+				"type": "archive",
+				"url": "https://download.gnome.org/sources/rest/0.8/rest-0.8.1.tar.xz",
+				"sha256": "0513aad38e5d3cedd4ae3c551634e3be1b9baaa79775e53b2dba9456f15b01c9"
+			}]
+		}, {
+			"name": "libpeas",
+			"config-opts": ["--disable-gtk-doc", "--disable-gtk-doc-html", "--disable-gtk"],
+			"cleanup": ["/include", "*.la", "/lib/pkgconfig"],
+			"sources": [{
+				"type": "archive",
+				"url": "https://download.gnome.org/sources/libpeas/1.22/libpeas-1.22.0.tar.xz",
+				"sha256": "5b2fc0f53962b25bca131a5ec0139e6fef8e254481b6e777975f7a1d2702a962"
+			}]
+		},
+		{
+			"name": "gnome-online-accounts",
+			"config-opts": ["--disable-telepathy", "--disable-documentation", "--disable-backend"],
+			"sources": [{
+				"type": "archive",
+				"url": "https://download.gnome.org/sources/gnome-online-accounts/3.29/gnome-online-accounts-3.29.1.tar.xz",
+				"sha256": "bb6b8737ef414b948a1c4d9520c9c2aa2a7b9ee24ba48780b71811b3653d0138"
+			}]
+		},
+		{
+			"name": "feedreader",
+			"buildsystem": "meson",
+			"sources": [{
+				"type": "git",
+				"url": "https://github.com/jangernert/FeedReader.git"
+			}]
+		}
+	]
+}

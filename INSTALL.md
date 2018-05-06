@@ -1,7 +1,8 @@
 ## Dependencies (package names may differ depending on distribution)
 
 - `build-essential`
-- `cmake`
+- `meson`
+- `ninja-build`
 - `vala (>=0.38)`
 - `pkg-config`
 - `libgirepository1.0-dev`
@@ -22,7 +23,7 @@
 - `libcurl-dev`
 - `libpeas-dev`
 
-## Fedora dependencies install 
+## Fedora dependencies install
 ```
 dnf install gtk3-devel gtk2-devel vala make automake gcc gcc-c++ cmake json-glib-devel libsoup-devel sqlite-devel libgee-devel libsecret-devel libxml-devel rest-devel gstreamer1-devel gstreamer1-plugins-base-devel libpeas-devel webkitgtk4-devel gnome-online-accounts-devel libcurl-devel
 ```
@@ -32,9 +33,6 @@ dnf install gtk3-devel gtk2-devel vala make automake gcc gcc-c++ cmake json-glib
 ```
 git clone --recursive  https://github.com/jangernert/FeedReader
 cd ./FeedReader
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
+meson builddir --prefix=/usr
+sudo ninja -C builddir install
 ```

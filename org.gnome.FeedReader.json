@@ -20,7 +20,6 @@
 		"--filesystem=xdg-run/dconf", "--filesystem=~/.config/dconf:ro",
 		"--talk-name=ca.desrt.dconf", "--env=DCONF_USER_CONFIG_DIR=.config/dconf",
 		"--talk-name=org.gnome.OnlineAccounts",
-		"--own-name=org.gnome.FeedReader.Daemon",
 		"--own-name=org.gnome.FeedReader.ArticleView",
 		"--talk-name=org.freedesktop.Notifications",
 		"--talk-name=org.freedesktop.secrets"
@@ -65,13 +64,14 @@
 			"config-opts": ["--disable-telepathy", "--disable-documentation", "--disable-backend"],
 			"sources": [{
 				"type": "archive",
-				"url": "https://download.gnome.org/sources/gnome-online-accounts/3.29/gnome-online-accounts-3.29.1.tar.xz",
-				"sha256": "bb6b8737ef414b948a1c4d9520c9c2aa2a7b9ee24ba48780b71811b3653d0138"
+				"url": "https://download.gnome.org/sources/gnome-online-accounts/3.28/gnome-online-accounts-3.28.0.tar.xz",
+				"sha256": "87bc4ef307604f1ce4f09f6e5c9996ef8d37ca5e0a3bf76f6b27d71844adb40c"
 			}]
 		},
 		{
 			"name": "feedreader",
 			"buildsystem": "meson",
+      "config-opts" : ["--buildtype=release"],
 			"sources": [{
 				"type": "git",
 				"url": "https://github.com/jangernert/FeedReader.git"

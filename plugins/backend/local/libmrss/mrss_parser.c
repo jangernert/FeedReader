@@ -1,16 +1,16 @@
-/* mRss - Copyright (C) 2005-2007 bakunin - Andrea Marchesini 
+/* mRss - Copyright (C) 2005-2007 bakunin - Andrea Marchesini
  *                                    <bakunin@autistici.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -235,6 +235,7 @@ __mrss_parser_atom_string (nxml_t * doc, nxml_data_t * cur, char **what,
 
       *what = total;
       *type = c;
+      free(c1);
       return;
     }
 
@@ -360,9 +361,17 @@ __mrss_parser_atom_entry (nxml_t * doc, nxml_data_t * cur, mrss_t * data)
 	    item->link = c;
 
 	  /* content -> description */
-	  else if (!item->description && !strcmp (cur->value, "content"))
+	  /* Note: We intentionally override summary with content */
+	  else if (!strcmp (cur->value, "content"))
+	  {
+	  	if (item->description)
+	  	{
+	  	  free(item->description);
+	  	  item->description = NULL;
+	  	}
 	    __mrss_parser_atom_string (doc, cur, &item->description,
 				       &item->description_type);
+	  }
 
 	  /* summary -> description */
 	  else if (!item->description && !strcmp (cur->value, "summary"))
@@ -633,6 +642,17 @@ __mrss_parser_rss_item (nxml_t * doc, nxml_data_t * cur, mrss_t * data)
 	  else if (!strcmp (cur->value, "link") && !item->link
 		   && (c = nxmle_get_string (cur, NULL)))
 	    item->link = c;
+
+	  /* content:encoded
+	   * FIXME: We are ignoring the namespace.
+	  /* Note: We intentionally override description with content:encoded */
+	  else if (!strcmp (cur->value, "encoded")
+	      && (c = nxmle_get_string (cur, NULL)))
+	  {
+	    if (item->description)
+	      free(item->description);
+	    item->description = c;
+	  }
 
 	  /* description */
 	  else if (!strcmp (cur->value, "description") && !item->description

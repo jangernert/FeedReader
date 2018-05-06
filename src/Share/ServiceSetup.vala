@@ -16,13 +16,13 @@
 public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 
 	protected string m_name;
-    protected Gtk.Revealer m_revealer;
-    protected Gtk.Label m_label;
-    protected Gtk.Box m_box;
+	protected Gtk.Revealer m_revealer;
+	protected Gtk.Label m_label;
+	protected Gtk.Box m_box;
 	protected Gtk.Box m_labelBox;
 	protected Gtk.Stack m_iconStack;
 	protected Gtk.Stack m_labelStack;
-    protected Gtk.Button m_login_button;
+	protected Gtk.Button m_login_button;
 	protected Gtk.Button m_logout_button;
 	protected Gtk.Spinner m_spinner;
 	protected Gtk.EventBox m_eventbox;
@@ -54,8 +54,8 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 		m_eventbox.add(m_iconStack);
 
 		m_login_button = new Gtk.Button.with_label(_("Login"));
-        m_login_button.hexpand = false;
-        m_login_button.margin = 10;
+		m_login_button.hexpand = false;
+		m_login_button.margin = 10;
 		m_login_button.clicked.connect(login);
 
 		m_logout_button = new Gtk.Button.with_label(_("Logout"));
@@ -97,7 +97,7 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 
 		m_box.pack_start(icon, false, false, 0);
 		m_box.pack_start(m_labelStack, true, true, 0);
-        m_box.pack_end(m_eventbox, false, false, 0);
+		m_box.pack_end(m_eventbox, false, false, 0);
 
 		m_seperator_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);

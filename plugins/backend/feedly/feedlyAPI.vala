@@ -19,10 +19,12 @@ public class FeedReader.FeedlyAPI : Object {
 	private string m_userID;
 	private Json.Array m_unreadcounts;
 	private FeedlyUtils m_utils;
+	private DataBaseReadOnly m_db;
 
-	public FeedlyAPI() {
-		m_connection = new FeedlyConnection();
-		m_utils = new FeedlyUtils();
+	public FeedlyAPI(FeedlyUtils utils, DataBaseReadOnly db) {
+		m_db = db;
+		m_utils = utils;
+		m_connection = new FeedlyConnection(m_utils);
 	}
 
 	public string createCatID(string title)
@@ -68,12 +70,18 @@ public class FeedReader.FeedlyAPI : Object {
 
 	private bool getUserID()
 	{
-		string response = m_connection.send_get_request_to_feedly ("/v3/profile/");
+		var response = m_connection.send_get_request_to_feedly ("/v3/profile/");
+
+		if(response.status != 200)
+			return false;
+
 		var parser = new Json.Parser();
-		try{
-			parser.load_from_data(response, -1);
+		try
+		{
+			parser.load_from_data(response.data, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getUserID: Could not load message response");
 			Logger.error(e.message);
 			return false;
@@ -110,14 +118,20 @@ public class FeedReader.FeedlyAPI : Object {
 		return false;
 	}
 
-	private int tokenStillValid()
+	private ConnectionError tokenStillValid()
 	{
-		string response = m_connection.send_get_request_to_feedly ("/v3/profile/");
+		var response = m_connection.send_get_request_to_feedly ("/v3/profile/");
+
+		if(response.status != 200)
+			return ConnectionError.NO_RESPONSE;
+
 		var parser = new Json.Parser ();
-		try{
-			parser.load_from_data(response, -1);
+		try
+		{
+			parser.load_from_data(response.data, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("tokenStillValid: Could not load message response");
 			Logger.error(e.message);
 			return ConnectionError.NO_RESPONSE;
@@ -133,17 +147,17 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 
-	public bool getCategories(Gee.LinkedList<category> categories)
+	public bool getCategories(Gee.List<Category> categories)
 	{
-		string response = m_connection.send_get_request_to_feedly ("/v3/categories/");
+		var response = m_connection.send_get_request_to_feedly ("/v3/categories/");
 
-		if(response == "" || response == null)
+		if(response.status != 200)
 			return false;
 
 		var parser = new Json.Parser();
 		try
 		{
-			parser.load_from_data(response, -1);
+			parser.load_from_data(response.data, -1);
 		}
 		catch (Error e)
 		{
@@ -163,7 +177,7 @@ public class FeedReader.FeedlyAPI : Object {
 				continue;
 
 			categories.add(
-				new category (
+				new Category (
 					categorieID,
 					object.get_string_member("label"),
 					getUnreadCountforID(categorieID),
@@ -178,18 +192,20 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 
-	public bool getFeeds(Gee.LinkedList<feed> feeds)
+	public bool getFeeds(Gee.List<Feed> feeds)
 	{
-		string response = m_connection.send_get_request_to_feedly("/v3/subscriptions/");
+		var response = m_connection.send_get_request_to_feedly("/v3/subscriptions/");
 
-		if(response == "" || response == null)
+		if(response.status != 200)
 			return false;
 
 		var parser = new Json.Parser();
-		try{
-			parser.load_from_data(response, -1);
+		try
+		{
+			parser.load_from_data(response.data, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getFeeds: Could not load message response");
 			Logger.error(e.message);
 			return false;
@@ -200,56 +216,36 @@ public class FeedReader.FeedlyAPI : Object {
 		for (uint i = 0; i < length; i++) {
 			Json.Object object = array.get_object_element(i);
 
-
 			string feedID = object.get_string_member("id");
-			string url = object.has_member("website") ? object.get_string_member("website") : "";
-			string icon_url = "";
+
+			string? icon_url = null;
 			if(object.has_member("iconUrl"))
-			{
 				icon_url = object.get_string_member("iconUrl");
-			}
 			else if(object.has_member("visualUrl"))
-			{
 				icon_url = object.get_string_member("visualUrl");
-			}
-
-			if(icon_url != "" && !m_utils.downloadIcon(feedID, icon_url))
-			{
-				icon_url = "";
-			}
-
-			string title = "No Title";
-			if(object.has_member("title"))
-			{
-				title = object.get_string_member("title");
-			}
-			else
-			{
-				title = Utils.URLtoFeedName(url);
-			}
 
 			uint catCount = object.get_array_member("categories").get_length();
-			string[] categories = {};
 
+			var categories = new Gee.ArrayList<string>();
 			for(uint j = 0; j < catCount; ++j)
 			{
-				string categorieID = object.get_array_member("categories").get_object_element(j).get_string_member("id");
+				string categoryID = object.get_array_member("categories").get_object_element(j).get_string_member("id");
 
-				if(categorieID.has_suffix("global.all")
-				|| categorieID.has_suffix("global.uncategorized"))
+				if(categoryID.has_suffix("global.all")
+				|| categoryID.has_suffix("global.uncategorized"))
 					continue;
 
-				categories += categorieID;
+				categories.add(categoryID);
 			}
 
 			feeds.add(
-				new feed (
+				new Feed(
 						feedID,
-						title,
-						url,
-						(icon_url == "") ? false : true,
+						object.get_string_member("title"),
+						object.get_string_member("website"),
 						getUnreadCountforID(object.get_string_member("id")),
-						categories
+						categories,
+						icon_url
 					)
 			);
 		}
@@ -258,16 +254,16 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 
-	public bool getTags(Gee.LinkedList<tag> tags)
+	public bool getTags(Gee.List<Tag> tags)
 	{
-		string response = m_connection.send_get_request_to_feedly("/v3/tags/");
+		var response = m_connection.send_get_request_to_feedly("/v3/tags/");
 
-		if(response == "" || response == null)
+		if(response.status != 200)
 			return false;
 
 		var parser = new Json.Parser();
 		try{
-			parser.load_from_data(response, -1);
+			parser.load_from_data(response.data, -1);
 		}
 		catch (Error e) {
 			Logger.error("getTags: Could not load message response");
@@ -281,10 +277,10 @@ public class FeedReader.FeedlyAPI : Object {
 			Json.Object object = array.get_object_element(i);
 
 			tags.add(
-				new tag(
+				new Tag(
 					object.get_string_member("id"),
 					object.has_member("label") ? object.get_string_member("label") : "",
-					dbDaemon.get_default().getTagColor()
+					m_db.getTagColor()
 				)
 			);
 		}
@@ -294,10 +290,9 @@ public class FeedReader.FeedlyAPI : Object {
 
 
 
-	public string getArticles(Gee.LinkedList<article> articles, int count, string continuation = "", ArticleStatus whatToGet = ArticleStatus.ALL, string tagID = "", string feed_id = "")
+	public string? getArticles(Gee.List<Article> articles, int count, string? continuation = null, ArticleStatus whatToGet = ArticleStatus.ALL, string tagID = "", string feed_id = "")
 	{
 		string steamID = "user/" + m_userID + "/category/global.all";
-		string cont = "";
 		string onlyUnread = "false";
 		string marked_tag = "user/" + m_userID + "/tag/global.saved";
 
@@ -315,42 +310,54 @@ public class FeedReader.FeedlyAPI : Object {
 
 		var parser = new Json.Parser();
 
-		string streamCall = "/v3/streams/ids?streamId=%s&unreadOnly=%s&count=%i&ranked=newest&continuation=%s".printf(steamID, onlyUnread, count, continuation);
-		string entry_id_response = m_connection.send_get_request_to_feedly(streamCall);
-		try{
-			parser.load_from_data(entry_id_response, -1);
+		string streamCall = "/v3/streams/ids?streamId=%s&unreadOnly=%s&count=%i&ranked=newest&continuation=%s".printf(steamID, onlyUnread, count, (continuation == null) ? "" : continuation);
+		var entry_id_response = m_connection.send_get_request_to_feedly(streamCall);
+
+		if(entry_id_response.status != 200)
+			return null;
+
+		try
+		{
+			parser.load_from_data(entry_id_response.data, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getArticles: Could not load message response");
 			Logger.error(e.message);
 		}
+
 		var root = parser.get_root().get_object();
-		if(root.has_member("continuation"))
+		if(!root.has_member("continuation"))
+			return null;
+
+		string cont = root.get_string_member("continuation");
+
+		var response = m_connection.send_post_string_request_to_feedly("/v3/entries/.mget", entry_id_response.data,"application/json");
+
+		if(response.status != 200)
+			return null;
+
+		try
 		{
-			cont = root.get_string_member("continuation");
+			parser.load_from_data(response.data, -1);
 		}
-
-		string response = m_connection.send_post_string_request_to_feedly("/v3/entries/.mget", entry_id_response,"application/json");
-		//Logger.debug(response);
-
-		try{
-			parser.load_from_data(response, -1);
-		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getArticles: Could not load message response");
 			Logger.error(e.message);
 		}
 		var array = parser.get_root().get_array();
 
-		for(int i = 0; i < array.get_length(); i++) {
+		for(int i = 0; i < array.get_length(); i++)
+		{
 			Json.Object object = array.get_object_element(i);
 			string id = object.get_string_member("id");
-			string title = object.has_member("title") ? object.get_string_member("title") : "No title specified";
-			string? author = object.has_member("author") ? object.get_string_member("author") : null;
-			string summaryContent = object.has_member("summary") ? object.get_object_member("summary").get_string_member("content") : "";
+			string title = object.get_string_member("title");
+			string? author = object.get_string_member("author");
+			string summaryContent = object.has_member("summary") ? object.get_object_member("summary").get_string_member("content") : null;
 			string content = object.has_member("content") ? object.get_object_member("content").get_string_member("content") : summaryContent;
 			bool unread = object.get_boolean_member("unread");
-			string url = object.has_member("alternate") ? object.get_array_member("alternate").get_object_element(0).get_string_member("href") : "";
+			string url = object.has_member("alternate") ? object.get_array_member("alternate").get_object_element(0).get_string_member("href") : null;
 			string feedID = object.get_object_member("origin").get_string_member("streamId");
 
 			DateTime date = new DateTime.now_local();
@@ -367,28 +374,27 @@ public class FeedReader.FeedlyAPI : Object {
 				date = new DateTime.from_unix_local(object.get_int_member("crawled")/1000);
 			}
 
-			string tagString = "";
-			string tmpTag = "";
 			var marked = ArticleStatus.UNMARKED;
 
+			var tags = new Gee.ArrayList<string>();
 			if(object.has_member("tags"))
 			{
-				var tags = object.get_array_member("tags");
-				uint tagCount = tags.get_length();
+				var tag_array = object.get_array_member("tags");
+				uint tagCount = tag_array.get_length();
 
 				for(int j = 0; j < tagCount; ++j)
 				{
-					tmpTag = tags.get_object_element(j).get_string_member("id");
-					if(tmpTag == marked_tag)
+					var tag = tag_array.get_object_element(j).get_string_member("id");
+					if(tag == marked_tag)
 						marked = ArticleStatus.MARKED;
-					else if(tmpTag.contains("global."))
+					else if(tag.contains("global."))
 						continue;
 					else
-						tagString = tagString + tmpTag + ",";
+						tags.add(tag);
 				}
 			}
 
-			string mediaString = "";
+			var enclosures = new Gee.ArrayList<Enclosure>();
 			if(object.has_member("enclosure"))
 			{
 				var attachments = object.get_array_member("enclosure");
@@ -400,29 +406,28 @@ public class FeedReader.FeedlyAPI : Object {
 				for(int j = 0; j < mediaCount; ++j)
 				{
 					var attachment = attachments.get_object_element(j);
-					if(attachment.get_string_member("type").contains("audio")
-					|| attachment.get_string_member("type").contains("video"))
-					{
-						mediaString = mediaString + attachment.get_string_member("href") + ",";
-					}
+					enclosures.add(
+						new Enclosure(id, attachment.get_string_member("href"),
+								EnclosureType.from_string(attachment.get_string_member("type")))
+					);
 				}
 			}
 
-			var Article = new article(
+			var Article = new Article(
 								id,
 								title,
 								url,
 								feedID,
-								(unread) ? ArticleStatus.UNREAD : ArticleStatus.READ,
+								unread ? ArticleStatus.UNREAD : ArticleStatus.READ,
 								marked,
 								content,
 								//summaryContent,
-								"",
+								null,
 								author,
 								date, // timestamp includes msecs so divide by 1000 to get rid of them
 								-1,
-								tagString,
-								mediaString
+								tags,
+								enclosures
 						);
 			articles.add(Article);
 		}
@@ -433,13 +438,18 @@ public class FeedReader.FeedlyAPI : Object {
 	/** Returns the number of unread articles for an ID (may be a feed, subscription, category or tag */
 	public void getUnreadCounts()
 	{
-		string response = m_connection.send_get_request_to_feedly ("/v3/markers/counts");
+		var response = m_connection.send_get_request_to_feedly ("/v3/markers/counts");
+
+		if(response.status != 200)
+			return;
 
 		var parser = new Json.Parser ();
-		try{
-			parser.load_from_data(response, -1);
+		try
+		{
+			parser.load_from_data(response.data, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getUnreadCounts: Could not load message response");
 			Logger.error(e.message);
 		}
@@ -453,13 +463,14 @@ public class FeedReader.FeedlyAPI : Object {
 	{
 		int unread_count = -1;
 
-		for (int i = 0; i < m_unreadcounts.get_length (); i++) {
+		for(int i = 0; i < m_unreadcounts.get_length (); i++)
+		{
 			var unread = m_unreadcounts.get_object_element(i);
+			string unread_id = unread.get_string_member("id");
 
-			string unread_id = unread.get_string_member ("id");
-
-			if (id == unread_id) {
-				unread_count = (int)unread.get_int_member ("count");
+			if(id == unread_id)
+			{
+				unread_count = (int)unread.get_int_member("count");
 				break;
 			}
 		}
@@ -492,7 +503,6 @@ public class FeedReader.FeedlyAPI : Object {
 		Json.Array ids = new Json.Array();
 		foreach(string id in id_array)
 		{
-			//ids.add_string_element(GLib.Uri.escape_string(id));
 			ids.add_string_element(id);
 		}
 
@@ -572,7 +582,7 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 
-	public void addSubscription(string feedURL, string? title = null, string? catIDs = null)
+	public bool addSubscription(string feedURL, string? title = null, string? catIDs = null)
 	{
 		Json.Object object = new Json.Object();
 		object.set_string_member("id", "feed/" + feedURL);
@@ -589,7 +599,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 			foreach(string catID in catArray)
 			{
-				string catName = dbDaemon.get_default().getCategoryName(catID);
+				string catName = m_db.getCategoryName(catID);
 				Json.Object catObject = new Json.Object();
 				catObject.set_string_member("id", catID);
 				catObject.set_string_member("label", catName);
@@ -602,12 +612,14 @@ public class FeedReader.FeedlyAPI : Object {
 		var root = new Json.Node(Json.NodeType.OBJECT);
 		root.set_object(object);
 
-		m_connection.send_post_request_to_feedly("/v3/subscriptions", root);
+		var response = m_connection.send_post_request_to_feedly("/v3/subscriptions", root);
+
+		return response.status == 200;
 	}
 
 	public void moveSubscription(string feedID, string newCatID, string? oldCatID = null)
 	{
-		var Feed = dbDaemon.get_default().read_feed(feedID);
+		var Feed = m_db.read_feed(feedID);
 
 		Json.Object object = new Json.Object();
 		object.set_string_member("id", feedID);
@@ -621,7 +633,7 @@ public class FeedReader.FeedlyAPI : Object {
 		{
 			if(catID != oldCatID)
 			{
-				string catName = dbDaemon.get_default().getCategoryName(catID);
+				string catName = m_db.getCategoryName(catID);
 				Json.Object catObject = new Json.Object();
 				catObject.set_string_member("id", catID);
 				catObject.set_string_member("label", catName);
@@ -629,7 +641,7 @@ public class FeedReader.FeedlyAPI : Object {
 			}
 		}
 
-		string newCatName = dbDaemon.get_default().getCategoryName(newCatID);
+		string newCatName = m_db.getCategoryName(newCatID);
 		Json.Object catObject = new Json.Object();
 		catObject.set_string_member("id", newCatID);
 		catObject.set_string_member("label", newCatName);

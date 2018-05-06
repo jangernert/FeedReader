@@ -1,0 +1,4 @@
+[submodule "data/GrabberConfig"]
+	path = data/GrabberConfig
+	url = https://github.com/fivefilters/ftr-site-config
+    branch = master

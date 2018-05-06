@@ -1,6 +1,0 @@
-body: //div[contains(@class, 'story-body')]
-author: //cite[contains(@class, 'author')]
-date: //span[@class='datestamp']
-
-strip: //div[@class='story-info']
-

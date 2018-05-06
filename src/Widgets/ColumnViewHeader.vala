@@ -21,9 +21,8 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 	private ArticleListState m_state;
 	private Gtk.HeaderBar m_header_left;
 	private ArticleViewHeader m_header_right;
-	private Gtk.Label m_syncProgressText;
-	private Gtk.Popover m_syncPopover;
 	public signal void refresh();
+	public signal void cancel();
 	public signal void change_state(ArticleListState state, Gtk.StackTransitionType transition);
 	public signal void search_term(string searchTerm);
 	public signal void toggledMarked();
@@ -57,18 +56,18 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 			change_state(m_state, transition);
 		});
 
-		m_refresh_button = new UpdateButton.from_icon_name("feed-refresh-symbolic", _("Update feeds"));
-		m_refresh_button.updating(Settings.state().get_boolean("currently-updating"));
+		bool updating = Settings.state().get_boolean("currently-updating");
+		m_refresh_button = new UpdateButton.from_icon_name("feed-refresh-symbolic", _("Update feeds"), true, true);
+		m_refresh_button.updating(updating);
 		m_refresh_button.clicked.connect(() => {
 			if(!m_refresh_button.getStatus())
 				refresh();
 			else
-				m_syncPopover.show_all();
+			{
+				cancel();
+				m_refresh_button.setSensitive(false);
+			}
 		});
-		m_syncProgressText = new Gtk.Label(Settings.state().get_string("sync-status"));
-		m_syncProgressText.margin = 20;
-		m_syncPopover = new Gtk.Popover(m_refresh_button);
-		m_syncPopover.add(m_syncProgressText);
 
 
 
@@ -98,16 +97,13 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 			menubutton.image = new Gtk.Image.from_icon_name("emblem-system-symbolic", Gtk.IconSize.MENU);
 			menubutton.set_size_request(32, 32);
 			menubutton.set_use_popover(true);
-			menubutton.set_menu_model(UtilsUI.getMenu());
+			menubutton.set_menu_model(Utils.getMenu());
 			menubutton.set_tooltip_text(_("Settings"));
 			m_header_left.pack_end(menubutton);
 		}
 		else if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() == "gnome")
 		{
-			var quit_action = new SimpleAction("quit", null);
-			quit_action.activate.connect(FeedReaderApp.get_default().quit);
-			FeedReaderApp.get_default().add_action(quit_action);
-			FeedReaderApp.get_default().app_menu = UtilsUI.getMenu();
+			FeedReaderApp.get_default().app_menu = Utils.getMenu();
 		}
 
 
@@ -119,7 +115,7 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 		m_header_right.show_close_button = true;
 		m_header_right.get_style_context().add_class("header_left");
 		m_header_right.get_style_context().add_class("titlebar");
-		m_header_right.set_title("FeedReader");
+		this.clearTitle();
 		m_header_right.set_size_request(450, 0);
 		m_header_right.toggledMarked.connect(() => {
 			toggledMarked();
@@ -146,15 +142,15 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 
 	private void set_window_buttons()
 	{
-        string[] buttons = Gtk.Settings.get_default().gtk_decoration_layout.split(":");
-        if (buttons.length < 2) {
+		string[] buttons = Gtk.Settings.get_default().gtk_decoration_layout.split(":");
+		if (buttons.length < 2) {
 			buttons = {buttons[0], ""};
 			Logger.warning("gtk_decoration_layout in unexpected format");
-        }
+		}
 
 		m_header_left.set_decoration_layout(buttons[0] + ":");
 		m_header_right.set_decoration_layout(":" + buttons[1]);
-    }
+	}
 
 	public void setRefreshButton(bool status)
 	{
@@ -179,7 +175,7 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 		return m_search.has_focus;
 	}
 
-	public void setMarked(bool marked)
+	public void setMarked(ArticleStatus marked)
 	{
 		m_header_right.setMarked(marked);
 	}
@@ -189,7 +185,7 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 		m_header_right.toggleMarked();
 	}
 
-	public void setRead(bool read)
+	public void setRead(ArticleStatus read)
 	{
 		m_header_right.setRead(read);
 	}
@@ -221,7 +217,7 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 
 	public void updateSyncProgress(string progress)
 	{
-		m_syncProgressText.set_text(progress);
+		m_refresh_button.setProgress(progress);
 	}
 
 	public void refreshSahrePopover()
@@ -234,4 +230,13 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 		state.setSearchTerm(m_search.text);
 		state.setArticleListState(m_state);
 	}
+	public void setTitle(string title)
+	{
+		m_header_right.set_title(title);
+	}
+	public void clearTitle()
+	{
+		m_header_right.set_title("FeedReader");
+	}
+
 }

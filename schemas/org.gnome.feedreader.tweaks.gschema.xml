@@ -25,15 +25,6 @@
 				Ask server to not track FeedReader on making requests.
 			</description>
 		</key>
-		
-		<key name="dont-download-images" type="b">
-			<default>false</default>
-			<summary>Dont download images of articles (offline mode)</summary>
-			<description>
-				Disable download of images of articles. This speeds up the snycing process, 
-				but obviously the images will not be available when in offline-mode.
-			</description>
-		</key>
 
 		<key name="ignore-tls-errors" type="b">
 			<default>false</default>
@@ -50,20 +41,28 @@
 				On startup of the daemon copy the desktop file in the autostart folder
 			</description>
 		</key>
-		
+
 		<key name="article-select-text" type="b">
-			<default>false</default>
+			<default>true</default>
 			<summary>Select text of articles</summary>
 			<description>
 				Enable selecting text in the articleview, also copy text
 			</description>
 		</key>
-		
+
 		<key name="smooth-scrolling" type="b">
 			<default>true</default>
 			<summary>Enable smooth scrolling in ArticleView</summary>
 			<description>
 				Enable smooth scrolling in ArticleView
+			</description>
+		</key>
+
+		<key name="allow-javascript" type="b">
+			<default>true</default>
+			<summary>Allow javascript to be executed in the ArticleView</summary>
+			<description>
+				Allow javascript to be executed in the ArticleView. Disabling javascript will break some functionality!!!!
 			</description>
 		</key>
 

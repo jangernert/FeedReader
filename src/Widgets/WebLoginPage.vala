@@ -16,6 +16,7 @@
 public class FeedReader.WebLoginPage : Gtk.Bin {
 
 	private WebKit.WebView m_view;
+	private bool m_success = false;
 	public signal bool getApiCode(string url);
 	public signal void success();
 
@@ -41,39 +42,41 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 
 	public void redirection(WebKit.LoadEvent load_event)
 	{
-		Logger.debug("WebLoginPage: webView redirection");
 		switch(load_event)
 		{
 			case WebKit.LoadEvent.STARTED:
-				Logger.debug("WebLoginPage: LoadEvent STARTED");
 				check();
 				break;
 			case WebKit.LoadEvent.REDIRECTED:
-				Logger.debug("WebLoginPage: LoadEvent REDIRECTED");
 				check();
 				break;
 			case WebKit.LoadEvent.COMMITTED:
-				Logger.debug("WebLoginPage: LoadEvent COMMITED");
 				break;
 			case WebKit.LoadEvent.FINISHED:
-				Logger.debug("WebLoginPage: LoadEvent FINISHED");
 				break;
 		}
 	}
 
 	private void check()
 	{
+		if(m_success)
+			// code already successfully extracted
+			return;
+
 		string url = m_view.get_uri();
 
 		if(getApiCode(url))
 		{
 			m_view.stop_loading();
+			m_success = true;
 			success();
+
 		}
 	}
 
 	public void reset()
 	{
 		m_view.load_uri("about:blank");
+		m_success = false;
 	}
 }

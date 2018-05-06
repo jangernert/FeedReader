@@ -21,7 +21,7 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 	private string m_desc;
 	private Gtk.CheckButton m_check;
 
-	public SuggestedFeedRow(string url, string category, string name, string desc, string lang)
+	public SuggestedFeedRow(string url, string iconURL, string category, string name, string desc, string lang)
 	{
 		m_name = name;
 		m_url = url;
@@ -61,104 +61,25 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 		this.set_tooltip_text(m_desc);
 		show_all();
 
-		downloadIcon.begin("/tmp/",m_url, (obj, res) => {
-			bool success = downloadIcon.end(res);
-			Gtk.Image? icon = null;
-
-			if(success)
-			{
-				try
-				{
-					string filename = "/tmp/" + m_url.replace("/", "_").replace(".", "_") + ".ico";
-					Logger.debug("load icon %s".printf(filename));
-					var tmp_icon = new Gdk.Pixbuf.from_file_at_scale(filename, 24, 24, true);
-					icon = new Gtk.Image.from_pixbuf(tmp_icon);
-				}
-				catch(GLib.Error e)
-				{
-					Logger.error("SuggestedFeedRow.constructor: %s".printf(e.message));
-				}
-			}
-			else
-			{
-				icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-			}
-
-			iconStack.add_named(icon, "icon");
-   			show_all();
-   			iconStack.set_visible_child_name("icon");
+		var uri = new Soup.URI(url);
+		var fakeFeed = new Feed(uri.get_host(), null, null, 0);
+		load_favicon.begin(iconStack, fakeFeed, iconURL, (obj, res) => {
+			load_favicon.end(res);
 		});
 	}
 
-	private async bool downloadIcon(string path, string url)
+	private async void load_favicon(Gtk.Stack iconStack, Feed feed, string iconURL)
 	{
-		if(url == "" || url == null || GLib.Uri.parse_scheme(url) == null)
-            return false;
+		Gtk.Image? icon = null;
+		var surface = yield FavIcon.for_feed(feed).get_surface();
+		if(surface != null)
+			icon = new Gtk.Image.from_surface(surface);
+		else
+			icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 
-		SourceFunc callback = downloadIcon.callback;
-		bool success = false;
-		string filename = "/tmp/" + m_url.replace("/", "_").replace(".", "_") + ".ico";
-
-		new GLib.Thread<void*>(null, () => {
-
-			if(FileUtils.test(filename, GLib.FileTest.EXISTS))
-			{
-				success = true;
-				Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
-				return null;
-			}
-
-			var session = new Soup.Session();
-			session.user_agent = Constants.USER_AGENT;
-			session.timeout = 5;
-			var msg = new Soup.Message("GET", m_url.escape(""));
-			session.send_message(msg);
-			string xml = (string)msg.response_body.flatten().data;
-
-			Rss.Parser parser = new Rss.Parser();
-			try
-			{
-				parser.load_from_data(xml, xml.length);
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("SuggestedFeedRow.downloadIcon: %s".printf(e.message));
-			}
-			var doc = parser.get_document();
-
-			if(doc.image_url != ""
-			&& doc.image_url != null
-			&& GLib.Uri.parse_scheme(doc.image_url) != null)
-			{
-				Soup.Message message_dlIcon;
-				message_dlIcon = new Soup.Message("GET", doc.image_url);
-				var status = session.send_message(message_dlIcon);
-				if(status == 200)
-				{
-					try{
-						FileUtils.set_contents(	filename,
-												(string)message_dlIcon.response_body.flatten().data,
-												(long)message_dlIcon.response_body.length);
-					}
-					catch(GLib.FileError e)
-					{
-						Logger.error("Error writing icon: %s".printf(e.message));
-					}
-					success = true;
-				}
-				Logger.error("Error downloading icon for feed: %s".printf(m_url));
-			}
-			else
-			{
-				if(Utils.downloadIcon(url, url, path))
-					success = true;
-			}
-			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
-			return null;
-		});
-		yield;
-
-		return success;
+		iconStack.add_named(icon, "icon");
+		show_all();
+		iconStack.set_visible_child_name("icon");
 	}
 
 	public bool checked()

@@ -16,18 +16,15 @@
 public class FeedReader.FeedServer : GLib.Object {
 
 	private bool m_pluginLoaded = false;
-	private string? m_plugName = null;
 	private Peas.ExtensionSet m_extensions;
+	private string? m_activeExtension = null;
 	private FeedServerInterface? m_plugin;
 	private Peas.Engine m_engine;
-	public signal void newFeedList();
-	public signal void updateFeedList();
-	public signal void updateArticleList();
-	public signal void writeInterfaceState();
-	public signal void showArticleListOverlay();
-	public signal void updateSyncProgress(string progress);
+
+	public signal void PluginsChanedEvent();
 
 	private static FeedServer? m_server;
+
 
 	public static FeedServer get_default()
 	{
@@ -39,26 +36,45 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	private FeedServer()
 	{
+		string pluginPath = Constants.INSTALL_LIBDIR + "/plugins/";
+		Logger.debug(@"FeedServer: search path for plugins is $pluginPath");
+
 		m_engine = Peas.Engine.get_default();
-		m_engine.add_search_path(Constants.INSTALL_PREFIX + "/" + Constants.INSTALL_LIBDIR + "/plugins/", null);
+		m_engine.add_search_path(pluginPath, null);
 		m_engine.enable_loader("python3");
 
 		m_extensions = new Peas.ExtensionSet(m_engine, typeof(FeedServerInterface));
 
 		m_extensions.extension_added.connect((info, extension) => {
 			Logger.debug("feedserver: plugin loaded %s".printf(info.get_name()));
-			m_plugin = (extension as FeedServerInterface);
-			m_plugin.init();
-			m_plugin.newFeedList.connect(() => { newFeedList(); });
-			m_plugin.updateFeedList.connect(() => { updateFeedList(); });
-			m_plugin.updateArticleList.connect(() => { updateArticleList(); });
-			m_plugin.writeInterfaceState.connect(() => { writeInterfaceState(); });
-			m_plugin.showArticleListOverlay.connect(() => { showArticleListOverlay(); });
-			m_plugin.writeArticles.connect((articles) => { writeArticles(articles); });
+			try
+			{
+				var secret_service = Secret.Service.get_sync(Secret.ServiceFlags.OPEN_SESSION);
+				// Supposedly create_sync should return an existing alias, but in practice it locks up,
+				// so lookup the alias before trying to create it.
+				var secrets = Secret.Collection.for_alias_sync(secret_service, Secret.COLLECTION_DEFAULT, Secret.CollectionFlags.NONE);
+				if(secrets == null)
+					secrets = Secret.Collection.create_sync(secret_service, "Login", Secret.COLLECTION_DEFAULT, Secret.CollectionCreateFlags.COLLECTION_CREATE_NONE);
+
+				// Intentionally creating a new database handle here so we don't
+				// have to deal with threading issues. *Do not use the static
+				// getter for this!*
+				var db = new DataBaseReadOnly();
+				var db_write = new DataBase();
+				var settings_backend = null; // FIXME: Why does SettingsBackend.get_default() crash on Arch Linux?
+				(extension as FeedServerInterface).init(settings_backend, secrets, db, db_write);
+				PluginsChanedEvent();
+			}
+			catch(Error e)
+			{
+				// FIXME: This error is fatal but this log message doesn't treat it that way
+				Logger.error("FeedServer: " + e.message);
+			}
 		});
 
 		m_extensions.extension_removed.connect((info, extension) => {
 			Logger.debug("feedserver: plugin removed %s".printf(info.get_name()));
+			PluginsChanedEvent();
 		});
 
 		m_engine.load_plugin.connect((info) => {
@@ -68,41 +84,38 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_engine.unload_plugin.connect((info) => {
 			Logger.debug("feedserver: engine unload %s".printf(info.get_name()));
 		});
-	}
 
-	public bool unloadPlugin()
-	{
-		if(m_plugName == null)
+		if(Settings.general().get_string("plugin") == "none")
 		{
-			Logger.warning("feedserver.unloadPlugin: no plugin loaded");
-			return false;
+			LoadAllPlugins();
 		}
-
-
-		Logger.debug("feedserver: unload plugin %s".printf(m_plugName));
-		if(m_pluginLoaded)
-		{
-			var plugin = m_engine.get_plugin_info(m_plugName);
-			return m_engine.try_unload_plugin(plugin);
-		}
-		return false;
-	}
-
-	public bool loadPlugin(string plugName)
-	{
-		Logger.debug("feedserver: load plugin \"%s\"".printf(plugName));
-		m_plugName = plugName;
-		var plugin = m_engine.get_plugin_info(plugName);
-
-		if(plugin != null)
-			m_pluginLoaded = m_engine.try_load_plugin(plugin);
 		else
-			m_pluginLoaded = false;
+		{
+			LoadPlugin(Settings.general().get_string("plugin"));
+		}
+	}
 
-		if(!m_pluginLoaded)
-			Logger.error("feedserver: couldn't load plugin %s".printf(m_plugName));
+	public void LoadAllPlugins()
+	{
+		Logger.debug("FeedServer: load all available plugins");
+		foreach(var plugin in m_engine.get_plugin_list())
+		{
+			m_engine.try_load_plugin(plugin);
+		}
 
-		return m_pluginLoaded;
+		// have to readd this path, otherwise new icons won't show up
+		Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
+	}
+
+	private void LoadPlugin(string pluginID)
+	{
+		Logger.debug(@"FeedServer: load plugin $pluginID");
+		var plugin = m_engine.get_plugin_info(pluginID);
+		if(!m_engine.try_load_plugin(plugin))
+		{
+			Logger.error(@"FeedServer: loading plugin $pluginID failed");
+			LoadAllPlugins();
+		}
 	}
 
 	public bool pluginLoaded()
@@ -110,155 +123,236 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_pluginLoaded;
 	}
 
-	public void syncContent()
+	public Peas.ExtensionSet getPlugins()
+	{
+		return m_extensions;
+	}
+
+	public bool setActivePlugin(string pluginID)
+	{
+		m_pluginLoaded = false;
+		m_plugin = null;
+
+		var plugin = m_engine.get_plugin_info(pluginID);
+
+		if(plugin == null)
+		{
+			Logger.error(@"feedserver: failed to load info for \"$pluginID\"");
+			return m_pluginLoaded;
+		}
+
+		Logger.info("Plugin Name: " + plugin.get_name());
+		Logger.info("Plugin Version: " + plugin.get_version());
+		Logger.info("Plugin Website: " + plugin.get_website());
+		Logger.info("Plugin Dir: " + plugin.get_module_dir());
+
+
+		m_activeExtension = pluginID;
+		m_extensions.foreach((extSet, info, ext) => {
+			var plug = ext as FeedServerInterface;
+			if(plug != null && plug.getID() == pluginID)
+			{
+				plug.tryLogin.connect(() => { FeedReaderBackend.get_default().tryLogin(); });
+				plug.newFeedList.connect(() => { FeedReaderBackend.get_default().newFeedList(); });
+				plug.refreshFeedListCounter.connect(() => { FeedReaderBackend.get_default().refreshFeedListCounter(); });
+				plug.updateArticleList.connect(() => { FeedReaderBackend.get_default().updateArticleList(); });
+				plug.showArticleListOverlay.connect(() => { FeedReaderBackend.get_default().showArticleListOverlay(); });
+				plug.writeArticles.connect((articles) => { writeArticles(articles); });
+
+				m_plugin = plug;
+				m_pluginLoaded = true;
+			}
+		});
+		return m_pluginLoaded;
+	}
+
+	public FeedServerInterface? getActivePlugin()
+	{
+		return m_plugin;
+	}
+
+	public void syncContent(GLib.Cancellable? cancellable = null)
 	{
 		if(!serverAvailable())
 		{
-			Logger.debug("FeedServer: can't snyc - not logged in or unreachable");
+			Logger.debug("FeedServer: can't sync - not logged in or unreachable");
 			return;
 		}
 
-		int before = dbDaemon.get_default().getHighestRowID();
-
-		var categories = new Gee.LinkedList<category>();
-		var feeds      = new Gee.LinkedList<feed>();
-		var tags       = new Gee.LinkedList<tag>();
-
-		syncProgress(_("Getting feeds and categories"));
-
-		if(!getFeedsAndCats(feeds, categories, tags))
+		if(syncFeedsAndCategories())
 		{
-			Logger.error("FeedServer: something went wrong getting categories and feeds");
+			var categories = new Gee.LinkedList<Category>();
+			var feeds      = new Gee.LinkedList<Feed>();
+			var tags       = new Gee.LinkedList<Tag>();
+
+			if(cancellable != null && cancellable.is_cancelled())
+				return;
+
+			syncProgress(_("Getting feeds and categories"));
+
+			if(!getFeedsAndCats(feeds, categories, tags, cancellable))
+			{
+				Logger.error("FeedServer: something went wrong getting categories and feeds");
+				return;
+			}
+
+			if(cancellable != null && cancellable.is_cancelled())
+				return;
+
+			if(cancellable != null && cancellable.is_cancelled())
+				return;
+
+			// write categories
+			DataBase.writeAccess().reset_exists_flag();
+			DataBase.writeAccess().write_categories(categories);
+			DataBase.writeAccess().delete_nonexisting_categories();
+
+			// write feeds
+			DataBase.writeAccess().reset_subscribed_flag();
+			DataBase.writeAccess().write_feeds(feeds);
+			DataBase.writeAccess().delete_articles_without_feed();
+			DataBase.writeAccess().delete_unsubscribed_feeds();
+
+			// write tags
+			DataBase.writeAccess().reset_exists_tag();
+			DataBase.writeAccess().write_tags(tags);
+			DataBase.writeAccess().update_tags(tags);
+			DataBase.writeAccess().delete_nonexisting_tags();
+
+			FeedReaderBackend.get_default().newFeedList();
+		}
+
+		if(cancellable != null && cancellable.is_cancelled())
 			return;
-		}
 
-		// write categories
-		if(categories.size != 0)
+		var drop_articles = (DropArticles)Settings.general().get_enum("drop-articles-after");
+		DateTime? since = drop_articles.to_start_date();
+		if(!DataBase.readOnly().isTableEmpty("articles"))
 		{
-			dbDaemon.get_default().reset_exists_flag();
-			dbDaemon.get_default().write_categories(categories);
-			dbDaemon.get_default().delete_nonexisting_categories();
+			var last_sync = new DateTime.from_unix_utc(Settings.state().get_int("last-sync"));
+			if(since == null || last_sync.to_unix() > since.to_unix())
+			{
+				since = last_sync;
+			}
 		}
-
-		// write feeds
-		if(feeds.size != 0)
-		{
-			dbDaemon.get_default().reset_subscribed_flag();
-			dbDaemon.get_default().write_feeds(feeds);
-			dbDaemon.get_default().delete_articles_without_feed();
-			dbDaemon.get_default().delete_unsubscribed_feeds();
-		}
-
-		// write tags
-		if(tags.size != 0)
-		{
-			dbDaemon.get_default().reset_exists_tag();
-			dbDaemon.get_default().write_tags(tags);
-			dbDaemon.get_default().update_tags(tags);
-			dbDaemon.get_default().delete_nonexisting_tags();
-		}
-
-		newFeedList();
 
 		int unread = getUnreadCount();
 		int max = ArticleSyncCount();
 
+
 		syncProgress(_("Getting articles"));
+		string row_id = DataBase.readOnly().getMaxID("articles", "rowid");
+		int before = row_id != null ? int.parse(row_id) : 0;
 
 		if(unread > max && useMaxArticles())
 		{
-			getArticles(20, ArticleStatus.MARKED);
-			getArticles(unread, ArticleStatus.UNREAD);
+			getArticles(20, ArticleStatus.MARKED, since, null, false, cancellable);
+			getArticles(unread, ArticleStatus.UNREAD, since, null, false, cancellable);
 		}
 		else
 		{
-			getArticles(max);
+			getArticles(max, ArticleStatus.ALL, since, null, false, cancellable);
 		}
 
+		if(cancellable != null && cancellable.is_cancelled())
+			return;
 
 		//update fulltext table
-		dbDaemon.get_default().updateFTS();
+		DataBase.writeAccess().updateFTS();
 
-		int after = dbDaemon.get_default().getHighestRowID();
+		int new_and_unread = DataBase.readOnly().get_new_unread_count(row_id != null ? int.parse(row_id) : 0);
+		row_id = DataBase.readOnly().getMaxID("articles", "rowid");
+		int after = row_id != null ? int.parse(row_id) : 0;
 		int newArticles = after-before;
 		if(newArticles > 0)
 		{
-			Notification.send(newArticles);
-			setNewRows(newArticles);
+			Notification.send(newArticles, new_and_unread);
 		}
 
-		switch(Settings.general().get_enum("drop-articles-after"))
-		{
-			case DropArticles.NEVER:
-	            break;
-
-			case DropArticles.ONE_WEEK:
-				dbDaemon.get_default().dropOldArtilces(1);
-				break;
-
-			case DropArticles.ONE_MONTH:
-				dbDaemon.get_default().dropOldArtilces(4);
-				break;
-
-			case DropArticles.SIX_MONTHS:
-				dbDaemon.get_default().dropOldArtilces(24);
-				break;
-		}
+		var drop_weeks = drop_articles.to_weeks();
+		if(drop_weeks != null)
+			DataBase.writeAccess().dropOldArtilces(-(int)drop_weeks);
 
 		var now = new DateTime.now_local();
 		Settings.state().set_int("last-sync", (int)now.to_unix());
 
-		dbDaemon.get_default().checkpoint();
-
+		DataBase.writeAccess().checkpoint();
+		FeedReaderBackend.get_default().newFeedList();
 		return;
 	}
 
-	public void InitSyncContent()
+	public void InitSyncContent(GLib.Cancellable? cancellable = null)
 	{
 		Logger.debug("FeedServer: initial sync");
 
-		var categories = new Gee.LinkedList<category>();
-		var feeds      = new Gee.LinkedList<feed>();
-		var tags       = new Gee.LinkedList<tag>();
+		if(syncFeedsAndCategories())
+		{
+			var categories = new Gee.LinkedList<Category>();
+			var feeds      = new Gee.LinkedList<Feed>();
+			var tags       = new Gee.LinkedList<Tag>();
 
-		syncProgress(_("Getting feeds and categories"));
+			syncProgress(_("Getting feeds and categories"));
 
-		getFeedsAndCats(feeds, categories, tags);
+			getFeedsAndCats(feeds, categories, tags, cancellable);
 
-		// write categories
-		dbDaemon.get_default().write_categories(categories);
+			if(cancellable != null && cancellable.is_cancelled())
+				return;
 
-		// write feeds
-		dbDaemon.get_default().write_feeds(feeds);
+			if(cancellable != null && cancellable.is_cancelled())
+				return;
 
-		// write tags
-		dbDaemon.get_default().write_tags(tags);
+			// write categories
+			DataBase.writeAccess().write_categories(categories);
 
-		newFeedList();
+			// write feeds
+			DataBase.writeAccess().write_feeds(feeds);
+
+			// write tags
+			DataBase.writeAccess().write_tags(tags);
+
+			FeedReaderBackend.get_default().newFeedList();
+		}
+
+		if(cancellable != null && cancellable.is_cancelled())
+			return;
+
+		var drop_articles = (DropArticles)Settings.general().get_enum("drop-articles-after");
+		DateTime? since = drop_articles.to_start_date();
 
 		// get marked articles
 		syncProgress(_("Getting starred articles"));
-		getArticles(Settings.general().get_int("max-articles"), ArticleStatus.MARKED);
+		getArticles(Settings.general().get_int("max-articles"), ArticleStatus.MARKED, since, null, false, cancellable);
+
+		if(cancellable != null && cancellable.is_cancelled())
+			return;
 
 		// get articles for each tag
 		syncProgress(_("Getting tagged articles"));
-		foreach(var tag_item in tags)
+		foreach(var tag_item in DataBase.readOnly().read_tags())
 		{
-			getArticles((Settings.general().get_int("max-articles")/8), ArticleStatus.ALL, tag_item.getTagID(), true);
+			getArticles((Settings.general().get_int("max-articles")/8), ArticleStatus.ALL, since, tag_item.getTagID(), true, cancellable);
+			if(cancellable != null && cancellable.is_cancelled())
+				return;
 		}
 
 		if(useMaxArticles())
 		{
 			//get max-articls amunt like normal sync
-			getArticles(Settings.general().get_int("max-articles"));
+			getArticles(Settings.general().get_int("max-articles"), ArticleStatus.ALL, since, null, false, cancellable);
 		}
+
+		if(cancellable != null && cancellable.is_cancelled())
+			return;
 
 		// get unread articles
 		syncProgress(_("Getting unread articles"));
-		getArticles(getUnreadCount(), ArticleStatus.UNREAD);
+		getArticles(getUnreadCount(), ArticleStatus.UNREAD, since, null, false, cancellable);
+
+		if(cancellable != null && cancellable.is_cancelled())
+			return;
 
 		//update fulltext table
-		dbDaemon.get_default().updateFTS();
+		DataBase.writeAccess().updateFTS();
 
 		Settings.general().reset("content-grabber");
 
@@ -268,120 +362,145 @@ public class FeedReader.FeedServer : GLib.Object {
 		return;
 	}
 
-	private void writeArticles(Gee.LinkedList<article> articles)
+	private void writeArticles(Gee.List<Article> articles)
 	{
 		if(articles.size > 0)
 		{
-			dbDaemon.get_default().update_articles(articles);
-			var new_articles = new Gee.LinkedList<article>();
+			DataBase.writeAccess().update_articles(articles);
 
-			var it = articles.bidir_list_iterator();
-			for (var has_next = it.last(); has_next; has_next = it.previous())
-				new_articles.add(it.get());
+			// Reverse the list
+			var new_articles = new Gee.ArrayList<Article>();
+			foreach(var article in articles)
+			{
+				new_articles.insert(0, article);
+			}
 
-			dbDaemon.get_default().write_articles(new_articles);
-			updateFeedList();
-			updateArticleList();
+			DataBase.writeAccess().write_articles(new_articles);
+			FeedReaderBackend.get_default().refreshFeedListCounter();
+			FeedReaderBackend.get_default().updateArticleList();
 		}
 	}
 
-	private void setNewRows(int newArticles)
+	public async void grabContent(GLib.Cancellable? cancellable = null)
 	{
-		Logger.debug("FeedServer: new articles: %i".printf(newArticles));
-		writeInterfaceState();
+		if(!Settings.general().get_boolean("download-images")
+		&& !Settings.general().get_boolean("content-grabber"))
+			return;
 
-		if(Settings.state().get_boolean("no-animations") && Settings.state().get_enum("show-articles") == ArticleListState.ALL)
-		{
-			int newCount = Settings.state().get_int("articlelist-new-rows") + (int)UtilsDaemon.getRelevantArticles(newArticles);
-			Logger.debug(@"UI NOT running: setting \"articlelist-new-rows\" to $newCount");
-			Settings.state().set_int("articlelist-new-rows", newCount);
-		}
-	}
-
-	public void grabContent()
-	{
 		Logger.debug("FeedServer: grabContent");
-		var articles = dbDaemon.get_default().readUnfetchedArticles();
+		var articles = DataBase.readOnly().readUnfetchedArticles();
 		int size = articles.size;
 		int i = 0;
 
 		if(size > 0)
 		{
-			foreach(var Article in articles)
+			var session = new Soup.Session();
+			session.user_agent = Constants.USER_AGENT;
+			session.timeout = 5;
+			session.ssl_strict = false;
+
+			try
 			{
-				++i;
-				syncProgress(_(@"Grabbing full content: $i / $size"));
-				if(Settings.general().get_boolean("content-grabber"))
+				var threads = new ThreadPool<Article>.with_owned_data((article) => {
+					if(cancellable != null && cancellable.is_cancelled())
+						return;
+
+						if(Settings.general().get_boolean("content-grabber"))
+						{
+							var grabber = new Grabber(session, article);
+							if(grabber.process(cancellable))
+							{
+								grabber.print();
+								if(article.getAuthor() == "" && grabber.getAuthor() != null)
+								{
+									article.setAuthor(grabber.getAuthor());
+								}
+								if(article.getTitle() == "" && grabber.getTitle() != null)
+								{
+									article.setTitle(grabber.getTitle());
+								}
+								string html = grabber.getArticle();
+								string xml = "<?xml";
+
+								while(html.has_prefix(xml))
+								{
+									int end = html.index_of_char('>');
+									html = html.slice(end+1, html.length).chug();
+								}
+
+								article.setHTML(html);
+							}
+							else
+							{
+								downloadImages(session, article, cancellable);
+							}
+						}
+						else
+						{
+							downloadImages(session, article, cancellable);
+						}
+
+						if(cancellable == null || !cancellable.is_cancelled())
+							DataBase.writeAccess().writeContent(article);
+
+						++i;
+						syncProgress(_(@"Grabbing full content: $i / $size"));
+				}, (int)GLib.get_num_processors(), true);
+
+				foreach(var Article in articles)
 				{
-					var grabber = new Grabber(Article.getURL(), Article.getArticleID(), Article.getFeedID());
-					if(grabber.process())
-					{
-						grabber.print();
-						if(Article.getAuthor() != "" && grabber.getAuthor() != null)
-						{
-							Article.setAuthor(grabber.getAuthor());
-						}
-						if(Article.getTitle() != "" && grabber.getTitle() != null)
-						{
-							Article.setTitle(grabber.getTitle());
-						}
-						string html = grabber.getArticle();
-						string xml = "<?xml";
-
-						while(html.has_prefix(xml))
-						{
-							int end = html.index_of_char('>');
-							html = html.slice(end+1, html.length).chug();
-						}
-
-						Article.setHTML(html);
-					}
-					else
-					{
-						downloadImages(Article);
-					}
-				}
-				else
-				{
-					downloadImages(Article);
+					threads.add(Article);
 				}
 
-				dbDaemon.get_default().writeContent(Article);
+				bool immediate = false; // allow to queue up additional tasks
+				bool wait = true; // function will block until all tasks are done
+				ThreadPool.free((owned)threads, immediate, wait);
+			}
+			catch(GLib.Error e)
+			{
+				Logger.error("FeedServer.grabContent: " + e.message);
 			}
 
 			//update fulltext table
-			dbDaemon.get_default().updateFTS();
+			DataBase.writeAccess().updateFTS();
 		}
 	}
 
-	private void downloadImages(article Article)
+	private void downloadImages(Soup.Session session, Article article, GLib.Cancellable? cancellable = null)
 	{
-		if(Settings.tweaks().get_boolean("dont-download-images"))
+		if(!Settings.general().get_boolean("download-images"))
 			return;
 
 		var html_cntx = new Html.ParserCtxt();
-        html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
-        Html.Doc* doc = html_cntx.read_doc(Article.getHTML(), "");
-        if (doc == null)
-        {
-            Logger.debug("Grabber: parsing failed");
-    		return;
-    	}
+		html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
+		Html.Doc* doc = html_cntx.read_doc(article.getHTML(), "");
+		if(doc == null)
+		{
+			Logger.debug("Grabber: parsing failed");
+			return;
+		}
 		grabberUtils.fixIframeSize(doc, "youtube.com");
-		grabberUtils.repairURL("//img", "src", doc, Article.getURL());
-		grabberUtils.repairURL("//iframe", "src", doc, Article.getURL());
+		grabberUtils.repairURL("//img", "src", doc, article.getURL());
+		grabberUtils.repairURL("//iframe", "src", doc, article.getURL());
 		grabberUtils.stripNode(doc, "//a[not(node())]");
 		grabberUtils.removeAttributes(doc, null, "style");
-        grabberUtils.removeAttributes(doc, "a", "onclick");
-        grabberUtils.removeAttributes(doc, "img", "srcset");
-        grabberUtils.removeAttributes(doc, "img", "sizes");
+		grabberUtils.removeAttributes(doc, "a", "onclick");
+		grabberUtils.removeAttributes(doc, "img", "srcset");
+		grabberUtils.removeAttributes(doc, "img", "sizes");
 		grabberUtils.addAttributes(doc, "a", "target", "_blank");
-		grabberUtils.saveImages(doc, Article.getArticleID(), Article.getFeedID());
+
+		if(cancellable != null && cancellable.is_cancelled())
+		{
+			delete doc;
+			return;
+		}
+
+		grabberUtils.saveImages(session, doc, article, cancellable);
 
 		string html = "";
 		doc->dump_memory_enc(out html);
-        html = grabberUtils.postProcessing(ref html);
-		Article.setHTML(html);
+		html = grabberUtils.postProcessing(ref html);
+		article.setHTML(html);
 		delete doc;
 	}
 
@@ -396,7 +515,23 @@ public class FeedReader.FeedServer : GLib.Object {
 	// Only used with command-line
 	public static void grabArticle(string url)
 	{
-		var grabber = new Grabber(url, null, null);
+		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
+		session.timeout = 5;
+		session.ssl_strict = false;
+
+		var a = new Article ("",
+						"",
+						url,
+						"",
+						ArticleStatus.UNREAD,
+						ArticleStatus.UNMARKED,
+						"",
+						"",
+						null,
+						new GLib.DateTime.now_local());
+
+		var grabber = new Grabber(session, a);
 		if(grabber.process())
 		{
 			grabber.print();
@@ -411,7 +546,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				html = html.slice(end+1, html.length).chug();
 			}
 
-			string path = GLib.Environment.get_user_data_dir() + "/debug-article/%s.html".printf(title);
+			string path = GLib.Environment.get_user_data_dir() + "/feedreader/debug-article/%s.html".printf(title);
 
 			if(FileUtils.test(path, GLib.FileTest.EXISTS))
 				GLib.FileUtils.remove(path);
@@ -419,6 +554,10 @@ public class FeedReader.FeedServer : GLib.Object {
 			try
 			{
 				var file = GLib.File.new_for_path(path);
+				var parent = file.get_parent();
+				if(!parent.query_exists())
+					parent.make_directory_with_parents();
+
 				var stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
 
 				stream.write(html.data);
@@ -435,7 +574,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				output = output.replace("\n"," ");
 				output = output.replace("_"," ");
 
-				path = GLib.Environment.get_user_data_dir() + "/debug-article/%s.txt".printf(title);
+				path = GLib.Environment.get_user_data_dir() + "/feedreader/debug-article/%s.txt".printf(title);
 
 				if(FileUtils.test(path, GLib.FileTest.EXISTS))
 					GLib.FileUtils.remove(path);
@@ -460,35 +599,53 @@ public class FeedReader.FeedServer : GLib.Object {
 	// Only used with command-line
 	public static void grabImages(string htmlFile, string url)
 	{
+		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
+		session.timeout = 5;
+		session.ssl_strict = false;
+
 		var html_cntx = new Html.ParserCtxt();
-        html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
-        Html.Doc* doc = html_cntx.read_file(htmlFile);
-        if (doc == null)
-        {
-            Logger.debug("Grabber: parsing failed");
-    		return;
-    	}
+		html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
+		Html.Doc* doc = html_cntx.read_file(htmlFile);
+		if (doc == null)
+		{
+			Logger.debug("Grabber: parsing failed");
+			return;
+		}
+
+		var a = new Article ("",
+						"",
+						url,
+						"",
+						ArticleStatus.UNREAD,
+						ArticleStatus.UNMARKED,
+						"",
+						"",
+						null,
+						new GLib.DateTime.now_local());
+
+
 		grabberUtils.repairURL("//img", "src", doc, url);
-		grabberUtils.saveImages(doc, "", "");
+		grabberUtils.saveImages(session, doc, a);
 
 		string html = "";
 		doc->dump_memory_enc(out html);
-        html = html.replace("<h3/>", "<h3></h3>");
+		html = html.replace("<h3/>", "<h3></h3>");
 
-    	int pos1 = html.index_of("<iframe", 0);
-    	int pos2 = -1;
-    	while(pos1 != -1)
-    	{
-    		pos2 = html.index_of("/>", pos1);
-    		string broken_iframe = html.substring(pos1, pos2+2-pos1);
-    		string fixed_iframe = broken_iframe.substring(0, broken_iframe.length) + "></iframe>";
-    		html = html.replace(broken_iframe, fixed_iframe);
-    		int pos3 = html.index_of("<iframe", pos1+7);
-    		if(pos3 == pos1)
-    			break;
-    		else
-    			pos1 = pos3;
-    	}
+		int pos1 = html.index_of("<iframe", 0);
+		int pos2 = -1;
+		while(pos1 != -1)
+		{
+			pos2 = html.index_of("/>", pos1);
+			string broken_iframe = html.substring(pos1, pos2+2-pos1);
+			string fixed_iframe = broken_iframe.substring(0, broken_iframe.length) + "></iframe>";
+			html = html.replace(broken_iframe, fixed_iframe);
+			int pos3 = html.index_of("<iframe", pos1+7);
+			if(pos3 == pos1)
+				break;
+			else
+				pos1 = pos3;
+		}
 
 		try
 		{
@@ -554,12 +711,12 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_plugin.uncategorizedID();
 	}
 
-	public bool hideCagetoryWhenEmtpy(string catID)
+	public bool hideCategoryWhenEmpty(string catID)
 	{
 		if(!m_pluginLoaded)
 			return false;
 
-		return m_plugin.hideCagetoryWhenEmtpy(catID);
+		return m_plugin.hideCategoryWhenEmpty(catID);
 	}
 
 	public bool supportCategories()
@@ -592,6 +749,14 @@ public class FeedReader.FeedServer : GLib.Object {
 			return false;
 
 		return m_plugin.supportMultiCategoriesPerFeed();
+	}
+
+	public bool syncFeedsAndCategories()
+	{
+		if(!m_pluginLoaded)
+			return false;
+
+		return m_plugin.syncFeedsAndCategories();
 	}
 
 	// some backends (inoreader, feedly) have the tag-name as part of the ID
@@ -658,12 +823,12 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_plugin.setFeedRead(feedID);
 	}
 
-	public void setCategorieRead(string catID)
+	public void setCategoryRead(string catID)
 	{
 		if(!m_pluginLoaded)
 			return;
 
-		m_plugin.setCategorieRead(catID);
+		m_plugin.setCategoryRead(catID);
 	}
 
 	public void markAllItemsRead()
@@ -674,20 +839,20 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_plugin.markAllItemsRead();
 	}
 
-	public void tagArticle(string articleID, string tagID)
+	public void tagArticle(Article article, Tag tag)
 	{
 		if(!m_pluginLoaded)
 			return;
 
-		m_plugin.tagArticle(articleID, tagID);
+		m_plugin.tagArticle(article.getArticleID(), tag.getTagID());
 	}
 
-	public void removeArticleTag(string articleID, string tagID)
+	public void removeArticleTag(Article article, Tag tag)
 	{
 		if(!m_pluginLoaded)
 			return;
 
-		m_plugin.removeArticleTag(articleID, tagID);
+		m_plugin.removeArticleTag(article.getArticleID(), tag.getTagID());
 	}
 
 	public string createTag(string caption)
@@ -722,15 +887,26 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_plugin.serverAvailable();
 	}
 
-	public void addFeed(string feedURL, string? catID = null, string? newCatName = null)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string? feedID, out string errmsg)
 	{
-		if(!m_pluginLoaded)
-			return;
+		if(!m_pluginLoaded) {
+			feedID = null;
+			errmsg = "Plugin not loaded";
+			return false;
+		}
 
-		m_plugin.addFeed(feedURL, catID, newCatName);
+		if(!m_plugin.addFeed(feedURL, catID, newCatName, out feedID, out errmsg))
+			return false;
+
+		int maxArticles = ArticleSyncCount();
+		DateTime? since = ((DropArticles)Settings.general().get_enum("drop-articles-after")).to_start_date();
+		var sinceStr = since == null ? "(null)" : since.to_string();
+		Logger.info(@"Downloading up to $(maxArticles) articles for feed $(feedID) ($(feedURL)), since $(sinceStr)");
+		getArticles(maxArticles, ArticleStatus.ALL, since, feedID);
+		return true;
 	}
 
-	public void addFeeds(Gee.LinkedList<feed> feeds)
+	public void addFeeds(Gee.List<Feed> feeds)
 	{
 		if(!m_pluginLoaded)
 			return;
@@ -810,7 +986,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_plugin.importOPML(opml);
 	}
 
-	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		if(!m_pluginLoaded)
 			return false;
@@ -826,17 +1002,20 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_plugin.getUnreadCount();
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? feedID = null, bool isTagID = false)
+	public void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, DateTime? since = null, string? feedID = null, bool isTagID = false, GLib.Cancellable? cancellable = null)
 	{
 		if(!m_pluginLoaded)
+		{
+			Logger.error("getArticles() called with no plugin loaded");
 			return;
+		}
 
-		m_plugin.getArticles(count, whatToGet, feedID, isTagID);
+		m_plugin.getArticles(count, whatToGet, since, feedID, isTagID);
 	}
 
 	private void syncProgress(string text)
 	{
-		updateSyncProgress(text);
+		FeedReaderBackend.get_default().updateSyncProgress(text);
 		Settings.state().set_string("sync-status", text);
 	}
 

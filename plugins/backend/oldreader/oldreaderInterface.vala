@@ -17,11 +17,131 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 
 	private OldReaderAPI m_api;
 	private OldReaderUtils m_utils;
+	private Gtk.Entry m_userEntry;
+	private Gtk.Entry m_passwordEntry;
+	private DataBaseReadOnly m_db;
+	private DataBase m_db_write;
 
-	public void init()
+	public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets, DataBaseReadOnly db, DataBase db_write)
 	{
-		m_api = new OldReaderAPI();
-		m_utils = new OldReaderUtils();
+		m_db = db;
+		m_db_write = db_write;
+		m_utils = new OldReaderUtils(settings_backend, secrets);
+		m_api = new OldReaderAPI(m_utils, db);
+	}
+
+	public string getWebsite()
+	{
+		return "https://theoldreader.com/";
+	}
+
+	public BackendFlags getFlags()
+	{
+		return (BackendFlags.HOSTED | BackendFlags.PROPRIETARY | BackendFlags.PAID_PREMIUM);
+	}
+
+	public string getID()
+	{
+		return "oldreader";
+	}
+
+	public string iconName()
+	{
+		return "feed-service-oldreader";
+	}
+
+	public string serviceName()
+	{
+		return "The Old Reader";
+	}
+
+	public bool needWebLogin()
+	{
+		return false;
+	}
+
+	public Gtk.Box? getWidget()
+	{
+		var user_label = new Gtk.Label(_("Username:"));
+		var password_label = new Gtk.Label(_("Password:"));
+
+		user_label.set_alignment(1.0f, 0.5f);
+		password_label.set_alignment(1.0f, 0.5f);
+
+		user_label.set_hexpand(true);
+		password_label.set_hexpand(true);
+
+		m_userEntry = new Gtk.Entry();
+		m_passwordEntry = new Gtk.Entry();
+
+		m_userEntry.activate.connect(() => { tryLogin(); });
+		m_passwordEntry.activate.connect(() => { tryLogin(); });
+
+		m_passwordEntry.set_invisible_char('*');
+		m_passwordEntry.set_visibility(false);
+
+		var grid = new Gtk.Grid();
+		grid.set_column_spacing(10);
+		grid.set_row_spacing(10);
+		grid.set_valign(Gtk.Align.CENTER);
+		grid.set_halign(Gtk.Align.CENTER);
+
+		grid.attach(user_label, 0, 0, 1, 1);
+		grid.attach(m_userEntry, 1, 0, 1, 1);
+		grid.attach(password_label, 0, 1, 1, 1);
+		grid.attach(m_passwordEntry, 1, 1, 1, 1);
+
+		var logo = new Gtk.Image.from_icon_name("feed-service-oldreader", Gtk.IconSize.MENU);
+
+		var loginLabel = new Gtk.Label(_("Please log in to the Old Reader and enjoy using FeedReader"));
+		loginLabel.get_style_context().add_class("h2");
+		loginLabel.set_justify(Gtk.Justification.CENTER);
+		loginLabel.set_lines(3);
+
+		var loginButton = new Gtk.Button.with_label(_("Login"));
+		loginButton.halign = Gtk.Align.END;
+		loginButton.set_size_request(80, 30);
+		loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+		loginButton.clicked.connect(() => { tryLogin(); });
+
+		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
+		box.valign = Gtk.Align.CENTER;
+		box.halign = Gtk.Align.CENTER;
+		box.pack_start(loginLabel, false, false, 10);
+		box.pack_start(logo, false, false, 10);
+		box.pack_start(grid, true, true, 10);
+		box.pack_end(loginButton, false, false, 20);
+
+		m_userEntry.set_text(m_utils.getUser());
+		m_passwordEntry.set_text(m_utils.getPasswd());
+
+		return box;
+	}
+
+	public void showHtAccess()
+	{
+		return;
+	}
+
+	public void writeData()
+	{
+		m_utils.setUser(m_userEntry.get_text().strip());
+		m_utils.setPassword(m_passwordEntry.get_text().strip());
+	}
+
+	public async void postLoginAction()
+	{
+		return;
+	}
+
+	public string buildLoginURL()
+	{
+		return "";
+	}
+
+	public bool extractCode(string redirectURL)
+	{
+		return false;
 	}
 
 	public bool supportTags()
@@ -54,7 +174,7 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 		return "";
 	}
 
-	public bool hideCagetoryWhenEmtpy(string cadID)
+	public bool hideCategoryWhenEmpty(string cadID)
 	{
 		return false;
 	}
@@ -79,15 +199,20 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 		return false;
 	}
 
+	public bool syncFeedsAndCategories()
+	{
+		return true;
+	}
+
 	public bool tagIDaffectedByNameChange()
 	{
 		return true;
 	}
 
 	public void resetAccount()
-    {
-        m_utils.resetAccount();
-    }
+	{
+		m_utils.resetAccount();
+	}
 
 	public bool useMaxArticles()
 	{
@@ -125,23 +250,23 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 		m_api.markAsRead(feedID);
 	}
 
-	public void setCategorieRead(string catID)
+	public void setCategoryRead(string catID)
 	{
 		m_api.markAsRead(catID);
 	}
 
 	public void markAllItemsRead()
 	{
-		var categories = dbDaemon.get_default().read_categories();
-		foreach(category cat in categories)
+		var categories = m_db.read_categories();
+		foreach(Category cat in categories)
 		{
 			m_api.markAsRead(cat.getCatID());
 		}
 
-		var feeds = dbDaemon.get_default().read_feeds_without_cat();
-		foreach(feed Feed in feeds)
+		var feeds = m_db.read_feeds_without_cat();
+		foreach(Feed feed in feeds)
 		{
-			m_api.markAsRead(Feed.getFeedID());
+			m_api.markAsRead(feed.getFeedID());
 		}
 		m_api.markAsRead();
 	}
@@ -176,26 +301,34 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 		return m_api.ping();
 	}
 
-	public string addFeed(string feedURL, string? catID, string? newCatName)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
+		feedID = "feed/" + feedURL;
+		errmsg = "";
+		bool success = false;
+
 		if(catID == null && newCatName != null)
 		{
 			string newCatID = m_api.composeTagID(newCatName);
-			m_api.editSubscription(OldReaderAPI.OldreaderSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, newCatID);
+			success = m_api.editSubscription(OldReaderAPI.OldreaderSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, newCatID);
 		}
 		else
 		{
-			m_api.editSubscription(OldReaderAPI.OldreaderSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, catID);
+			success = m_api.editSubscription(OldReaderAPI.OldreaderSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, catID);
 		}
-		return "feed/" + feedURL;
+
+		if(!success)
+			errmsg = @"The old reader could not add $feedURL";
+
+		return success;
 	}
 
-	public void addFeeds(Gee.LinkedList<feed> feeds)
+	public void addFeeds(Gee.List<Feed> feeds)
 	{
 		string cat = "";
 		string[] urls = {};
 
-		foreach(feed f in feeds)
+		foreach(Feed f in feeds)
 		{
 			if(f.getCatIDs()[0] != cat)
 			{
@@ -257,11 +390,17 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
 	{
-		if(m_api.getFeeds(feeds)
-		&& m_api.getCategoriesAndTags(feeds, categories, tags))
-			return true;
+		if(m_api.getFeeds(feeds))
+		{
+			if(cancellable != null && cancellable.is_cancelled())
+				return false;
+
+			if(m_api.getCategoriesAndTags(feeds, categories, tags))
+				return true;
+		}
+
 		return false;
 	}
 
@@ -270,7 +409,7 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 		return m_api.getTotalUnread();
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID)
+	public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
 		if(whatToGet == ArticleStatus.READ)
 		{
@@ -284,6 +423,9 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 
 			while(left > 0)
 			{
+				if(cancellable != null && cancellable.is_cancelled())
+					return;
+
 				if(left > 1000)
 				{
 					continuation = m_api.updateArticles(unreadIDs, 1000, continuation);
@@ -295,11 +437,11 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 					left = 0;
 				}
 			}
-			dbDaemon.get_default().updateArticlesByID(unreadIDs, "unread");
+			m_db_write.updateArticlesByID(unreadIDs, "unread");
 			updateArticleList();
 		}
 
-		var articles = new Gee.LinkedList<article>();
+		var articles = new Gee.LinkedList<Article>();
 		string? continuation = null;
 		int left = count;
 		string? OldReader_feedID = (isTagID) ? null : feedID;
@@ -307,6 +449,9 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 
 		while(left > 0)
 		{
+			if(cancellable != null && cancellable.is_cancelled())
+				return;
+
 			if(left > 1000)
 			{
 				continuation = m_api.getArticles(articles, 1000, whatToGet, continuation, OldReader_tagID, OldReader_feedID);

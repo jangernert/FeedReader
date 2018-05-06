@@ -1,5 +1,5 @@
 <schemalist>
 	<schema id="org.gnome.feedreader.demo" path="/org/gnome/feedreader/demo/" gettext-domain="feedreader">
-		
+
 	</schema>
 </schemalist>

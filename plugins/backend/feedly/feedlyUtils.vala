@@ -25,49 +25,52 @@ public class FeedReader.FeedlyUtils : Object {
 
 	private GLib.Settings m_settings;
 
-	public FeedlyUtils()
+	public FeedlyUtils(GLib.SettingsBackend? settings_backend)
 	{
-		m_settings = new GLib.Settings("org.gnome.feedreader.feedly");
+		if(settings_backend != null)
+			m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.feedly", settings_backend);
+		else
+			m_settings = new GLib.Settings("org.gnome.feedreader.feedly");
 	}
 
 	public string getRefreshToken()
 	{
-		return m_settings.get_string("refresh-token");
+		return Utils.gsettingReadString(m_settings, "refresh-token");
 	}
 
 	public void setRefreshToken(string token)
 	{
-		m_settings.set_string("refresh-token", token);
+		Utils.gsettingWriteString(m_settings, "refresh-token", token);
 	}
 
 	public string getAccessToken()
 	{
-		return m_settings.get_string("access-token");
+		return Utils.gsettingReadString(m_settings, "access-token");
 	}
 
 	public void setAccessToken(string token)
 	{
-		m_settings.set_string("access-token", token);
+		Utils.gsettingWriteString(m_settings, "access-token", token);
 	}
 
 	public string getApiCode()
 	{
-		return m_settings.get_string("api-code");
+		return Utils.gsettingReadString(m_settings, "api-code");
 	}
 
 	public void setApiCode(string code)
 	{
-		m_settings.set_string("api-code", code);
+		Utils.gsettingWriteString(m_settings, "api-code", code);
 	}
 
 	public string getEmail()
 	{
-		return m_settings.get_string("email");
+		return Utils.gsettingReadString(m_settings, "email");
 	}
 
 	public void setEmail(string email)
 	{
-		m_settings.set_string("email", email);
+		Utils.gsettingWriteString(m_settings, "email", email);
 	}
 
 	public int getExpiration()
@@ -95,56 +98,6 @@ public class FeedReader.FeedlyUtils : Object {
 			return false;
 		}
 
-		return true;
-	}
-
-	public bool downloadIcon(string feed_id, string icon_url)
-	{
-		if(icon_url == "" || icon_url == null || GLib.Uri.parse_scheme(icon_url) == null)
-            return false;
-
-		var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
-		string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/";
-    	var path = GLib.File.new_for_path(icon_path);
-    	if(!path.query_exists())
-    	{
-    		try
-    		{
-    			path.make_directory_with_parents();
-    		}
-    		catch(GLib.Error e)
-			{
-    			Logger.debug(e.message);
-    		}
-    	}
-		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
-
-		if(!FileUtils.test (local_filename, GLib.FileTest.EXISTS))
-		{
-			Soup.Message message_dlIcon;
-			message_dlIcon = new Soup.Message ("GET", icon_url);
-
-			if(settingsTweaks.get_boolean("do-not-track"))
-				message_dlIcon.request_headers.append("DNT", "1");
-
-			var session = new Soup.Session();
-			session.user_agent = Constants.USER_AGENT;
-			var status = session.send_message(message_dlIcon);
-			if (status == 200)
-			{
-				try{
-					FileUtils.set_contents(local_filename, (string)message_dlIcon.response_body.flatten().data, (long)message_dlIcon.response_body.length);
-				}
-				catch(GLib.FileError e)
-				{
-					Logger.error("Error writing icon: %s".printf(e.message));
-				}
-				return true;
-			}
-			Logger.error("Error downloading icon for feed: %s".printf(feed_id));
-			return false;
-		}
-		// file already exists
 		return true;
 	}
 }

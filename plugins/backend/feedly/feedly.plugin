@@ -2,6 +2,7 @@
 Module=feedly
 Loader=C
 Name=feedly
+Version=0.1
 Description=Add feedly backend to FeedReader
 Authors=Jan Lukas Gernert <jangernert@gmail.com>
 Copyright=Copyright © 2015-16 Jan Lukas Gernert

@@ -21,7 +21,7 @@ namespace FeedReader {
 
 	public class AboutInfo : GLib.Object {
 		public const string programmName  = "FeedReader";
-		public const string copyright     = "Copyright © 2016 Jan Lukas Gernert";
+		public const string copyright     = "Copyright © 2014-2017 Jan Lukas Gernert";
 		public const string version       = "@VERSION@";
 		public const string comments      = N_("Desktop Client for various RSS Services");
 		public const string[] authors     = { "Jan Lukas Gernert", "Bilal Elmoussaoui", "Anwesh Reddy" , "Jason Scurtu", null };
@@ -43,20 +43,22 @@ namespace FeedReader {
 	}
 
 	public class MediaButton : GLib.Object {
-		public const string PLAY = N_("Play");
-		public const string PAUSE = N_("Pause");
-		public const string MUTE = N_("Mute");
-		public const string UNMUTE = N_("Unmute");
-		public const string CLOSE = N_("Close");
+		public const string PLAY = "Play";
+		public const string PAUSE = "Pause";
+		public const string MUTE = "Mute";
+		public const string UNMUTE = "Unmute";
+		public const string CLOSE = "Close";
 	}
 
 	public class Constants : GLib.Object {
 
-		public const string INSTALL_PREFIX	= "@CMAKE_INSTALL_PREFIX@";
-		public const string INSTALL_LIBDIR		= "@PKGLIBDIR@";
-		public const string GIT_SHA1		= "@GIT_SHA1@";
+		public const string INSTALL_PREFIX	= "@PREFIX@";
+		public const string INSTALL_LIBDIR	= "@PKGLIBDIR@";
+		public const string LOCALE_DIR 		= "@LOCALE_DIR@";
+		public const string GIT_SHA1		= "#GIT_SHA1#";
 		public const string USER_AGENT		= "FeedReader @VERSION@";
-		public const int DBusAPIVersion = 17;
+		public const int DB_SCHEMA_VERSION  = 7;
+		public const int REDOWNLOAD_FAVICONS_AFTER_DAYS = 7;
 
 		// tango colors
 		public const string[] COLORS = {

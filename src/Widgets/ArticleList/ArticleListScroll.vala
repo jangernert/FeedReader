@@ -31,12 +31,15 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	private int m_scrollCooldown = 500; // cooldown in ms
 
 	//Transition times
-    private int64 m_startTime = 0;
-    private int64 m_endTime = 0;
-    private double m_transitionDiff = 0.0;
-    private double m_transitionStartValue = 0.0;
+	private int64 m_startTime = 0;
+	private int64 m_endTime = 0;
+	private double m_transitionDiff = 0.0;
+	private double m_transitionStartValue = 0.0;
 	private int m_transitionDuration = 500 * 1000;
 	private uint m_scrollCallbackID = 0;
+	private uint m_savetyFallbackID = 0;
+	private uint m_scrollCooldownID = 0;
+
 
 
 	public ArticleListScroll()
@@ -44,7 +47,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 		vadjustment.notify["upper"].connect(trackUpper);
 		vadjustment.notify["value"].connect(trackValue);
 		this.set_size_request(250, 0);
-    }
+	}
 
 	private void trackUpper()
 	{
@@ -69,7 +72,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 
 		m_upperCache = vadjustment.upper;
 		m_valueCache = vadjustment.value;
-    }
+	}
 
 	private void trackValue()
 	{
@@ -113,20 +116,47 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 			Logger.debug("ArticleListScroll: scrolled down");
 			m_scrolledBottomOnCooldown = true;
 			scrolledBottom();
-			GLib.Timeout.add(m_scrollCooldown, () => {
-				Logger.debug("ArticleListScroll: scrolled down off cooldown");
+			// reset cooldown after 5s if something went wrong
+			m_savetyFallbackID = GLib.Timeout.add_seconds(5, () => {
+				m_savetyFallbackID = 0;
 				m_scrolledBottomOnCooldown = false;
-				if(vadjustment.value >= max - 5)
-					scrolledBottom();
-				return false;
+				return GLib.Source.REMOVE;
 			});
 		}
+	}
+
+	public void startScrolledDownCooldown()
+	{
+		if(m_scrollCooldownID != 0)
+		{
+			GLib.Source.remove(m_scrollCooldownID);
+			m_scrollCooldownID = 0;
+		}
+
+		m_scrollCooldownID = GLib.Timeout.add(m_scrollCooldown, () => {
+			Logger.debug("ArticleListScroll: scrolled down off cooldown");
+			m_scrollCooldownID = 0;
+			m_scrolledBottomOnCooldown = false;
+			if(m_savetyFallbackID != 0)
+			{
+				GLib.Source.remove(m_savetyFallbackID);
+				m_savetyFallbackID = 0;
+			}
+			double max = vadjustment.upper - vadjustment.page_size;
+			if(vadjustment.value >= max - 5)
+			{
+				Logger.debug("ArticleListScroll: trigger scrolledBottom()");
+				scrolledBottom();
+			}
+
+			return GLib.Source.REMOVE;
+		});
 	}
 
 	public void balanceNextScroll(ArticleListBalance mode)
 	{
 		m_balance = mode;
-    }
+	}
 
 	public void scrollDiff(double diff, bool animate = true)
 	{

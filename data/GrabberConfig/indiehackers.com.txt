@@ -1,5 +1,0 @@
-prune: no
-body: //div[@itemprop="articleBody"]
-strip: //aside
-
-test_url: https://www.indiehackers.com/businesses/paleo-meal-plans

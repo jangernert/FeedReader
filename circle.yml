@@ -1,0 +1,60 @@
+version: 2
+jobs:
+  build:
+    docker:
+      # See docker/Dockerfile
+      - image: feedreader/fedora-feedreader-devel
+        environment:
+          ELASTICSEARCH_URL: http://127.0.0.1:9200
+          # Note: The Feedbin API has to run on subdomain "api"
+          FEEDBIN_TEST_HOST: http://api.x.localhost:9292
+          POSTGRES_USERNAME: postgres
+          POSTGRES_HOST: 127.0.0.1
+          DATABASE_URL: postgres://postgres@127.0.0.1:5432/feedbin_db
+          REDIS_URL: redis://127.0.0.1:6379
+      # Feedbin uses an ancient version of ElasticSearch
+      # https://github.com/feedbin/feedbin/blob/master/.travis.yml
+      - image: elasticsearch:2.3.3
+        environment:
+          'discovery.type': single-node
+      - image: postgres:9.6.5-alpine
+      - image: redis:3.2.11-alpine
+
+    working_directory: ~/FeedReader
+    steps:
+      - run:
+          name: Setup Feedbin
+          # Wait a few seconds for postgres to startup
+          command: sleep 5 && cd /feedbin && rake db:setup
+      - run:
+          name: Run Feedbin background processes
+          command: cd /feedbin && bundle exec foreman start
+          background: true
+      - run:
+          name: Run Feedbin
+          command: cd /feedbin && rackup
+          background: true
+      - checkout
+      - run:
+          name: Configure
+          command: meson builddir -DBAZQUX=ON -DFEEDHQ=ON
+      - run:
+          name: Build
+          command: cd builddir && ninja -j4
+      - run:
+          name: Test
+          command: cd builddir && ninja test
+      - run:
+          name: Generate JUnit XML
+          command: |
+              mkdir -p /tmp/test-results/junit/
+              cd builddir
+              for f in *.gtester.log; do
+                  xsltproc -o /tmp/test-results/junit/$(basename $f .gtester.log).xml ../gtester-to-junit-4.xsl $f;
+              done
+          when: always
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results/junit
+          destination: test-results

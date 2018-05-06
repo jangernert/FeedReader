@@ -1,5 +1,0 @@
-title: //h2[contains(@class,'news')]
-body: //div[contains(@class,'articleContent')]
-date: substring-after(//div[@class = 'SupaDate']/text(), 'le')
-
-test_url: http://www.toolinux.com/Wi-Fi-Linksys-WRT-la-legende-de

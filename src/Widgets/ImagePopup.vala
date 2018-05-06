@@ -82,13 +82,9 @@ public class FeedReader.imagePopup : Gtk.Window {
 		m_scaleRevealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_RIGHT);
 		m_scaleRevealer.add(m_scale);
 
-		// Code for Gtk+ >= 3.22
-		//var geo = Gdk.Display.get_default().get_monitor_at_window(this.get_root_window()).get_geometry();
-		//double win_width  = (int)(geo.width*0.8);
-		//double win_height = (int)(geo.height*0.8);
-
-		double win_width  = (int)(Gdk.Screen.width()*0.8);
-		double win_height = (int)(Gdk.Screen.height()*0.8);
+		var geo = Gdk.Display.get_default().get_monitor_at_window(this.get_root_window()).get_geometry();
+		double win_width  = (int)(geo.width*0.8);
+		double win_height = (int)(geo.height*0.8);
 		double min_height = 300;
 		double min_widht = 500;
 
@@ -127,7 +123,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 
 		m_saveButton = new Gtk.Button.from_icon_name("document-save-symbolic", Gtk.IconSize.BUTTON);
 		m_saveButton.clicked.connect(() => {
-			UtilsUI.saveImageDialog(m_imagePath);
+			Utils.saveImageDialog(m_imagePath);
 		});
 
 		m_image.notify["scale"].connect(onImageScrolled);
@@ -150,7 +146,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 			if(!m_zoomButton.get_active())
 			{
 				GLib.Timeout.add(150, () => {
-				    m_image.notify["scale"].connect(onImageScrolled);
+					m_image.notify["scale"].connect(onImageScrolled);
 					return false;
 				});
 			}
@@ -272,9 +268,9 @@ public class FeedReader.imagePopup : Gtk.Window {
 			{
 				if(m_OngoingScrollID > 0)
 				{
-		            GLib.Source.remove(m_OngoingScrollID);
-		            m_OngoingScrollID = 0;
-		        }
+					GLib.Source.remove(m_OngoingScrollID);
+					m_OngoingScrollID = 0;
+				}
 				m_posX = evt.x;
 				m_posY = evt.y;
 				for(int i = 0; i < 10; ++i)

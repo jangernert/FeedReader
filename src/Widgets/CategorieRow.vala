@@ -45,7 +45,6 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 
 	public CategoryRow(string name, string categorieID, int orderID, uint unread_count, string parentID, int level, bool expanded)
 	{
-
 		this.get_style_context().add_class("fr-sidebar-row");
 		m_level = level;
 		m_parentID = parentID;
@@ -109,9 +108,7 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 		m_unreadBox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
 		m_unreadBox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
 		m_unreadBox.add(m_unreadStack);
-		m_unreadBox.button_press_event.connect(onUnreadClick);
-		m_unreadBox.enter_notify_event.connect(onUnreadEnter);
-		m_unreadBox.leave_notify_event.connect(onUnreadLeave);
+		activateUnreadEventbox(true);
 
 		m_box.pack_start(m_expandBox, false, false, 0);
 		m_box.pack_start(m_label, true, true, 0);
@@ -140,71 +137,88 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 		else
 			m_stack.set_visible_child_name("expanded");
 
-		if(UtilsUI.canManipulateContent())
+		if(Utils.canManipulateContent())
 		{
 			if(m_categorieID != CategoryID.MASTER.to_string()
 			&& m_categorieID != CategoryID.TAGS.to_string())
 			{
 				const Gtk.TargetEntry[] accepted_targets = {
-				    { "text/plain",	0, DragTarget.FEED },
+					{ "text/plain",	0, DragTarget.FEED },
 					{ "STRING",		0, DragTarget.CAT }
 				};
 
 				Gtk.drag_dest_set (
-			            this,
-			            Gtk.DestDefaults.MOTION,
-			            accepted_targets,
-			            Gdk.DragAction.MOVE
-			    );
+						this,
+						Gtk.DestDefaults.MOTION,
+						accepted_targets,
+						Gdk.DragAction.MOVE
+				);
 
-			    this.drag_motion.connect(onDragMotion);
-			    this.drag_leave.connect(onDragLeave);
-			    this.drag_drop.connect(onDragDrop);
-			    this.drag_data_received.connect(onDragDataReceived);
+				this.drag_motion.connect(onDragMotion);
+				this.drag_leave.connect(onDragLeave);
+				this.drag_drop.connect(onDragDrop);
+				this.drag_data_received.connect(onDragDataReceived);
 
-				try
+				if(FeedReaderBackend.get_default().supportMultiLevelCategories())
 				{
-					if(DBusConnection.get_default().supportMultiLevelCategories())
-					{
-						const Gtk.TargetEntry[] provided_targets = {
-						    { "STRING",     0, DragTarget.CAT }
-						};
+					const Gtk.TargetEntry[] provided_targets = {
+						{ "STRING",     0, DragTarget.CAT }
+					};
 
-						Gtk.drag_source_set (
-								this,
-								Gdk.ModifierType.BUTTON1_MASK,
-								provided_targets,
-								Gdk.DragAction.MOVE
-						);
+					Gtk.drag_source_set (
+							this,
+							Gdk.ModifierType.BUTTON1_MASK,
+							provided_targets,
+							Gdk.DragAction.MOVE
+					);
 
-						this.drag_begin.connect(onDragBegin);
-						this.drag_data_get.connect(onDragDataGet);
-					}
-				}
-				catch(GLib.Error e)
-				{
-					Logger.error("categoryRow.constructor: %s".printf(e.message));
+					this.drag_begin.connect(onDragBegin);
+					this.drag_data_get.connect(onDragDataGet);
 				}
 			}
 			else if(m_categorieID == CategoryID.MASTER.to_string())
 			{
 				const Gtk.TargetEntry[] accepted_targets = {
-				    { "STRING",     0, DragTarget.CAT }
+					{ "STRING",     0, DragTarget.CAT }
 				};
 
 				Gtk.drag_dest_set (
-			            this,
-			            Gtk.DestDefaults.MOTION,
-			            accepted_targets,
-			            Gdk.DragAction.MOVE
-			    );
+						this,
+						Gtk.DestDefaults.MOTION,
+						accepted_targets,
+						Gdk.DragAction.MOVE
+				);
 
-			    this.drag_motion.connect(onDragMotion);
-			    this.drag_leave.connect(onDragLeave);
-			    this.drag_drop.connect(onDragDrop);
-			    this.drag_data_received.connect(onDragDataReceived);
+				this.drag_motion.connect(onDragMotion);
+				this.drag_leave.connect(onDragLeave);
+				this.drag_drop.connect(onDragDrop);
+				this.drag_data_received.connect(onDragDataReceived);
 			}
 		}
+	}
+
+	~CategoryRow()
+	{
+		activateUnreadEventbox(false);
+
+		m_expandBox.button_press_event.disconnect(onExpandClick);
+		m_expandBox.enter_notify_event.disconnect(onExpandEnter);
+		m_expandBox.leave_notify_event.disconnect(onExpandLeave);
+
+		m_eventBox.button_press_event.disconnect(onClick);
+
+		this.drag_begin.disconnect(onDragBegin);
+		this.drag_data_get.disconnect(onDragDataGet);
+
+		this.drag_motion.disconnect(onDragMotion);
+		this.drag_leave.disconnect(onDragLeave);
+		this.drag_drop.disconnect(onDragDrop);
+		this.drag_data_received.disconnect(onDragDataReceived);
+
+		this.drag_motion.disconnect(onDragMotion);
+		this.drag_leave.disconnect(onDragLeave);
+		this.drag_drop.disconnect(onDragDrop);
+		this.drag_data_received.disconnect(onDragDataReceived);
 	}
 
 //------------- Drag Source Functions ----------------------------------------------
@@ -230,37 +244,37 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 //------------- Drag Target Functions ----------------------------------------------
 
 	private bool onDragMotion(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
-    {
+	{
 		this.set_state_flags(Gtk.StateFlags.PRELIGHT, false);
-        return true;
-    }
+		return true;
+	}
 
 	private void onDragLeave(Gtk.Widget widget, Gdk.DragContext context, uint time)
 	{
-        this.unset_state_flags(Gtk.StateFlags.PRELIGHT);
-    }
+		this.unset_state_flags(Gtk.StateFlags.PRELIGHT);
+	}
 
 
 	private bool onDragDrop(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
-    {
+	{
 		Logger.debug("categoryRow: onDragDrop");
 
-        // If the source offers a target
-        if(context.list_targets() != null)
+		// If the source offers a target
+		if(context.list_targets() != null)
 		{
-            var target_type = (Gdk.Atom)context.list_targets().nth_data(0);
+			var target_type = (Gdk.Atom)context.list_targets().nth_data(0);
 
-            // Request the data from the source.
-            Gtk.drag_get_data(widget, context, target_type, time);
+			// Request the data from the source.
+			Gtk.drag_get_data(widget, context, target_type, time);
 			return true;
-        }
+		}
 
 		return false;
-    }
+	}
 
 	private void onDragDataReceived(Gtk.Widget widget, Gdk.DragContext context, int x, int y,
-                                    Gtk.SelectionData selection_data, uint target_type, uint time)
-    {
+									Gtk.SelectionData selection_data, uint target_type, uint time)
+	{
 		Logger.debug("categoryRow: onDragDataReceived");
 
 		var dataString = selection_data.get_text();
@@ -300,18 +314,11 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 					}
 					else
 					{
-						try
-						{
-							DBusConnection.get_default().moveFeed(feedID, currentCat, m_categorieID);
-						}
-						catch(GLib.Error e)
-						{
-							Logger.error("categoryRow.onDragDataReceived: %s".printf(e.message));
-						}
+						FeedReaderBackend.get_default().moveFeed(feedID, currentCat, m_categorieID);
 					}
 
 					Gtk.drag_finish(context, true, false, time);
-		        }
+				}
 				else if(target_type == DragTarget.CAT)
 				{
 					Logger.debug("drag catID: " + dataString);
@@ -324,14 +331,7 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 					}
 					else
 					{
-						try
-						{
-							DBusConnection.get_default().moveCategory(dataString, m_categorieID);
-						}
-						catch(GLib.Error e)
-						{
-							Logger.error("categoryRow.onDragDataReceived: %s".printf(e.message));
-						}
+						FeedReaderBackend.get_default().moveCategory(dataString, m_categorieID);
 					}
 
 					Gtk.drag_finish(context, true, false, time);
@@ -339,7 +339,7 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 			}
 		}
 
-    }
+	}
 
 	private Gtk.Window getDragWindow()
 	{
@@ -362,7 +362,7 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 		if(event.button != 3)
 			return false;
 
-		if(!UtilsUI.canManipulateContent())
+		if(!Utils.canManipulateContent())
 			return false;
 
 
@@ -393,14 +393,7 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 			string text = _("Category \"%s\" removed").printf(m_name);
 			var notification = MainWindow.get_default().showNotification(text);
 			ulong eventID = notification.dismissed.connect(() => {
-				try
-				{
-					DBusConnection.get_default().removeCategory(m_categorieID);
-				}
-				catch(GLib.Error e)
-				{
-					Logger.error("categoryRow.onClick: %s".printf(e.message));
-				}
+				FeedReaderBackend.get_default().removeCategory(m_categorieID);
 			});
 			notification.action.connect(() => {
 				notification.disconnect(eventID);
@@ -421,14 +414,7 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 			uint time = 300;
 			this.reveal(false, time);
 			GLib.Timeout.add(time, () => {
-				try
-				{
-					DBusConnection.get_default().removeCategoryWithChildren(m_categorieID);
-				}
-				catch(GLib.Error e)
-				{
-					Logger.error("categoryRow.onClick: %s".printf(e.message));
-				}
+				FeedReaderBackend.get_default().removeCategoryWithChildren(m_categorieID);
 				return false;
 			});
 		});
@@ -488,32 +474,25 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 		var renameEntry = new Gtk.Entry();
 		renameEntry.set_text(m_name);
 		renameEntry.activate.connect(() => {
-			try
+			if(m_categorieID != CategoryID.NEW.to_string())
 			{
-				if(m_categorieID != CategoryID.NEW.to_string())
-				{
-					DBusConnection.get_default().renameCategory(m_categorieID, renameEntry.get_text());
-				}
-				else if(context != null)
-				{
-					Logger.debug("categoryRow: create new category " + renameEntry.get_text());
-					m_categorieID = DBusConnection.get_default().addCategory(renameEntry.get_text(), "", true);
-
-					if(id2 == null) // move feed
-					{
-						DBusConnection.get_default().moveCategory(id1, m_categorieID);
-					}
-					else // move category
-					{
-						DBusConnection.get_default().moveFeed(id1, id2, m_categorieID);
-					}
-
-					Gtk.drag_finish(context, true, false, time);
-				}
+				FeedReaderBackend.get_default().renameCategory(m_categorieID, renameEntry.get_text());
 			}
-			catch(GLib.Error e)
+			else if(context != null)
 			{
-				Logger.error("categoryRow.showRenamePopover: %s".printf(e.message));
+				Logger.debug("categoryRow: create new Category " + renameEntry.get_text());
+				m_categorieID = FeedReaderBackend.get_default().addCategory(renameEntry.get_text(), "", true);
+
+				if(id2 == null) // move feed
+				{
+					FeedReaderBackend.get_default().moveCategory(id1, m_categorieID);
+				}
+				else // move category
+				{
+					FeedReaderBackend.get_default().moveFeed(id1, id2, m_categorieID);
+				}
+
+				Gtk.drag_finish(context, true, false, time);
 			}
 
 			popRename.hide();
@@ -709,22 +688,11 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 
 	public void reveal(bool reveal, uint duration = 500)
 	{
-		if(Settings.state().get_boolean("no-animations"))
-		{
-			m_revealer.set_transition_type(Gtk.RevealerTransitionType.NONE);
-			m_revealer.set_transition_duration(0);
-			m_revealer.set_reveal_child(reveal);
-			m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
-			m_revealer.set_transition_duration(500);
-		}
-		else
-		{
-			if(!reveal && this.is_selected())
-				deselectRow();
+		if(!reveal && this.is_selected())
+			deselectRow();
 
-			m_revealer.set_transition_duration(duration);
-			m_revealer.set_reveal_child(reveal);
-		}
+		m_revealer.set_transition_duration(duration);
+		m_revealer.set_reveal_child(reveal);
 	}
 
 	public void activateUnreadEventbox(bool activate)

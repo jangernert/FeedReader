@@ -26,13 +26,6 @@ namespace FeedReader {
  		}
 	}
 
-	public enum LogLevel {
-		OFF,
-		ERROR,
-		MORE,
-		DEBUG
-	}
-
 	public enum ArticleListState {
 		ALL,
 		UNREAD,
@@ -40,21 +33,21 @@ namespace FeedReader {
 	}
 
 	public enum DragTarget {
-	    TAG,
-	    FEED,
+		TAG,
+		FEED,
 		CAT
 	}
 
 	public enum ConsoleColor {
-        BLACK,
-        RED,
-        GREEN,
-        YELLOW,
-        BLUE,
-        MAGENTA,
-        CYAN,
-        WHITE,
-    }
+		BLACK,
+		RED,
+		GREEN,
+		YELLOW,
+		BLUE,
+		MAGENTA,
+		CYAN,
+		WHITE,
+	}
 
 	public enum LogMessage {
 		ERROR,
@@ -79,7 +72,6 @@ namespace FeedReader {
 		UNREAD,
 		UNMARKED,
 		MARKED,
-		TOGGLE,
 		ALL;
 
 		public string to_string()
@@ -90,6 +82,20 @@ namespace FeedReader {
 		public int to_int()
 		{
 			return (int)this;
+		}
+
+		public string? column()
+		{
+			switch(this) {
+			case READ:
+			case UNREAD:
+				return "unread";
+			case MARKED:
+			case UNMARKED:
+				return "marked";
+			default:
+				return null;
+			}
 		}
 	}
 
@@ -178,16 +184,39 @@ namespace FeedReader {
 		NEVER,
 		ONE_WEEK,
 		ONE_MONTH,
-		SIX_MONTHS
+		SIX_MONTHS;
+
+		public int? to_weeks()
+		{
+			switch(this)
+			{
+			case NEVER:
+				return null;
+			case ONE_WEEK:
+				return 1;
+			case ONE_MONTH:
+				return 4;
+			case SIX_MONTHS:
+				return 24;
+			default:
+				assert_not_reached();
+			}
+		}
+
+		public DateTime? to_start_date()
+		{
+			int? weeks = to_weeks();
+			if(weeks == null)
+				return null;
+
+			return new DateTime.now_utc().add_weeks(-(int)weeks);
+		}
 	}
 
 	public enum FeedListType {
 		ALL_FEEDS,
-		SPACER,
-		SEPERATOR,
 		CATEGORY,
 		FEED,
-		HEADLINE,
 		TAG
 	}
 
@@ -217,6 +246,25 @@ namespace FeedReader {
 	public enum ScrollDirection {
 		UP,
 		DOWN
+	}
+
+	public enum EnclosureType {
+		IMAGE,
+		VIDEO,
+		AUDIO,
+		FILE;
+
+		public static EnclosureType from_string(string str)
+		{
+			if (str.contains("audio"))
+				return AUDIO;
+			else if (str.contains("video"))
+				return VIDEO;
+			else if (str.contains("image"))
+				return IMAGE;
+			else
+				return FILE;
+		}
 	}
 
 	[Flags] public enum BackendFlags {

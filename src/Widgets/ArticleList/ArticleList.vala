@@ -39,7 +39,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	private ulong m_handlerID2 = 0;
 	private ulong m_handlerID3 = 0;
 
-	public signal void row_activated(articleRow? row);
+	public signal void row_activated(ArticleRow? row);
 
 	public ArticleList()
 	{
@@ -113,7 +113,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 				}
 				m_height = allocation.height;
 			}
-        });
+		});
 	}
 
 	public async void newList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
@@ -128,11 +128,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 		Logger.debug("ArticleList: disallow signals from scroll");
 		m_currentScroll.allowSignals(false);
-		var articles = new Gee.LinkedList<article>();
+		Gee.List<Article> articles = new Gee.LinkedList<Article>();
 		uint offset = 0;
-		bool newArticles = false;
-		if(Settings.state().get_int("articlelist-new-rows") > 0 && m_state == ArticleListState.ALL)
-			newArticles = true;
 		SourceFunc callback = newList.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
@@ -141,7 +138,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			offset = getListOffset();
 
 			Logger.debug("load articles from db");
-			articles = dbUI.get_default().read_articles(m_selectedFeedListID,
+			articles = DataBase.readOnly().read_articles(m_selectedFeedListID,
 														m_selectedFeedListType,
 														m_state,
 														m_searchTerm,
@@ -159,6 +156,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 		if(articles.size == 0)
 		{
+			m_currentList.emptyList();
 			Logger.debug("ArticleList: no content, so allow signals from scroll again");
 			m_currentScroll.allowSignals(true);
 			if(offset == 0)
@@ -205,8 +203,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 				restoreScrollPos();
 				Logger.debug("ArticleList: allow signals from scroll");
 				m_currentScroll.allowSignals(true);
-				if(newArticles)
-					showNotification();
 
 				if(m_handlerID1 != 0)
 				{
@@ -243,14 +239,14 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(m_loadThread != null)
 			m_loadThread.join();
 
-		var articles = new Gee.LinkedList<article>();
+		Gee.List<Article> articles = new Gee.LinkedList<Article>();
 		SourceFunc callback = loadMore.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
 			Logger.debug("load articles from db");
-			uint offset = m_currentList.getSize() + determineNewRowCount(null, null);
+			uint offset = m_currentList.getSizeForState() + determineNewRowCount(null, null);
 
-			articles = dbUI.get_default().read_articles(m_selectedFeedListID,
+			articles = DataBase.readOnly().read_articles(m_selectedFeedListID,
 														m_selectedFeedListType,
 														m_state,
 														m_searchTerm,
@@ -268,10 +264,11 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 		if(articles.size > 0)
 		{
-			m_scroll2.valueChanged.disconnect(updateVisibleRows);
+			m_currentScroll.valueChanged.disconnect(updateVisibleRows);
 			m_currentList.addBottom(articles);
 			m_handlerID2 = m_currentList.loadDone.connect(() => {
-				m_scroll2.valueChanged.connect(updateVisibleRows);
+				m_currentScroll.startScrolledDownCooldown();
+				m_currentScroll.valueChanged.connect(updateVisibleRows);
 
 				if(m_handlerID2 != 0)
 				{
@@ -279,6 +276,10 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 					m_handlerID2 = 0;
 				}
 			});
+		}
+		else
+		{
+			m_currentScroll.startScrolledDownCooldown();
 		}
 	}
 
@@ -288,12 +289,12 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(m_loadThread != null)
 			m_loadThread.join();
 
-		var articles = new Gee.LinkedList<article>();
+		Gee.List<Article> articles = new Gee.LinkedList<Article>();
 		SourceFunc callback = loadNewer.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
 			Logger.debug("load articles from db");
-			articles = dbUI.get_default().read_articles(m_selectedFeedListID,
+			articles = DataBase.readOnly().read_articles(m_selectedFeedListID,
 														m_selectedFeedListType,
 														m_state,
 														m_searchTerm,
@@ -319,10 +320,10 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 					m_stack.set_visible_child_full("list2", Gtk.StackTransitionType.CROSSFADE);
 			}
 
-			m_scroll2.valueChanged.disconnect(updateVisibleRows);
+			m_currentScroll.valueChanged.disconnect(updateVisibleRows);
 			m_currentList.addTop(articles);
 			m_handlerID3 = m_currentList.loadDone.connect(() => {
-				m_scroll2.valueChanged.connect(updateVisibleRows);
+				m_currentScroll.valueChanged.connect(updateVisibleRows);
 
 				if(m_handlerID3 != 0)
 				{
@@ -355,80 +356,65 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(m_loadThread != null)
 			m_loadThread.join();
 
+		m_currentList.setAllUpdated(false);
+		var articles = DataBase.readOnly().read_article_stats(m_currentList.getIDs());
 		var children = m_currentList.get_children();
-		uint listSize = children.length();
-		string? firstRowID = m_currentList.getFirstRowID();
-		int newCount = 0;
-		if(firstRowID == null)
-			return;
 
-		var articles = new Gee.LinkedList<article>();
-		SourceFunc callback = updateArticleList.callback;
-		//-----------------------------------------------------------------------------------------------------------------------------------------------------
-		ThreadFunc<void*> run = () => {
-			Logger.debug("load articles from db");
-			newCount = dbUI.get_default().getArticleCountNewerThanID(
-														firstRowID,
-														m_selectedFeedListID,
-														m_selectedFeedListType,
-														m_state,
-														m_searchTerm);
-
-			articles = dbUI.get_default().read_articles(m_selectedFeedListID,
-														m_selectedFeedListType,
-														m_state,
-														m_searchTerm,
-														listSize,
-														newCount);
-			Logger.debug("actual articles loaded: " + articles.size.to_string());
-
-			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
-			return null;
-		};
-		//-----------------------------------------------------------------------------------------------------------------------------------------------------
-
-		m_loadThread = new GLib.Thread<void*>("create", run);
-		yield;
-
-		if(articles.size != 0)
+		foreach(var row in children)
 		{
-			var iterator = articles.list_iterator();
-
-			foreach(var row in children)
+			var tmpRow = row as ArticleRow;
+			if(tmpRow != null && articles.has_key(tmpRow.getID()))
 			{
-				iterator.next();
-				var articleRow = row as articleRow;
-				var article = iterator.get();
+				var a = articles.get(tmpRow.getID());
+				tmpRow.updateUnread(a.getUnread());
+				tmpRow.updateMarked(a.getMarked());
+				tmpRow.setUpdated(true);
+			}
+		}
 
-				if(articleRow.getID() == article.getArticleID())
+		m_currentList.removeObsoleteRows();
+		int length = (int)m_currentList.get_children().length();
+
+		for(int i = 1; i < length; i++)
+		{
+			ArticleRow? first = m_currentList.get_row_at_index(i-1) as ArticleRow;
+			ArticleRow? second = m_currentList.get_row_at_index(i) as ArticleRow;
+
+			if(first == null
+			|| second == null)
+				continue;
+
+			var insertArticles = DataBase.readOnly().read_article_between(	m_selectedFeedListID,
+																			m_selectedFeedListType,
+																			m_state,
+																			m_searchTerm,
+																			first.getID(),
+																			first.getDate(),
+																			second.getID(),
+																			second.getDate());
+
+			foreach(Article a in insertArticles)
+			{
+				if(m_currentList.insertArticle(a, i))
 				{
-					articleRow.updateUnread(article.getUnread());
-					articleRow.updateMarked(article.getMarked());
-				}
-				else
-				{
-					Logger.error("ArticleList.updateArticleList: id mismatch");
+					i++;
+					length++;
 				}
 			}
 		}
 
-
-
-		Logger.debug(@"ArticleList.updateArticleList: newCount $newCount");
-
-		if(newCount > 0)
-			checkForNewRows();
+		checkForNewRows();
 	}
 
 	private int determineNewRowCount(int? newCount, out int? offset)
 	{
 		int count = 0;
-		string? firstRowID = m_currentList.getFirstRowID();
+		ArticleRow? firstRow = m_currentList.getFirstRow();
 
-		if(firstRowID != null)
+		if(firstRow != null)
 		{
-			count = dbUI.get_default().getArticleCountNewerThanID(
-														firstRowID,
+			count = DataBase.readOnly().getArticleCountNewerThanID(
+														firstRow.getArticle().getArticleID(),
 														m_selectedFeedListID,
 														m_selectedFeedListType,
 														m_state,
@@ -456,7 +442,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			m_scrollChangedTimeout = 0;
 		}
 
-		// remove lower articleRows only after scrolling up
+		// remove lower ArticleRows only after scrolling up
 		if(direction == ScrollDirection.UP)
 		{
 			m_scrollChangedTimeout = GLib.Timeout.add(500, () => {
@@ -466,7 +452,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 				foreach(var r in children)
 				{
-					var row = r as articleRow;
+					var row = r as ArticleRow;
 					if(row != null)
 					{
 						if(m_currentScroll.isVisible(row, m_dynamicRowThreshold) == 1)
@@ -495,7 +481,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 			foreach(var r in children)
 			{
-				var row = r as articleRow;
+				var row = r as ArticleRow;
 				if(row != null)
 				{
 					int visible = m_currentScroll.isVisible(row);
@@ -562,7 +548,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			return;
 
 		m_overlay = new InAppNotification.withIcon(
-			_("New Articles"),
+			_("New articles"),
 			"feed-arrow-up-symbolic",
 			_("scroll up"));
 		m_overlay.action.connect(() => {
@@ -581,21 +567,30 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			m_overlay.dismiss();
 	}
 
-	public string getSelectedArticle()
+	public Article? getSelectedArticle()
 	{
 		if(m_stack.get_visible_child_name() == "empty"
 		|| m_stack.get_visible_child_name() == "syncing")
-			return "empty";
+			return null;
 
 		return m_currentList.getSelectedArticle();
 	}
 
-	public bool toggleReadSelected()
+	public Article? getFirstArticle()
+	{
+		ArticleRow? selectedRow = m_currentList.getFirstRow();
+		if(selectedRow == null)
+			return null;
+
+		return selectedRow.getArticle();
+	}
+
+	public ArticleStatus toggleReadSelected()
 	{
 		return m_currentList.toggleReadSelected();
 	}
 
-	public bool toggleMarkedSelected()
+	public ArticleStatus toggleMarkedSelected()
 	{
 		return m_currentList.toggleMarkedSelected();
 	}
@@ -615,7 +610,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		var children = m_currentList.get_children();
 		foreach(var row in children)
 		{
-			var tmpRow = row as articleRow;
+			var tmpRow = row as ArticleRow;
 			if(tmpRow != null)
 			{
 				var height = tmpRow.get_allocated_height();
@@ -640,11 +635,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	private uint getListOffset()
 	{
 		uint offset = (uint)Settings.state().get_int("articlelist-row-offset");
-		Logger.debug("ArticleList: new-rows %i".printf(Settings.state().get_int("articlelist-new-rows")));
-		if(m_state == ArticleListState.ALL)
-			offset += (uint)Settings.state().get_int("articlelist-new-rows");
 		Settings.state().set_int("articlelist-row-offset", 0);
-		Settings.state().set_int("articlelist-new-rows", 0);
 		return offset;
 	}
 
@@ -737,26 +728,19 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_currentList.markAllAsRead();
 	}
 
-	public ArticleStatus getSelectedArticleMarked()
-	{
-		return m_currentList.getSelectedArticleMarked();
-	}
-
-	public ArticleStatus getSelectedArticleRead()
-	{
-		return m_currentList.getSelectedArticleRead();
-	}
-
 	public void openSelected()
 	{
-		string selectedURL = m_currentList.selectedURL();
-		try
+		Article? selectedArticle = m_currentList.getSelectedArticle();
+		if(selectedArticle != null)
 		{
-			Gtk.show_uri_on_window(MainWindow.get_default(), selectedURL, Gdk.CURRENT_TIME);
-		}
-		catch(GLib.Error e)
-		{
-			Logger.debug("could not open the link in an external browser: %s".printf(e.message));
+			try
+			{
+				Gtk.show_uri_on_window(MainWindow.get_default(), selectedArticle.getURL(), Gdk.CURRENT_TIME);
+			}
+			catch(GLib.Error e)
+			{
+				Logger.debug("could not open the link in an external browser: %s".printf(e.message));
+			}
 		}
 	}
 
@@ -780,7 +764,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	public void syncFinished()
 	{
 		m_syncing = false;
-		if(m_stack.get_visible_child_name() == "syncing" && UtilsUI.getRelevantArticles(20) == 0)
+		if(m_stack.get_visible_child_name() == "syncing" && Utils.getRelevantArticles() == 0)
 		{
 			m_stack.set_visible_child_full("empty", Gtk.StackTransitionType.CROSSFADE);
 		}
@@ -788,7 +772,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 	private void rowActivated(Gtk.ListBoxRow row)
 	{
-		row_activated((articleRow)row);
+		row_activated((ArticleRow)row);
 	}
 
 	public void clear()

@@ -3,7 +3,7 @@
 	<gresource prefix="/org/gnome/FeedReader">
 		<file preprocess="xml-stripblanks">icons/64x64/places/feed-service-local.svg</file>
 		<file preprocess="xml-stripblanks">icons/64x64/places/feed-service-local-symbolic.svg</file>
-		
+
 		<file compressed="true">recommendedFeeds.json</file>
 	</gresource>
 </gresources>

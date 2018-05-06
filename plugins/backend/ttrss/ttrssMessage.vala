@@ -21,30 +21,18 @@ public class FeedReader.ttrssMessage : GLib.Object {
 	private string m_contenttype;
 	private Json.Parser m_parser;
 	private Json.Object m_root_object;
-	private ttrssUtils m_utils;
 
-
-	public ttrssMessage(string destination)
+	public ttrssMessage(Soup.Session session, string destination)
 	{
-		m_utils = new ttrssUtils();
 		m_message_string = new GLib.StringBuilder();
-		m_session = new Soup.Session();
-		m_session.user_agent = Constants.USER_AGENT;
-		m_session.ssl_strict = false;
+		m_session = session;
 		m_contenttype = "application/x-www-form-urlencoded";
 		m_parser = new Json.Parser();
 
 		m_message_soup = new Soup.Message("POST", destination);
-		m_session.authenticate.connect((msg, auth, retrying) => {
-			if(m_utils.getHtaccessUser() == "")
-			{
-				Logger.error("TTRSS Session: need Authentication");
-			}
-			else
-			{
-				auth.authenticate(m_utils.getHtaccessUser(), m_utils.getHtaccessPasswd());
-			}
-		});
+
+		if(m_message_soup == null)
+			Logger.error(@"ttrssMessage: can't send message to $destination");
 	}
 
 
@@ -74,6 +62,24 @@ public class FeedReader.ttrssMessage : GLib.Object {
 
 	public ConnectionError send(bool ping = false)
 	{
+		var error = send_impl(ping);
+		if(error != ConnectionError.SUCCESS)
+		{
+			printMessage();
+			printResponse();
+		}
+
+		return error;
+	}
+
+	public ConnectionError send_impl(bool ping)
+	{
+		if(m_message_soup == null)
+		{
+			Logger.error(@"ttrssMessage: can't send message");
+			return ConnectionError.UNKNOWN;
+		}
+
 		var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 		m_message_string.overwrite(0, "{").append("}");
 		m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, m_message_string.str.data);
@@ -95,8 +101,7 @@ public class FeedReader.ttrssMessage : GLib.Object {
 		}
 
 
-		if((string)m_message_soup.response_body.flatten().data == null
-		|| (string)m_message_soup.response_body.flatten().data == "")
+		if(m_message_soup.status_code != 200)
 		{
 			Logger.error("TTRSS Message: No response - status code: %s".printf(Soup.Status.get_phrase(m_message_soup.status_code)));
 			return ConnectionError.NO_RESPONSE;
@@ -104,14 +109,16 @@ public class FeedReader.ttrssMessage : GLib.Object {
 
 		if(ping)
 		{
-			Logger.debug("TTRSS Message: ping successfull");
+			Logger.debug("TTRSS Message: ping successful");
 			return ConnectionError.SUCCESS;
 		}
 
-		try{
+		try
+		{
 			m_parser.load_from_data((string)m_message_soup.response_body.flatten().data);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("Could not load response from Message to ttrss");
 			Logger.error(e.message);
 			return ConnectionError.NO_RESPONSE;
@@ -182,6 +189,11 @@ public class FeedReader.ttrssMessage : GLib.Object {
 			return m_root_object.get_array_member("content");
 		}
 		return null;
+	}
+
+	public uint getStatusCode()
+	{
+		return m_message_soup.status_code;
 	}
 
 	public void printMessage()

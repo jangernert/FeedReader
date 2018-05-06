@@ -2,6 +2,7 @@
 Module=inoreader
 Loader=C
 Name=InoReader
+Version=0.1
 Description=Add InoReader backend to FeedReader
 Authors=Jan Lukas Gernert <jangernert@gmail.com>
 Copyright=Copyright © 2015-16 Jan Lukas Gernert

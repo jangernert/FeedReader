@@ -1,2 +1,0 @@
-date: //span[@class="publishdate"]//time
-author: //span[@class="byline"]

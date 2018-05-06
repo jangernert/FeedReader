@@ -22,11 +22,11 @@ public class FeedReader.SharePopover : Gtk.Popover {
 
 	public SharePopover(Gtk.Widget widget)
 	{
-        m_list = new Gtk.ListBox();
-        m_list.margin = 10;
-        m_list.set_selection_mode(Gtk.SelectionMode.NONE);
-        m_list.row_activated.connect(clicked);
-        refreshList();
+		m_list = new Gtk.ListBox();
+		m_list.margin = 10;
+		m_list.set_selection_mode(Gtk.SelectionMode.NONE);
+		m_list.row_activated.connect(clicked);
+		refreshList();
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_duration(150);
 		m_stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT);
@@ -36,11 +36,11 @@ public class FeedReader.SharePopover : Gtk.Popover {
 		this.set_modal(true);
 		this.set_relative_to(widget);
 		this.set_position(Gtk.PositionType.BOTTOM);
-        this.show_all();
+		this.show_all();
 	}
 
-    public void refreshList()
-    {
+	public void refreshList()
+	{
 		var children = m_list.get_children();
 		foreach(Gtk.Widget row in children)
 		{
@@ -48,12 +48,12 @@ public class FeedReader.SharePopover : Gtk.Popover {
 			row.destroy();
 		}
 
-    	var list = Share.get_default().getAccounts();
+		var list = Share.get_default().getAccounts();
 
-        foreach(var account in list)
-        {
-        	m_list.add(new ShareRow(account.getType(), account.getID(), account.getUsername(), account.getIconName()));
-        }
+		foreach(var account in list)
+		{
+			m_list.add(new ShareRow(account.getType(), account.getID(), account.getUsername(), account.getIconName()));
+		}
 
 		var addRow = new Gtk.ListBoxRow();
 		addRow.margin = 2;
@@ -61,20 +61,20 @@ public class FeedReader.SharePopover : Gtk.Popover {
 		var addIcon = new Gtk.Image.from_icon_name("list-add-symbolic", Gtk.IconSize.DND);
 		var addLabel = new Gtk.Label(_("Add accounts"));
 		addLabel.set_line_wrap_mode(Pango.WrapMode.WORD);
-        addLabel.set_ellipsize(Pango.EllipsizeMode.END);
-        addLabel.set_alignment(0.0f, 0.5f);
-        addLabel.get_style_context().add_class("h4");
+		addLabel.set_ellipsize(Pango.EllipsizeMode.END);
+		addLabel.set_alignment(0.0f, 0.5f);
+		addLabel.get_style_context().add_class("h4");
 
 		var addBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);
 		addBox.margin = 3;
-        addBox.pack_start(addIcon, false, false, 8);
-        addBox.pack_start(addLabel, true, true, 0);
+		addBox.pack_start(addIcon, false, false, 8);
+		addBox.pack_start(addLabel, true, true, 0);
 
 		if(list.size > 0)
 		{
 			var seperatorBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
 			seperatorBox.pack_start(new Gtk.Separator(Gtk.Orientation.HORIZONTAL), false, false, 0);
-	        seperatorBox.pack_start(addBox, true, true, 0);
+			seperatorBox.pack_start(addBox, true, true, 0);
 			addRow.add(seperatorBox);
 		}
 		else
@@ -84,11 +84,11 @@ public class FeedReader.SharePopover : Gtk.Popover {
 
 		addRow.show_all();
 		m_list.add(addRow);
-    }
+	}
 
-    private void clicked(Gtk.ListBoxRow row)
-    {
-        ShareRow? shareRow = row as ShareRow;
+	private void clicked(Gtk.ListBoxRow row)
+	{
+		ShareRow? shareRow = row as ShareRow;
 
 		if(shareRow == null)
 		{
@@ -98,26 +98,29 @@ public class FeedReader.SharePopover : Gtk.Popover {
 			return;
 		}
 
-        string url = "";
-        string id = shareRow.getID();
+		string id = shareRow.getID();
+		Article? selectedArticle = ColumnView.get_default().getSelectedArticle();
 
-        url = ColumnView.get_default().getSelectedURL();
-		var widget = Share.get_default().shareWidget(shareRow.getType(), url);
-		if(widget == null)
-			shareURL(id, url);
-		else
+		if(selectedArticle != null)
 		{
-			m_stack.add_named(widget, "form");
-			m_stack.set_visible_child_name("form");
-			widget.share.connect_after(() => {
-				shareURL(id, url);
-			});
-			widget.goBack.connect(() => {
-				m_stack.set_visible_child_full("list", Gtk.StackTransitionType.SLIDE_RIGHT);
-				m_stack.remove(widget);
-			});
+			var widget = Share.get_default().shareWidget(shareRow.getType(), selectedArticle.getURL());
+			if(widget == null)
+				shareURL(id, selectedArticle.getURL());
+			else
+			{
+				m_stack.add_named(widget, "form");
+				m_stack.set_visible_child_name("form");
+				widget.share.connect_after(() => {
+					shareURL(id, selectedArticle.getURL());
+				});
+				widget.goBack.connect(() => {
+					m_stack.set_visible_child_full("list", Gtk.StackTransitionType.SLIDE_RIGHT);
+					m_stack.remove(widget);
+				});
+			}
 		}
-    }
+
+	}
 
 	private async void shareAsync(string id, string url)
 	{
@@ -139,7 +142,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
 			shareDone();
 		});
 		string idString = (id == null || id == "") ? "" : @" to $id";
-        Logger.debug(@"bookmark: $url$idString");
+		Logger.debug(@"bookmark: $url$idString");
 	}
 }
 

@@ -2,6 +2,7 @@
 Module=feedbin
 Loader=C
 Name=Feedbin
+Version=0.1
 Description=Add Feedbin backend to FeedReader
 Authors=Jan Lukas Gernert <jangernert@gmail.com>
 Copyright=Copyright © 2015-16 Jan Lukas Gernert

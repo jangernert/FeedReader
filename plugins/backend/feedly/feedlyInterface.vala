@@ -17,11 +17,87 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	private FeedlyAPI m_api;
 	private FeedlyUtils m_utils;
+	private DataBaseReadOnly m_db;
+	private DataBase m_db_write;
 
-	public void init()
+	public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets, DataBaseReadOnly db, DataBase db_write)
 	{
-		m_api = new FeedlyAPI();
-		m_utils = new FeedlyUtils();
+		m_db = db;
+		m_db_write = db_write;
+		m_utils = new FeedlyUtils(settings_backend);
+		m_api = new FeedlyAPI(m_utils, db);
+	}
+
+	public string getWebsite()
+	{
+		return "http://feedly.com/";
+	}
+
+	public BackendFlags getFlags()
+	{
+		return (BackendFlags.HOSTED | BackendFlags.PROPRIETARY | BackendFlags.PAID_PREMIUM);
+	}
+
+	public string getID()
+	{
+		return "feedly";
+	}
+
+	public string iconName()
+	{
+		return "feed-service-feedly";
+	}
+
+	public string serviceName()
+	{
+		return "feedly";
+	}
+
+	public bool needWebLogin()
+	{
+		return true;
+	}
+
+	public Gtk.Box? getWidget()
+	{
+		return null;
+	}
+
+	public void showHtAccess()
+	{
+		return;
+	}
+
+	public void writeData()
+	{
+		return;
+	}
+
+	public async void postLoginAction()
+	{
+		return;
+	}
+
+	public bool extractCode(string redirectURL)
+	{
+		if(redirectURL.has_prefix(FeedlySecret.apiRedirectUri))
+		{
+			int start = redirectURL.index_of("=")+1;
+			int end = redirectURL.index_of("&");
+			string code = redirectURL.substring(start, end-start);
+			m_utils.setApiCode(code);
+			Logger.debug("feedlyLoginWidget: set feedly-api-code: " + code);
+			GLib.Thread.usleep(500000);
+			return true;
+		}
+
+		return false;
+	}
+
+	public string buildLoginURL()
+	{
+		return FeedlySecret.base_uri + "/v3/auth/auth" + "?client_secret=" + FeedlySecret.apiClientSecret + "&client_id=" + FeedlySecret.apiClientId
+					+ "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&scope=" + FeedlySecret.apiAuthScope + "&response_type=code&state=getting_code";
 	}
 
 	public bool supportTags()
@@ -54,7 +130,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		return "";
 	}
 
-	public bool hideCagetoryWhenEmtpy(string catID)
+	public bool hideCategoryWhenEmpty(string catID)
 	{
 		return catID.has_suffix("global.must");
 	}
@@ -79,15 +155,20 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		return true;
 	}
 
+	public bool syncFeedsAndCategories()
+	{
+		return true;
+	}
+
 	public bool tagIDaffectedByNameChange()
 	{
 		return false;
 	}
 
 	public void resetAccount()
-    {
-        m_utils.resetAccount();
-    }
+	{
+		m_utils.resetAccount();
+	}
 
 	public bool useMaxArticles()
 	{
@@ -126,7 +207,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		m_api.mark_as_read(feedID, "feeds", ArticleStatus.READ);
 	}
 
-	public void setCategorieRead(string catID)
+	public void setCategoryRead(string catID)
 	{
 		m_api.mark_as_read(catID, "categories", ArticleStatus.READ);
 	}
@@ -136,17 +217,17 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		string catArray = "";
 		string feedArray = "";
 
-		var categories = dbDaemon.get_default().read_categories();
-		var feeds = dbDaemon.get_default().read_feeds_without_cat();
+		var categories = m_db.read_categories();
+		var feeds = m_db.read_feeds_without_cat();
 
-		foreach(category cat in categories)
+		foreach(Category cat in categories)
 		{
 			catArray += cat.getCatID() + ",";
 		}
 
-		foreach(feed Feed in feeds)
+		foreach(Feed feed in feeds)
 		{
-			feedArray += Feed.getFeedID() + ",";
+			feedArray += feed.getFeedID() + ",";
 		}
 
 		m_api.mark_as_read(catArray.substring(0, catArray.length-1), "categories", ArticleStatus.READ);
@@ -183,24 +264,31 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		return Utils.ping("http://feedly.com/");
 	}
 
-	public string addFeed(string feedURL, string? catID, string? newCatName)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
+		feedID = "feed/" + feedURL;
+		bool success = false;
+		errmsg = "";
+
 		if(catID == null && newCatName != null)
 		{
 			string newCatID = m_api.createCatID(newCatName);
-			m_api.addSubscription(feedURL, null, newCatID);
+			success = m_api.addSubscription(feedURL, null, newCatID);
 		}
 		else
 		{
-			m_api.addSubscription(feedURL, null, catID);
+			success = m_api.addSubscription(feedURL, null, catID);
 		}
 
-		return "feed/" + feedURL;
+		if(!success)
+			errmsg = @"feedly could not add $feedURL";
+
+		return success;
 	}
 
-	public void addFeeds(Gee.LinkedList<feed> feeds)
+	public void addFeeds(Gee.List<Feed> feeds)
 	{
-		foreach(feed f in feeds)
+		foreach(Feed f in feeds)
 		{
 			m_api.addSubscription(f.getXmlUrl(), null, f.getCatIDs()[0]);
 		}
@@ -213,7 +301,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void renameFeed(string feedID, string title)
 	{
-		var feed = dbDaemon.get_default().read_feed(feedID);
+		var feed = m_db.read_feed(feedID);
 		m_api.addSubscription(feed.getFeedID(), title, feed.getCatString());
 	}
 
@@ -244,7 +332,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void removeCatFromFeed(string feedID, string catID)
 	{
-		var feed = dbDaemon.get_default().read_feed(feedID);
+		var feed = m_db.read_feed(feedID);
 		m_api.addSubscription(feed.getFeedID(), feed.getTitle(), feed.getCatString().replace(catID + ",", ""));
 	}
 
@@ -253,14 +341,24 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		m_api.importOPML(opml);
 	}
 
-	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		m_api.getUnreadCounts();
 
-		if(m_api.getCategories(categories)
-		&& m_api.getFeeds(feeds)
-		&& m_api.getTags(tags))
-			return true;
+		if(m_api.getCategories(categories))
+		{
+			if(cancellable != null && cancellable.is_cancelled())
+				return false;
+
+			if(m_api.getFeeds(feeds))
+			{
+				if(cancellable != null && cancellable.is_cancelled())
+					return false;
+
+				if(m_api.getTags(tags))
+					return true;
+			}
+		}
 
 		return false;
 	}
@@ -270,9 +368,9 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		return m_api.getTotalUnread();
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID)
+	public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
-		string continuation = "";
+		string continuation = null;
 		string feedly_tagID = "";
 		string feedly_feedID = "";
 		if(feedID != null)
@@ -289,10 +387,13 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 		int skip = count;
 		int amount = 200;
-		var articles = new Gee.LinkedList<article>();
+		var articles = new Gee.LinkedList<Article>();
 
 		while(skip > 0)
 		{
+			if(cancellable != null && cancellable.is_cancelled())
+				return;
+
 			if(skip >= amount)
 			{
 				skip -= amount;
@@ -305,7 +406,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 			continuation = m_api.getArticles(articles, amount, continuation, whatToGet, feedly_tagID, feedly_feedID);
 
-			if(continuation == "")
+			if(continuation == null)
 				break;
 		}
 

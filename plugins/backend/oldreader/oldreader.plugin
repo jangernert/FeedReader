@@ -2,6 +2,7 @@
 Module=oldreader
 Loader=C
 Name=TheOldReader
+Version=0.1
 Description=Add TheOldReader backend to FeedReader
 Authors=Anwesh Reddy <kanishkablack@gmx.com>
 Copyright=Copyright © 2015-16 Anwesh Reddy

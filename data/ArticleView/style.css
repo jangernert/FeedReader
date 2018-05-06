@@ -123,18 +123,17 @@ section {
 
 div.pw {
     width: 90%;
-    max-width: 1100px;
     margin: 0 auto;
     padding: 5% 0;
 }
 
 body {
-    padding: 3rem;
     cursor: default;
-    font-family: 'Droid Sans', 'Open Sans';
-    font-weight: 300;
-    max-width: 1200px;
-    margin: auto;
+    font-weight: normal;
+    max-width: 50em;
+	margin: auto;
+	text-rendering: optimizeLegibility;
+	margin-top: 1rem;
 }
 
 .tlblue {
@@ -152,42 +151,52 @@ h3,
 h4,
 h5,
 h6 {
-    color: #318c34;
     font-weight: 500;
-    font-family: 'Open Sans', Arial, sans-serif, sans;
     text-align: left;
     line-height: 120%;
+}
+
+h1 a,
+h2 a,
+h3 a,
+h4 a,
+h5 a,
+h6 a {
+    color: #1d1f1c;
+}
+
+h1 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    font-weight: normal;
 }
 
 h2 {
     margin-top: 2rem;
     margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid #318c34;
-    font-size: 2.5rem;
-    font-weight: 300;
+    font-size: 1.5rem;
+    font-weight: normal;
 }
 
 h3 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     margin-bottom: 0.5rem;
 }
 
 h4 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     margin-bottom: 0.5rem;
     text-transform: uppercase;
-    font-weight: 300;
+    font-weight: normal;
 }
 
 h5 {
-    color: #000;
     font-size: 1.2rem;
     margin-bottom: 0.25rem;
 }
 
 h6 {
-    color: #000;
     font-size: 1rem;
     margin-bottom: 0.25rem;
     text-transform: uppercase;
@@ -243,7 +252,6 @@ a :not(img){
 }
 
 a {
-    color: #318c34;
     text-overflow: ellipsis;
 }
 
@@ -273,7 +281,7 @@ img {
 figure {
     display: inline-block;
     margin: 2rem auto;
-    padding: 1rem;
+    margin: 1rem;
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
@@ -297,8 +305,7 @@ figure:first-child {
 }
 
 header.post {
-    padding: 2rem;
-    background: rgba(0, 0, 0, 0.05);
+    padding: 1rem 2rem;
 }
 
 div.introtext {
@@ -306,8 +313,9 @@ div.introtext {
 }
 
 header.post h1 {
-    color: #000;
     font-weight: 600;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 header.post a:link {
@@ -326,10 +334,8 @@ header.post span.author {
     font-size: 0.75rem;
 }
 
-div.content {
-    padding: 2rem;
-    margin-bottom: 3rem;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+div.frcontent {
+    padding: 1rem 2rem;
     text-align: justify;
     font-size: inherit;
 }
@@ -353,8 +359,8 @@ dd:after {
 blockquote {
     margin-top: 10px;
     margin-bottom: 10px;
-    margin-left: 50px;
-    padding-left: 15px;
+	padding-left: 15px;
+	margin-left: 15px;
     border-left: 3px solid #ccc;
 }
 
@@ -377,147 +383,162 @@ b {
 	height: 100%;
 }
 
+/* Themes with no background boxes need less padding */
+body.theme.default header.post, body.theme.parchment header.post,
+body.theme.default div.frcontent, body.theme.parchment div.frcontent
+{
+	padding-top: 0;
+	padding-bottom: 0;
+	margin-bottom: 1rem;
+	margin-top: 1rem;
+}
 
 /* DEFAULT THEME*/
 
-div.theme.default {
+body.theme.default {
     background: white;
 }
 
+footer,
+iframe,
+img,
+figure {
+	border: none;
+}
 
 /* MIDNIGHT THEME -- also default dark */
 
-div.theme.midnight {
+body.theme.midnight {
     color: rgba(255, 255, 255, 0.6);
     background: #233540;
 }
 
-div.theme.midnight pre,
-div.theme.midnight pre code,
-div.theme.midnight code {
+body.theme.midnight pre,
+body.theme.midnight pre code,
+body.theme.midnight code {
     background-color: rgba(255, 255, 255, 0.6);
     color: #233540;
 }
 
-div.theme.midnight table,
-div.theme.midnight th,
-div.theme.midnight td {
+body.theme.midnight table,
+body.theme.midnight th,
+body.theme.midnight td {
     border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
-div.theme.midnight div.content th,
-div.theme.midnight header.post {
+body.theme.midnight div.frcontent th,
+body.theme.midnight header.post {
     background: rgba(0, 0, 0, 0.1);
 }
 
-div.theme.midnight header.post h1 {
+body.theme.midnight header.post h1 {
     color: #fff;
 }
 
-div.theme.midnight header.post h1 a {
+body.theme.midnight header.post h1 a {
     color: #9BA6AC;
 }
 
-div.theme.midnight header.post span.source {
+body.theme.midnight header.post span.source {
     color: #2978a6;
 }
 
-div.theme.midnight header.post span.author {
+body.theme.midnight header.post span.author {
     color: rgba(255, 255, 255, 0.6);
 }
 
-div.theme.midnight div.content {
+body.theme.midnight div.frcontent {
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-div.theme.midnight div.content a {
+body.theme.midnight div.frcontent a {
     color: #2978a6;
 }
 
-div.theme.midnight div.content h1,
-div.theme.midnight div.content h2,
-div.theme.midnight div.content h3,
-div.theme.midnight div.content h4 {
+body.theme.midnight div.frcontent h1,
+body.theme.midnight div.frcontent h2,
+body.theme.midnight div.frcontent h3,
+body.theme.midnight div.frcontent h4 {
     color: #2978a6;
 }
 
-div.theme.midnight div.content h2 {
+body.theme.midnight div.frcontent h2 {
     border-color: #2978a6;
 }
 
-div.theme.midnight div.content body,
-div.theme.midnight div.content ul,
-div.theme.midnight div.content figcaption,
-div.theme.midnight div.content h5,
-div.theme.midnight div.content h6,
-div.theme.midnight div.content p {
+body.theme.midnight div.frcontent body,
+body.theme.midnight div.frcontent ul,
+body.theme.midnight div.frcontent figcaption,
+body.theme.midnight div.frcontent h5,
+body.theme.midnight div.frcontent h6,
+body.theme.midnight div.frcontent p {
     color: rgba(255, 255, 255, 0.6);
     text-align: justify;
 }
 
-div.theme.spring {
+body.theme.spring {
     background: #f8fff2;
 }
 
-div.theme.spring header.post {
+body.theme.spring header.post {
     background: #ccffa6;
 }
 
-div.theme.spring header.post h1 {
+body.theme.spring header.post h1 {
     color: #405e80;
 }
 
-div.theme.spring header.post span.source {
+body.theme.spring header.post span.source {
     color: #405e80;
 }
 
-div.theme.spring div.content {
+body.theme.spring div.frcontent {
     border: 1px solid #ccffa6;
 }
 
-div.theme.spring div.content a {
+body.theme.spring div.frcontent a {
     color: #405e80;
 }
 
-div.theme.spring div.content h1,
-div.theme.spring div.content h2,
-div.theme.spring div.content h3,
-div.theme.spring div.content h4 {
+body.theme.spring div.frcontent h1,
+body.theme.spring div.frcontent h2,
+body.theme.spring div.frcontent h3,
+body.theme.spring div.frcontent h4 {
     color: #405e80;
 }
 
-div.theme.spring div.content h2 {
+body.theme.spring div.frcontent h2 {
     border-color: #405e80;
 }
 
-div.theme.parchment {
+body.theme.parchment {
     background: #faf2e1;
 }
 
-div.theme.parchment header.post h1 {
+body.theme.parchment header.post h1 {
     color: #99400f;
 }
 
-div.theme.parchment div.content a {
+body.theme.parchment div.frcontent a {
     color: #99400f;
 }
 
-div.theme.parchment div.content h1,
-div.theme.parchment div.content h2,
-div.theme.parchment div.content h3,
-div.theme.parchment div.content h4 {
+body.theme.parchment div.frcontent h1,
+body.theme.parchment div.frcontent h2,
+body.theme.parchment div.frcontent h3,
+body.theme.parchment div.frcontent h4 {
     color: #99400f;
 }
 
-div.theme.parchment div.content h2 {
+body.theme.parchment div.frcontent h2 {
     border-color: #99400f;
 }
 
-div.theme.parchment div.content body,
-div.theme.parchment div.content ul,
-div.theme.parchment div.content figcaption,
-div.theme.parchment div.content h5,
-div.theme.parchment div.content h6,
-div.theme.parchment div.content p {
+body.theme.parchment div.frcontent body,
+body.theme.parchment div.frcontent ul,
+body.theme.parchment div.frcontent figcaption,
+body.theme.parchment div.frcontent h5,
+body.theme.parchment div.frcontent h6,
+body.theme.parchment div.frcontent p {
     color: rgba(0, 0, 0, 0.8);
 }

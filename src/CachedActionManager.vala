@@ -74,19 +74,19 @@ public class FeedReader.CachedActionManager : GLib.Object {
 
 	private void addAction(CachedAction action)
 	{
-		if(dbDaemon.get_default().cachedActionNecessary(action))
+		if(DataBase.writeAccess().cachedActionNecessary(action))
 		{
-			dbDaemon.get_default().addCachedAction(action.getType(), action.getID());
+			DataBase.writeAccess().addCachedAction(action.getType(), action.getID());
 		}
 		else
 		{
-			dbDaemon.get_default().deleteOppositeCachedAction(action);
+			DataBase.writeAccess().deleteOppositeCachedAction(action);
 		}
 	}
 
 	public void executeActions()
 	{
-		if(dbDaemon.get_default().isTableEmpty("CachedActions"))
+		if(DataBase.readOnly().isTableEmpty("CachedActions"))
 		{
 			Logger.debug("CachedActionManager - executeActions: no actions to perform");
 			return;
@@ -95,7 +95,7 @@ public class FeedReader.CachedActionManager : GLib.Object {
 
 		Logger.debug("CachedActionManager: executeActions");
 
-		var actions = dbDaemon.get_default().readCachedActions();
+		var actions = DataBase.writeAccess().readCachedActions();
 
 		foreach(CachedAction action in actions)
 		{
@@ -126,7 +126,7 @@ public class FeedReader.CachedActionManager : GLib.Object {
 					FeedServer.get_default().setFeedRead(action.getID());
 					break;
 				case CachedActions.MARK_READ_CATEGORY:
-					FeedServer.get_default().setCategorieRead(action.getID());
+					FeedServer.get_default().setCategoryRead(action.getID());
 					break;
 				case CachedActions.MARK_READ_ALL:
 					FeedServer.get_default().markAllItemsRead();
@@ -140,6 +140,8 @@ public class FeedReader.CachedActionManager : GLib.Object {
 		{
 			execute(m_ids.substring(1), m_lastAction);
 		}
+
+		DataBase.writeAccess().resetCachedActions();
 	}
 
 	private void execute(string ids, CachedActions action)

@@ -2,6 +2,7 @@
 Module=ttrss
 Loader=C
 Name=Tiny Tiny RSS
+Version=0.1
 Description=Add Tiny Tiny RSS backend to FeedReader
 Authors=Jan Lukas Gernert <jangernert@gmail.com>
 Copyright=Copyright © 2015-16 Jan Lukas Gernert

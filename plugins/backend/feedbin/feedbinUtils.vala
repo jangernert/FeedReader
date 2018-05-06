@@ -13,129 +13,53 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.feedbinUtils : GLib.Object {
+public class FeedReader.FeedbinUtils : GLib.Object {
 
 	GLib.Settings m_settings;
+	Password m_password;
 
-	public feedbinUtils()
+	public FeedbinUtils(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 	{
-		m_settings = new GLib.Settings("org.gnome.feedreader.feedbin");
+		if(settings_backend != null)
+			m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.feedbin", settings_backend);
+		else
+			m_settings = new GLib.Settings("org.gnome.feedreader.feedbin");
+
+		var password_schema =
+			new Secret.Schema("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+							  "URL", Secret.SchemaAttributeType.STRING,
+							  "Username", Secret.SchemaAttributeType.STRING);
+		m_password = new Password(secrets, password_schema, "FeedReader: feedbin login", () => {
+			var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+			attributes["URL"] = "feedbin.com";
+			attributes["Username"] = getUser();
+			return attributes;
+		});
 	}
 
 	public string getUser()
 	{
-		return m_settings.get_string("username");
+		return Utils.gsettingReadString(m_settings, "username");
 	}
 
 	public void setUser(string user)
 	{
-		m_settings.set_string("username", user);
+		Utils.gsettingWriteString(m_settings, "username", user);
 	}
 
-	public string getPasswd()
+	public string getPassword(Cancellable? cancellable = null)
 	{
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-		                                  "URL", Secret.SchemaAttributeType.STRING,
-		                                  "Username", Secret.SchemaAttributeType.STRING);
-
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["URL"] = "feedbin.com";
-		attributes["Username"] = getUser();
-
-		string passwd = "";
-
-		try{
-			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
-		}
-		catch(GLib.Error e){
-			Logger.error(e.message);
-		}
-
-		if(passwd == null)
-		{
-			return "";
-		}
-
-		return passwd;
+		return m_password.get_password(cancellable);
 	}
 
-	public void setPassword(string passwd)
+	public void setPassword(string password, Cancellable? cancellable = null)
 	{
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-										  "URL", Secret.SchemaAttributeType.STRING,
-										  "Username", Secret.SchemaAttributeType.STRING);
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["URL"] = "feedbin.com";
-		attributes["Username"] = getUser();
-		try
-		{
-			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "FeedReader: feedbin login", passwd, null);
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("feedbinUtils: setPassword: " + e.message);
-		}
+		m_password.set_password(password, cancellable);
 	}
 
-	public void resetAccount()
+	public void resetAccount(Cancellable? cancellable = null)
 	{
 		Utils.resetSettings(m_settings);
-		deletePassword();
-	}
-
-	public bool deletePassword()
-	{
-		bool removed = false;
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-										"URL", Secret.SchemaAttributeType.STRING,
-										"Username", Secret.SchemaAttributeType.STRING);
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["URL"] = "feedbin.com";
-		attributes["Username"] = getUser();
-
-		Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
-			try
-			{
-				removed = Secret.password_clearv.end(async_res);
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("feedbinUtils.deletePassword: %s".printf(e.message));
-			}
-		});
-		return removed;
-	}
-
-	public string? catExists(Gee.LinkedList<category> categories, string name)
-	{
-		foreach(category cat in categories)
-		{
-			if(cat.getTitle() == name)
-				return cat.getCatID();
-		}
-
-		return null;
-	}
-
-	public void addFeedToCat(Gee.LinkedList<feed> feeds, string feedID, string catID)
-	{
-		foreach(feed f in feeds)
-		{
-			if(f.getFeedID() == feedID)
-			{
-				f.setCats( {catID} );
-			}
-		}
-	}
-
-	public bool isIDinArray(string[] arrayID, string id)
-	{
-		foreach(string i in arrayID)
-		{
-			if(i == id)
-				return true;
-		}
-
-		return false;
+		m_password.delete_password(cancellable);
 	}
 }

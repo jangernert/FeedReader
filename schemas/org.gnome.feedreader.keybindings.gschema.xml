@@ -4,59 +4,59 @@
 		<key name="articlelist-prev" type="s">
 			<default>'j'</default>
 		</key>
-		
+
 		<key name="articlelist-next" type="s">
 			<default>'k'</default>
 		</key>
-		
+
 		<key name="articleview-up" type="s">
 			<default>'i'</default>
 		</key>
-		
+
 		<key name="articleview-down" type="s">
 			<default>'u'</default>
 		</key>
-		
+
 		<key name="articlelist-toggle-read" type="s">
 			<default>'r'</default>
 		</key>
-		
+
 		<key name="articlelist-toggle-marked" type="s">
 			<default>'m'</default>
 		</key>
-		
+
 		<key name="articlelist-open-url" type="s">
 			<default>'o'</default>
 		</key>
-		
+
 		<key name="feedlist-mark-read" type="s">
 			<default>'&lt;Shift&gt;a'</default>
 		</key>
-		
+
 		<key name="feedlist-prev" type="s">
 			<default>'&lt;Control&gt;j'</default>
 		</key>
-		
+
 		<key name="feedlist-next" type="s">
 			<default>'&lt;Control&gt;k'</default>
 		</key>
-		
+
 		<key name="global-sync" type="s">
 			<default>'F5'</default>
 		</key>
-		
+
 		<key name="articlelist-center-selected" type="s">
 			<default>'s'</default>
 		</key>
-		
+
 		<key name="global-quit" type="s">
 			<default>'&lt;Control&gt;q'</default>
 		</key>
-		
+
 		<key name="global-search" type="s">
 			<default>'&lt;Control&gt;f'</default>
 		</key>
-		
+
 		<key name="global-help" type="s">
 			<default>'&lt;Control&gt;F1'</default>
 		</key>

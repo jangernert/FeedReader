@@ -1,0 +1,2 @@
+subdir('backend')
+subdir('share')

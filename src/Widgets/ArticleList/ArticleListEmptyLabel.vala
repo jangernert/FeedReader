@@ -29,17 +29,18 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 		this.show_all();
 	}
 
-	public void build(string selectedFeed, FeedListType type, ArticleListState state, string searchTerm)
+	public void build(string selectedID, FeedListType type, ArticleListState state, string searchTerm)
 	{
 		string message = "";
 		string name = "";
 		string search = Utils.parseSearchTerm(searchTerm);
-		if(selectedFeed != FeedID.ALL.to_string() && selectedFeed != FeedID.CATEGORIES.to_string())
+		if(selectedID != FeedID.ALL.to_string() && selectedID != FeedID.CATEGORIES.to_string())
 		{
 			switch(type)
 			{
 				case FeedListType.FEED:
-					name = dbUI.get_default().getFeedName(selectedFeed);
+					var feed = DataBase.readOnly().read_feed(selectedID);
+					name = feed != null ? feed.getTitle() : "";
 					if(state == ArticleListState.UNREAD)
 					{
 						if(searchTerm != "")
@@ -63,7 +64,7 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 					}
 					break;
 				case FeedListType.TAG:
-					name = dbUI.get_default().getTagName(selectedFeed);
+					name = DataBase.readOnly().getTagName(selectedID);
 					if(state == ArticleListState.UNREAD)
 					{
 						if(searchTerm != "")
@@ -87,7 +88,7 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 					}
 					break;
 				case FeedListType.CATEGORY:
-					name = dbUI.get_default().getCategoryName(selectedFeed);
+					name = DataBase.readOnly().getCategoryName(selectedID);
 					if(state == ArticleListState.UNREAD)
 					{
 						if(searchTerm != "")

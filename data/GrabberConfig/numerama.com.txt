@@ -1,1 +1,0 @@
-strip://section[@class='related-article']

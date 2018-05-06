@@ -1,24 +1,10 @@
 <schemalist>
 
-	<enum id="org.gnome.feedreader.loglevel">
-		<value nick="OFF" value="0"/>
-		<value nick="ERROR" value="1"/>
-		<value nick="MORE" value="2"/>
-		<value nick="DEBUG" value="3"/>
-	</enum>
-
 	<enum id="org.gnome.feedreader.article-theme">
 		<value nick="DEFAULT" value="0"/>
 		<value nick="SPRING" value="1"/>
 		<value nick="MIDNIGHT" value="2"/>
 		<value nick="PARCHMENT" value="3"/>
-	</enum>
-
-	<enum id="org.gnome.feedreader.fontsize">
-		<value nick="SMALL" value="0"/>
-		<value nick="NORMAL" value="1"/>
-		<value nick="LARGE" value="2"/>
-		<value nick="HUGE" value="3"/>
 	</enum>
 
 	<enum id="org.gnome.feedreader.drop-articles-duration">
@@ -37,13 +23,13 @@
 		<value nick="RECEIVED" value="0"/>
 		<value nick="DATE" value="1"/>
 	</enum>
-	
+
 	<enum id="org.gnome.feedreader.feedlist-theme">
 		<value nick="GTK" value="0"/>
 		<value nick="DARK" value="1"/>
 		<value nick="ELEMENTARY" value="2"/>
 	</enum>
-	
+
 	<enum id="org.gnome.feedreader.media-player">
 		<value nick="INTERNAL" value="0"/>
 		<value nick="SYSTEM" value="1"/>
@@ -64,30 +50,26 @@
 
 		<key name="max-articles" type="i">
 			<default>400</default>
-			<summary>Maximum of new Articles</summary>
+			<summary>Max new articles</summary>
 			<description>
-				The maximum of articles that are fetched from the server.
+				The maximum number of articles that are fetched from the server.
 			</description>
 		</key>
-		
+
 		<key name='plugin' type="s">
 			<default>'none'</default>
-		</key>
-
-		<key name='log-level' enum='org.gnome.feedreader.loglevel'>
-			<default>'DEBUG'</default>
 		</key>
 
 		<key name='article-theme' enum='org.gnome.feedreader.article-theme'>
 			<default>'DEFAULT'</default>
 		</key>
-		
+
 		<key name='feedlist-theme' enum='org.gnome.feedreader.feedlist-theme'>
 			<default>'DARK'</default>
 		</key>
 
-		<key name='fontsize' enum='org.gnome.feedreader.fontsize'>
-			<default>'NORMAL'</default>
+		<key name='font' type="s">
+			<default>'Droid Sans 12'</default>
 		</key>
 
 		<key name='drop-articles-after' enum='org.gnome.feedreader.drop-articles-duration'>
@@ -95,7 +77,7 @@
 		</key>
 
 		<key name='content-grabber' type="b">
-			<default>true</default>
+			<default>false</default>
 			<summary>grab full content of articles</summary>
 			<description>
 				Whether to use the content-grabber to download the full content of articles.
@@ -129,7 +111,7 @@
 		<key name='feedlist-sort-by' enum='org.gnome.feedreader.feedlist-sort'>
 			<default>'RECEIVED'</default>
 		</key>
-		
+
 		<key name='mediaplayer' type="b">
 			<default>true</default>
 		</key>
@@ -142,6 +124,15 @@
 			</description>
 		</key>
 
+		<key name="download-images" type="b">
+			<default>false</default>
+			<summary>Download images of articles (offline mode)</summary>
+			<description>
+				Download of images of articles. If disabled this will speed up the snyc process,
+				but obviously the images will not be available when in offline-mode.
+			</description>
+		</key>
+
 		<key name='articlelist-oldest-first' type='b'>
 			<default>false</default>
 			<summary>oldest articles first</summary>
@@ -149,7 +140,7 @@
 				Sort articles in the ArticleList from old to new (either by article date or insert order).
 			</description>
 		</key>
-		
+
 		<key name='articlelist-mark-scrolling' type='b'>
 			<default>false</default>
 			<summary>mark read by scrolling</summary>

@@ -24,7 +24,8 @@ jobs:
     steps:
       - run:
           name: Setup Feedbin
-          command: cd /feedbin && rake db:setup
+          # Wait a few seconds for postgres to startup
+          command: sleep 5 && cd /feedbin && rake db:setup
       - run:
           name: Run Feedbin background processes
           command: cd /feedbin && bundle exec foreman start

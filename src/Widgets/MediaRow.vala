@@ -15,15 +15,31 @@
 
 public class FeedReader.mediaRow : Gtk.ListBoxRow {
 
-	private string m_url;
+	private Enclosure m_enc;
 
-	public mediaRow(string url)
+	public mediaRow(Enclosure enc)
 	{
-		m_url = url;
+		m_enc = enc;
 
-		int lastSlash = url.last_index_of_char('/');
-		string fileName = url.substring(lastSlash + 1);
-		var icon = new Gtk.Image.from_icon_name("media-playback-start-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		int lastSlash = m_enc.get_url().last_index_of_char('/');
+		string fileName = m_enc.get_url().substring(lastSlash + 1);
+		string icon_name = "image-x-generic-symbolic";
+
+		switch(enc.get_enclosure_type())
+		{
+			case EnclosureType.IMAGE:
+				icon_name = "image-x-generic-symbolic";
+				break;
+
+			case EnclosureType.AUDIO:
+				icon_name = "audio-speakers-symbolic";
+				break;
+
+			case EnclosureType.VIDEO:
+				icon_name = "media-playback-start-symbolic";
+				break;
+		}
+		var icon = new Gtk.Image.from_icon_name(icon_name, Gtk.IconSize.SMALL_TOOLBAR);
 
 		var label = new Gtk.Label(GLib.Uri.unescape_string(fileName));
 		label.set_line_wrap_mode(Pango.WrapMode.WORD);
@@ -43,7 +59,7 @@ public class FeedReader.mediaRow : Gtk.ListBoxRow {
 
 	public string getURL()
 	{
-		return m_url;
+		return m_enc.get_url();
 	}
 
 }

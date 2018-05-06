@@ -195,6 +195,7 @@ vala_sources = [
   'src/ContentGrabber/stringPair.vala',
   'src/Model/Feed.vala',
   'src/Model/Category.vala',
+  'src/Model/Enclosure.vala',
   'src/Model/Article.vala',
   'src/Model/Tag.vala',
   'src/Model/CachedAction.vala',

@@ -54,7 +54,7 @@ public class FeedReader.Grabber : GLib.Object {
 
 	private bool checkConfigFile()
 	{
-		string filepath = Constants.INSTALL_PREFIX + "/share/FeedReader/GrabberConfig/";
+		string filepath = Constants.INSTALL_PREFIX + "/share/feedreader/GrabberConfig/";
 
 		string hostName = grabberUtils.buildHostName(m_articleURL, false);
 		string filename = filepath + hostName + ".txt";

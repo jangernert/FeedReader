@@ -141,7 +141,6 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		m_mark_button.sensitive = show;
 		m_read_button.sensitive = show;
 		m_fullscreen_button.sensitive = show;
-		m_media_button.visible = show;
 		m_share_button.sensitive = (show && FeedReaderApp.get_default().isOnline());
 		m_print_button.sensitive = show;
 

@@ -13,37 +13,26 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.StringUtils {
-	public static Gee.List<string> split(string s, string sep, bool ignore_empty=false)
+public class FeedReader.Enclosure : GLib.Object {
+
+	private string m_article_id;
+	private string m_url;
+	private EnclosureType m_type;
+
+	public Enclosure(string article_id, string url, EnclosureType type)
 	{
-		var items = s.split(sep);
-		if (!ignore_empty)
-			return new Gee.ArrayList<string>.wrap(items);
-
-		var res = new Gee.ArrayList<string>();
-		foreach(string item in items)
-		{
-			if(!ignore_empty || item.strip() != "")
-			{
-					res.add(item);
-			}
-
-		}
-		return res;
+		m_article_id = article_id;
+		m_url = url;
+		m_type = type;
 	}
 
-	public static string join(Gee.Collection<string> l, string sep)
+	public string get_url()
 	{
-		return string.joinv(sep, l.to_array());
+		return m_url;
 	}
 
-	public static Gee.List<string> sql_quote(Gee.List<string> l)
+	public EnclosureType get_enclosure_type()
 	{
-		for(int i = 0; i < l.size; i++)
-		{
-			l[i] = SQLite.quote_string(l[i]);
-		}
-
-		return l;
+		return m_type;
 	}
 }

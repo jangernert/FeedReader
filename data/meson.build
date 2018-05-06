@@ -30,3 +30,5 @@ i18n.merge_file(
 )
 
 subdir('application-icons')
+
+install_subdir('GrabberConfig', install_dir : DATA_DIR)

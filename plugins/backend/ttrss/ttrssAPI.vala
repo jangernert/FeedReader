@@ -481,7 +481,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					}
 				}
 
-				Gee.List<string>? media = null;
+				var enclosures = new Gee.ArrayList<Enclosure>();
 				if(headline_node.has_member("attachments"))
 				{
 					var attachments = headline_node.get_array_member("attachments");
@@ -490,16 +490,13 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					if(attachments != null)
 						mediaCount = attachments.get_length();
 
-					if(mediaCount > 0)
-					 	media = new Gee.ArrayList<string>();
 					for(int j = 0; j < mediaCount; ++j)
 					{
 						var attachment = attachments.get_object_element(j);
-						if(attachment.get_string_member("content_type").contains("audio")
-						|| attachment.get_string_member("content_type").contains("video"))
-						{
-							media.add(attachment.get_string_member("content_url"));
-						}
+						enclosures.add(new Enclosure(
+							headline_node.get_string_member("id"),
+							attachment.get_string_member("content_url"),
+							EnclosureType.from_string(attachment.get_string_member("content_type"))));
 					}
 				}
 
@@ -516,7 +513,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 										new DateTime.from_unix_local(headline_node.get_int_member("updated")),
 										-1,
 										tags,
-										media
+										enclosures
 								);
 
 				articles.add(Article);
@@ -594,7 +591,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					}
 				}
 
-				Gee.List<string>? media = null;
+				var enclosures = new Gee.ArrayList<Enclosure>();
 				if(article_node.has_member("attachments"))
 				{
 					var attachments = article_node.get_array_member("attachments");
@@ -603,17 +600,13 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					if(attachments != null)
 						mediaCount = attachments.get_length();
 
-					if(mediaCount > 0)
-						media = new Gee.ArrayList<string>();
-
 					for(int j = 0; j < mediaCount; ++j)
 					{
 						var attachment = attachments.get_object_element(j);
-						if(attachment.get_string_member("content_type").contains("audio")
-						|| attachment.get_string_member("content_type").contains("video"))
-						{
-							media.add(attachment.get_string_member("content_url"));
-						}
+						enclosures.add(new Enclosure(
+							article_node.get_string_member("id"),
+							attachment.get_string_member("content_url"),
+							EnclosureType.from_string(attachment.get_string_member("content_type"))));
 					}
 				}
 
@@ -630,7 +623,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 										new DateTime.from_unix_local(article_node.get_int_member("updated")),
 										-1,
 										tags,
-										media
+										enclosures
 								);
 
 				articles.add(Article);

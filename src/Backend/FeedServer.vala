@@ -38,7 +38,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	{
 		string pluginPath = Constants.INSTALL_LIBDIR + "/plugins/";
 		Logger.debug(@"FeedServer: search path for plugins is $pluginPath");
-		
+
 		m_engine = Peas.Engine.get_default();
 		m_engine.add_search_path(pluginPath, null);
 		m_engine.enable_loader("python3");
@@ -55,8 +55,12 @@ public class FeedReader.FeedServer : GLib.Object {
 				var secrets = Secret.Collection.for_alias_sync(secret_service, Secret.COLLECTION_DEFAULT, Secret.CollectionFlags.NONE);
 				if(secrets == null)
 					secrets = Secret.Collection.create_sync(secret_service, "Login", Secret.COLLECTION_DEFAULT, Secret.CollectionCreateFlags.COLLECTION_CREATE_NONE);
-				var db = DataBase.readOnly();
-				var db_write = DataBase.writeAccess();
+
+				// Intentionally creating a new database handle here so we don't
+				// have to deal with threading issues. *Do not use the static
+				// getter for this!*
+				var db = new DataBaseReadOnly();
+				var db_write = new DataBase();
 				var settings_backend = null; // FIXME: Why does SettingsBackend.get_default() crash on Arch Linux?
 				(extension as FeedServerInterface).init(settings_backend, secrets, db, db_write);
 				PluginsChanedEvent();

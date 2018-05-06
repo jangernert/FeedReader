@@ -337,7 +337,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 					tags.add(cat);
 			}
 
-			var media = new Gee.ArrayList<string>();
+			var enclosures = new Gee.ArrayList<Enclosure>();
 			if(object.has_member("enclosure"))
 			{
 				var attachments = object.get_array_member("enclosure");
@@ -349,11 +349,10 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 				for(int j = 0; j < mediaCount; ++j)
 				{
 					var attachment = attachments.get_object_element(j);
-					if(attachment.get_string_member("type").contains("audio")
-					|| attachment.get_string_member("type").contains("video"))
-					{
-						media.add(attachment.get_string_member("href"));
-					}
+					enclosures.add(
+						new Enclosure(id, attachment.get_string_member("href"),
+								EnclosureType.from_string(attachment.get_string_member("type")))
+					);
 				}
 			}
 
@@ -370,7 +369,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 									new DateTime.from_unix_local(object.get_int_member("published")),
 									-1,
 									tags,
-									media
+									enclosures
 							)
 						);
 		}

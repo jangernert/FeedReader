@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-27 14:04+0100\n"
+"POT-Creation-Date: 2018-05-06 21:59+0200\n"
 "PO-Revision-Date: 2017-05-15 08:53+0000\n"
 "Last-Translator: Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>\n"
 "Language-Team: Dutch (http://www.transifex.com/dev-feedreader/feedreader/"
@@ -20,43 +20,416 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/FeedReader.vala:21
+#: Constants.vala.in:26
+msgid "Desktop Client for various RSS Services"
+msgstr ""
+
+#: Constants.vala.in:31
+msgid "translator-credits"
+msgstr ""
+
+#: Constants.vala.in:36
+msgid "About"
+msgstr ""
+
+#: Constants.vala.in:37 src/Widgets/ColumnViewHeader.vala:101
+msgid "Settings"
+msgstr "Instellingen"
+
+#: Constants.vala.in:38
+#, fuzzy
+msgid "Change Account"
+msgstr "Account wijzigen?"
+
+#: Constants.vala.in:39 src/Widgets/ShortcutsWindow.vala:29
+msgid "Quit"
+msgstr "Afsluiten"
+
+#: Constants.vala.in:40
+msgid "Report a Bug"
+msgstr ""
+
+#: Constants.vala.in:41
+msgid "Bounties"
+msgstr ""
+
+#: Constants.vala.in:42
+msgid "Shortcuts"
+msgstr ""
+
+#: data/org.gnome.FeedReader-autostart.desktop.in:3
+#, fuzzy
+msgid "FeedReader Autostart"
+msgstr "FeedReader-accounts"
+
+#: data/org.gnome.FeedReader-autostart.desktop.in:4
+#: data/org.gnome.FeedReader.desktop.in:4
+#, fuzzy
+msgid "RSS Client"
+msgstr "Cliënt-ID:"
+
+#: data/org.gnome.FeedReader-autostart.desktop.in:6
+msgid "Categories=Network;Feed;"
+msgstr ""
+
+#: data/org.gnome.FeedReader-autostart.desktop.in:8
+#: data/org.gnome.FeedReader.desktop.in:8
+#, fuzzy
+msgid "org.gnome.FeedReader"
+msgstr "FeedReader"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:6
+#: data/org.gnome.FeedReader.desktop.in:3 src/Widgets/MainWindow.vala:44
+msgid "FeedReader"
+msgstr "FeedReader"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:7
+msgid "RSS client for various webservices"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:10
+msgid ""
+"FeedReader is a program designed to complement an already existing web-based "
+"RSS reader account."
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:14
+msgid "Currently supported services:"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:16
+#, fuzzy
+msgid "Tiny Tiny RSS"
+msgstr "Tiny Tiny RSS-URL:"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:17
+msgid "feedly"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:18
+msgid "ownCloud"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:19
+#, fuzzy
+msgid "Inoreader"
+msgstr "Ongelezen"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:21
+msgid ""
+"It combines all the advantages of web based services like synchronisation "
+"across all your devices with everything you expect from a modern desktop "
+"application: Desktop notifications, fast search and filters, tagging, "
+"sharing to \"read-it-later\" services like pocket and instapaper, handy "
+"keyboard shortcuts and a database that keeps all your old articles as long "
+"as you like."
+msgstr ""
+
+#: data/org.gnome.FeedReader.desktop.in:5
+msgid "Read feeds from web services"
+msgstr ""
+
+#: data/org.gnome.FeedReader.desktop.in:19 src/FeedReader.vala:21
 msgid "About FeedReader"
 msgstr "Over FeedReader"
 
-#: src/Share/ServiceSetup.vala:56 plugins/backend/fresh/freshInterface.vala:151
-#: plugins/backend/feedhq/feedhqInterface.vala:101
-#: plugins/backend/owncloud/OwncloudNewsInterface.vala:172
-#: plugins/backend/ttrss/ttrssInterface.vala:151
-#: plugins/backend/oldreader/oldreaderInterface.vala:101
-#: plugins/backend/feedbin/feedbinInterface.vala:76
+#. http auth stuff ----------------------------------------------------
+#: plugins/backend/bazqux/bazquxInterface.vala:65
+#: plugins/backend/feedbin/feedbinInterface.vala:65
+#: plugins/backend/feedhq/feedhqInterface.vala:65
+#: plugins/backend/fresh/freshInterface.vala:71
+#: plugins/backend/fresh/freshInterface.vala:108
+#: plugins/backend/oldreader/oldreaderInterface.vala:65
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:93
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:131
+#: plugins/backend/ttrss/ttrssInterface.vala:71
+#: plugins/backend/ttrss/ttrssInterface.vala:108
+#: plugins/share/Instapaper/InstapaperSetup.vala:55
+#: plugins/share/Wallabag/WallabagSetup.vala:76
+msgid "Username:"
+msgstr "Gebruikersnaam:"
+
+#: plugins/backend/bazqux/bazquxInterface.vala:66
+#: plugins/backend/feedbin/feedbinInterface.vala:66
+#: plugins/backend/feedhq/feedhqInterface.vala:66
+#: plugins/backend/fresh/freshInterface.vala:72
+#: plugins/backend/fresh/freshInterface.vala:109
+#: plugins/backend/oldreader/oldreaderInterface.vala:66
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:94
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:132
+#: plugins/backend/ttrss/ttrssInterface.vala:72
+#: plugins/backend/ttrss/ttrssInterface.vala:109
+#: plugins/share/Instapaper/InstapaperSetup.vala:56
+#: plugins/share/Wallabag/WallabagSetup.vala:77
+msgid "Password:"
+msgstr "Wachtwoord:"
+
+#: plugins/backend/bazqux/bazquxInterface.vala:96
+#: plugins/backend/feedhq/feedhqInterface.vala:96
+msgid "Please log in to FeedHQ and enjoy using FeedReader"
+msgstr "Log in op FeedHQ. Veel plezier met het gebruik van FeedReader!"
+
 #: plugins/backend/bazqux/bazquxInterface.vala:101
+#: plugins/backend/feedbin/feedbinInterface.vala:76
+#: plugins/backend/feedhq/feedhqInterface.vala:101
+#: plugins/backend/fresh/freshInterface.vala:151
+#: plugins/backend/oldreader/oldreaderInterface.vala:101
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:172
+#: plugins/backend/ttrss/ttrssInterface.vala:151 src/Share/ServiceSetup.vala:56
 msgid "Login"
 msgstr "Inloggen"
 
-#: src/Share/ServiceSetup.vala:61
-msgid "Logout"
-msgstr "Uitloggen"
+#: plugins/backend/feedbin/feedbinInterface.vala:101
+msgid "Please log in to Feedbin to enjoy using FeedReader"
+msgstr "Log in op Feedbin. Veel plezier met het gebruik van FeedReader!"
 
-#: src/Backend/FeedServer.vala:179 src/Backend/FeedServer.vala:282
+#: plugins/backend/fresh/freshInterface.vala:70
+msgid "freshRSS URL:"
+msgstr "freshRSS-URL:"
+
+#: plugins/backend/fresh/freshInterface.vala:137
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:160
+#: plugins/backend/ttrss/ttrssInterface.vala:137
+msgid "HTTP Authorization"
+msgstr "HTTP-autorisatie:"
+
+#: plugins/backend/fresh/freshInterface.vala:146
+msgid "Please log in to your freshRSS server and enjoy using FeedReader"
+msgstr ""
+"Log in op uw freshRSS-server. Veel plezier met het gebruik van FeedReader!"
+
+#: plugins/backend/local/localInterface.vala:66
+msgid "Done"
+msgstr "Klaar"
+
+#: plugins/backend/local/localInterface.vala:67
+msgid "Adding Feeds"
+msgstr "Bezig met toevoegen van feeds"
+
+#. Logger.info("Got content: " + item.description);
+#. Logger.info("Converted to: " + item.description);
+#: plugins/backend/local/localInterface.vala:619
+msgid "Nothing to read here."
+msgstr "Er valt hier niks te lezen."
+
+#: plugins/backend/oldreader/oldreaderInterface.vala:96
+msgid "Please log in to the Old Reader and enjoy using FeedReader"
+msgstr "Log in op Old Reader. Veel plezier met het gebruik van FeedReader!"
+
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:92
+#, fuzzy
+msgid "Nextcloud URL:"
+msgstr "OwnCloud-URL:"
+
+#. ---------------------------------------------------------------------
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:167
+#, fuzzy
+msgid ""
+"Please log in to your Nextcloud News instance and enjoy using FeedReader"
+msgstr ""
+"Log in op uw ownCloud News-instantie. Veel plezier met het gebruik van "
+"FeedReader!"
+
+#: plugins/backend/ttrss/ttrssAPI.vala:809
+msgid "Invalid URL"
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:812
+msgid "URL content is HTML, no feeds available"
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:815
+msgid "URL content is HTML which contains multiple feeds."
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:818
+msgid "Couldn't download the URL content."
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:821
+msgid "The content is invalid XML."
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:834
+msgid "Error reaching tt-rss"
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssInterface.vala:70
+msgid "Tiny Tiny RSS URL:"
+msgstr "Tiny Tiny RSS-URL:"
+
+#: plugins/backend/ttrss/ttrssInterface.vala:146
+msgid "Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"
+msgstr ""
+"Log in op uw Tiny Tiny RSS-server. Veel plezier met het gebruik van "
+"FeedReader!"
+
+#: plugins/share/Browser/Browser.vala:79
+msgid "Open in Browser"
+msgstr "Openen in webbrowser"
+
+#: plugins/share/Email/EmailForm.vala:24
+#, fuzzy
+msgid ""
+"Hey,\n"
+"\n"
+"Check out this interesting article I used FeedReader to read: $URL"
+msgstr ""
+"Hoi!\n"
+"\n"
+"Kijk eens naar dit interessante artikel dat ik zojuist heb gelezen: $URL"
+
+#: plugins/share/Email/EmailForm.vala:27
+msgid "To:"
+msgstr "Aan:"
+
+#: plugins/share/Email/EmailForm.vala:52
+#: plugins/share/Telegram/TelegramForm.vala:42
+msgid "Send"
+msgstr "Versturen"
+
+#: plugins/share/Email/EmailForm.vala:65
+msgid "Write Email"
+msgstr "E-mail schrijven"
+
+#: plugins/share/Instapaper/InstapaperSetup.vala:100
+msgid "Username or Password incorrect"
+msgstr "Gebruikersnaam of wachtwoord onjuist"
+
+#: plugins/share/Pocket/PocketSetup.vala:52
+#: plugins/share/Twitter/TwitterSetup.vala:51
+msgid "waiting"
+msgstr "bezig met wachten"
+
+#: plugins/share/Telegram/Telegram.vala:81
+msgid "Telegram"
+msgstr "Telegram"
+
+#: plugins/share/Telegram/TelegramForm.vala:23
+#, fuzzy
+msgid "Hey, check out this interesting article I used FeedReader to read"
+msgstr ""
+"Hoi! Kijk eens naar dit interessante artikel dat ik zojuist heb gelezen - "
+"verstuurd door FeedReader"
+
+#: plugins/share/Telegram/TelegramForm.vala:55
+msgid "Send Telegram"
+msgstr "Naar Telegram versturen"
+
+#. no login, so change the labels
+#: plugins/share/Telegram/TelegramSetup.vala:30 src/Widgets/AddPopover.vala:51
+msgid "Add"
+msgstr "Toevoegen"
+
+#: plugins/share/Telegram/TelegramSetup.vala:31
+#: src/Widgets/CategorieRow.vala:447 src/Widgets/FeedRow.vala:241
+#: src/Widgets/TagRow.vala:195
+msgid "Remove"
+msgstr "Verwijderen"
+
+#: plugins/share/Telegram/TelegramSetup.vala:38
+msgid "Info: Telegram would need to be installed for this plugin to work."
+msgstr ""
+"Let op: Telegram moet geïnstalleerd zijn, anders werkt deze plug-in niet."
+
+#: plugins/share/Twitter/TwitterForm.vala:29
+msgid ""
+"Hey,\n"
+"\n"
+"Check out this interesting article I just read: $URL"
+msgstr ""
+"Hoi!\n"
+"\n"
+"Kijk eens naar dit interessante artikel dat ik zojuist heb gelezen: $URL"
+
+#: plugins/share/Twitter/TwitterForm.vala:47
+msgid "Limit: "
+msgstr "Limiet:"
+
+#: plugins/share/Twitter/TwitterForm.vala:63
+msgid "Tweet"
+msgstr "Tweeten"
+
+#: plugins/share/Twitter/TwitterForm.vala:80
+msgid "Tweet to Followers"
+msgstr "Tweeten naar volgers"
+
+#: plugins/share/Wallabag/WallabagSetup.vala:73 src/Widgets/AddPopover.vala:47
+msgid "URL:"
+msgstr "URL:"
+
+#: plugins/share/Wallabag/WallabagSetup.vala:74
+msgid "Client ID:"
+msgstr "Cliënt-ID:"
+
+#: plugins/share/Wallabag/WallabagSetup.vala:75
+msgid "Client Secret:"
+msgstr "Cliënt-geheim:"
+
+#: plugins/share/Wallabag/WallabagSetup.vala:124
+msgid "Please fill in the URL."
+msgstr "Voer de URL in."
+
+#: plugins/share/Wallabag/WallabagSetup.vala:130
+msgid "URL seems to not be valid."
+msgstr "De URL lijkt ongeldig te zijn."
+
+#: plugins/share/Wallabag/WallabagSetup.vala:140
+msgid "Please fill in the clientID."
+msgstr "Voer de clientID in."
+
+#: plugins/share/Wallabag/WallabagSetup.vala:147
+msgid "Please fill in the clientSecret."
+msgstr "Voer de clientSecret in."
+
+#: plugins/share/Wallabag/WallabagSetup.vala:154
+msgid "Please fill in the password."
+msgstr "Voer het wachtwoord in."
+
+#: plugins/share/Wallabag/WallabagSetup.vala:161
+msgid "Please fill in the username."
+msgstr "Voer de gebruikersnaam in"
+
+#: plugins/share/Wallabag/WallabagSetup.vala:186
+msgid "Something went wrong."
+msgstr "Er is iets misgegaan."
+
+#: src/Backend/FeedServer.vala:191 src/Backend/FeedServer.vala:294
 msgid "Getting feeds and categories"
 msgstr "Bezig met ophalen van feeds en categorieën"
 
-#: src/Backend/FeedServer.vala:231
+#: src/Backend/FeedServer.vala:243
 msgid "Getting articles"
 msgstr "Bezig met ophalen van artikelen"
 
-#: src/Backend/FeedServer.vala:311
+#. get marked articles
+#: src/Backend/FeedServer.vala:323
 msgid "Getting starred articles"
 msgstr "Bezig met ophalen van artikelen met ster"
 
-#: src/Backend/FeedServer.vala:318
+#. get articles for each tag
+#: src/Backend/FeedServer.vala:330
 msgid "Getting tagged articles"
 msgstr "Bezig met ophalen van gelabelde artikele"
 
-#: src/Backend/FeedServer.vala:336
+#. get unread articles
+#: src/Backend/FeedServer.vala:348
 msgid "Getting unread articles"
 msgstr "Bezig met ophalen van ongelezen artikelen"
+
+#: src/DataBaseReadOnly.vala:243
+#, fuzzy
+msgid "Unknown tag"
+msgstr "onbekende feed"
+
+#: src/DataBaseReadOnly.vala:271 src/Widgets/AddPopover.vala:38
+#: src/Widgets/FeedList.vala:506
+msgid "Uncategorized"
+msgstr "Niet-gecategoriseerd"
+
+#: src/Model/Article.vala:188
+msgid "Yesterday"
+msgstr "Gisteren"
 
 #: src/Notification.vala:21 src/Widgets/ArticleList/ArticleList.vala:551
 msgid "New articles"
@@ -72,145 +445,34 @@ msgstr "Er is 1 nieuw artikel (%u ongelezen)"
 msgid "There are %u new articles (%u unread)"
 msgstr "Er zijn %u nieuwe artikelen (%u ongelezen)"
 
-#: src/Model/Article.vala:188
-msgid "Yesterday"
-msgstr "Gisteren"
+#: src/Share/ServiceSetup.vala:61
+msgid "Logout"
+msgstr "Uitloggen"
 
-#: src/Widgets/CategorieRow.vala:393 src/Widgets/RemovePopover.vala:111
+#: src/Utils.vala:35
+msgid "No Preview Available"
+msgstr "Er is geen voorbeeldweergave beschikbaar"
+
+#: src/Utils.vala:93
+msgid "No Text available for this article :("
+msgstr "Er is geen tekst beschikbaar bij dit artikel :("
+
+#: src/Utils.vala:601
 #, c-format
-msgid "Category \"%s\" removed"
-msgstr "Categorie \"%s\" is verwijderd"
+msgid "posted by: %s, "
+msgstr "geplaatst door: %s"
 
-#: src/Widgets/CategorieRow.vala:445 src/Widgets/FeedRow.vala:233
-msgid "Mark as read"
-msgstr "Markeren als gelezen"
+#: src/Utils.vala:814 src/Widgets/UpdateButton.vala:80
+msgid "Cancel"
+msgstr "Annuleren"
 
-#: src/Widgets/CategorieRow.vala:446 src/Widgets/TagRow.vala:194
-#: src/Widgets/FeedRow.vala:235
-msgid "Rename"
-msgstr "Naam wijzigen"
-
-#: src/Widgets/CategorieRow.vala:447 src/Widgets/TagRow.vala:195
-#: src/Widgets/FeedRow.vala:241 plugins/share/Telegram/TelegramSetup.vala:31
-msgid "Remove"
-msgstr "Verwijderen"
-
-#: src/Widgets/CategorieRow.vala:448
-msgid "Remove (with Feeds)"
-msgstr "Verwijderen (inclusief feeds)"
-
-#: src/Widgets/CategorieRow.vala:501 src/Widgets/TagRow.vala:272
-#: src/Widgets/FeedRow.vala:270
-msgid "rename"
-msgstr "naam wijzigen"
-
-#: src/Widgets/CategorieRow.vala:503 src/Widgets/TagRow.vala:274
-msgid "add"
-msgstr "toevoegen"
-
-#: src/Widgets/SharePopover.vala:62
-msgid "Add accounts"
-msgstr "Accounts toevoegen"
-
-#: src/Widgets/ShortcutsWindow.vala:22
-msgid "General"
-msgstr "Algemeen"
-
-#: src/Widgets/ShortcutsWindow.vala:27
-msgid "Refresh"
-msgstr "Verversen"
-
-#: src/Widgets/ShortcutsWindow.vala:28
-msgid "Search"
-msgstr "Zoeke"
-
-#: src/Widgets/ShortcutsWindow.vala:29
-msgid "Quit"
-msgstr "Afsluiten"
-
-#: src/Widgets/ShortcutsWindow.vala:37
-msgid "Feed List"
-msgstr "Feedlijst"
-
-#: src/Widgets/ShortcutsWindow.vala:42
-msgid "Select next item"
-msgstr "Volgende item selecteren"
-
-#: src/Widgets/ShortcutsWindow.vala:43
-msgid "Select previous item"
-msgstr "Vorig item selecteren"
-
-#: src/Widgets/ShortcutsWindow.vala:44
-msgid "Collapse/Expand categories"
-msgstr "Categorieën inklappen/uitklappen"
-
-#: src/Widgets/ShortcutsWindow.vala:45
-msgid "Mark the currently selected as read"
-msgstr "Huidig geselecteerd artikel markeren als gelezen"
-
-#: src/Widgets/ShortcutsWindow.vala:54
-msgid "Article List"
-msgstr "Artikellijst"
-
-#: src/Widgets/ShortcutsWindow.vala:63
-msgid "Select next/previous article"
-msgstr "Volgend/vorig artikel selecteren"
-
-#: src/Widgets/ShortcutsWindow.vala:64
-#, fuzzy
-msgid "Toggle reading status of selected article"
-msgstr "Geselecteerd artikel markeren als (on)gelezen"
-
-#: src/Widgets/ShortcutsWindow.vala:65
-#, fuzzy
-msgid "Toggle marking of selected article"
-msgstr "Geselecteerd artikel markeren als (on)gelezen"
-
-#: src/Widgets/ShortcutsWindow.vala:66
-msgid "Open the URL of the selected article"
-msgstr "URL van geselecteerd artikel openen"
-
-#: src/Widgets/ShortcutsWindow.vala:67
-msgid "Scroll all the way up/down"
-msgstr "Volledig omhoog/omlaag scrollen"
-
-#: src/Widgets/ShortcutsWindow.vala:68
-msgid "Center the currently selected article"
-msgstr "Huidig geselecteerd artikel centreren"
-
-#: src/Widgets/ShortcutsWindow.vala:79
-msgid "Article View"
-msgstr "Artikelweergave"
-
-#: src/Widgets/ShortcutsWindow.vala:84
-msgid "Scroll up/down"
-msgstr "Omhoog/omlaag scrollen"
-
-#: src/Widgets/LoginPage.vala:39
-msgid "Where are your feeds?"
-msgstr "Waar zijn uw feeds?"
-
-#: src/Widgets/LoginPage.vala:43
-msgid "Please select the RSS service you are using and log in to get going."
-msgstr ""
-"Selecteer de RSS-dienst die u gebruikt en log in om aan de slag te gaan."
-
-#: src/Widgets/AddPopover.vala:38 src/Widgets/FeedList.vala:506
-#: src/DataBaseReadOnly.vala:251
-msgid "Uncategorized"
-msgstr "Niet-gecategoriseerd"
-
-#: src/Widgets/AddPopover.vala:47 plugins/share/Wallabag/WallabagSetup.vala:73
-msgid "URL:"
-msgstr "URL:"
+#: src/Utils.vala:816
+msgid "Save"
+msgstr "Opslaan"
 
 #: src/Widgets/AddPopover.vala:48
 msgid "Category:"
 msgstr "Categorie:"
-
-#: src/Widgets/AddPopover.vala:51 plugins/share/Telegram/TelegramSetup.vala:30
-msgid "Add"
-msgstr "Toevoegen"
 
 #: src/Widgets/AddPopover.vala:65
 msgid "OPML File:"
@@ -231,6 +493,276 @@ msgstr "Feed toevoegen"
 #: src/Widgets/AddPopover.vala:93
 msgid "Import OPML"
 msgstr "OPML importeren"
+
+#: src/Widgets/ArticleList/ArticleList.vala:48
+msgid "Sync is in progress. Articles should appear any second."
+msgstr ""
+"Bezig met synchroniseren. De artikelen zullen elk ogenblik verschijnen."
+
+#: src/Widgets/ArticleList/ArticleList.vala:553
+msgid "scroll up"
+msgstr "omhoog scrollen"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:20
+msgid "No Articles"
+msgstr "Geen artikele"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:123
+msgid "No unread articles"
+msgstr "Geen ongelezen artikelen"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:130
+msgid "No starred articles"
+msgstr "Geen artikelen met ster"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:137
+msgid "No articles"
+msgstr "Geen artikelen"
+
+#: src/Widgets/ArticleView.vala:62
+msgid "No Article selected."
+msgstr "Geen artikel geselecteerd."
+
+#: src/Widgets/ArticleView.vala:66
+msgid "WebKit has crashed"
+msgstr "WebKit is gecrashed"
+
+#: src/Widgets/ArticleView.vala:790
+msgid "Save image as"
+msgstr "Afbeelding opslaan als"
+
+#: src/Widgets/ArticleViewHeader.vala:68
+msgid "Tag article"
+msgstr "Artikel labelen"
+
+#: src/Widgets/ArticleViewHeader.vala:82
+msgid "Print article"
+msgstr "Artikel afdrukken"
+
+#: src/Widgets/ArticleViewHeader.vala:93
+msgid "Share article"
+msgstr "Artikel delen"
+
+#: src/Widgets/CategorieRow.vala:393 src/Widgets/RemovePopover.vala:112
+#, c-format
+msgid "Category \"%s\" removed"
+msgstr "Categorie \"%s\" is verwijderd"
+
+#: src/Widgets/CategorieRow.vala:445 src/Widgets/FeedRow.vala:233
+msgid "Mark as read"
+msgstr "Markeren als gelezen"
+
+#: src/Widgets/CategorieRow.vala:446 src/Widgets/FeedRow.vala:235
+#: src/Widgets/TagRow.vala:194
+msgid "Rename"
+msgstr "Naam wijzigen"
+
+#: src/Widgets/CategorieRow.vala:448
+msgid "Remove (with Feeds)"
+msgstr "Verwijderen (inclusief feeds)"
+
+#: src/Widgets/CategorieRow.vala:501 src/Widgets/FeedRow.vala:270
+#: src/Widgets/TagRow.vala:272
+msgid "rename"
+msgstr "naam wijzigen"
+
+#: src/Widgets/CategorieRow.vala:503 src/Widgets/TagRow.vala:274
+msgid "add"
+msgstr "toevoegen"
+
+#: src/Widgets/ColumnViewHeader.vala:37
+msgid "All"
+msgstr "Alles"
+
+#: src/Widgets/ColumnViewHeader.vala:37
+msgid "Show all articles"
+msgstr "Alle artikelen weergeven"
+
+#: src/Widgets/ColumnViewHeader.vala:38
+msgid "Unread"
+msgstr "Ongelezen"
+
+#: src/Widgets/ColumnViewHeader.vala:38
+msgid "Show only unread articles"
+msgstr "Alleen ongelezen artikelen weergeven"
+
+#: src/Widgets/ColumnViewHeader.vala:39
+msgid "Starred"
+msgstr "Met ster"
+
+#: src/Widgets/ColumnViewHeader.vala:39
+msgid "Show only starred articles"
+msgstr "Alleen artikelen met ster weergeven"
+
+#: src/Widgets/ColumnViewHeader.vala:60
+msgid "Update feeds"
+msgstr "Feeds bijwerken"
+
+#: src/Widgets/ColumnViewHeader.vala:75
+msgid "Search Articles"
+msgstr "Artikelen zoeken"
+
+#: src/Widgets/ColumnViewHeader.vala:114
+msgid "Read article fullscreen"
+msgstr "Artikel lezen in volledig scherm"
+
+#: src/Widgets/FeedList.vala:242
+msgid "All Articles"
+msgstr "Alle artikelen"
+
+#: src/Widgets/FeedList.vala:441
+msgid "Tags"
+msgstr "Labels"
+
+#: src/Widgets/FeedList.vala:482
+msgid "Categories"
+msgstr "Categorieën"
+
+#: src/Widgets/FeedList.vala:487
+msgid "Feeds"
+msgstr "Feeds"
+
+#: src/Widgets/FeedList.vala:1012
+msgid "New Tag"
+msgstr "Nieuw label"
+
+#: src/Widgets/FeedList.vala:1139
+msgid "New Category"
+msgstr "Nieuwe categorie"
+
+#: src/Widgets/FeedListFooter.vala:142
+msgid "Remove feed"
+msgstr "Feed verwijderen"
+
+#: src/Widgets/FeedRow.vala:234
+msgid "Copy URL"
+msgstr ""
+
+#: src/Widgets/FeedRow.vala:239
+#, c-format
+msgid "Remove only from %s"
+msgstr "Alleen verwijderen uit %s"
+
+#: src/Widgets/FeedRow.vala:445
+#, fuzzy, c-format
+msgid "Feed removed: %s"
+msgstr "De feed \"%s\" is verwijderd"
+
+#: src/Widgets/FullscreenHeader.vala:26
+msgid "Leave fullscreen mode"
+msgstr "Volledig scherm verlaten"
+
+#: src/Widgets/LoginPage.vala:39
+msgid "Where are your feeds?"
+msgstr "Waar zijn uw feeds?"
+
+#: src/Widgets/LoginPage.vala:43
+msgid "Please select the RSS service you are using and log in to get going."
+msgstr ""
+"Selecteer de RSS-dienst die u gebruikt en log in om aan de slag te gaan."
+
+#: src/Widgets/MainWindow.vala:347
+msgid "Ignore all TLS errors from now on"
+msgstr "Alle TLS-fouten voortaan negeren"
+
+#: src/Widgets/MainWindow.vala:414
+msgid "Please select a service first"
+msgstr "Selecteer eerst een dienst"
+
+#: src/Widgets/MainWindow.vala:417
+msgid "Please enter a valid username"
+msgstr "Voer een geldige gebruikersnaam in"
+
+#: src/Widgets/MainWindow.vala:420
+msgid "Please enter a valid password"
+msgstr "Voer een geldig wachtwoord in"
+
+#: src/Widgets/MainWindow.vala:424
+msgid "Please enter a valid URL"
+msgstr "Voer een geldige URL in"
+
+#: src/Widgets/MainWindow.vala:427
+msgid "Please enter your Login details"
+msgstr "Voer uw inloggegevens in"
+
+#: src/Widgets/MainWindow.vala:430
+msgid "Sorry, something went wrong."
+msgstr "Sorry, er ging iets mis."
+
+#: src/Widgets/MainWindow.vala:433
+msgid "The server reported an API-error."
+msgstr "De server meldt dat er een API-fout is."
+
+#: src/Widgets/MainWindow.vala:436
+msgid "Either your username or the password are not correct."
+msgstr "Uw gebruikersnaam of wachtwoord is onjuist."
+
+#: src/Widgets/MainWindow.vala:439
+msgid ""
+"No connection to the server. Check your internet connection and the server "
+"URL!"
+msgstr ""
+"Geen verbinding met de server. Controleer uw internetverbinding en de server-"
+"URL!"
+
+#: src/Widgets/MainWindow.vala:442
+msgid "API access is disabled on the server. Please enable it first!"
+msgstr "API-toegang is uitgeschakeld op deze server. Schakel deze in!"
+
+#: src/Widgets/MainWindow.vala:445
+msgid "Not authorized to access URL"
+msgstr "U heeft geen toegang tot deze URL"
+
+#: src/Widgets/MainWindow.vala:449
+msgid "No valid CA certificate available!"
+msgstr "Geen geldig CA-certificaat beschikbaar!"
+
+#: src/Widgets/MainWindow.vala:453
+msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
+msgstr "Installeer de \"api_feedreader\"-plug-in in uw tt-rss-instantie!"
+
+#: src/Widgets/MediaButton.vala:85
+msgid "Attachments"
+msgstr "Bijlagen"
+
+#: src/Widgets/RemovePopover.vala:47
+#, c-format
+msgid "Remove \"%s\""
+msgstr "\"%s\" verwijderen"
+
+#: src/Widgets/RemovePopover.vala:81 src/Widgets/TagRow.vala:172
+#, c-format
+msgid "Tag \"%s\" removed"
+msgstr "Het label \"%s\" is verwijderd"
+
+#: src/Widgets/RemovePopover.vala:96
+#, c-format
+msgid "Feed \"%s\" removed"
+msgstr "De feed \"%s\" is verwijderd"
+
+#: src/Widgets/ResetPage.vala:33
+msgid "Change Account?"
+msgstr "Account wijzigen?"
+
+#: src/Widgets/ResetPage.vala:37
+msgid ""
+"You are about to change the account you want FeedReader to use.\n"
+" This means deleting all local data of your old account."
+msgstr ""
+"U staat op het punt om het door FeedReader gebruikte account te wijzigen.\n"
+"Dit betekent dat alle lokale gegevens van uw oude account worden verwijderd."
+
+#: src/Widgets/ResetPage.vala:41
+msgid "New account"
+msgstr "Nieuw account"
+
+#: src/Widgets/ResetPage.vala:44
+msgid "Waiting for current sync to finish"
+msgstr "Bezig met wachten op afronden van synchronisatie"
+
+#: src/Widgets/ResetPage.vala:54
+msgid "I changed my mind"
+msgstr "Ik ben van gedachten veranderd"
 
 #: src/Widgets/SettingsDialog.vala:48
 msgid "Interface"
@@ -392,161 +924,94 @@ msgstr "Systeemaccounts"
 msgid "FeedReader Accounts"
 msgstr "FeedReader-accounts"
 
-#: src/Widgets/ResetPage.vala:33
-msgid "Change Account?"
-msgstr "Account wijzigen?"
+#: src/Widgets/SharePopover.vala:62
+msgid "Add accounts"
+msgstr "Accounts toevoegen"
 
-#: src/Widgets/ResetPage.vala:37
+#. --------------------------------------------------
+#: src/Widgets/ShortcutsWindow.vala:22
+msgid "General"
+msgstr "Algemeen"
+
+#: src/Widgets/ShortcutsWindow.vala:27
+msgid "Refresh"
+msgstr "Verversen"
+
+#: src/Widgets/ShortcutsWindow.vala:28
+msgid "Search"
+msgstr "Zoeke"
+
+#. --------------------------------------------------
+#. --------------------------------------------------
+#: src/Widgets/ShortcutsWindow.vala:37
+msgid "Feed List"
+msgstr "Feedlijst"
+
+#: src/Widgets/ShortcutsWindow.vala:42
+msgid "Select next item"
+msgstr "Volgende item selecteren"
+
+#: src/Widgets/ShortcutsWindow.vala:43
+msgid "Select previous item"
+msgstr "Vorig item selecteren"
+
+#: src/Widgets/ShortcutsWindow.vala:44
+msgid "Collapse/Expand categories"
+msgstr "Categorieën inklappen/uitklappen"
+
+#: src/Widgets/ShortcutsWindow.vala:45
+msgid "Mark the currently selected as read"
+msgstr "Huidig geselecteerd artikel markeren als gelezen"
+
+#. --------------------------------------------------
+#. --------------------------------------------------
+#: src/Widgets/ShortcutsWindow.vala:54
+msgid "Article List"
+msgstr "Artikellijst"
+
+#: src/Widgets/ShortcutsWindow.vala:63
+msgid "Select next/previous article"
+msgstr "Volgend/vorig artikel selecteren"
+
+#: src/Widgets/ShortcutsWindow.vala:64
+#, fuzzy
+msgid "Toggle reading status of selected article"
+msgstr "Geselecteerd artikel markeren als (on)gelezen"
+
+#: src/Widgets/ShortcutsWindow.vala:65
+#, fuzzy
+msgid "Toggle marking of selected article"
+msgstr "Geselecteerd artikel markeren als (on)gelezen"
+
+#: src/Widgets/ShortcutsWindow.vala:66
+msgid "Open the URL of the selected article"
+msgstr "URL van geselecteerd artikel openen"
+
+#: src/Widgets/ShortcutsWindow.vala:67
+msgid "Scroll all the way up/down"
+msgstr "Volledig omhoog/omlaag scrollen"
+
+#: src/Widgets/ShortcutsWindow.vala:68
+msgid "Center the currently selected article"
+msgstr "Huidig geselecteerd artikel centreren"
+
+#. --------------------------------------------------
+#. --------------------------------------------------
+#: src/Widgets/ShortcutsWindow.vala:79
+msgid "Article View"
+msgstr "Artikelweergave"
+
+#: src/Widgets/ShortcutsWindow.vala:84
+msgid "Scroll up/down"
+msgstr "Omhoog/omlaag scrollen"
+
+#: src/Widgets/SpringCleanPage.vala:28
 msgid ""
-"You are about to change the account you want FeedReader to use.\n"
-" This means deleting all local data of your old account."
+"FeedReader is cleaning the database.\n"
+"This shouldn't take too long."
 msgstr ""
-"U staat op het punt om het door FeedReader gebruikte account te wijzigen.\n"
-"Dit betekent dat alle lokale gegevens van uw oude account worden verwijderd."
-
-#: src/Widgets/ResetPage.vala:41
-msgid "New account"
-msgstr "Nieuw account"
-
-#: src/Widgets/ResetPage.vala:44
-msgid "Waiting for current sync to finish"
-msgstr "Bezig met wachten op afronden van synchronisatie"
-
-#: src/Widgets/ResetPage.vala:54
-msgid "I changed my mind"
-msgstr "Ik ben van gedachten veranderd"
-
-#: src/Widgets/ColumnViewHeader.vala:37
-msgid "All"
-msgstr "Alles"
-
-#: src/Widgets/ColumnViewHeader.vala:37
-msgid "Show all articles"
-msgstr "Alle artikelen weergeven"
-
-#: src/Widgets/ColumnViewHeader.vala:38
-msgid "Unread"
-msgstr "Ongelezen"
-
-#: src/Widgets/ColumnViewHeader.vala:38
-msgid "Show only unread articles"
-msgstr "Alleen ongelezen artikelen weergeven"
-
-#: src/Widgets/ColumnViewHeader.vala:39
-msgid "Starred"
-msgstr "Met ster"
-
-#: src/Widgets/ColumnViewHeader.vala:39
-msgid "Show only starred articles"
-msgstr "Alleen artikelen met ster weergeven"
-
-#: src/Widgets/ColumnViewHeader.vala:60
-msgid "Update feeds"
-msgstr "Feeds bijwerken"
-
-#: src/Widgets/ColumnViewHeader.vala:75
-msgid "Search Articles"
-msgstr "Artikelen zoeken"
-
-#: src/Widgets/ColumnViewHeader.vala:101
-msgid "Settings"
-msgstr "Instellingen"
-
-#: src/Widgets/ColumnViewHeader.vala:114
-msgid "Read article fullscreen"
-msgstr "Artikel lezen in volledig scherm"
-
-#: src/Widgets/TagRow.vala:172 src/Widgets/RemovePopover.vala:80
-#, c-format
-msgid "Tag \"%s\" removed"
-msgstr "Het label \"%s\" is verwijderd"
-
-#: src/Widgets/FeedListFooter.vala:142
-msgid "Remove feed"
-msgstr "Feed verwijderen"
-
-#: src/Widgets/FeedRow.vala:234
-msgid "Copy URL"
-msgstr ""
-
-#: src/Widgets/FeedRow.vala:239
-#, c-format
-msgid "Remove only from %s"
-msgstr "Alleen verwijderen uit %s"
-
-#: src/Widgets/FeedRow.vala:445
-#, fuzzy, c-format
-msgid "Feed removed: %s"
-msgstr "De feed \"%s\" is verwijderd"
-
-#: src/Widgets/FullscreenHeader.vala:26
-msgid "Leave fullscreen mode"
-msgstr "Volledig scherm verlaten"
-
-#: src/Widgets/FeedList.vala:242
-msgid "All Articles"
-msgstr "Alle artikelen"
-
-#: src/Widgets/FeedList.vala:441
-msgid "Tags"
-msgstr "Labels"
-
-#: src/Widgets/FeedList.vala:482
-msgid "Categories"
-msgstr "Categorieën"
-
-#: src/Widgets/FeedList.vala:487
-msgid "Feeds"
-msgstr "Feeds"
-
-#: src/Widgets/FeedList.vala:1012
-msgid "New Tag"
-msgstr "Nieuw label"
-
-#: src/Widgets/FeedList.vala:1139
-msgid "New Category"
-msgstr "Nieuwe categorie"
-
-#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:20
-msgid "No Articles"
-msgstr "Geen artikele"
-
-#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:122
-msgid "No unread articles"
-msgstr "Geen ongelezen artikelen"
-
-#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:129
-msgid "No starred articles"
-msgstr "Geen artikelen met ster"
-
-#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:136
-msgid "No articles"
-msgstr "Geen artikelen"
-
-#: src/Widgets/ArticleList/ArticleList.vala:48
-msgid "Sync is in progress. Articles should appear any second."
-msgstr ""
-"Bezig met synchroniseren. De artikelen zullen elk ogenblik verschijnen."
-
-#: src/Widgets/ArticleList/ArticleList.vala:553
-msgid "scroll up"
-msgstr "omhoog scrollen"
-
-#: src/Widgets/ArticleView.vala:62
-msgid "No Article selected."
-msgstr "Geen artikel geselecteerd."
-
-#: src/Widgets/ArticleView.vala:66
-msgid "WebKit has crashed"
-msgstr "WebKit is gecrashed"
-
-#: src/Widgets/ArticleView.vala:790
-msgid "Save image as"
-msgstr "Afbeelding opslaan als"
-
-#: src/Widgets/UpdateButton.vala:80 src/Utils.vala:813
-msgid "Cancel"
-msgstr "Annuleren"
+"FeedReader is bezig met het schoonmaken van de database.\n"
+"Dit zou niet lang moeten duren."
 
 #: src/Widgets/TagPopover.vala:45
 msgid "Add Tag:"
@@ -560,360 +1025,18 @@ msgstr "Labels:"
 msgid "add Tag"
 msgstr "Label toevoegen"
 
-#: src/Widgets/MainWindow.vala:44
-msgid "FeedReader"
-msgstr "FeedReader"
-
-#: src/Widgets/MainWindow.vala:347
-msgid "Ignore all TLS errors from now on"
-msgstr "Alle TLS-fouten voortaan negeren"
-
-#: src/Widgets/MainWindow.vala:414
-msgid "Please select a service first"
-msgstr "Selecteer eerst een dienst"
-
-#: src/Widgets/MainWindow.vala:417
-msgid "Please enter a valid username"
-msgstr "Voer een geldige gebruikersnaam in"
-
-#: src/Widgets/MainWindow.vala:420
-msgid "Please enter a valid password"
-msgstr "Voer een geldig wachtwoord in"
-
-#: src/Widgets/MainWindow.vala:424
-msgid "Please enter a valid URL"
-msgstr "Voer een geldige URL in"
-
-#: src/Widgets/MainWindow.vala:427
-msgid "Please enter your Login details"
-msgstr "Voer uw inloggegevens in"
-
-#: src/Widgets/MainWindow.vala:430
-msgid "Sorry, something went wrong."
-msgstr "Sorry, er ging iets mis."
-
-#: src/Widgets/MainWindow.vala:433
-msgid "The server reported an API-error."
-msgstr "De server meldt dat er een API-fout is."
-
-#: src/Widgets/MainWindow.vala:436
-msgid "Either your username or the password are not correct."
-msgstr "Uw gebruikersnaam of wachtwoord is onjuist."
-
-#: src/Widgets/MainWindow.vala:439
-msgid ""
-"No connection to the server. Check your internet connection and the server "
-"URL!"
-msgstr ""
-"Geen verbinding met de server. Controleer uw internetverbinding en de server-"
-"URL!"
-
-#: src/Widgets/MainWindow.vala:442
-msgid "API access is disabled on the server. Please enable it first!"
-msgstr "API-toegang is uitgeschakeld op deze server. Schakel deze in!"
-
-#: src/Widgets/MainWindow.vala:445
-msgid "Not authorized to access URL"
-msgstr "U heeft geen toegang tot deze URL"
-
-#: src/Widgets/MainWindow.vala:449
-msgid "No valid CA certificate available!"
-msgstr "Geen geldig CA-certificaat beschikbaar!"
-
-#: src/Widgets/MainWindow.vala:453
-msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
-msgstr "Installeer de \"api_feedreader\"-plug-in in uw tt-rss-instantie!"
-
-#: src/Widgets/MediaButton.vala:99
-msgid "Attachments"
-msgstr "Bijlagen"
-
-#: src/Widgets/SpringCleanPage.vala:28
-msgid ""
-"FeedReader is cleaning the database.\n"
-"This shouldn't take too long."
-msgstr ""
-"FeedReader is bezig met het schoonmaken van de database.\n"
-"Dit zou niet lang moeten duren."
-
-#: src/Widgets/ArticleViewHeader.vala:68
-msgid "Tag article"
-msgstr "Artikel labelen"
-
-#: src/Widgets/ArticleViewHeader.vala:82
-msgid "Print article"
-msgstr "Artikel afdrukken"
-
-#: src/Widgets/ArticleViewHeader.vala:93
-msgid "Share article"
-msgstr "Artikel delen"
-
-#: src/Widgets/RemovePopover.vala:46
-#, c-format
-msgid "Remove \"%s\""
-msgstr "\"%s\" verwijderen"
-
-#: src/Widgets/RemovePopover.vala:95
-#, c-format
-msgid "Feed \"%s\" removed"
-msgstr "De feed \"%s\" is verwijderd"
-
-#: src/DataBaseReadOnly.vala:223
-#, fuzzy
-msgid "Unknown tag"
-msgstr "onbekende feed"
-
-#: src/Utils.vala:35
-msgid "No Preview Available"
-msgstr "Er is geen voorbeeldweergave beschikbaar"
-
-#: src/Utils.vala:93
-msgid "No Text available for this article :("
-msgstr "Er is geen tekst beschikbaar bij dit artikel :("
-
-#: src/Utils.vala:601
-#, c-format
-msgid "posted by: %s, "
-msgstr "geplaatst door: %s"
-
-#: src/Utils.vala:815
-msgid "Save"
-msgstr "Opslaan"
-
-#: plugins/share/Browser/Browser.vala:79
-msgid "Open in Browser"
-msgstr "Openen in webbrowser"
-
-#: plugins/share/Instapaper/InstapaperSetup.vala:55
-#: plugins/share/Wallabag/WallabagSetup.vala:76
-#: plugins/backend/fresh/freshInterface.vala:71
-#: plugins/backend/fresh/freshInterface.vala:108
-#: plugins/backend/feedhq/feedhqInterface.vala:65
-#: plugins/backend/owncloud/OwncloudNewsInterface.vala:93
-#: plugins/backend/owncloud/OwncloudNewsInterface.vala:131
-#: plugins/backend/ttrss/ttrssInterface.vala:71
-#: plugins/backend/ttrss/ttrssInterface.vala:108
-#: plugins/backend/oldreader/oldreaderInterface.vala:65
-#: plugins/backend/feedbin/feedbinInterface.vala:65
-#: plugins/backend/bazqux/bazquxInterface.vala:65
-msgid "Username:"
-msgstr "Gebruikersnaam:"
-
-#: plugins/share/Instapaper/InstapaperSetup.vala:56
-#: plugins/share/Wallabag/WallabagSetup.vala:77
-#: plugins/backend/fresh/freshInterface.vala:72
-#: plugins/backend/fresh/freshInterface.vala:109
-#: plugins/backend/feedhq/feedhqInterface.vala:66
-#: plugins/backend/owncloud/OwncloudNewsInterface.vala:94
-#: plugins/backend/owncloud/OwncloudNewsInterface.vala:132
-#: plugins/backend/ttrss/ttrssInterface.vala:72
-#: plugins/backend/ttrss/ttrssInterface.vala:109
-#: plugins/backend/oldreader/oldreaderInterface.vala:66
-#: plugins/backend/feedbin/feedbinInterface.vala:66
-#: plugins/backend/bazqux/bazquxInterface.vala:66
-msgid "Password:"
-msgstr "Wachtwoord:"
-
-#: plugins/share/Instapaper/InstapaperSetup.vala:100
-msgid "Username or Password incorrect"
-msgstr "Gebruikersnaam of wachtwoord onjuist"
-
-#: plugins/share/Twitter/TwitterSetup.vala:51
-#: plugins/share/Pocket/PocketSetup.vala:52
-msgid "waiting"
-msgstr "bezig met wachten"
-
-#: plugins/share/Twitter/TwitterForm.vala:29
-msgid ""
-"Hey,\n"
-"\n"
-"Check out this interesting article I just read: $URL"
-msgstr ""
-"Hoi!\n"
-"\n"
-"Kijk eens naar dit interessante artikel dat ik zojuist heb gelezen: $URL"
-
-#: plugins/share/Twitter/TwitterForm.vala:47
-msgid "Limit: "
-msgstr "Limiet:"
-
-#: plugins/share/Twitter/TwitterForm.vala:63
-msgid "Tweet"
-msgstr "Tweeten"
-
-#: plugins/share/Twitter/TwitterForm.vala:80
-msgid "Tweet to Followers"
-msgstr "Tweeten naar volgers"
-
-#: plugins/share/Wallabag/WallabagSetup.vala:74
-msgid "Client ID:"
-msgstr "Cliënt-ID:"
-
-#: plugins/share/Wallabag/WallabagSetup.vala:75
-msgid "Client Secret:"
-msgstr "Cliënt-geheim:"
-
-#: plugins/share/Wallabag/WallabagSetup.vala:124
-msgid "Please fill in the URL."
-msgstr "Voer de URL in."
-
-#: plugins/share/Wallabag/WallabagSetup.vala:130
-msgid "URL seems to not be valid."
-msgstr "De URL lijkt ongeldig te zijn."
-
-#: plugins/share/Wallabag/WallabagSetup.vala:140
-msgid "Please fill in the clientID."
-msgstr "Voer de clientID in."
-
-#: plugins/share/Wallabag/WallabagSetup.vala:147
-msgid "Please fill in the clientSecret."
-msgstr "Voer de clientSecret in."
-
-#: plugins/share/Wallabag/WallabagSetup.vala:154
-msgid "Please fill in the password."
-msgstr "Voer het wachtwoord in."
-
-#: plugins/share/Wallabag/WallabagSetup.vala:161
-msgid "Please fill in the username."
-msgstr "Voer de gebruikersnaam in"
-
-#: plugins/share/Wallabag/WallabagSetup.vala:186
-msgid "Something went wrong."
-msgstr "Er is iets misgegaan."
-
-#: plugins/share/Email/EmailForm.vala:24
-msgid ""
-"Hey,\n"
-"\n"
-"Check out this interesting article I just read: $URL\n"
-"\n"
-"- sent by FeedReader"
-msgstr ""
-"Hoi!\n"
-"\n"
-"Kijk eens naar dit interessante artikel dat ik zojuist heb gelezen: $URL\n"
-"\n"
-"- verstuurd door FeedReader"
-
-#: plugins/share/Email/EmailForm.vala:27
-msgid "To:"
-msgstr "Aan:"
-
-#: plugins/share/Email/EmailForm.vala:52
-#: plugins/share/Telegram/TelegramForm.vala:42
-msgid "Send"
-msgstr "Versturen"
-
-#: plugins/share/Email/EmailForm.vala:65
-msgid "Write Email"
-msgstr "E-mail schrijven"
-
-#: plugins/share/Telegram/TelegramForm.vala:23
-msgid ""
-"Hey, Check out this interesting article I just read - sent by FeedReader"
-msgstr ""
-"Hoi! Kijk eens naar dit interessante artikel dat ik zojuist heb gelezen - "
-"verstuurd door FeedReader"
-
-#: plugins/share/Telegram/TelegramForm.vala:55
-msgid "Send Telegram"
-msgstr "Naar Telegram versturen"
-
-#: plugins/share/Telegram/TelegramSetup.vala:38
-msgid "Info: Telegram would need to be installed for this plugin to work."
-msgstr ""
-"Let op: Telegram moet geïnstalleerd zijn, anders werkt deze plug-in niet."
-
-#: plugins/share/Telegram/Telegram.vala:81
-msgid "Telegram"
-msgstr "Telegram"
-
-#: plugins/backend/fresh/freshInterface.vala:70
-msgid "freshRSS URL:"
-msgstr "freshRSS-URL:"
-
-#: plugins/backend/fresh/freshInterface.vala:137
-#: plugins/backend/owncloud/OwncloudNewsInterface.vala:160
-#: plugins/backend/ttrss/ttrssInterface.vala:137
-msgid "HTTP Authorization"
-msgstr "HTTP-autorisatie:"
-
-#: plugins/backend/fresh/freshInterface.vala:146
-msgid "Please log in to your freshRSS server and enjoy using FeedReader"
-msgstr ""
-"Log in op uw freshRSS-server. Veel plezier met het gebruik van FeedReader!"
-
-#: plugins/backend/feedhq/feedhqInterface.vala:96
-#: plugins/backend/bazqux/bazquxInterface.vala:96
-msgid "Please log in to FeedHQ and enjoy using FeedReader"
-msgstr "Log in op FeedHQ. Veel plezier met het gebruik van FeedReader!"
-
-#: plugins/backend/local/localInterface.vala:66
-msgid "Done"
-msgstr "Klaar"
-
-#: plugins/backend/local/localInterface.vala:67
-msgid "Adding Feeds"
-msgstr "Bezig met toevoegen van feeds"
-
-#: plugins/backend/local/localInterface.vala:617
-msgid "Nothing to read here."
-msgstr "Er valt hier niks te lezen."
-
-#: plugins/backend/owncloud/OwncloudNewsInterface.vala:92
-#, fuzzy
-msgid "Nextcloud URL:"
-msgstr "OwnCloud-URL:"
-
-#: plugins/backend/owncloud/OwncloudNewsInterface.vala:167
-#, fuzzy
-msgid ""
-"Please log in to your Nextcloud News instance and enjoy using FeedReader"
-msgstr ""
-"Log in op uw ownCloud News-instantie. Veel plezier met het gebruik van "
-"FeedReader!"
-
-#: plugins/backend/ttrss/ttrssAPI.vala:816
-msgid "Invalid URL"
-msgstr ""
-
-#: plugins/backend/ttrss/ttrssAPI.vala:819
-msgid "URL content is HTML, no feeds available"
-msgstr ""
-
-#: plugins/backend/ttrss/ttrssAPI.vala:822
-msgid "URL content is HTML which contains multiple feeds."
-msgstr ""
-
-#: plugins/backend/ttrss/ttrssAPI.vala:825
-msgid "Couldn't download the URL content."
-msgstr ""
-
-#: plugins/backend/ttrss/ttrssAPI.vala:828
-msgid "Content is an invalid XML."
-msgstr ""
-
-#: plugins/backend/ttrss/ttrssAPI.vala:841
-msgid "Error reaching tt-rss"
-msgstr ""
-
-#: plugins/backend/ttrss/ttrssInterface.vala:70
-msgid "Tiny Tiny RSS URL:"
-msgstr "Tiny Tiny RSS-URL:"
-
-#: plugins/backend/ttrss/ttrssInterface.vala:146
-msgid "Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"
-msgstr ""
-"Log in op uw Tiny Tiny RSS-server. Veel plezier met het gebruik van "
-"FeedReader!"
-
-#: plugins/backend/oldreader/oldreaderInterface.vala:96
-msgid "Please log in to the Old Reader and enjoy using FeedReader"
-msgstr "Log in op Old Reader. Veel plezier met het gebruik van FeedReader!"
-
-#: plugins/backend/feedbin/feedbinInterface.vala:101
-msgid "Please log in to Feedbin to enjoy using FeedReader"
-msgstr "Log in op Feedbin. Veel plezier met het gebruik van FeedReader!"
+#~ msgid ""
+#~ "Hey,\n"
+#~ "\n"
+#~ "Check out this interesting article I just read: $URL\n"
+#~ "\n"
+#~ "- sent by FeedReader"
+#~ msgstr ""
+#~ "Hoi!\n"
+#~ "\n"
+#~ "Kijk eens naar dit interessante artikel dat ik zojuist heb gelezen: $URL\n"
+#~ "\n"
+#~ "- verstuurd door FeedReader"
 
 #~ msgid "Toggle the selected article un/marked"
 #~ msgstr "Geselecteerd artikel markeren als (on)gemarkeerd"

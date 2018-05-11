@@ -76,13 +76,11 @@ Besides installing the Flatpak Framework, you should also install the following 
 - `xdg-desktop-portal`
 - `xdg-desktop-portal-gtk`
 
-#### Via repository
-This enables OTA updates and is the recommended way. Defaults to the stable branch.
+#### Via Flathub
+Make sure to follow the [setup guide](https://flatpak.org/setup/) before installing FeedReader 
 <pre>
-flatpak install http://feedreader.xarbit.net/feedreader-repo/feedreader.flatpakref
+flatpak install flathub org.gnome.FeedReader
 </pre>
-
-You can also create your own Flatpak bundle running `make bundle` command in the `flatpak/` sub-directory.
 
 
 ### Manual installation

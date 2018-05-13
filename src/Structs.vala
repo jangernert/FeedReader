@@ -123,7 +123,14 @@ namespace FeedReader {
 				var data = config.to_data();
 				try
 				{
-					file.get_parent().make_directory_with_parents();
+					try
+					{
+						file.get_parent().make_directory_with_parents();
+					}
+					catch (Error e)
+					{
+						// don't care if the folder already exists
+					}
 					yield file.replace_contents_async(data.data, null, false, FileCreateFlags.NONE, null, null);
 				}
 				catch (Error e)

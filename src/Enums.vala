@@ -254,16 +254,18 @@ namespace FeedReader {
 		AUDIO,
 		FILE;
 
-		public static EnclosureType from_string(string str)
+		public static EnclosureType from_string(string? str)
 		{
-			if (str.contains("audio"))
-				return AUDIO;
-			else if (str.contains("video"))
-				return VIDEO;
-			else if (str.contains("image"))
-				return IMAGE;
-			else
-				return FILE;
+			if (str != null)
+			{
+				if (str.contains("audio"))
+					return AUDIO;
+				else if (str.contains("video"))
+					return VIDEO;
+				else if (str.contains("image"))
+					return IMAGE;
+			}
+			return FILE;
 		}
 	}
 

@@ -639,7 +639,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 	{
 		Logger.warning(@"DataBase: Deleting all articles of feed \"$feedID\"");
 		m_db.execute("DELETE FROM main.articles WHERE feedID = ?", { feedID });
-		m_db.execute("DELETE FROM main.Enclosures INNER JOIN main.articles ON main.Enclosures.articleID = main.articles.articleID WHERE feedID = ?", { feedID });
+		m_db.execute("DELETE FROM main.Enclosures WHERE articleID IN(SELECT articleID FROM main.articles WHERE feedID = ?)", { feedID });
 		string folder_path = GLib.Environment.get_user_data_dir() + @"/feedreader/data/images/$feedID/";
 		Utils.remove_directory(folder_path);
 	}

@@ -235,7 +235,7 @@ public class FeedReader.FeedlyConnection {
 
 	public Response send_delete_request_to_feedly(string path)
 	{
-		return send_request (path, "DELETE");
+		return send_request(path, "DELETE");
 	}
 
 	private Response send_request(string path, string type)
@@ -244,10 +244,10 @@ public class FeedReader.FeedlyConnection {
 			refreshToken();
 
 		var message = new Soup.Message(type, FeedlySecret.base_uri+path);
-		message.request_headers.append("Authorization","OAuth %s".printf(m_utils.getAccessToken()));
+		message.request_headers.append("Authorization", @"OAuth $(m_utils.getAccessToken())");
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
-				message.request_headers.append("DNT", "1");
+			message.request_headers.append("DNT", "1");
 
 		m_session.send_message(message);
 

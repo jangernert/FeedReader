@@ -332,7 +332,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 		string cont = root.get_string_member("continuation");
 
-		var response = m_connection.send_post_string_request_to_feedly("/v3/entries/.mget", entry_id_response.data,"application/json");
+		var response = m_connection.send_post_string_request_to_feedly("/v3/entries/.mget", entry_id_response.data, "application/json");
 
 		if(response.status != 200)
 			return null;
@@ -657,7 +657,8 @@ public class FeedReader.FeedlyAPI : Object {
 
 	public void removeSubscription(string feedID)
 	{
-		m_connection.send_delete_request_to_feedly("/v3/subscriptions/" + feedID);
+		Logger.info(@"Deleting $(feedID)");
+		m_connection.send_delete_request_to_feedly("/v3/subscriptions/" + Uri.escape_string(feedID));
 	}
 
 	public void renameCategory(string catID, string title)
@@ -667,7 +668,7 @@ public class FeedReader.FeedlyAPI : Object {
 		var root = new Json.Node(Json.NodeType.OBJECT);
 		root.set_object(object);
 
-		m_connection.send_post_request_to_feedly("/v3/categories/" + catID, root);
+		m_connection.send_post_request_to_feedly("/v3/categories/" + Uri.escape_string(catID), root);
 	}
 
 	public void renameTag(string tagID, string title)
@@ -677,12 +678,12 @@ public class FeedReader.FeedlyAPI : Object {
 		var root = new Json.Node(Json.NodeType.OBJECT);
 		root.set_object(object);
 
-		m_connection.send_post_request_to_feedly("/v3/tags/" + tagID, root);
+		m_connection.send_post_request_to_feedly("/v3/tags/" + Uri.escape_string(tagID), root);
 	}
 
 	public void removeCategory(string catID)
 	{
-		m_connection.send_delete_request_to_feedly("/v3/categories/" + catID);
+		m_connection.send_delete_request_to_feedly("/v3/categories/" + Uri.escape_string(catID));
 	}
 
 	public void importOPML(string opml)

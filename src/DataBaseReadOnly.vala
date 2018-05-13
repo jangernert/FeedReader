@@ -402,7 +402,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				row[6].to_string(),
 				row[7].to_string(),
 				author,
-				new GLib.DateTime.from_unix_local(row[11].to_int()),
+				new GLib.DateTime.from_unix_local(row[10].to_int()),
 				row[0].to_int(), 										// rowid (sortid)
 				read_taggings_by_article_id(articleID), 								// tags
 				read_enclosures(articleID),								// enclosures

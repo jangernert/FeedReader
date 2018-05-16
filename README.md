@@ -48,8 +48,13 @@ yaourt -S feedreader
 sudo dnf install feedreader
 ```
 ### Solus OS : <br/>
+
+The current version of Feedreader in the offical Solus repo is old and [busted](https://github.com/jangernert/FeedReader/issues/669). A new package based on Feedreader 2.2+ is pending but is being held up by a [dependency conflict](https://dev.solus-project.com/T6393). Building Feedreader from source on Solus also has [issues](https://github.com/jangernert/FeedReader/issues/682). At present Solus users should install the Flatpak version of Feedreader.
+
 ```bash
-sudo eopkg install feedreader
+sudo eopkg install flatpak xdg-desktop-portal xdg-desktop-portal-gtk
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak install flathub org.gnome.FeedReader
 ```
 
 ### openSUSE : <br/>
@@ -77,7 +82,7 @@ Besides installing the Flatpak Framework, you should also install the following 
 - `xdg-desktop-portal-gtk`
 
 #### Via Flathub
-Make sure to follow the [setup guide](https://flatpak.org/setup/) before installing FeedReader 
+Make sure to follow the Flatpak [setup guide](https://flatpak.org/setup/) for your distribution before installing FeedReader. You must ensure Flatpak is installed and add the Flathub repo. Then you can run:
 <pre>
 flatpak install flathub org.gnome.FeedReader
 </pre>

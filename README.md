@@ -23,7 +23,7 @@ For translators : https://hosted.weblate.org/projects/feedreader/
 - `libgtk-3-dev (>= 3.22)`
 - `libsoup2.4-dev`
 - `libjson-glib-dev`
-- `libwebkit2gtk-4.0-dev (>=2.18)`
+- `libwebkit2gtk-4.0-dev (>=2.20)`
 - `libsqlite3-dev`
 - `libsecret-1-dev`
 - `libnotify-dev`

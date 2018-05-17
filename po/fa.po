@@ -2,8 +2,16 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
+"PO-Revision-Date: 2018-05-17 13:40+0000\n"
+"Last-Translator: Goudarz Jafari <goudarz.jafari@gmail.com>\n"
+"Language-Team: Persian <https://hosted.weblate.org/projects/feedreader/"
+"translations/fa/>\n"
+"Language: fa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 3.0-dev\n"
 
 #: Constants.vala.in:26
 msgid "Desktop Client for various RSS Services"
@@ -110,7 +118,7 @@ msgstr ""
 
 #: data/org.gnome.FeedReader.desktop.in:19 src/FeedReader.vala:21
 msgid "About FeedReader"
-msgstr ""
+msgstr "درباره FeedReader"
 
 #. http auth stuff ----------------------------------------------------
 #: plugins/backend/bazqux/bazquxInterface.vala:65
@@ -156,7 +164,7 @@ msgstr ""
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:172
 #: plugins/backend/ttrss/ttrssInterface.vala:151 src/Share/ServiceSetup.vala:56
 msgid "Login"
-msgstr ""
+msgstr "ورود"
 
 #: plugins/backend/feedbin/feedbinInterface.vala:101
 msgid "Please log in to Feedbin to enjoy using FeedReader"
@@ -389,7 +397,7 @@ msgstr ""
 
 #: src/Model/Article.vala:188
 msgid "Yesterday"
-msgstr ""
+msgstr "دیروز"
 
 #: src/Notification.vala:21 src/Widgets/ArticleList/ArticleList.vala:551
 msgid "New articles"
@@ -407,7 +415,7 @@ msgstr ""
 
 #: src/Share/ServiceSetup.vala:61
 msgid "Logout"
-msgstr ""
+msgstr "خروج"
 
 #: src/Utils.vala:35
 msgid "No Preview Available"
@@ -514,7 +522,7 @@ msgstr ""
 #: src/Widgets/CategorieRow.vala:446 src/Widgets/FeedRow.vala:235
 #: src/Widgets/TagRow.vala:194
 msgid "Rename"
-msgstr ""
+msgstr "تغییر نام"
 
 #: src/Widgets/CategorieRow.vala:448
 msgid "Remove (with Feeds)"

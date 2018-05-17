@@ -41,7 +41,7 @@ For translators : https://hosted.weblate.org/projects/feedreader/
 ## How to install
 ### Arch Linux : <br/>
 ```bash
-yaourt -S feedreader
+pacman -S feedreader
 ```
 ### Fedora : <br/>
 ```bash

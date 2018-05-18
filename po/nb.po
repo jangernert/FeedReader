@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2018-04-28 18:39+0000\n"
+"PO-Revision-Date: 2018-05-18 16:01+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
 "feedreader/translations/nb/>\n"
@@ -23,15 +23,15 @@ msgstr ""
 
 #: Constants.vala.in:26
 msgid "Desktop Client for various RSS Services"
-msgstr ""
+msgstr "Skrivebordsklient for forskjellige RSS-tjenester"
 
 #: Constants.vala.in:31
 msgid "translator-credits"
-msgstr ""
+msgstr "oversettelseshenvisninger"
 
 #: Constants.vala.in:36
 msgid "About"
-msgstr ""
+msgstr "Om"
 
 #: Constants.vala.in:37 src/Widgets/ColumnViewHeader.vala:101
 msgid "Settings"
@@ -48,15 +48,15 @@ msgstr "Avslutt"
 
 #: Constants.vala.in:40
 msgid "Report a Bug"
-msgstr ""
+msgstr "Innrapporter en feil"
 
 #: Constants.vala.in:41
 msgid "Bounties"
-msgstr ""
+msgstr "Dusører"
 
 #: Constants.vala.in:42
 msgid "Shortcuts"
-msgstr ""
+msgstr "Snarveier"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:3
 #, fuzzy
@@ -86,17 +86,19 @@ msgstr "FeedReader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:7
 msgid "RSS client for various webservices"
-msgstr ""
+msgstr "RSS-klient for forskjellige nettjenester"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:10
 msgid ""
 "FeedReader is a program designed to complement an already existing web-based "
 "RSS reader account."
 msgstr ""
+"FeedReader et et program hvis design er myntet på å utfylle en allerede "
+"eksisterende nettbasert RSS-leserkonto."
 
 #: data/org.gnome.FeedReader.appdata.xml.in:14
 msgid "Currently supported services:"
-msgstr ""
+msgstr "Tjenester som støttes:"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:16
 #, fuzzy

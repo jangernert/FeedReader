@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2018-01-30 15:40+0000\n"
-"Last-Translator: E T <etcetin@gmail.com>\n"
+"PO-Revision-Date: 2018-05-18 16:01+0000\n"
+"Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/feedreader/"
 "translations/tr/>\n"
 "Language: tr\n"
@@ -18,28 +18,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.19-dev\n"
+"X-Generator: Weblate 3.0-dev\n"
 
 #: Constants.vala.in:26
 msgid "Desktop Client for various RSS Services"
-msgstr ""
+msgstr "Çeşitli RSS Hizmetleri için Masaüstü İstemci"
 
 #: Constants.vala.in:31
 msgid "translator-credits"
-msgstr ""
+msgstr "Emin Tufan Çetin <etcetin@gmail.com>"
 
 #: Constants.vala.in:36
 msgid "About"
-msgstr ""
+msgstr "Hakkında"
 
 #: Constants.vala.in:37 src/Widgets/ColumnViewHeader.vala:101
 msgid "Settings"
 msgstr "Ayarlar"
 
 #: Constants.vala.in:38
-#, fuzzy
 msgid "Change Account"
-msgstr "Hesabı Değiştir?"
+msgstr "Hesabı Değiştir"
 
 #: Constants.vala.in:39 src/Widgets/ShortcutsWindow.vala:29
 msgid "Quit"
@@ -47,36 +46,33 @@ msgstr "Çık"
 
 #: Constants.vala.in:40
 msgid "Report a Bug"
-msgstr ""
+msgstr "Hata Bildir"
 
 #: Constants.vala.in:41
 msgid "Bounties"
-msgstr ""
+msgstr "Bağışlar"
 
 #: Constants.vala.in:42
 msgid "Shortcuts"
-msgstr ""
+msgstr "Kısayollar"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:3
-#, fuzzy
 msgid "FeedReader Autostart"
-msgstr "FeedReader Hesapları"
+msgstr "FeedReaderʼı Kendiliğinden Başlat"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:4
 #: data/org.gnome.FeedReader.desktop.in:4
-#, fuzzy
 msgid "RSS Client"
-msgstr "İstemci Kimliği:"
+msgstr "RSS İstemci"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:6
 msgid "Categories=Network;Feed;"
-msgstr ""
+msgstr "Categories=Network;Feed;"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:8
 #: data/org.gnome.FeedReader.desktop.in:8
-#, fuzzy
 msgid "org.gnome.FeedReader"
-msgstr "FeedReader"
+msgstr "org.gnome.FeedReader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:6
 #: data/org.gnome.FeedReader.desktop.in:3 src/Widgets/MainWindow.vala:44
@@ -85,35 +81,35 @@ msgstr "FeedReader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:7
 msgid "RSS client for various webservices"
-msgstr ""
+msgstr "Çeşitli web hizmetleri için RSS istemcisi"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:10
 msgid ""
 "FeedReader is a program designed to complement an already existing web-based "
 "RSS reader account."
 msgstr ""
+"FeedReader, zaten var olan web tabanlı RSS okuyucu hesabını tamamlamak için "
+"tasarlanmış programdır."
 
 #: data/org.gnome.FeedReader.appdata.xml.in:14
 msgid "Currently supported services:"
-msgstr ""
+msgstr "Şu anda desteklenen hizmetler:"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:16
-#, fuzzy
 msgid "Tiny Tiny RSS"
-msgstr "Tiny Tiny RSS Adresi:"
+msgstr "Tiny Tiny RSS"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:17
 msgid "feedly"
-msgstr ""
+msgstr "feedly"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:18
 msgid "ownCloud"
-msgstr ""
+msgstr "ownCloud"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:19
-#, fuzzy
 msgid "Inoreader"
-msgstr "Okunmamış"
+msgstr "Inoreader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:21
 msgid ""
@@ -124,10 +120,16 @@ msgid ""
 "keyboard shortcuts and a database that keeps all your old articles as long "
 "as you like."
 msgstr ""
+"Aygıtlar arası eşzamanlama yapma gibi web tabanlı hizmetlerin tüm "
+"avantajlarını birleştirir, çağdaş bir masaüstü uygulamadan bekleyeceğiniz "
+"her şeyi barındırır: Masaüstü bildirimleri, hızlı arama ve süzgeçler, "
+"etiketleme, pocket ve instapaper gibi \"sonra oku\" hizmetlerine paylaşım, "
+"kullanışlı klavye kısayolları ve isterseniz tüm eski makalelerinizi tutan "
+"bir veri tabanı."
 
 #: data/org.gnome.FeedReader.desktop.in:5
 msgid "Read feeds from web services"
-msgstr ""
+msgstr "Web hizmetlerinden beslemeleri oku"
 
 #: data/org.gnome.FeedReader.desktop.in:19 src/FeedReader.vala:21
 msgid "About FeedReader"
@@ -245,7 +247,6 @@ msgid "Couldn't download the URL content."
 msgstr "URL içeriği indirilemedi."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:821
-#, fuzzy
 msgid "The content is invalid XML."
 msgstr "İçerik geçersiz bir XML'den oluşuyor."
 
@@ -268,7 +269,6 @@ msgid "Open in Browser"
 msgstr "Tarayıcıda Aç"
 
 #: plugins/share/Email/EmailForm.vala:24
-#, fuzzy
 msgid ""
 "Hey,\n"
 "\n"
@@ -276,7 +276,7 @@ msgid ""
 msgstr ""
 "Hey,\n"
 "\n"
-"Okuduğum şu ilgi çekici yazıya göz at: $URL"
+"Okumak için FeedReader kullandığım şu ilgi çekici makaleye göz at: $URL"
 
 #: plugins/share/Email/EmailForm.vala:27
 msgid "To:"
@@ -305,9 +305,8 @@ msgid "Telegram"
 msgstr "Telegram"
 
 #: plugins/share/Telegram/TelegramForm.vala:23
-#, fuzzy
 msgid "Hey, check out this interesting article I used FeedReader to read"
-msgstr "Hey, Okuduğum şu ilgi çekici yazıya göz at - FeedReader ile gönderildi"
+msgstr "Hey, okumak için FeedReader kullandığım şu ilgi çekici makaleye göz at"
 
 #: plugins/share/Telegram/TelegramForm.vala:55
 msgid "Send Telegram"

@@ -191,7 +191,15 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		if(error == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
-			unread = int.parse(response.get_string_member("unread"));
+			int64 parsed = 0;
+			bool res = int64.try_parse(response.get_string_member("unread"), out parsed);
+			if(res) {
+				unread = (int) parsed;
+			}
+			else
+			{
+				Logger.warning("Could not parse unread articles");
+			}
 		}
 		Logger.info("There are %i unread articles".printf(unread));
 

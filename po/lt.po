@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2018-02-28 00:32+0000\n"
+"PO-Revision-Date: 2018-05-21 21:45+0000\n"
 "Last-Translator: Moo <hazap@hotmail.com>\n"
 "Language-Team: Lithuanian <https://hosted.weblate.org/projects/feedreader/"
 "translations/lt/>\n"
@@ -20,28 +20,27 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n % 10 == 1 && (n % 100 < 11 || n % 100 > "
 "19)) ? 0 : ((n % 10 >= 2 && n % 10 <= 9 && (n % 100 < 11 || n % 100 > 19)) ? "
 "1 : 2);\n"
-"X-Generator: Weblate 2.20-dev\n"
+"X-Generator: Weblate 3.0-dev\n"
 
 #: Constants.vala.in:26
 msgid "Desktop Client for various RSS Services"
-msgstr ""
+msgstr "Darbalaukio klientas, skirtas įvairioms RSS paslaugoms"
 
 #: Constants.vala.in:31
 msgid "translator-credits"
-msgstr ""
+msgstr "Moo"
 
 #: Constants.vala.in:36
 msgid "About"
-msgstr ""
+msgstr "Apie"
 
 #: Constants.vala.in:37 src/Widgets/ColumnViewHeader.vala:101
 msgid "Settings"
 msgstr "Nustatymai"
 
 #: Constants.vala.in:38
-#, fuzzy
 msgid "Change Account"
-msgstr "Pakeisti paskyrą?"
+msgstr "Pakeisti paskyrą"
 
 #: Constants.vala.in:39 src/Widgets/ShortcutsWindow.vala:29
 msgid "Quit"
@@ -49,36 +48,33 @@ msgstr "Išeiti"
 
 #: Constants.vala.in:40
 msgid "Report a Bug"
-msgstr ""
+msgstr "Pranešti apie klaidą"
 
 #: Constants.vala.in:41
 msgid "Bounties"
-msgstr ""
+msgstr "Premijos"
 
 #: Constants.vala.in:42
 msgid "Shortcuts"
-msgstr ""
+msgstr "Trumpiniai"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:3
-#, fuzzy
 msgid "FeedReader Autostart"
-msgstr "FeedReader paskyros"
+msgstr "FeedReader automatinis paleidimas"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:4
 #: data/org.gnome.FeedReader.desktop.in:4
-#, fuzzy
 msgid "RSS Client"
-msgstr "Kliento ID:"
+msgstr "RSS klientas"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:6
 msgid "Categories=Network;Feed;"
-msgstr ""
+msgstr "Categories=Network;Feed;"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:8
 #: data/org.gnome.FeedReader.desktop.in:8
-#, fuzzy
 msgid "org.gnome.FeedReader"
-msgstr "FeedReader"
+msgstr "org.gnome.FeedReader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:6
 #: data/org.gnome.FeedReader.desktop.in:3 src/Widgets/MainWindow.vala:44
@@ -87,35 +83,35 @@ msgstr "FeedReader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:7
 msgid "RSS client for various webservices"
-msgstr ""
+msgstr "RSS klientas, skirtas įvarioms saityno paslaugoms"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:10
 msgid ""
 "FeedReader is a program designed to complement an already existing web-based "
 "RSS reader account."
 msgstr ""
+"FeedReader yra sukurta tam, kad papildytų jau esamą saitynu pagrįstą RSS "
+"skaityklės paskyrą."
 
 #: data/org.gnome.FeedReader.appdata.xml.in:14
 msgid "Currently supported services:"
-msgstr ""
+msgstr "Šiuo metu palaikomos paslaugos:"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:16
-#, fuzzy
 msgid "Tiny Tiny RSS"
-msgstr "Tiny Tiny RSS URL:"
+msgstr "Tiny Tiny RSS"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:17
 msgid "feedly"
-msgstr ""
+msgstr "feedly"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:18
 msgid "ownCloud"
-msgstr ""
+msgstr "ownCloud"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:19
-#, fuzzy
 msgid "Inoreader"
-msgstr "Neskaityti"
+msgstr "Inoreader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:21
 msgid ""
@@ -126,10 +122,17 @@ msgid ""
 "keyboard shortcuts and a database that keeps all your old articles as long "
 "as you like."
 msgstr ""
+"Joje yra visi saitynu pagrįstų paslaugų privalumai, tokie kaip "
+"sinchronizavimas tarp visų jūsų įrenginių, kartu su visomis ypatybėmis, "
+"kurių tikėtumėtes iš šiuolaikinės darbalaukio programos: Darbalaukio "
+"pranešimais, greita paieška ir filtrais, žymėmis, bendrinimu į \"skaitymo "
+"vėliau\" paslaugas, tokias kaip pocket ir instapaper, parankiais klaviatūros "
+"trumpiniais ir duomenų baze, kuri saugo visus jūsų straipsnius tiek, kiek "
+"panorėsite."
 
 #: data/org.gnome.FeedReader.desktop.in:5
 msgid "Read feeds from web services"
-msgstr ""
+msgstr "Skaityti kanalus iš saityno paslaugų"
 
 #: data/org.gnome.FeedReader.desktop.in:19 src/FeedReader.vala:21
 msgid "About FeedReader"
@@ -249,7 +252,6 @@ msgid "Couldn't download the URL content."
 msgstr "Nepavyko atsisiųsti URL turinio."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:821
-#, fuzzy
 msgid "The content is invalid XML."
 msgstr "Turinys yra neteisingas XML."
 
@@ -272,7 +274,6 @@ msgid "Open in Browser"
 msgstr "Atverti naršyklėje"
 
 #: plugins/share/Email/EmailForm.vala:24
-#, fuzzy
 msgid ""
 "Hey,\n"
 "\n"
@@ -280,7 +281,8 @@ msgid ""
 msgstr ""
 "Labas,\n"
 "\n"
-"Pasižiūrėk šį įdomų straipsnį, kurį ką perskaičiau: $URL"
+"Pasižiūrėk šį įdomų straipsnį, kurį ką perskaičiau, naudojant FeedReader: "
+"$URL"
 
 #: plugins/share/Email/EmailForm.vala:27
 msgid "To:"
@@ -309,10 +311,9 @@ msgid "Telegram"
 msgstr "Telegram"
 
 #: plugins/share/Telegram/TelegramForm.vala:23
-#, fuzzy
 msgid "Hey, check out this interesting article I used FeedReader to read"
 msgstr ""
-"Labas, pasižiūrėk šį įdomų straipsnį, kurį ką tik perskaičiau - išsiųsta per "
+"Labas, pasižiūrėk šį įdomų straipsnį, kurį ką tik perskaičiau, naudojant "
 "FeedReader"
 
 #: plugins/share/Telegram/TelegramForm.vala:55

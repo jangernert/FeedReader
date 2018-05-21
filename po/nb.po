@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2018-05-21 19:13+0000\n"
+"PO-Revision-Date: 2018-05-22 19:40+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
 "feedreader/translations/nb/>\n"
@@ -68,7 +68,7 @@ msgstr "RSS-klient"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:6
 msgid "Categories=Network;Feed;"
-msgstr "Kategorier=Nettverk;Informasjonsstrøm;"
+msgstr "Kategorier=Nettverk;Kilde;"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:8
 #: data/org.gnome.FeedReader.desktop.in:8
@@ -130,7 +130,7 @@ msgstr ""
 
 #: data/org.gnome.FeedReader.desktop.in:5
 msgid "Read feeds from web services"
-msgstr "Leser informasjonsstrømmer fra nettjenester"
+msgstr "Leser kilder fra nettjenester"
 
 #: data/org.gnome.FeedReader.desktop.in:19 src/FeedReader.vala:21
 msgid "About FeedReader"
@@ -206,7 +206,7 @@ msgstr "Ferdig"
 
 #: plugins/backend/local/localInterface.vala:67
 msgid "Adding Feeds"
-msgstr "Legger til feeds"
+msgstr "Legger til kilder"
 
 #. Logger.info("Got content: " + item.description);
 #. Logger.info("Converted to: " + item.description);
@@ -390,7 +390,7 @@ msgstr "Noe gikk galt."
 
 #: src/Backend/FeedServer.vala:191 src/Backend/FeedServer.vala:294
 msgid "Getting feeds and categories"
-msgstr "Henter feeds og kategorier"
+msgstr "Henter kilder og kategorier"
 
 #: src/Backend/FeedServer.vala:243
 msgid "Getting articles"
@@ -481,7 +481,7 @@ msgstr "Importer"
 
 #: src/Widgets/AddPopover.vala:92 src/Widgets/FeedListFooter.vala:113
 msgid "Add feed"
-msgstr "Legg til feed"
+msgstr "Legg til kilde"
 
 #: src/Widgets/AddPopover.vala:93
 msgid "Import OPML"
@@ -551,7 +551,7 @@ msgstr "Endre navn"
 
 #: src/Widgets/CategorieRow.vala:448
 msgid "Remove (with Feeds)"
-msgstr "Fjern (med feed)"
+msgstr "Fjern (med kilder)"
 
 #: src/Widgets/CategorieRow.vala:501 src/Widgets/FeedRow.vala:270
 #: src/Widgets/TagRow.vala:272
@@ -588,7 +588,7 @@ msgstr "Vis kun stjernemerkede artikler"
 
 #: src/Widgets/ColumnViewHeader.vala:60
 msgid "Update feeds"
-msgstr "Oppdater feed"
+msgstr "Oppdater kilder"
 
 #: src/Widgets/ColumnViewHeader.vala:75
 msgid "Search Articles"
@@ -612,7 +612,7 @@ msgstr "Kategorier"
 
 #: src/Widgets/FeedList.vala:487
 msgid "Feeds"
-msgstr "Feeds"
+msgstr "Kilder"
 
 #: src/Widgets/FeedList.vala:1012
 msgid "New Tag"
@@ -624,7 +624,7 @@ msgstr "Ny kategori"
 
 #: src/Widgets/FeedListFooter.vala:142
 msgid "Remove feed"
-msgstr "Fjern feed"
+msgstr "Fjern kilde"
 
 #: src/Widgets/FeedRow.vala:234
 msgid "Copy URL"
@@ -646,7 +646,7 @@ msgstr "Gå ut av fullskjerm"
 
 #: src/Widgets/LoginPage.vala:39
 msgid "Where are your feeds?"
-msgstr "Hvor er dine nyhetskilder?"
+msgstr "Hvor er dine kilder?"
 
 #: src/Widgets/LoginPage.vala:43
 msgid "Please select the RSS service you are using and log in to get going."
@@ -729,7 +729,7 @@ msgstr "Merkelappen \"%s\" er fjernet"
 #: src/Widgets/RemovePopover.vala:96
 #, c-format
 msgid "Feed \"%s\" removed"
-msgstr "Feeden \"%s\" er fjernet"
+msgstr "Kilden \"%s\" er fjernet"
 
 #: src/Widgets/ResetPage.vala:33
 msgid "Change Account?"
@@ -769,11 +769,11 @@ msgstr "Del"
 
 #: src/Widgets/SettingsDialog.vala:71
 msgid "Feed List:"
-msgstr "Nyhetsliste:"
+msgstr "Kildeliste:"
 
 #: src/Widgets/SettingsDialog.vala:73
 msgid "Only show feeds"
-msgstr "Vis kun nyhetskilder"
+msgstr "Vis kun kilder"
 
 #: src/Widgets/SettingsDialog.vala:80
 msgid "Only show unread"
@@ -781,7 +781,7 @@ msgstr "Vis kun uleste"
 
 #: src/Widgets/SettingsDialog.vala:85
 msgid "Sort Feed List by"
-msgstr "Sorter informasjonskanalsliste etter"
+msgstr "Sorter kilde etter"
 
 #: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
@@ -936,7 +936,7 @@ msgstr "Søk"
 #. --------------------------------------------------
 #: src/Widgets/ShortcutsWindow.vala:37
 msgid "Feed List"
-msgstr "Feed-liste"
+msgstr "Kildeliste"
 
 #: src/Widgets/ShortcutsWindow.vala:42
 msgid "Select next item"

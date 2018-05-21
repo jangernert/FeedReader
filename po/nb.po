@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2018-05-18 16:01+0000\n"
+"PO-Revision-Date: 2018-05-21 19:13+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
 "feedreader/translations/nb/>\n"
@@ -38,9 +38,8 @@ msgid "Settings"
 msgstr "Innstillinger"
 
 #: Constants.vala.in:38
-#, fuzzy
 msgid "Change Account"
-msgstr "Endre konto?"
+msgstr "Endre konto"
 
 #: Constants.vala.in:39 src/Widgets/ShortcutsWindow.vala:29
 msgid "Quit"
@@ -59,25 +58,22 @@ msgid "Shortcuts"
 msgstr "Snarveier"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:3
-#, fuzzy
 msgid "FeedReader Autostart"
-msgstr "FeedReader-kontoer"
+msgstr "Automatisk start av FeedReader"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:4
 #: data/org.gnome.FeedReader.desktop.in:4
-#, fuzzy
 msgid "RSS Client"
-msgstr "Klient ID:"
+msgstr "RSS-klient"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:6
 msgid "Categories=Network;Feed;"
-msgstr ""
+msgstr "Kategorier=Nettverk;Informasjonsstrøm;"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:8
 #: data/org.gnome.FeedReader.desktop.in:8
-#, fuzzy
 msgid "org.gnome.FeedReader"
-msgstr "FeedReader"
+msgstr "org.gnome.FeedReader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:6
 #: data/org.gnome.FeedReader.desktop.in:3 src/Widgets/MainWindow.vala:44
@@ -101,22 +97,20 @@ msgid "Currently supported services:"
 msgstr "Tjenester som støttes:"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:16
-#, fuzzy
 msgid "Tiny Tiny RSS"
-msgstr "Tiny Tiny RSS-nettadresse:"
+msgstr "Tiny Tiny RSS"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:17
 msgid "feedly"
-msgstr ""
+msgstr "Feedly"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:18
 msgid "ownCloud"
-msgstr ""
+msgstr "Nextcloud/ownCloud"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:19
-#, fuzzy
 msgid "Inoreader"
-msgstr "Ulest"
+msgstr "Inoreader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:21
 msgid ""
@@ -127,10 +121,16 @@ msgid ""
 "keyboard shortcuts and a database that keeps all your old articles as long "
 "as you like."
 msgstr ""
+"Det kombinerer fordelene med nettbaserte tjenester som synkronisering på "
+"tvers av alle enhetene dine med alt du forventer fra et moderne "
+"skrivebordsprogram: Skrivebordsmerknader, raskt søk og filtrering, deling "
+"til \"les senere\"-tjenester, som Pocket og Instapaper, hendige "
+"tastatursnarveier og en database som beholder dine gamle artikler så lenge "
+"du ønsker."
 
 #: data/org.gnome.FeedReader.desktop.in:5
 msgid "Read feeds from web services"
-msgstr ""
+msgstr "Leser informasjonsstrømmer fra nettjenester"
 
 #: data/org.gnome.FeedReader.desktop.in:19 src/FeedReader.vala:21
 msgid "About FeedReader"
@@ -245,7 +245,6 @@ msgid "Couldn't download the URL content."
 msgstr "Kunne ikke laste ned nettadresseinnholdet."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:821
-#, fuzzy
 msgid "The content is invalid XML."
 msgstr "Innholdet er ugyldig XML."
 
@@ -266,7 +265,6 @@ msgid "Open in Browser"
 msgstr "Åpne i nettleseren"
 
 #: plugins/share/Email/EmailForm.vala:24
-#, fuzzy
 msgid ""
 "Hey,\n"
 "\n"
@@ -303,7 +301,6 @@ msgid "Telegram"
 msgstr "Telegram"
 
 #: plugins/share/Telegram/TelegramForm.vala:23
-#, fuzzy
 msgid "Hey, check out this interesting article I used FeedReader to read"
 msgstr ""
 "Hei, sjekk ut denne interessante artikkelen jeg nettopp leste - sent av "

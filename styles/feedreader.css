@@ -1,0 +1,17 @@
+.get_involved {
+    padding-top: 60px; margin-top: -60px;
+}
+
+.get_involved__title{
+    color:#B6B6B6;
+    font-weight: normal;
+    line-height: 1;
+    font-size: 32px;
+    font-family: "Raleway", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.get_involved__description{
+    font-size:125%;
+    margin-top: 12px;
+    text-align: justify;
+}

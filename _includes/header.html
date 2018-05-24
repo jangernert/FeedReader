@@ -10,8 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="{{site.baseurl}}/images/feedreader.ico" type="image/x-icon" />
     <link rel="stylesheet" href="{{site.baseurl}}/styles/bootstrap.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-
+    <link rel="stylesheet" href="{{site.baseurl}}/styles/feedreader.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
@@ -38,19 +38,7 @@
                     <li class="scroll"><a href="{{site.baseurl}}/#features">Features</a></li>
                     <li class="scroll"><a href="{{site.baseurl}}/#install">Installation</a></li>
                     <li class="scroll"><a href="{{site.baseurl}}/#get-involved">Support &amp; Getting Involved</a></li>
-                    <li role="presentation" class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                      Changelog &nbsp; <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                     {% for log in site.changelog reversed %}
-                        {% if include.is_changelog == "true" %}
-                        <li class="scroll"><a href="#{{log.version | replace:'.',''}}">{{log.version}}</a></li>
-                        {% else %}
-                        <li><a href="{{site.baseurl}}/changelog#{{log.version | replace:'.',''}}">{{log.version}}</a></li>
-                        {% endif %}
-                    {% endfor %}
-                    </ul>
+
                   </li>
                 </ul>
             </div>

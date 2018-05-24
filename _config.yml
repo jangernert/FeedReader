@@ -17,5 +17,3 @@ collections:
         output: false
     features:
         output: false
-    changelog:
-        output: false

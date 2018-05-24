@@ -212,49 +212,60 @@
     </div>
     <hr>
 
-    <div class="container" id="get-involved" style="padding-top: 60px; margin-top: -60px">
-        <h1 class="text-center">Support &amp; Getting Involved</h1>
+<div class="container get_involved" id="get-involved">
+    <h1 class="text-center">Support &amp; Getting Involved</h1>
+    <div class="row">
         <div class="col-md-6">
-            <h1 class="text-center"><small>Support</small></h1>
-            <p> &nbsp; </p>
+            <h1 class="text-center get_involved__title">Support</h1>
             <div class="text-center">
                 <i class="fa fa-life-ring fa-5x"></i>
             </div>
-            <p> &nbsp; </p>
-            <p style="font-size: 125%" class="text-center">
-                Please report bugs over at <a href="https://github.com/jangernert/FeedReader">GitHub</a>.
-                <br/> You can also support the development of FeedReader over at <a href="https://www.bountysource.com/teams/feedreader-gtk/issues?tracker_ids=16778038">Bountysource</a> and throw in a few bucks at any bug you would like to be fixed or any
+            <p class="text-center get_involved__description">
+                You can support the development of FeedReader over at <a href="https://www.bountysource.com/teams/feedreader-gtk/issues?tracker_ids=16778038">Bountysource</a> and throw in a few bucks at any bug you would like to be fixed or any
                 feature you would like to see implemented.
             </p>
         </div>
+
         <div class="col-md-6">
-            <h1 class="text-center"><small>Getting Involved</small></h1>
-            <h4>Vala</h4>
-            <ul>
-                <li>You can find the code on <a href="https://github.com/jangernert/FeedReader/tree/master">GitHub</a>.</li>
-                <li>Help us fixing bugs or implement your own ideas.</li>
-                <li>Talk to <a href="https://plus.google.com/109974726829108083807/about">me on G+</a> before working on bigger changes =)</li>
-            </ul>
-            <h5>CSS</h5>
-            <ul>
-                <li>Improve the theming of FeedReader itself with <a href="https://github.com/jangernert/FeedReader/tree/master/data/gtk-css">Gtk-CSS</a></li>
-                <li>Improve the <a href="https://github.com/jangernert/FeedReader/blob/master/data/ArticleView/style.css">current article theme</a> with its 3 color variants</li>
-                <li>Create a completely new article theme</li>
-            </ul>
-            <h5>Translation</h5>
-            <ul>
-                <li>Help us translate Feedreader to other languages at <a href="https://hosted.weblate.org/projects/feedreader/">Weblate</a> and join Feedreader translators team.</li>
-            </ul>
-            <h5>Grabber Configuration</h5>
-            <ul>
-                <li>Have you encountered a feed that does only contain a small preview of the article? Then help us change that.</li>
-                <li>You only need to know the basics about <a href="https://en.wikipedia.org/wiki/XPath">XPath</a> (its not hard at all)</li>
-                <li>Here is the <a href="http://help.fivefilters.org/customer/portal/articles/223153-site-patterns">full documentation</a> of FiveFilters</li>
-                <li>Look at the <a href="https://github.com/jangernert/ftr-site-config">existing config-files</a> to learn how they work</li>
-                <li>If you find a bug in the existing config-files (most likely the website changed) feel free to fix it</li>
-            </ul>
-
+            <h1 class="text-center get_involved__title">Translation</h1>
+            <div class="text-center">
+                <i class="fa fa-language fa-5x"></i>
+            </div>
+            <p class="text-center get_involved__description">
+                Help us translate Feedreader to other languages at <a href="https://hosted.weblate.org/projects/feedreader/">Weblate</a> and join Feedreader translators team.
+            </p>
         </div>
 
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h1 class="text-center get_involved__title">Bugs and new features</h1>
+            <div class="text-center">
+                <i class="fas fa-bug fa-5x"></i>
+            </div>
+            <p class="text-center get_involved__description">
+            The source code is available on <a href="https://github.com/jangernert/FeedReader/">GitHub</a>.
+            The list of the open issues can be found <a href="https://github.com/jangernert/FeedReader/issues/">here</a>. 
+            The team working on FeedReader can be reached on <a href="https://gitter.im/Feedreader-dev/Lobby">Gitter chat room</a>
+
+            </p>
+            
         </div>
+        <div class="col-md-6">
+
+            <h1 class="text-center get_involved__title">Grabber Configuration</h1>
+            <div class="text-center">
+                <i class="fas fa-newspaper fa-5x"></i>
+            </div>
+            <p class="text-center get_involved__description">
+                Have you encountered a feed that does only contain a small preview of the article? Then help us change that. 
+                FeedReader uses <a href="https://github.com/fivefilters/ftr-site-config">Full-Text RSS site config files</a>. 
+                Which allows the application to grab the whole content of an article. If a only contains the preview of the article, then the website config file is missing or outdated.
+                You can either create a PR upstream or report that there. 
+            </p>
+        </div>
+
+    </div>
+</div>
 {% include footer.html is_changelog="false" %}

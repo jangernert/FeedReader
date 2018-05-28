@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2018-05-28 15:30+0000\n"
+"PO-Revision-Date: 2018-05-29 15:41+0000\n"
 "Last-Translator: Davi da Silva Böger <dsboger@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "feedreader/translations/pt_BR/>\n"
@@ -328,7 +328,7 @@ msgstr "Remover"
 
 #: plugins/share/Telegram/TelegramSetup.vala:38
 msgid "Info: Telegram would need to be installed for this plugin to work."
-msgstr "Informação: Telegram precisa ser instalado para que este plugin funçõe"
+msgstr "Informação: Telegram precisa ser instalado para este plugin funcionar."
 
 #: plugins/share/Twitter/TwitterForm.vala:29
 msgid ""
@@ -342,7 +342,7 @@ msgstr ""
 
 #: plugins/share/Twitter/TwitterForm.vala:47
 msgid "Limit: "
-msgstr "Limite:"
+msgstr "Limite: "
 
 #: plugins/share/Twitter/TwitterForm.vala:63
 msgid "Tweet"
@@ -417,7 +417,7 @@ msgstr "Obtendo artigos não lidos"
 
 #: src/DataBaseReadOnly.vala:243
 msgid "Unknown tag"
-msgstr "Tag desconhecida"
+msgstr "Marcador desconhecido"
 
 #: src/DataBaseReadOnly.vala:271 src/Widgets/AddPopover.vala:38
 #: src/Widgets/FeedList.vala:506
@@ -457,7 +457,7 @@ msgstr "Nenhum texto disponível para este artigo :("
 #: src/Utils.vala:601
 #, c-format
 msgid "posted by: %s, "
-msgstr "postado por: %s,"
+msgstr "postado por: %s, "
 
 #: src/Utils.vala:814 src/Widgets/UpdateButton.vala:80
 msgid "Cancel"

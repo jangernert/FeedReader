@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2017-12-04 09:32+0000\n"
-"Last-Translator: Iacchus Mercurius <kassivs@gmail.com>\n"
+"PO-Revision-Date: 2018-05-28 15:30+0000\n"
+"Last-Translator: Davi da Silva Böger <dsboger@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "feedreader/translations/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -21,28 +21,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2.18-dev\n"
+"X-Generator: Weblate 3.0-dev\n"
 
 #: Constants.vala.in:26
 msgid "Desktop Client for various RSS Services"
-msgstr ""
+msgstr "Cliente desktop para vários serviços de RSS"
 
 #: Constants.vala.in:31
 msgid "translator-credits"
-msgstr ""
+msgstr "dsboger"
 
 #: Constants.vala.in:36
 msgid "About"
-msgstr ""
+msgstr "Sobre"
 
 #: Constants.vala.in:37 src/Widgets/ColumnViewHeader.vala:101
 msgid "Settings"
 msgstr "Preferências"
 
 #: Constants.vala.in:38
-#, fuzzy
 msgid "Change Account"
-msgstr "Alterar conta?"
+msgstr "Alterar conta"
 
 #: Constants.vala.in:39 src/Widgets/ShortcutsWindow.vala:29
 msgid "Quit"
@@ -50,36 +49,33 @@ msgstr "Sair"
 
 #: Constants.vala.in:40
 msgid "Report a Bug"
-msgstr ""
+msgstr "Relatar um bug"
 
 #: Constants.vala.in:41
 msgid "Bounties"
-msgstr ""
+msgstr "Recompensas"
 
 #: Constants.vala.in:42
 msgid "Shortcuts"
-msgstr ""
+msgstr "Atalhos de teclado"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:3
-#, fuzzy
 msgid "FeedReader Autostart"
-msgstr "Contas do FeedReader"
+msgstr "AutoStart do  FeedReader"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:4
 #: data/org.gnome.FeedReader.desktop.in:4
-#, fuzzy
 msgid "RSS Client"
-msgstr "ID do cliente:"
+msgstr "Cliente RSS"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:6
 msgid "Categories=Network;Feed;"
-msgstr ""
+msgstr "Categories=Network;Feed;"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:8
 #: data/org.gnome.FeedReader.desktop.in:8
-#, fuzzy
 msgid "org.gnome.FeedReader"
-msgstr "FeedReader"
+msgstr "org.gnome.FeedReader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:6
 #: data/org.gnome.FeedReader.desktop.in:3 src/Widgets/MainWindow.vala:44
@@ -88,35 +84,35 @@ msgstr "FeedReader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:7
 msgid "RSS client for various webservices"
-msgstr ""
+msgstr "Cliente RSS para vários serviços Web"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:10
 msgid ""
 "FeedReader is a program designed to complement an already existing web-based "
 "RSS reader account."
 msgstr ""
+"FeedReader é um programa projetado para complementar uma conta existente em "
+"um leitor RSS da Web."
 
 #: data/org.gnome.FeedReader.appdata.xml.in:14
 msgid "Currently supported services:"
-msgstr ""
+msgstr "Serviços atualmente suportados:"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:16
-#, fuzzy
 msgid "Tiny Tiny RSS"
-msgstr "URL do Tiny Tiny RSS:"
+msgstr "Tiny Tiny RSS"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:17
 msgid "feedly"
-msgstr ""
+msgstr "Feedly"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:18
 msgid "ownCloud"
-msgstr ""
+msgstr "ownCloud"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:19
-#, fuzzy
 msgid "Inoreader"
-msgstr "Não lidos"
+msgstr "Inoreader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:21
 msgid ""
@@ -127,10 +123,16 @@ msgid ""
 "keyboard shortcuts and a database that keeps all your old articles as long "
 "as you like."
 msgstr ""
+"Combina todas as vantagens de serviços Web, como sincronização com todos os "
+"dispositivos, com tudo que se pode esperar de uma aplicação desktop moderna: "
+"notificações na área de trabalho, filtros e buscas rápidas, tags, "
+"compartilhamento com serviços de \"leia-mais-tarde\" (p.ex. Pocket e "
+"Instapaper), atalhos de teclado úteis e um banco de dados para guardar todos "
+"os seus artigos antigos pelo tempo que quiser."
 
 #: data/org.gnome.FeedReader.desktop.in:5
 msgid "Read feeds from web services"
-msgstr ""
+msgstr "Leia feeds de serviços Web"
 
 #: data/org.gnome.FeedReader.desktop.in:19 src/FeedReader.vala:21
 msgid "About FeedReader"
@@ -220,42 +222,40 @@ msgid "Please log in to the Old Reader and enjoy using FeedReader"
 msgstr "Por favor, faça login no The Old Reader para aproveitar o FeedReader"
 
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:92
-#, fuzzy
 msgid "Nextcloud URL:"
-msgstr "URL do ownCloud:"
+msgstr "URL do Nextcloud:"
 
 #. ---------------------------------------------------------------------
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:167
-#, fuzzy
 msgid ""
 "Please log in to your Nextcloud News instance and enjoy using FeedReader"
 msgstr ""
-"Por favor, faça login na sua instância do ownCloud News para aproveitar o "
+"Por favor, faça login na sua instância do Nextloud News e faça proveito do "
 "FeedReader"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:809
 msgid "Invalid URL"
-msgstr ""
+msgstr "URL inválido"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:812
 msgid "URL content is HTML, no feeds available"
-msgstr ""
+msgstr "Conteúdo do URL é HTML, nenhum feed disponível"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:815
 msgid "URL content is HTML which contains multiple feeds."
-msgstr ""
+msgstr "Conteúdo do URL é um HTML que contém múltiplos feeds."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:818
 msgid "Couldn't download the URL content."
-msgstr ""
+msgstr "Não foi possível baixar o conteúdo do URL."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:821
 msgid "The content is invalid XML."
-msgstr ""
+msgstr "O conteúdo é um XML inválido."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:834
 msgid "Error reaching tt-rss"
-msgstr ""
+msgstr "Ocorreu um erro ao contactar tt-rss"
 
 #: plugins/backend/ttrss/ttrssInterface.vala:70
 msgid "Tiny Tiny RSS URL:"
@@ -272,15 +272,14 @@ msgid "Open in Browser"
 msgstr "Abra no navegador"
 
 #: plugins/share/Email/EmailForm.vala:24
-#, fuzzy
 msgid ""
 "Hey,\n"
 "\n"
 "Check out this interesting article I used FeedReader to read: $URL"
 msgstr ""
-"Olá,\n"
+"Oi,\n"
 "\n"
-"Dá uma olhada neste artigo interessante que acabei de ler: $URL"
+"Olha este artigo interessante que li usando o FeedReader: $URL"
 
 #: plugins/share/Email/EmailForm.vala:27
 msgid "To:"
@@ -309,11 +308,8 @@ msgid "Telegram"
 msgstr "Telegram"
 
 #: plugins/share/Telegram/TelegramForm.vala:23
-#, fuzzy
 msgid "Hey, check out this interesting article I used FeedReader to read"
-msgstr ""
-"Olá, dá uma olhada neste artigo interessante que acabei de ler - enviado via "
-"FeedReader"
+msgstr "Oi, olha este artigo interessante que li usando o FeedReader"
 
 #: plugins/share/Telegram/TelegramForm.vala:55
 msgid "Send Telegram"
@@ -420,9 +416,8 @@ msgid "Getting unread articles"
 msgstr "Obtendo artigos não lidos"
 
 #: src/DataBaseReadOnly.vala:243
-#, fuzzy
 msgid "Unknown tag"
-msgstr "Feed desconhecido"
+msgstr "Tag desconhecida"
 
 #: src/DataBaseReadOnly.vala:271 src/Widgets/AddPopover.vala:38
 #: src/Widgets/FeedList.vala:506
@@ -637,7 +632,7 @@ msgstr "Remover feed"
 
 #: src/Widgets/FeedRow.vala:234
 msgid "Copy URL"
-msgstr ""
+msgstr "Copiar URL"
 
 #: src/Widgets/FeedRow.vala:239
 #, c-format
@@ -645,9 +640,9 @@ msgid "Remove only from %s"
 msgstr "Remover somente de %s"
 
 #: src/Widgets/FeedRow.vala:445
-#, fuzzy, c-format
+#, c-format
 msgid "Feed removed: %s"
-msgstr "Feed \"%s\" removido"
+msgstr "Feed removido: %s"
 
 #: src/Widgets/FullscreenHeader.vala:26
 msgid "Leave fullscreen mode"
@@ -979,14 +974,12 @@ msgid "Select next/previous article"
 msgstr "Selecione artigo anterior/próximo"
 
 #: src/Widgets/ShortcutsWindow.vala:64
-#, fuzzy
 msgid "Toggle reading status of selected article"
-msgstr "Alternar o artigo selecionado lido/não lido"
+msgstr "Alternar o status de leitura do artigo selecionado"
 
 #: src/Widgets/ShortcutsWindow.vala:65
-#, fuzzy
 msgid "Toggle marking of selected article"
-msgstr "Alternar o artigo selecionado lido/não lido"
+msgstr "Alternar marcação do artigo selecionado"
 
 #: src/Widgets/ShortcutsWindow.vala:66
 msgid "Open the URL of the selected article"

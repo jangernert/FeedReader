@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2018-02-02 19:37+0000\n"
-"Last-Translator: Andreas Kleinert <Andy.Kleinert@gmail.com>\n"
+"PO-Revision-Date: 2018-06-01 13:38+0000\n"
+"Last-Translator: felix <account@buehler.rocks>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/feedreader/"
 "translations/de/>\n"
 "Language: de\n"
@@ -23,28 +23,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.19-dev\n"
+"X-Generator: Weblate 3.0\n"
 
 #: Constants.vala.in:26
 msgid "Desktop Client for various RSS Services"
-msgstr ""
+msgstr "Desktop Client für verschiedene RSS-Dienste"
 
 #: Constants.vala.in:31
 msgid "translator-credits"
-msgstr ""
+msgstr "Übersetzer-Credits"
 
 #: Constants.vala.in:36
 msgid "About"
-msgstr ""
+msgstr "Über"
 
 #: Constants.vala.in:37 src/Widgets/ColumnViewHeader.vala:101
 msgid "Settings"
 msgstr "Einstellungen"
 
 #: Constants.vala.in:38
-#, fuzzy
 msgid "Change Account"
-msgstr "Konto wechseln?"
+msgstr "Konto ändern"
 
 #: Constants.vala.in:39 src/Widgets/ShortcutsWindow.vala:29
 msgid "Quit"
@@ -52,36 +51,33 @@ msgstr "Schließen"
 
 #: Constants.vala.in:40
 msgid "Report a Bug"
-msgstr ""
+msgstr "Einen Fehler melden"
 
 #: Constants.vala.in:41
 msgid "Bounties"
-msgstr ""
+msgstr "Spenden"
 
 #: Constants.vala.in:42
 msgid "Shortcuts"
-msgstr ""
+msgstr "Tastenkombinationen"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:3
-#, fuzzy
 msgid "FeedReader Autostart"
-msgstr "FeedReader-Konten"
+msgstr "FeedReader-Autostart"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:4
 #: data/org.gnome.FeedReader.desktop.in:4
-#, fuzzy
 msgid "RSS Client"
-msgstr "Client-ID:"
+msgstr "RSS Client"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:6
 msgid "Categories=Network;Feed;"
-msgstr ""
+msgstr "Categories=Netzwerk;Feed;"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:8
 #: data/org.gnome.FeedReader.desktop.in:8
-#, fuzzy
 msgid "org.gnome.FeedReader"
-msgstr "FeedReader"
+msgstr "org.gnome.FeedReader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:6
 #: data/org.gnome.FeedReader.desktop.in:3 src/Widgets/MainWindow.vala:44
@@ -90,35 +86,35 @@ msgstr "FeedReader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:7
 msgid "RSS client for various webservices"
-msgstr ""
+msgstr "RSS-Client für verschiedene Webservices"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:10
 msgid ""
 "FeedReader is a program designed to complement an already existing web-based "
 "RSS reader account."
 msgstr ""
+"FeedReader ist ein Programm zur Ersetzung eines bereits bestehenden "
+"webbasierten RSS-Reader-Accounts."
 
 #: data/org.gnome.FeedReader.appdata.xml.in:14
 msgid "Currently supported services:"
-msgstr ""
+msgstr "Derzeit unterstützte Dienste:"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:16
-#, fuzzy
 msgid "Tiny Tiny RSS"
-msgstr "Tiny Tiny RSS URL:"
+msgstr "Tiny Tiny RSS"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:17
 msgid "feedly"
-msgstr ""
+msgstr "feedly"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:18
 msgid "ownCloud"
-msgstr ""
+msgstr "ownCloud"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:19
-#, fuzzy
 msgid "Inoreader"
-msgstr "Ungelesen"
+msgstr "Inoreader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:21
 msgid ""
@@ -129,10 +125,16 @@ msgid ""
 "keyboard shortcuts and a database that keeps all your old articles as long "
 "as you like."
 msgstr ""
+"Er vereint alle Vorteile webbasierter Dienste wie die Synchronisation über "
+"alle Ihre Geräte hinweg mit allem, was Sie von einer modernen Desktop-"
+"Anwendung erwarten: Desktop-Benachrichtigungen, schnelle Suche und Filter, "
+"Tagging, Weitergabe an \"read-it-later\"-Dienste wie Pocket und Instapaper, "
+"praktische Tastaturkürzel und eine Datenbank, die alle Ihre alten Artikel so "
+"lange aufbewahrt, wie Sie möchten."
 
 #: data/org.gnome.FeedReader.desktop.in:5
 msgid "Read feeds from web services"
-msgstr ""
+msgstr "Feeds von Webservices lesen"
 
 #: data/org.gnome.FeedReader.desktop.in:19 src/FeedReader.vala:21
 msgid "About FeedReader"
@@ -312,14 +314,10 @@ msgid "Telegram"
 msgstr "Telegram"
 
 #: plugins/share/Telegram/TelegramForm.vala:23
-#, fuzzy
 msgid "Hey, check out this interesting article I used FeedReader to read"
 msgstr ""
-"Hey,\n"
-"wirf mal einen Blick auf diesen interessanten Artikel:\n"
-"%s\n"
-"\n"
-"- gesendet von FeedReader"
+"Hey, schau dir diesen interessanten Artikel an, den ich mit FeedReader "
+"gelesen habe"
 
 #: plugins/share/Telegram/TelegramForm.vala:55
 msgid "Send Telegram"
@@ -372,9 +370,8 @@ msgid "Client ID:"
 msgstr "Client-ID:"
 
 #: plugins/share/Wallabag/WallabagSetup.vala:75
-#, fuzzy
 msgid "Client Secret:"
-msgstr "Client Secret:"
+msgstr "Client Geheimnis:"
 
 #: plugins/share/Wallabag/WallabagSetup.vala:124
 msgid "Please fill in the URL."

@@ -47,14 +47,9 @@ pacman -S feedreader
 ```bash
 sudo dnf install feedreader
 ```
-### Solus OS : <br/>
-
-The current version of Feedreader in the offical Solus repo is old and [busted](https://github.com/jangernert/FeedReader/issues/669). A new package based on Feedreader 2.2+ is pending but is being held up by a [dependency conflict](https://dev.solus-project.com/T6393). Building Feedreader from source on Solus also has [issues](https://github.com/jangernert/FeedReader/issues/682). At present Solus users should install the Flatpak version of Feedreader.
-
+### Solus : <br/>
 ```bash
-sudo eopkg install flatpak xdg-desktop-portal xdg-desktop-portal-gtk
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-flatpak install flathub org.gnome.FeedReader
+sudo eopkg it feedreader
 ```
 
 ### openSUSE : <br/>

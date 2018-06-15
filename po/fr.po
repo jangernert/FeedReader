@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2018-05-27 14:37+0000\n"
+"PO-Revision-Date: 2018-06-16 18:38+0000\n"
 "Last-Translator: Florian <floflr@zaclys.net>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/feedreader/"
 "translations/fr/>\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.0-dev\n"
+"X-Generator: Weblate 3.0.1\n"
 
 #: Constants.vala.in:26
 msgid "Desktop Client for various RSS Services"
@@ -30,7 +30,7 @@ msgstr "Application de bureau pour différents services RSS"
 
 #: Constants.vala.in:31
 msgid "translator-credits"
-msgstr ""
+msgstr "Crédits traducteurs"
 
 #: Constants.vala.in:36
 msgid "About"
@@ -41,9 +41,8 @@ msgid "Settings"
 msgstr "Paramètres"
 
 #: Constants.vala.in:38
-#, fuzzy
 msgid "Change Account"
-msgstr "Changer de compte ?"
+msgstr "Changer de compte"
 
 #: Constants.vala.in:39 src/Widgets/ShortcutsWindow.vala:29
 msgid "Quit"
@@ -68,9 +67,8 @@ msgstr "Comptes FeedReader"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:4
 #: data/org.gnome.FeedReader.desktop.in:4
-#, fuzzy
 msgid "RSS Client"
-msgstr "Identifiant du client :"
+msgstr "Client RSS"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:6
 msgid "Categories=Network;Feed;"
@@ -78,9 +76,8 @@ msgstr "Catégories=Réseau;Flux;"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:8
 #: data/org.gnome.FeedReader.desktop.in:8
-#, fuzzy
 msgid "org.gnome.FeedReader"
-msgstr "FeedReader"
+msgstr "org.gnome.FeedReader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:6
 #: data/org.gnome.FeedReader.desktop.in:3 src/Widgets/MainWindow.vala:44
@@ -96,28 +93,28 @@ msgid ""
 "FeedReader is a program designed to complement an already existing web-based "
 "RSS reader account."
 msgstr ""
+"FeedReader est un programme conçu pour compléter un compte de lecteur RSS en "
+"ligne déjà existant ."
 
 #: data/org.gnome.FeedReader.appdata.xml.in:14
 msgid "Currently supported services:"
 msgstr "Services actuellement pris en charge :"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:16
-#, fuzzy
 msgid "Tiny Tiny RSS"
-msgstr "URL Tiny Tiny RSS :"
+msgstr "Tiny Tiny RSS"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:17
 msgid "feedly"
-msgstr ""
+msgstr "Feedly"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:18
 msgid "ownCloud"
 msgstr "ownCloud"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:19
-#, fuzzy
 msgid "Inoreader"
-msgstr "Non lu"
+msgstr "Inoreader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:21
 msgid ""
@@ -249,7 +246,6 @@ msgid "Couldn't download the URL content."
 msgstr "Impossible de télécharger le contenu de l'URL."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:821
-#, fuzzy
 msgid "The content is invalid XML."
 msgstr "Le contenu est un XML invalide."
 
@@ -273,7 +269,6 @@ msgid "Open in Browser"
 msgstr "Ouvrir dans le Navigateur"
 
 #: plugins/share/Email/EmailForm.vala:24
-#, fuzzy
 msgid ""
 "Hey,\n"
 "\n"
@@ -281,7 +276,7 @@ msgid ""
 msgstr ""
 "Salut,\n"
 "\n"
-"Regardez cet article intéressent que je viens de lire: $URL"
+"Regardez cet article intéressant que je viens de lire: $URL"
 
 #: plugins/share/Email/EmailForm.vala:27
 msgid "To:"

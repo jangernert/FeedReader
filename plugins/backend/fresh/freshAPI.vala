@@ -292,7 +292,7 @@ public class FeedReader.freshAPI : Object {
 
 		foreach(string id in arrayID)
 		{
-			msg.add("r", "-/" + id);
+			msg.add("i", "-/" + id);
 		}
 
 		var response = m_connection.postRequest(path,  msg.get(), "application/x-www-form-urlencoded");

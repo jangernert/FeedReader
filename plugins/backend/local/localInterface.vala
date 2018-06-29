@@ -257,7 +257,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public string getServerURL()
 	{
-		return "http://localhorst/";
+		return "http://localhost/";
 	}
 
 	public string uncategorizedID()

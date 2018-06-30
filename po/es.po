@@ -14,19 +14,20 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2017-05-15 08:53+0000\n"
-"Last-Translator: Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>\n"
-"Language-Team: Spanish (http://www.transifex.com/dev-feedreader/feedreader/"
-"language/es/)\n"
+"PO-Revision-Date: 2018-07-01 04:49+0000\n"
+"Last-Translator: Oswaldo Goite <oswaldo.goite@gmail.com>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/feedreader/"
+"translations/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.1-dev\n"
 
 #: Constants.vala.in:26
 msgid "Desktop Client for various RSS Services"
-msgstr ""
+msgstr "Cliente de Escritorio para varios servicios RSS"
 
 #: Constants.vala.in:31
 msgid "translator-credits"
@@ -34,7 +35,7 @@ msgstr ""
 
 #: Constants.vala.in:36
 msgid "About"
-msgstr ""
+msgstr "Acerca de"
 
 #: Constants.vala.in:37 src/Widgets/ColumnViewHeader.vala:101
 msgid "Settings"
@@ -51,7 +52,7 @@ msgstr "Salir"
 
 #: Constants.vala.in:40
 msgid "Report a Bug"
-msgstr ""
+msgstr "Reporta un error"
 
 #: Constants.vala.in:41
 msgid "Bounties"
@@ -59,7 +60,7 @@ msgstr ""
 
 #: Constants.vala.in:42
 msgid "Shortcuts"
-msgstr ""
+msgstr "Atajos"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:3
 #, fuzzy
@@ -89,17 +90,19 @@ msgstr "FeedReader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:7
 msgid "RSS client for various webservices"
-msgstr ""
+msgstr "Cliente de RSS para varios servicios web"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:10
 msgid ""
 "FeedReader is a program designed to complement an already existing web-based "
 "RSS reader account."
 msgstr ""
+"FeedReader es un programa diseñado para complementar una cuenta de lector "
+"RSS basado en web."
 
 #: data/org.gnome.FeedReader.appdata.xml.in:14
 msgid "Currently supported services:"
-msgstr ""
+msgstr "Servicios soportados actualmente:"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:16
 #, fuzzy
@@ -128,10 +131,16 @@ msgid ""
 "keyboard shortcuts and a database that keeps all your old articles as long "
 "as you like."
 msgstr ""
+"Combina todas las ventajas de los servicios basados en web, como la "
+"sincronización en todos tus dispositivos, con todo lo que esperas de una "
+"aplicación de Escritorio moderna: Notificaciones en el Escritorio, búsqueda "
+"rápida y filtros, etiquetas, envío de los artículos a servicios para leer "
+"después como Pocket e Instapaper, útiles atajos de teclado y una base de "
+"datos que guarda tus artículos viejos por tanto tiempo como quieras."
 
 #: data/org.gnome.FeedReader.desktop.in:5
 msgid "Read feeds from web services"
-msgstr ""
+msgstr "Lee los feeds de los servicios web"
 
 #: data/org.gnome.FeedReader.desktop.in:19 src/FeedReader.vala:21
 msgid "About FeedReader"
@@ -237,27 +246,27 @@ msgstr ""
 
 #: plugins/backend/ttrss/ttrssAPI.vala:809
 msgid "Invalid URL"
-msgstr ""
+msgstr "URL inválida"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:812
 msgid "URL content is HTML, no feeds available"
-msgstr ""
+msgstr "El contenido de la URL es HTML, no hay feeds disponibles"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:815
 msgid "URL content is HTML which contains multiple feeds."
-msgstr ""
+msgstr "El contenido de la URL es HTML que tiene varios feeds."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:818
 msgid "Couldn't download the URL content."
-msgstr ""
+msgstr "No se puede descargar el contenido de la URL."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:821
 msgid "The content is invalid XML."
-msgstr ""
+msgstr "El contenido es un código XML inválido."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:834
 msgid "Error reaching tt-rss"
-msgstr ""
+msgstr "Hubo un error al conectar con tt-rss"
 
 #: plugins/backend/ttrss/ttrssInterface.vala:70
 msgid "Tiny Tiny RSS URL:"
@@ -481,11 +490,11 @@ msgstr "Categoría:"
 
 #: src/Widgets/AddPopover.vala:65
 msgid "OPML File:"
-msgstr ""
+msgstr "Archivo OPML:"
 
 #: src/Widgets/AddPopover.vala:67
 msgid "Select OPML File"
-msgstr ""
+msgstr "Selecciona un archivo OPML"
 
 #: src/Widgets/AddPopover.vala:73
 msgid "Import"
@@ -641,7 +650,7 @@ msgstr "Eliminar canal"
 
 #: src/Widgets/FeedRow.vala:234
 msgid "Copy URL"
-msgstr ""
+msgstr "Copiar URL"
 
 #: src/Widgets/FeedRow.vala:239
 #, c-format
@@ -796,7 +805,7 @@ msgstr "Mostrar sólo artículos sin leer"
 
 #: src/Widgets/SettingsDialog.vala:85
 msgid "Sort Feed List by"
-msgstr ""
+msgstr "Ordenar la Lista de feeds por"
 
 #: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
@@ -868,7 +877,7 @@ msgstr "Pergamino"
 
 #: src/Widgets/SettingsDialog.vala:116
 msgid "Font Familly"
-msgstr ""
+msgstr "Familia de fuentes"
 
 #: src/Widgets/SettingsDialog.vala:141
 msgid "Sync:"
@@ -880,7 +889,7 @@ msgstr "Número de artículos"
 
 #: src/Widgets/SettingsDialog.vala:145
 msgid "Interval in Minutes (0 = OFF)"
-msgstr ""
+msgstr "Intervalo en minutos (0 = Deshabilitado)"
 
 #: src/Widgets/SettingsDialog.vala:150
 msgid "Database:"
@@ -916,7 +925,7 @@ msgstr "Captador de contenido"
 
 #: src/Widgets/SettingsDialog.vala:159
 msgid "Download Images"
-msgstr ""
+msgstr "Descargar imágenes"
 
 #: src/Widgets/SettingsDialog.vala:161
 msgid "Internal Media Player"

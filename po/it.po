@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2018-06-24 11:40+0000\n"
+"PO-Revision-Date: 2018-07-04 18:39+0000\n"
 "Last-Translator: Luca Trevisani <farshee90@tiscali.it>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/feedreader/"
 "translations/it/>\n"
@@ -55,7 +55,7 @@ msgstr "Donazioni"
 
 #: Constants.vala.in:42
 msgid "Shortcuts"
-msgstr "Scorciatoie"
+msgstr "Scorciatoie da tastiera"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:3
 msgid "FeedReader Autostart"

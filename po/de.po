@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2018-06-21 10:38+0000\n"
-"Last-Translator: Max Harmathy <max.harmathy@web.de>\n"
+"PO-Revision-Date: 2018-07-11 17:37+0000\n"
+"Last-Translator: Andreas Kleinert <Andy.Kleinert@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/feedreader/"
 "translations/de/>\n"
 "Language: de\n"
@@ -106,7 +106,7 @@ msgstr "Tiny Tiny RSS"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:17
 msgid "feedly"
-msgstr "feedly"
+msgstr "Feedly"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:18
 msgid "ownCloud"

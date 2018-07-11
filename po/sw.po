@@ -2,8 +2,16 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
+"PO-Revision-Date: 2018-07-12 21:45+0000\n"
+"Last-Translator: felix <account@buehler.rocks>\n"
+"Language-Team: Swahili <https://hosted.weblate.org/projects/feedreader/"
+"translations/sw/>\n"
+"Language: sw\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.1-dev\n"
 
 #: Constants.vala.in:26
 msgid "Desktop Client for various RSS Services"
@@ -15,19 +23,19 @@ msgstr ""
 
 #: Constants.vala.in:36
 msgid "About"
-msgstr ""
+msgstr "kuhusu"
 
 #: Constants.vala.in:37 src/Widgets/ColumnViewHeader.vala:101
 msgid "Settings"
-msgstr ""
+msgstr "mipangilio"
 
 #: Constants.vala.in:38
 msgid "Change Account"
-msgstr ""
+msgstr "badilisha akaunti"
 
 #: Constants.vala.in:39 src/Widgets/ShortcutsWindow.vala:29
 msgid "Quit"
-msgstr ""
+msgstr "kuacha"
 
 #: Constants.vala.in:40
 msgid "Report a Bug"
@@ -57,12 +65,12 @@ msgstr ""
 #: data/org.gnome.FeedReader-autostart.desktop.in:8
 #: data/org.gnome.FeedReader.desktop.in:8
 msgid "org.gnome.FeedReader"
-msgstr ""
+msgstr "org.gnome.FeedReader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:6
 #: data/org.gnome.FeedReader.desktop.in:3 src/Widgets/MainWindow.vala:44
 msgid "FeedReader"
-msgstr ""
+msgstr "FeedReader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:7
 msgid "RSS client for various webservices"
@@ -80,19 +88,19 @@ msgstr ""
 
 #: data/org.gnome.FeedReader.appdata.xml.in:16
 msgid "Tiny Tiny RSS"
-msgstr ""
+msgstr "Tiny Tiny RSS"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:17
 msgid "feedly"
-msgstr ""
+msgstr "feedly"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:18
 msgid "ownCloud"
-msgstr ""
+msgstr "ownCloud"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:19
 msgid "Inoreader"
-msgstr ""
+msgstr "Inoreader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:21
 msgid ""
@@ -110,7 +118,7 @@ msgstr ""
 
 #: data/org.gnome.FeedReader.desktop.in:19 src/FeedReader.vala:21
 msgid "About FeedReader"
-msgstr ""
+msgstr "kuhusu FeedReader"
 
 #. http auth stuff ----------------------------------------------------
 #: plugins/backend/bazqux/bazquxInterface.vala:65
@@ -126,7 +134,7 @@ msgstr ""
 #: plugins/share/Instapaper/InstapaperSetup.vala:55
 #: plugins/share/Wallabag/WallabagSetup.vala:76
 msgid "Username:"
-msgstr ""
+msgstr "jina la mtumiaji:"
 
 #: plugins/backend/bazqux/bazquxInterface.vala:66
 #: plugins/backend/feedbin/feedbinInterface.vala:66
@@ -141,7 +149,7 @@ msgstr ""
 #: plugins/share/Instapaper/InstapaperSetup.vala:56
 #: plugins/share/Wallabag/WallabagSetup.vala:77
 msgid "Password:"
-msgstr ""
+msgstr "Neno la siri:"
 
 #: plugins/backend/bazqux/bazquxInterface.vala:96
 #: plugins/backend/feedhq/feedhqInterface.vala:96
@@ -156,7 +164,7 @@ msgstr ""
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:172
 #: plugins/backend/ttrss/ttrssInterface.vala:151 src/Share/ServiceSetup.vala:56
 msgid "Login"
-msgstr ""
+msgstr "Ingia"
 
 #: plugins/backend/feedbin/feedbinInterface.vala:101
 msgid "Please log in to Feedbin to enjoy using FeedReader"
@@ -178,11 +186,11 @@ msgstr ""
 
 #: plugins/backend/local/localInterface.vala:66
 msgid "Done"
-msgstr ""
+msgstr "Tayari"
 
 #: plugins/backend/local/localInterface.vala:67
 msgid "Adding Feeds"
-msgstr ""
+msgstr "Ongeza Feeds"
 
 #. Logger.info("Got content: " + item.description);
 #. Logger.info("Converted to: " + item.description);
@@ -196,7 +204,7 @@ msgstr ""
 
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:92
 msgid "Nextcloud URL:"
-msgstr ""
+msgstr "Nextcloud URL:"
 
 #. ---------------------------------------------------------------------
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:167
@@ -206,7 +214,7 @@ msgstr ""
 
 #: plugins/backend/ttrss/ttrssAPI.vala:809
 msgid "Invalid URL"
-msgstr ""
+msgstr "URL batili"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:812
 msgid "URL content is HTML, no feeds available"
@@ -230,7 +238,7 @@ msgstr ""
 
 #: plugins/backend/ttrss/ttrssInterface.vala:70
 msgid "Tiny Tiny RSS URL:"
-msgstr ""
+msgstr "Tiny Tiny RSS URL:"
 
 #: plugins/backend/ttrss/ttrssInterface.vala:146
 msgid "Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"

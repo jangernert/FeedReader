@@ -57,15 +57,15 @@ sudo eopkg it feedreader
 sudo zypper install feedreader
 ```
 
-### Ubuntu : <br/>
-
-The easiest way to install the latest FeedReader right now is to build from source,
-which you can do with this script:
-
+### Ubuntu Cosmic : <br/>
 ```bash
-curl https://raw.githubusercontent.com/jangernert/FeedReader/master/scripts/install_ubuntu.sh | bash
+sudo apt install feedreader
 ```
 
+### Debian Testing : <br/>
+```bash
+sudo apt install feedreader
+```
 ### Flatpak
 
 FeedReader is now availble as Flatpak and should be installable on all major Linux distributions that support the Flatpak Application Framework eg. Fedora, Debian, Ubuntu, elementaryOS, Arch, openSuSE, Mageia and many more.

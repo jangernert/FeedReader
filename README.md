@@ -57,7 +57,13 @@ sudo eopkg it feedreader
 sudo zypper install feedreader
 ```
 
-### Ubuntu Cosmic : <br/>
+### Ubuntu : <br/>
+The easiest way to install the latest FeedReader right now is to build from source,which you can do with this script:
+```bash
+curl https://raw.githubusercontent.com/jangernert/FeedReader/master/scripts/install_ubuntu.sh | bash 
+```
+On Ubuntu 18.10 or newer you can install FeedReader with
+
 ```bash
 sudo apt install feedreader
 ```

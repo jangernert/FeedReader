@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2018-06-27 15:43+0000\n"
-"Last-Translator: No body <adamn.zxc@gmail.com>\n"
+"PO-Revision-Date: 2018-08-12 13:53+0000\n"
+"Last-Translator: WaldiS <admin@sto.ugu.pl>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/feedreader/"
 "translations/pl/>\n"
 "Language: pl\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<"
 "12 || n%100>=14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) "
 "|| (n%100>=12 && n%100<=14) ? 2 : 3);\n"
-"X-Generator: Weblate 3.1-dev\n"
+"X-Generator: Weblate 3.2-dev\n"
 
 #: Constants.vala.in:26
 msgid "Desktop Client for various RSS Services"
@@ -131,7 +131,6 @@ msgstr ""
 "artykuły tak długo jak tylko tego pragniesz."
 
 #: data/org.gnome.FeedReader.desktop.in:5
-#, fuzzy
 msgid "Read feeds from web services"
 msgstr "Czytaj artykuły z serwisów internetowych"
 

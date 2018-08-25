@@ -21,6 +21,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
+#include <wctype.h>
 
 #include "vilistextum.h"
 #include "html_tag.h"
@@ -78,7 +79,7 @@ int get_attr()
 	attr_ctnt[0] = '\0';
 
 	/* skip whitespace */
-	while ((isspace(ch)) && (ch!='>')) { ch=read_char(); }
+	while ((iswspace(ch)) && (ch!='>')) { ch=read_char(); }
 	if (ch=='>') { return '>'; };
 
 	/* read attribute's name */
@@ -96,7 +97,7 @@ int get_attr()
 	/* content of attribute */
 	ch=read_char();
 	/* skip white_space */
-	while ((isspace(ch)) && (ch!='>')) { ch=read_char(); }
+	while ((iswspace(ch)) && (ch!='>')) { ch=read_char(); }
 	temp[0] = '\0';
 
 	/* if quoted */
@@ -120,7 +121,7 @@ int get_attr()
 		/* attribute looks like alt=bla */
 		i=1;
 		temp[0] = ch;
-		while ((ch!='>') && (!isspace(ch)) && (ch!=EOF)){
+		while ((ch!='>') && (!iswspace(ch)) && (ch!=EOF)){
 			ch=read_char();
 			if (i<DEF_STR_LEN) { temp[i++] = ch; }
 		} /* post cond: i<=DEF_STR_LEN */

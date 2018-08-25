@@ -16,3 +16,12 @@ vilistextum_lib = static_library(
     'vilistextum.c'
   ]
 )
+
+vilistextum_main = executable(
+	'vilistextum_main',
+	'vilistextum_main.c',
+	link_with: vilistextum_lib)
+
+if afl_fuzz.found()
+	test('Fuzz libvilistexum', afl_fuzz, args:['-d', vilistextum_main])
+endif

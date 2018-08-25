@@ -33,6 +33,7 @@ vala_compiler = meson.get_compiler('vala')
 c_compiler = meson.get_compiler('c')
 
 # Other tools
+afl_fuzz = find_program('afl-fuzz', required:false) # american fuzzy lop
 gtester = find_program('gtester', required:false)
 
 # Dependencies

@@ -44,23 +44,13 @@ int get_align()
 
 void push_align(int a)
 {
-	int *tmp_align = NULL;
 	align_nr++;
 
 	/* Dynamic align added by autophile@starband.net 29 Mar 2002 */
 	if (align_nr >= align_size)
 	{
 		align_size += 256;
-		if (align == NULL) {
-		align = (int *)malloc(align_size*sizeof(int));
-			align[0] = 1; /* default LEFT alignment. */
-		} else {
-			/*align = (int *)realloc(align, align_size*sizeof(int));*/
-			tmp_align = (int *)malloc(align_size*sizeof(int));
-			if (align_size!=0) { memcpy(tmp_align, align, (align_size-256)*sizeof(int)); }
-			free(align);
-			align = tmp_align;
-		}
+		align = realloc(align, align_size*sizeof(int));
 	}
 
 	/*	if (div_test!=0) { align[align_nr]=div_test; } else {  */

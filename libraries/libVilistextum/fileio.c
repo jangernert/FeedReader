@@ -94,11 +94,11 @@ char* getOutput(size_t input_length)
 		cleanup();
 		if (ret)
 			return buffer;
-		
+
 		return NULL;
 	}
 
-	
+
 	cleanup();
 	return NULL;
 }
@@ -206,6 +206,9 @@ int read_char()
 /* put c back onto stream */
 void putback_char(CHAR c)
 {
+	if (c == EOF)
+		return;
+
 	char buffer[1];
 	wcstombs(buffer, &c, 1);
 	ungetc(buffer[0], in);

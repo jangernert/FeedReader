@@ -47,7 +47,7 @@ void open_files(char *input)
 	}
 
 	outputsize = strlen(input);
-	OUTPUT = malloc(sizeof(CHAR)*(outputsize+1));
+	OUTPUT = calloc(sizeof(CHAR), outputsize+1);
 	OUTPUT[0]='\0';
 }
 
@@ -122,16 +122,14 @@ int read_char()
 	int c = ' ';
 	int fehlernr=0; /* tmp variable for errno */
 	static int i=0;
-	int j=0,k;
-	wchar_t outstring[33];
+	int j=0;
+	wchar_t outstring[33] = {0};
 	iconv_t conv;
-	char input[33], output[33];
-	CHAR tmpstr[33];
-	char *inp, *outp;
+	char input[33] = {0}, output[33] = {0};
+	CHAR tmpstr[33] = {0};
+	char *inp = input;
+	char* outp = output;
 	size_t insize = 1, outsize = 32;
-
-	inp = input;
-	outp = output;
 
 	/* make source the strings are cleared */
 	for (j=0; j<33; j++) {
@@ -165,7 +163,7 @@ int read_char()
 		else if (fehlernr==EILSEQ) {
 			if(c != EOF)
 				fprintf(stderr, "read_char: errno==EILSEQ; invalid byte sequence for %s: %c\n", get_iconv_charset(), c);
-			for (k=0; k<j;k++) {
+			for (int k=0; k<j;k++) {
 				fprintf(stderr, "%d ",(unsigned char)input[k]);
 			}
 			fehlernr=0; j=0;
@@ -175,8 +173,10 @@ int read_char()
 		else if (fehlernr==EINVAL) { /* printf("errno==EINVAL\n"); */ }
 		/* valid character found */
 		else if (fehlernr==0) {
-			mbstowcs(outstring, output, strlen(output));
-			if (convert_character(outstring[0], tmpstr))
+			if (mbstowcs(outstring, output, strlen(output)) <= 0)
+			{
+				error = 1;
+			} else if (convert_character(outstring[0], tmpstr))
 			{
 				c = outstring[0];
 			}
@@ -209,9 +209,12 @@ void putback_char(CHAR c)
 	if (c == EOF)
 		return;
 
-	char buffer[1];
-	wcstombs(buffer, &c, 1);
-	ungetc(buffer[0], in);
+	char buffer[MB_CUR_MAX];
+	wchar_t input[2] = {c, '\0'};
+	size_t num_bytes = wcstombs(buffer, input, 1);
+	for (size_t i = 0; i < num_bytes; ++i) {
+		ungetc(buffer[i], in);
+	}
 }
 
 /* ------------------------------------------------ */

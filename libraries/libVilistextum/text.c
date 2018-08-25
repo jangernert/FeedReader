@@ -297,7 +297,7 @@ void neuer_paragraph()
 void hr()
 {
 	int i, hr_width=hr_breite-4, hr_align=CENTER;
-	while (ch!='>')
+	while (ch!='>' && ch!=EOF)
 	{
 		ch=get_attr();
 		if CMP("ALIGN", attr_name)

@@ -169,7 +169,7 @@ void html(int extractText)
 						ch = read_char();
 						str[i++] = ch;
 					}
-					while ((isalnum(ch)) || (ch=='#'));
+					while ((iswalnum(ch)) || (ch=='#'));
 
 					/* if last char is no ';', then the string is no valid entity. */
 					/* maybe it is something like &nbsp or even '& ' */
@@ -244,7 +244,7 @@ void html(int extractText)
 						ch = read_char();
 						str[i++] = ch;
 					}
-					while ((isalnum(ch)) || (ch=='#'));
+					while ((iswalnum(ch)) || (ch=='#'));
 
 					/* if last char is no ';', then the string is no valid entity. */
 					/* maybe it is something like &nbsp or even '& ' */

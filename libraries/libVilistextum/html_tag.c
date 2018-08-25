@@ -71,7 +71,7 @@ void html_tag()
 
 	if (nooutput==0) {
 		if CMP("/HTML", str) {/* fprintf(stderr, "File ended!\n"); */ }
-		else if CMP("!DOCTYPE", str)  { while ((ch=read_char())!='>'); }
+		else if CMP("!DOCTYPE", str)  { while ((ch=read_char())!='>' && ch!=EOF); }
 		else if CMP("META", str)      { find_encoding(); }
 		else if CMP("?XML", str)      { find_xml_encoding(); }
 

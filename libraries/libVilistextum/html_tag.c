@@ -49,7 +49,7 @@ void html_tag()
 	}
 
 	/* read html tag */
-	while ((ch!='>') && (ch!=' ') && (ch!=13) && (ch!=10))
+	while ((ch!='>') && (ch!=' ') && (ch!=13) && (ch!=10) && (ch!=EOF))
 	{
 		if (i<DEF_STR_LEN-1) { str[i++] = ch; }
 		ch = uppercase(read_char());

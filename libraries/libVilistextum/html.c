@@ -467,7 +467,7 @@ void find_xml_encoding()
 CHAR friss_kommentar()
 {
 	int c, dontquit=1;
-	while (dontquit)
+	do
 	{
 		c=read_char();
 		if (c=='-')
@@ -479,7 +479,7 @@ CHAR friss_kommentar()
 				if (c=='>') { dontquit=0; }
 			}
 		}
-	}
+	} while (dontquit && c!=EOF);
 
 	return c;
 }

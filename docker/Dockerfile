@@ -21,10 +21,9 @@ RUN dnf -y install \
         sqlite-devel \
         vala \
         webkitgtk4-devel \
-		appstream \
-		desktop-file-utils \
-		american-fuzzy-lop \
-		libunity-devel
+        appstream \
+        desktop-file-utils \
+        libunity-devel
 
 # Install Feedbin
 # Note: Some dependencies are duplicates of above, but it's easier to maintain if

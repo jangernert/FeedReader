@@ -55,6 +55,7 @@ void open_files(char *input)
 
 void output_string(CHAR *str)
 {
+	int output_was_empty = currentsize == 0;
 	currentsize += wcslen(str) + wcslen(LINEBREAK);
 
 	if(currentsize > outputsize)
@@ -67,8 +68,10 @@ void output_string(CHAR *str)
 		OUTPUT = realloc(OUTPUT, sizeof(CHAR)*(outputsize+1));
 	}
 
+	if (!output_was_empty){
+		wcscat(OUTPUT, LINEBREAK);
+	}
 	wcscat(OUTPUT, str);
-	wcscat(OUTPUT, LINEBREAK);
 }
 
 /* ------------------------------------------------ */

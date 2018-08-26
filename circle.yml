@@ -44,6 +44,7 @@ jobs:
               mkdir -p /tmp/test-results/libvilistextum/
               cd builddir && ninja -j4
       - run:
+          no_output_timeout: 10m
           name: Test
           command: cd builddir && ninja test
       - run:

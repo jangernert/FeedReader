@@ -40,7 +40,7 @@ if desktop_file_validate.found()
   )
 endif
 
-appstreamcli = find_program(['appstreamcli', 'appstream-util'], required:false)
+appstreamcli = find_program('appstream-util', required:false)
 
 if appstreamcli.found()
   test (

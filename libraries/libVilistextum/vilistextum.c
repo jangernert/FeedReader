@@ -58,5 +58,9 @@ char* vilistextum(char* text, int extractText)
 
 	char* output = getOutput(strlen(text));
 	pthread_mutex_unlock(&mutex);
+	if (output == NULL)
+	{
+		output = calloc(1, sizeof(char));
+	}
 	return output;
 }

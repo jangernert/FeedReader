@@ -5,6 +5,8 @@
 static void test_changed_inputs_with_html(void)
 {
 	char* inputs[][2] = {
+		{"  \n \t ", ""},
+		{"  \n <br>\t<hr> ", "<br> <hr>"},
 		{"<h ", "<h"},
 		{"a\nb", "a b"},
 		{"a<br>b", "a<br>b"},
@@ -24,6 +26,7 @@ static void test_changed_inputs_with_html(void)
 static void test_unchanged_inputs_with_html(void)
 {
 	char* inputs[] = {
+		"",
 		"&",
 		"<",
 		"<h",
@@ -41,6 +44,7 @@ static void test_unchanged_inputs_with_html(void)
 static void test_changed_inputs_without_html(void)
 {
 	char* inputs[][2] = {
+		{"  \n <br>\t", ""},
 		//{"<h ", "<h"},
 		{"a\nb", "a b"},
 		{"a<br/>b", "a\nb"},
@@ -60,6 +64,7 @@ static void test_changed_inputs_without_html(void)
 static void test_unchanged_inputs_without_html(void)
 {
 	char* inputs[] = {
+		"",
 		"&",
 		"<",
 		//"<h",

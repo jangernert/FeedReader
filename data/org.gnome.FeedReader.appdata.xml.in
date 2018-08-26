@@ -51,6 +51,15 @@
     <binary>feedreader</binary>
   </provides>
   <releases>
+
+    <release version="2.2.1" date="2018-08-26">
+      <description>
+        <ul>
+          <li>Fix few crashes and encoding issues related to Libvilistextum</li>
+          <li>FreshAPI: Fix broken editTag function</li>
+        </ul>
+      </description>
+    </release>
     <release version="2.2" date="2018-05-06">
       <description>
         <ul>

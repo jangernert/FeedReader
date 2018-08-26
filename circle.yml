@@ -37,7 +37,7 @@ jobs:
       - checkout
       - run:
           name: Configure
-          command: meson builddir -DBAZQUX=ON -DFEEDHQ=ON
+          command: meson builddir
       - run:
           name: Build
           command: cd builddir && ninja -j4

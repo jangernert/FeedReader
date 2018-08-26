@@ -40,10 +40,13 @@ jobs:
           command: meson builddir
       - run:
           name: Build
-          command: cd builddir && ninja -j4
+          command: |
+              mkdir -p /tmp/test-results/libvilistextum/
+              cd builddir && ninja -j4
       - run:
           name: Test
           command: cd builddir && ninja test
+          no_output_timeout: 20m
       - run:
           name: Generate JUnit XML
           command: |

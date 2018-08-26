@@ -45,6 +45,7 @@
     <url type="homepage">https://jangernert.github.io/FeedReader/</url>
     <url type="bugtracker">https://github.com/jangernert/FeedReader</url>
     <url type="translate">https://hosted.weblate.org/projects/feedreader/</url>
+    <url type="donation">https://www.bountysource.com/teams/jangernert-feedreader/issues</url>
     <project_group>GNOME</project_group>
     <provides>
         <binary>feedreader</binary>

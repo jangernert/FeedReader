@@ -23,5 +23,5 @@ vilistextum_main = executable(
 	link_with: vilistextum_lib)
 
 if afl_fuzz.found()
-	test('Fuzz libvilistexum', afl_fuzz, args:['-d', vilistextum_main])
+	test('Fuzz libvilistexum', afl_fuzz, args:['-d', vilistextum_main, '-i', join_paths(meson.current_source_dir(), 'inputs')])
 endif

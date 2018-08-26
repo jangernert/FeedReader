@@ -1,4 +1,4 @@
-FROM docker.io/fedora:27
+FROM docker.io/fedora:latest
 
 RUN dnf -y install \
         gcc \
@@ -20,7 +20,11 @@ RUN dnf -y install \
         rest-devel \
         sqlite-devel \
         vala \
-        webkitgtk4-devel
+        webkitgtk4-devel \
+		appstream \
+		desktop-file-utils \
+		american-fuzzy-lop \
+		libunity-devel
 
 # Install Feedbin
 # Note: Some dependencies are duplicates of above, but it's easier to maintain if

@@ -8,24 +8,25 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2015-11-14 10:23+0000\n"
-"Last-Translator: Jiri Grönroos <Unknown>\n"
-"Language-Team: Finnish <fi@li.org>\n"
+"PO-Revision-Date: 2018-08-27 19:37+0000\n"
+"Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
+"Language-Team: Finnish <https://hosted.weblate.org/projects/feedreader/"
+"translations/fi/>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.2-dev\n"
 "X-Launchpad-Export-Date: 2016-01-13 05:53+0000\n"
-"X-Generator: Launchpad (build 17886)\n"
 
 #: Constants.vala.in:26
-#, fuzzy
 msgid "Desktop Client for various RSS Services"
 msgstr "Työpöytäsovellus useiden RSS-palveluiden käyttöön"
 
 #: Constants.vala.in:31
 msgid "translator-credits"
-msgstr ""
+msgstr "Jiri Grönroos"
 
 #: Constants.vala.in:36
 msgid "About"
@@ -36,9 +37,8 @@ msgid "Settings"
 msgstr "Asetukset"
 
 #: Constants.vala.in:38
-#, fuzzy
 msgid "Change Account"
-msgstr "Vaihdetaanko tiliä?"
+msgstr "Vaihda tiliä"
 
 #: Constants.vala.in:39 src/Widgets/ShortcutsWindow.vala:29
 msgid "Quit"
@@ -46,15 +46,15 @@ msgstr "Lopeta"
 
 #: Constants.vala.in:40
 msgid "Report a Bug"
-msgstr ""
+msgstr "Ilmoita ongelmasta"
 
 #: Constants.vala.in:41
 msgid "Bounties"
-msgstr ""
+msgstr "Palkkiot"
 
 #: Constants.vala.in:42
 msgid "Shortcuts"
-msgstr ""
+msgstr "Pikanäppäimet"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:3
 #, fuzzy
@@ -64,7 +64,7 @@ msgstr "Syötteenlukija"
 #: data/org.gnome.FeedReader-autostart.desktop.in:4
 #: data/org.gnome.FeedReader.desktop.in:4
 msgid "RSS Client"
-msgstr ""
+msgstr "RSS-sovellus"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:6
 msgid "Categories=Network;Feed;"
@@ -72,9 +72,8 @@ msgstr ""
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:8
 #: data/org.gnome.FeedReader.desktop.in:8
-#, fuzzy
 msgid "org.gnome.FeedReader"
-msgstr "Syötteenlukija"
+msgstr "org.gnome.FeedReader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:6
 #: data/org.gnome.FeedReader.desktop.in:3 src/Widgets/MainWindow.vala:44
@@ -82,9 +81,8 @@ msgid "FeedReader"
 msgstr "Syötteenlukija"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:7
-#, fuzzy
 msgid "RSS client for various webservices"
-msgstr "Työpöytäsovellus useiden RSS-palveluiden käyttöön"
+msgstr "Työpöytäsovellus useiden verkkopalveluiden käyttöön"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:10
 msgid ""
@@ -94,26 +92,23 @@ msgstr ""
 
 #: data/org.gnome.FeedReader.appdata.xml.in:14
 msgid "Currently supported services:"
-msgstr ""
+msgstr "Tuetut palvelut:"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:16
 msgid "Tiny Tiny RSS"
 msgstr "Tiny Tiny RSS"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:17
-#, fuzzy
 msgid "feedly"
 msgstr "Feedly"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:18
-#, fuzzy
 msgid "ownCloud"
-msgstr "OwnCloud"
+msgstr "ownCloud"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:19
-#, fuzzy
 msgid "Inoreader"
-msgstr "Syötteenlukija"
+msgstr "Inoreader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:21
 msgid ""
@@ -126,9 +121,8 @@ msgid ""
 msgstr ""
 
 #: data/org.gnome.FeedReader.desktop.in:5
-#, fuzzy
 msgid "Read feeds from web services"
-msgstr "Työpöytäsovellus useiden RSS-palveluiden käyttöön"
+msgstr "Lue syötteitä verkkopalveluista"
 
 #: data/org.gnome.FeedReader.desktop.in:19 src/FeedReader.vala:21
 msgid "About FeedReader"
@@ -147,7 +141,6 @@ msgstr "Tietoja - Syötteenlukija"
 #: plugins/backend/ttrss/ttrssInterface.vala:108
 #: plugins/share/Instapaper/InstapaperSetup.vala:55
 #: plugins/share/Wallabag/WallabagSetup.vala:76
-#, fuzzy
 msgid "Username:"
 msgstr "Käyttäjätunnus:"
 
@@ -183,87 +176,85 @@ msgstr "Kirjaudu"
 
 #: plugins/backend/feedbin/feedbinInterface.vala:101
 msgid "Please log in to Feedbin to enjoy using FeedReader"
-msgstr ""
+msgstr "Kirjaudu Feedbiniin ja nauti FeedReaderin käytöstä"
 
 #: plugins/backend/fresh/freshInterface.vala:70
 msgid "freshRSS URL:"
-msgstr ""
+msgstr "freshRSS-osoite:"
 
 #: plugins/backend/fresh/freshInterface.vala:137
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:160
 #: plugins/backend/ttrss/ttrssInterface.vala:137
 msgid "HTTP Authorization"
-msgstr ""
+msgstr "HTTP-valtuutus"
 
 #: plugins/backend/fresh/freshInterface.vala:146
 msgid "Please log in to your freshRSS server and enjoy using FeedReader"
-msgstr ""
+msgstr "Kirjaudu freshRSS-palvelimellesi ja nauti FeedReaderin käytöstä"
 
 #: plugins/backend/local/localInterface.vala:66
 msgid "Done"
-msgstr ""
+msgstr "Valmis"
 
 #: plugins/backend/local/localInterface.vala:67
 msgid "Adding Feeds"
-msgstr ""
+msgstr "Lisätään syötteitä"
 
 #. Logger.info("Got content: " + item.description);
 #. Logger.info("Converted to: " + item.description);
 #: plugins/backend/local/localInterface.vala:619
 msgid "Nothing to read here."
-msgstr ""
+msgstr "Täällä ei ole mitään luettavaa."
 
 #: plugins/backend/oldreader/oldreaderInterface.vala:96
 msgid "Please log in to the Old Reader and enjoy using FeedReader"
-msgstr ""
+msgstr "Kirjaudu Old Readeriin ja nauti FeedReaderin käytöstä"
 
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:92
-#, fuzzy
 msgid "Nextcloud URL:"
-msgstr "OwnCloud-osoite:"
+msgstr "Nextcloud-osoite:"
 
 #. ---------------------------------------------------------------------
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:167
 msgid ""
 "Please log in to your Nextcloud News instance and enjoy using FeedReader"
-msgstr ""
+msgstr "Kirjaudu Nextcloud News -järjestelmääsi ja nauti FeedReaderin käytöstä"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:809
 msgid "Invalid URL"
-msgstr ""
+msgstr "Virheellinen osoite"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:812
 msgid "URL content is HTML, no feeds available"
-msgstr ""
+msgstr "Osoitteen sisältö on HTML:ää, syötteitä ei ole saatavilla"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:815
 msgid "URL content is HTML which contains multiple feeds."
-msgstr ""
+msgstr "Osoitteen sisältö on useita syötteitä sisältävää HTML:ää."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:818
 msgid "Couldn't download the URL content."
-msgstr ""
+msgstr "Osoitteen sisältöä ei voitu ladata."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:821
 msgid "The content is invalid XML."
-msgstr ""
+msgstr "Sisältö on virheellistä XML:ää."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:834
 msgid "Error reaching tt-rss"
-msgstr ""
+msgstr "Virhe tavoittaessa tt-rss:ää"
 
 #: plugins/backend/ttrss/ttrssInterface.vala:70
-#, fuzzy
 msgid "Tiny Tiny RSS URL:"
-msgstr "TinyTinyRSS-osoite:"
+msgstr "Tiny Tiny RSS:n osoite:"
 
 #: plugins/backend/ttrss/ttrssInterface.vala:146
 msgid "Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"
-msgstr ""
+msgstr "Kirjaudu Tiny Tiny RSS -palvelimellesi ja nauti FeedReaderin käytöstä"
 
 #: plugins/share/Browser/Browser.vala:79
 msgid "Open in Browser"
-msgstr ""
+msgstr "Avaa selaimessa"
 
 #: plugins/share/Email/EmailForm.vala:24
 msgid ""
@@ -274,16 +265,16 @@ msgstr ""
 
 #: plugins/share/Email/EmailForm.vala:27
 msgid "To:"
-msgstr ""
+msgstr "Vastaanottaja:"
 
 #: plugins/share/Email/EmailForm.vala:52
 #: plugins/share/Telegram/TelegramForm.vala:42
 msgid "Send"
-msgstr ""
+msgstr "Lähetä"
 
 #: plugins/share/Email/EmailForm.vala:65
 msgid "Write Email"
-msgstr ""
+msgstr "Kirjoita sähköposti"
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:100
 msgid "Username or Password incorrect"
@@ -296,7 +287,7 @@ msgstr "odottaa"
 
 #: plugins/share/Telegram/Telegram.vala:81
 msgid "Telegram"
-msgstr ""
+msgstr "Telegram"
 
 #: plugins/share/Telegram/TelegramForm.vala:23
 msgid "Hey, check out this interesting article I used FeedReader to read"
@@ -304,23 +295,23 @@ msgstr ""
 
 #: plugins/share/Telegram/TelegramForm.vala:55
 msgid "Send Telegram"
-msgstr ""
+msgstr "Lähetä Telegramissa"
 
 #. no login, so change the labels
 #: plugins/share/Telegram/TelegramSetup.vala:30 src/Widgets/AddPopover.vala:51
-#, fuzzy
 msgid "Add"
-msgstr "lisää tunniste"
+msgstr "Lisää"
 
 #: plugins/share/Telegram/TelegramSetup.vala:31
 #: src/Widgets/CategorieRow.vala:447 src/Widgets/FeedRow.vala:241
 #: src/Widgets/TagRow.vala:195
 msgid "Remove"
-msgstr ""
+msgstr "Poista"
 
 #: plugins/share/Telegram/TelegramSetup.vala:38
 msgid "Info: Telegram would need to be installed for this plugin to work."
 msgstr ""
+"Huomio: Telegramin tulee olla asennettu, jotta tämä liitännäinen toimii."
 
 #: plugins/share/Twitter/TwitterForm.vala:29
 msgid ""
@@ -335,15 +326,15 @@ msgstr ""
 
 #: plugins/share/Twitter/TwitterForm.vala:63
 msgid "Tweet"
-msgstr ""
+msgstr "Twiittaa"
 
 #: plugins/share/Twitter/TwitterForm.vala:80
 msgid "Tweet to Followers"
-msgstr ""
+msgstr "Twiittaa seuraajille"
 
 #: plugins/share/Wallabag/WallabagSetup.vala:73 src/Widgets/AddPopover.vala:47
 msgid "URL:"
-msgstr ""
+msgstr "Osoite:"
 
 #: plugins/share/Wallabag/WallabagSetup.vala:74
 msgid "Client ID:"
@@ -355,11 +346,11 @@ msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:124
 msgid "Please fill in the URL."
-msgstr ""
+msgstr "Anna osoite."
 
 #: plugins/share/Wallabag/WallabagSetup.vala:130
 msgid "URL seems to not be valid."
-msgstr ""
+msgstr "Osoite ei vaikuta olevan kelvollinen."
 
 #: plugins/share/Wallabag/WallabagSetup.vala:140
 msgid "Please fill in the clientID."
@@ -370,51 +361,43 @@ msgid "Please fill in the clientSecret."
 msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:154
-#, fuzzy
 msgid "Please fill in the password."
-msgstr "Anna kelvollinen salasana"
+msgstr "Anna salasana."
 
 #: plugins/share/Wallabag/WallabagSetup.vala:161
-#, fuzzy
 msgid "Please fill in the username."
-msgstr "Anna kelvollinen käyttäjätunnus"
+msgstr "Anna käyttäjätunnus."
 
 #: plugins/share/Wallabag/WallabagSetup.vala:186
-#, fuzzy
 msgid "Something went wrong."
-msgstr "Valitettavasti jokin meni vikaan"
+msgstr "Valitettavasti jokin meni pieleen."
 
 #: src/Backend/FeedServer.vala:191 src/Backend/FeedServer.vala:294
-#, fuzzy
 msgid "Getting feeds and categories"
-msgstr "Näytä vain lukemattomat artikkelit"
+msgstr "Noudetaan syötteitä ja luokkia"
 
 #: src/Backend/FeedServer.vala:243
-#, fuzzy
 msgid "Getting articles"
-msgstr "Uudet artikkelit"
+msgstr "Noudetaan artikkeleja"
 
 #. get marked articles
 #: src/Backend/FeedServer.vala:323
-#, fuzzy
 msgid "Getting starred articles"
-msgstr "Näytä vain vain tähdellä varustetut artikkelit"
+msgstr "Noudetaan tähdellä varustettuja artikkeleja"
 
 #. get articles for each tag
 #: src/Backend/FeedServer.vala:330
-#, fuzzy
 msgid "Getting tagged articles"
-msgstr "Näytä vain vain tähdellä varustetut artikkelit"
+msgstr "Noudetaan tunnisteella varustettuja artikkeleja"
 
 #. get unread articles
 #: src/Backend/FeedServer.vala:348
-#, fuzzy
 msgid "Getting unread articles"
-msgstr "Näytä vain lukemattomat artikkelit"
+msgstr "Noudetaan lukemattomia artikkeleja"
 
 #: src/DataBaseReadOnly.vala:243
 msgid "Unknown tag"
-msgstr ""
+msgstr "Tuntematon tunniste"
 
 #: src/DataBaseReadOnly.vala:271 src/Widgets/AddPopover.vala:38
 #: src/Widgets/FeedList.vala:506
@@ -423,7 +406,7 @@ msgstr "Luokittelematon"
 
 #: src/Model/Article.vala:188
 msgid "Yesterday"
-msgstr ""
+msgstr "Eilen"
 
 #: src/Notification.vala:21 src/Widgets/ArticleList/ArticleList.vala:551
 msgid "New articles"
@@ -432,12 +415,12 @@ msgstr "Uudet artikkelit"
 #: src/Notification.vala:27
 #, fuzzy, c-format
 msgid "There is 1 new article (%u unread)"
-msgstr "1 uusi artikkeli"
+msgstr "1 uusi artikkeli (%u lukematon)"
 
 #: src/Notification.vala:29
 #, fuzzy, c-format
 msgid "There are %u new articles (%u unread)"
-msgstr "%u uutta artikkelia"
+msgstr "%u uutta artikkelia (%u lukematonta)"
 
 #: src/Share/ServiceSetup.vala:61
 msgid "Logout"
@@ -458,36 +441,35 @@ msgstr ""
 
 #: src/Utils.vala:814 src/Widgets/UpdateButton.vala:80
 msgid "Cancel"
-msgstr ""
+msgstr "Peru"
 
 #: src/Utils.vala:816
 msgid "Save"
-msgstr ""
+msgstr "Tallenna"
 
 #: src/Widgets/AddPopover.vala:48
-#, fuzzy
 msgid "Category:"
-msgstr "Luokittelematon"
+msgstr "Luokka:"
 
 #: src/Widgets/AddPopover.vala:65
 msgid "OPML File:"
-msgstr ""
+msgstr "OPML-tiedosto:"
 
 #: src/Widgets/AddPopover.vala:67
 msgid "Select OPML File"
-msgstr ""
+msgstr "Valitse OPML-tiedosto"
 
 #: src/Widgets/AddPopover.vala:73
 msgid "Import"
-msgstr ""
+msgstr "Tuo"
 
 #: src/Widgets/AddPopover.vala:92 src/Widgets/FeedListFooter.vala:113
 msgid "Add feed"
-msgstr ""
+msgstr "Lisää syöte"
 
 #: src/Widgets/AddPopover.vala:93
 msgid "Import OPML"
-msgstr ""
+msgstr "Tuo OPML"
 
 #: src/Widgets/ArticleList/ArticleList.vala:48
 msgid "Sync is in progress. Articles should appear any second."
@@ -495,27 +477,23 @@ msgstr "Synkronointi on meneillään. Artikkelien tulisi ilmestyä näkyviin pia
 
 #: src/Widgets/ArticleList/ArticleList.vala:553
 msgid "scroll up"
-msgstr ""
+msgstr "vieritä ylös"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:20
-#, fuzzy
 msgid "No Articles"
-msgstr "Uudet artikkelit"
+msgstr "Ei artikkeleja"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:123
-#, fuzzy
 msgid "No unread articles"
-msgstr "Näytä vain lukemattomat artikkelit"
+msgstr "Ei lukemattomia artikkeleja"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:130
-#, fuzzy
 msgid "No starred articles"
-msgstr "Näytä vain vain tähdellä varustetut artikkelit"
+msgstr "Ei tähdellä varustettuja artikkeleja"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:137
-#, fuzzy
 msgid "No articles"
-msgstr "Uudet artikkelit"
+msgstr "Ei artikkeleja"
 
 #: src/Widgets/ArticleView.vala:62
 msgid "No Article selected."
@@ -523,62 +501,54 @@ msgstr "Ei artikkelia valittuna"
 
 #: src/Widgets/ArticleView.vala:66
 msgid "WebKit has crashed"
-msgstr ""
+msgstr "WebKit on kaatunut"
 
 #: src/Widgets/ArticleView.vala:790
-#, fuzzy
 msgid "Save image as"
-msgstr "Jaa artikkeli"
+msgstr "Tallenna kuva nimellä"
 
 #: src/Widgets/ArticleViewHeader.vala:68
-#, fuzzy
 msgid "Tag article"
 msgstr "Lisää tunniste artikkeliin"
 
 #: src/Widgets/ArticleViewHeader.vala:82
-#, fuzzy
 msgid "Print article"
-msgstr "Artikkelien järjestysperuste"
+msgstr "Tulosta artikkeli"
 
 #: src/Widgets/ArticleViewHeader.vala:93
-#, fuzzy
 msgid "Share article"
 msgstr "Jaa artikkeli"
 
 #: src/Widgets/CategorieRow.vala:393 src/Widgets/RemovePopover.vala:112
 #, c-format
 msgid "Category \"%s\" removed"
-msgstr ""
+msgstr "Luokka \"%s\" poistettu"
 
 #: src/Widgets/CategorieRow.vala:445 src/Widgets/FeedRow.vala:233
-#, fuzzy
 msgid "Mark as read"
-msgstr "Merkitse artikkeli luetuksi/lukemattomaksi"
+msgstr "Merkitse luetuksi"
 
 #: src/Widgets/CategorieRow.vala:446 src/Widgets/FeedRow.vala:235
 #: src/Widgets/TagRow.vala:194
-#, fuzzy
 msgid "Rename"
-msgstr "Käyttäjätunnus:"
+msgstr "Nimeä uudelleen"
 
 #: src/Widgets/CategorieRow.vala:448
 msgid "Remove (with Feeds)"
-msgstr ""
+msgstr "Poista (syötteineen)"
 
 #: src/Widgets/CategorieRow.vala:501 src/Widgets/FeedRow.vala:270
 #: src/Widgets/TagRow.vala:272
-#, fuzzy
 msgid "rename"
-msgstr "Käyttäjätunnus:"
+msgstr "nimeä uudelleen"
 
 #: src/Widgets/CategorieRow.vala:503 src/Widgets/TagRow.vala:274
-#, fuzzy
 msgid "add"
-msgstr "lisää tunniste"
+msgstr "lisää"
 
 #: src/Widgets/ColumnViewHeader.vala:37
 msgid "All"
-msgstr ""
+msgstr "Kaikki"
 
 #: src/Widgets/ColumnViewHeader.vala:37
 msgid "Show all articles"
@@ -586,7 +556,7 @@ msgstr "Näytä kaikki artikkelit"
 
 #: src/Widgets/ColumnViewHeader.vala:38
 msgid "Unread"
-msgstr ""
+msgstr "Lukemattomat"
 
 #: src/Widgets/ColumnViewHeader.vala:38
 msgid "Show only unread articles"
@@ -594,14 +564,13 @@ msgstr "Näytä vain lukemattomat artikkelit"
 
 #: src/Widgets/ColumnViewHeader.vala:39
 msgid "Starred"
-msgstr ""
+msgstr "Tähdellä merkityt"
 
 #: src/Widgets/ColumnViewHeader.vala:39
 msgid "Show only starred articles"
 msgstr "Näytä vain vain tähdellä varustetut artikkelit"
 
 #: src/Widgets/ColumnViewHeader.vala:60
-#, fuzzy
 msgid "Update feeds"
 msgstr "Päivitä syötteet"
 
@@ -611,44 +580,39 @@ msgstr "Etsi artikkeleja"
 
 #: src/Widgets/ColumnViewHeader.vala:114
 msgid "Read article fullscreen"
-msgstr ""
+msgstr "Lue artikkeli koko näytön tilassa"
 
 #: src/Widgets/FeedList.vala:242
-#, fuzzy
 msgid "All Articles"
-msgstr "Uudet artikkelit"
+msgstr "Kaikki artikkelit"
 
 #: src/Widgets/FeedList.vala:441
-#, fuzzy
 msgid "Tags"
-msgstr "Tunnisteet:"
+msgstr "Tunnisteet"
 
 #: src/Widgets/FeedList.vala:482
-#, fuzzy
 msgid "Categories"
-msgstr "Luokittelematon"
+msgstr "Luokat"
 
 #: src/Widgets/FeedList.vala:487
-#, fuzzy
 msgid "Feeds"
-msgstr "Feedly"
+msgstr "Syötteet"
 
 #: src/Widgets/FeedList.vala:1012
 msgid "New Tag"
-msgstr ""
+msgstr "Uusi tunniste"
 
 #: src/Widgets/FeedList.vala:1139
-#, fuzzy
 msgid "New Category"
-msgstr "Luokittelematon"
+msgstr "Uusi luokka"
 
 #: src/Widgets/FeedListFooter.vala:142
 msgid "Remove feed"
-msgstr ""
+msgstr "Poista syöte"
 
 #: src/Widgets/FeedRow.vala:234
 msgid "Copy URL"
-msgstr ""
+msgstr "Kopioi osoite"
 
 #: src/Widgets/FeedRow.vala:239
 #, c-format
@@ -658,11 +622,11 @@ msgstr ""
 #: src/Widgets/FeedRow.vala:445
 #, c-format
 msgid "Feed removed: %s"
-msgstr ""
+msgstr "Syöte poistettu: %s"
 
 #: src/Widgets/FullscreenHeader.vala:26
 msgid "Leave fullscreen mode"
-msgstr ""
+msgstr "Poistu koko näytön tilasta"
 
 #: src/Widgets/LoginPage.vala:39
 msgid "Where are your feeds?"
@@ -673,7 +637,6 @@ msgid "Please select the RSS service you are using and log in to get going."
 msgstr "Valitse käyttämäsi RSS-palvelu ja kirjaudu sisään aloittaaksesi."
 
 #: src/Widgets/MainWindow.vala:347
-#, fuzzy
 msgid "Ignore all TLS errors from now on"
 msgstr "Älä huomioi TLS-virheitä jatkossa"
 
@@ -703,7 +666,7 @@ msgstr "Valitettavasti jokin meni vikaan"
 
 #: src/Widgets/MainWindow.vala:433
 msgid "The server reported an API-error."
-msgstr ""
+msgstr "Palvelin ilmoitti API-virheestä."
 
 #: src/Widgets/MainWindow.vala:436
 msgid "Either your username or the password are not correct."
@@ -723,7 +686,7 @@ msgstr ""
 
 #: src/Widgets/MainWindow.vala:445
 msgid "Not authorized to access URL"
-msgstr ""
+msgstr "Ei valtuutettua pääsyä osoitteeseen"
 
 #: src/Widgets/MainWindow.vala:449
 msgid "No valid CA certificate available!"
@@ -731,27 +694,26 @@ msgstr "Kelvollista CA-varmennetta ei ole saatavilla!"
 
 #: src/Widgets/MainWindow.vala:453
 msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
-msgstr ""
+msgstr "Asenna \"api_feedreader\"-lisäosa tt-rss-järjestelmääsi!"
 
 #: src/Widgets/MediaButton.vala:85
-#, fuzzy
 msgid "Attachments"
-msgstr "Pergamentti"
+msgstr "Liitteet"
 
 #: src/Widgets/RemovePopover.vala:47
 #, c-format
 msgid "Remove \"%s\""
-msgstr ""
+msgstr "Poista \"%s\""
 
 #: src/Widgets/RemovePopover.vala:81 src/Widgets/TagRow.vala:172
 #, c-format
 msgid "Tag \"%s\" removed"
-msgstr ""
+msgstr "Tunniste \"%s\" poistettu"
 
 #: src/Widgets/RemovePopover.vala:96
 #, c-format
 msgid "Feed \"%s\" removed"
-msgstr ""
+msgstr "Syöte \"%s\" poistettu"
 
 #: src/Widgets/ResetPage.vala:33
 msgid "Change Account?"
@@ -787,7 +749,7 @@ msgstr "Sisäiset"
 
 #: src/Widgets/SettingsDialog.vala:50
 msgid "Share"
-msgstr ""
+msgstr "Jaa"
 
 #: src/Widgets/SettingsDialog.vala:71
 msgid "Feed List:"
@@ -802,9 +764,8 @@ msgid "Only show unread"
 msgstr "Näytä vain lukemattomat"
 
 #: src/Widgets/SettingsDialog.vala:85
-#, fuzzy
 msgid "Sort Feed List by"
-msgstr "Järjestä syötelista"
+msgstr "Syöteluettelon järjestys"
 
 #: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
@@ -820,15 +781,15 @@ msgstr "Teema"
 
 #: src/Widgets/SettingsDialog.vala:90
 msgid "Gtk+"
-msgstr ""
+msgstr "Gtk+"
 
 #: src/Widgets/SettingsDialog.vala:90
 msgid "Dark"
-msgstr ""
+msgstr "Tumma"
 
 #: src/Widgets/SettingsDialog.vala:90
 msgid "elementary"
-msgstr ""
+msgstr "elementary"
 
 #: src/Widgets/SettingsDialog.vala:95
 msgid "Article List:"
@@ -843,9 +804,8 @@ msgid "Date"
 msgstr "Päiväys"
 
 #: src/Widgets/SettingsDialog.vala:102
-#, fuzzy
 msgid "Oldest first"
-msgstr "Uusin ensin"
+msgstr "Vanhin ensin"
 
 #: src/Widgets/SettingsDialog.vala:102
 msgid "Only affects \"Unread\" column"
@@ -853,7 +813,7 @@ msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:107
 msgid "Mark read by scrolling past"
-msgstr ""
+msgstr "Merkitse luetuksi vierittämällä ohi"
 
 #: src/Widgets/SettingsDialog.vala:109
 msgid "Article View:"
@@ -877,7 +837,7 @@ msgstr "Pergamentti"
 
 #: src/Widgets/SettingsDialog.vala:116
 msgid "Font Familly"
-msgstr ""
+msgstr "Fonttiperhe"
 
 #: src/Widgets/SettingsDialog.vala:141
 msgid "Sync:"
@@ -889,7 +849,7 @@ msgstr "Artikkelien lukumäärä"
 
 #: src/Widgets/SettingsDialog.vala:145
 msgid "Interval in Minutes (0 = OFF)"
-msgstr ""
+msgstr "Aikaväli minuuteissa (0 = pois päältä)"
 
 #: src/Widgets/SettingsDialog.vala:150
 msgid "Database:"
@@ -925,78 +885,72 @@ msgstr "Sisällön noutaja"
 
 #: src/Widgets/SettingsDialog.vala:159
 msgid "Download Images"
-msgstr ""
+msgstr "Lataa kuvat"
 
 #: src/Widgets/SettingsDialog.vala:161
 msgid "Internal Media Player"
-msgstr ""
+msgstr "Sisäinen mediasoitin"
 
 #: src/Widgets/SettingsDialog.vala:322
-#, fuzzy
 msgid "System Accounts"
-msgstr "Vaihda käyttäjätiliä"
+msgstr "Järjestelmätilit"
 
 #: src/Widgets/SettingsDialog.vala:349 src/Widgets/SettingsDialog.vala:363
-#, fuzzy
 msgid "FeedReader Accounts"
-msgstr "Syötteenlukija"
+msgstr "FeedReader-tilit"
 
 #: src/Widgets/SharePopover.vala:62
-#, fuzzy
 msgid "Add accounts"
-msgstr "Uusi tili"
+msgstr "Lisää tilejä"
 
 #. --------------------------------------------------
 #: src/Widgets/ShortcutsWindow.vala:22
 msgid "General"
-msgstr ""
+msgstr "Yleiset"
 
 #: src/Widgets/ShortcutsWindow.vala:27
 msgid "Refresh"
-msgstr ""
+msgstr "Päivitä"
 
 #: src/Widgets/ShortcutsWindow.vala:28
 msgid "Search"
-msgstr ""
+msgstr "Etsi"
 
 #. --------------------------------------------------
 #. --------------------------------------------------
 #: src/Widgets/ShortcutsWindow.vala:37
-#, fuzzy
 msgid "Feed List"
-msgstr "Syöteluettelo:"
+msgstr "Syöteluettelo"
 
 #: src/Widgets/ShortcutsWindow.vala:42
 msgid "Select next item"
-msgstr ""
+msgstr "Valitse seuraava kohde"
 
 #: src/Widgets/ShortcutsWindow.vala:43
 msgid "Select previous item"
-msgstr ""
+msgstr "Valitse edellinen kohde"
 
 #: src/Widgets/ShortcutsWindow.vala:44
 msgid "Collapse/Expand categories"
-msgstr ""
+msgstr "Laajenna/supista luokat"
 
 #: src/Widgets/ShortcutsWindow.vala:45
 msgid "Mark the currently selected as read"
-msgstr ""
+msgstr "Valitse parhaillaan valittu luetuksi"
 
 #. --------------------------------------------------
 #. --------------------------------------------------
 #: src/Widgets/ShortcutsWindow.vala:54
-#, fuzzy
 msgid "Article List"
-msgstr "Artikkelilista:"
+msgstr "Artikkeliluettelo"
 
 #: src/Widgets/ShortcutsWindow.vala:63
 msgid "Select next/previous article"
-msgstr ""
+msgstr "Valitse seuraava/edellinen artikkeli"
 
 #: src/Widgets/ShortcutsWindow.vala:64
-#, fuzzy
 msgid "Toggle reading status of selected article"
-msgstr "1 uusi artikkeli"
+msgstr "Vaihda valitun artikkelin luetuksi merkinnän tilaa"
 
 #: src/Widgets/ShortcutsWindow.vala:65
 #, fuzzy
@@ -1005,7 +959,7 @@ msgstr "1 uusi artikkeli"
 
 #: src/Widgets/ShortcutsWindow.vala:66
 msgid "Open the URL of the selected article"
-msgstr ""
+msgstr "Avaa valitun artikkelin osoite"
 
 #: src/Widgets/ShortcutsWindow.vala:67
 msgid "Scroll all the way up/down"
@@ -1018,13 +972,12 @@ msgstr ""
 #. --------------------------------------------------
 #. --------------------------------------------------
 #: src/Widgets/ShortcutsWindow.vala:79
-#, fuzzy
 msgid "Article View"
-msgstr "Artikkelinäkymä:"
+msgstr "Artikkelinäkymä"
 
 #: src/Widgets/ShortcutsWindow.vala:84
 msgid "Scroll up/down"
-msgstr ""
+msgstr "Vieritä ylös/alas"
 
 #: src/Widgets/SpringCleanPage.vala:28
 msgid ""

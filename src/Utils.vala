@@ -48,7 +48,7 @@ public class FeedReader.Utils : GLib.Object {
 				else if(Article.getHTML() != "" && Article.getHTML() != null)
 				{
 					Logger.debug("Utils: generate preview for article: " + Article.getArticleID());
-					string output = libVilistextum.parse(Article.getHTML(), 1);
+					string output = Utils.UTF8fix(Article.getHTML(), true);
 					if(output != null)
 						output = output.strip();
 
@@ -56,7 +56,6 @@ public class FeedReader.Utils : GLib.Object {
 					{
 						Logger.info("generatePreviews: no Preview");
 						Article.setPreview(noPreview);
-						Article.setTitle(Utils.UTF8fix(Article.getTitle(), true));
 						continue;
 					}
 

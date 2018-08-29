@@ -68,10 +68,10 @@ public class FeedReader.Article : GLib.Object {
 					int lastModified = 0)
 	{
 		m_articleID = articleID;
-		m_title = title != null ? title : "";
+		m_title = title != null ? Utils.UTF8fix(title, true) : "";
 		m_url = url != null ? url : "";
-		m_html = html != null ? html : "";
-		m_preview = preview != null ? preview : "";
+		m_html = html != null ? Utils.UTF8fix(html, false) : "";
+		m_preview = preview != null ? Utils.UTF8fix(preview, true) : "";
 		m_feedID = feedID != null ? feedID : "";
 		m_author = author != "" ? author : null; // This one is actually nullable
 		m_unread = unread;

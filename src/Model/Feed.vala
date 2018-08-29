@@ -27,7 +27,7 @@ public class FeedReader.Feed : GLib.Object {
 	{
 		m_feedID = feedID;
 		m_url = url != null ? url : "";
-		m_title = title != null ? Utils.UTF8fix(title) : Utils.URLtoFeedName(url);
+		m_title = title != null ? Utils.UTF8fix(title, true) : Utils.URLtoFeedName(url);
 		m_unread = unread;
 		m_catIDs = catIDs == null ? Gee.List.empty<string>() : catIDs;
 		m_iconURL = iconURL == "" ? null : iconURL;

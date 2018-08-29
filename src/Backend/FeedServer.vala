@@ -536,8 +536,8 @@ public class FeedReader.FeedServer : GLib.Object {
 		{
 			grabber.print();
 
-			string html = grabber.getArticle();
-			string title = Utils.UTF8fix(grabber.getTitle());
+			string html = Utils.UTF8fix(grabber.getArticle(), false);
+			string title = Utils.UTF8fix(grabber.getTitle(), true);
 			string xml = "<?xml";
 
 			while(html.has_prefix(xml))
@@ -563,7 +563,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				stream.write(html.data);
 				Logger.debug("Grabber: article html written to " + path);
 
-				string output = libVilistextum.parse(html, 1);
+				string output = Utils.UTF8fix(html, true);
 
 				if(output == "" || output == null)
 				{

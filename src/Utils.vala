@@ -107,11 +107,14 @@ public class FeedReader.Utils : GLib.Object {
 			return "NULL";
 		}
 
-		string output = old_string.make_valid().replace("\n"," ").strip();
+		string output = old_string;
 		if (remove_html)
 		{
-
+			output = Htmlclean.strip_html(output);
 		}
+		// Strip and replace chars after HTML cleaning because the HTML cleaner
+		// can potentially inserting newlines, whitespace or invalid chars
+		output = output.make_valid().replace("\n"," ").strip();
 		return output;
 	}
 

@@ -44,6 +44,7 @@ goa                 = dependency('goa-1.0')
 gstreamer           = dependency('gstreamer-1.0')
 gstreamer_pbutils   = dependency('gstreamer-pbutils-1.0')
 gtk                 = dependency('gtk+-3.0', version: '>=3.22')
+gumbo               = dependency('gumbo')
 json_glib           = dependency('json-glib-1.0')
 libcurl             = c_compiler.find_library('libcurl')
 libnotify           = dependency('libnotify')
@@ -85,6 +86,7 @@ constants = vcs_tag(
 subdir('libraries/libgd')
 subdir('libraries/libgtkimageview')
 subdir('libraries/libIvy')
+subdir('libraries/htmlclean')
 subdir('libraries/WebExtension')
 subdir('data')
 
@@ -92,6 +94,14 @@ subdir('data')
 # VAPI's
 libgd_vapi          = vala_compiler.find_library('gd-1.0', dirs: VAPI_DIR)
 gtkimageview_vapi   = vala_compiler.find_library('gtkimageview', dirs: VAPI_DIR)
+htmlclean_vapi      = vala_compiler.find_library('htmlclean', dirs: VAPI_DIR)
+
+# htmlclean
+htmlclean  = declare_dependency(
+  link_with: htmlclean_lib,
+  include_directories: htmlclean_inc,
+  dependencies: htmlclean_vapi
+)
 
 # libgd
 libgd = declare_dependency(
@@ -239,6 +249,7 @@ feedreader_deps = [
     posix,
     libivy,
     libgtkimageview,
+    htmlclean,
     libgd
   ]
 
@@ -279,6 +290,7 @@ executable(
   ],
   dependencies: [
     gtkimageview_vapi,
+    htmlclean_vapi,
     webkit2gtk
   ],
   install: true

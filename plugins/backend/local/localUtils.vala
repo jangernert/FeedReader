@@ -81,12 +81,10 @@ public class FeedReader.localUtils : GLib.Object {
 			return null;
 
 		if(locale == null)
-			//return Utils.UTF8fix(text, false);
 			return text;
 
 		try
 		{
-			//return Utils.UTF8fix(GLib.convert(text, -1, "utf-8", locale), false);
 			return GLib.convert(text, -1, "utf-8", locale);
 		}
 		catch(ConvertError e)

@@ -4,15 +4,16 @@
 
 static void test_changed_inputs_with_html(void)
 {
-	char* inputs[][2] = {
+	char *inputs[][2] = {
 		{"  \n \t ", ""},
 		{"  \n <br>\t<hr> ", "<br> <hr>"},
 		{"<h ", "<h"},
 		{"a\nb", "a b"},
 		{"a<br>b", "a<br>b"},
-		//{"test&nbsp;two", "test\xa0two"},
-		//{"test&#160;two", "test\xa0two"},
-		//{"test&#160two", "test\xa0two"}
+		// Note: Non-breaking space is two bytes in UTF-8
+		{"test&nbsp;two", "test\302\240two"},
+		{"test&#160;two", "test\302\240two"},
+		//{"test&#160two", "test\302\240two"}
 	};
 	for (size_t i = 0; i < sizeof(inputs) / sizeof(char*[2]); ++i)
 	{
@@ -43,13 +44,13 @@ static void test_unchanged_inputs_with_html(void)
 
 static void test_changed_inputs_without_html(void)
 {
-	char* inputs[][2] = {
+	char *inputs[][2] = {
 		{"  \n <br>\t", ""},
 		//{"<h ", "<h"},
 		{"a\nb", "a b"},
 		{"a<br/>b", "a\nb"},
-		//{"test&nbsp;two", "test\xa0two"},
-		//{"test&#160;two", "test\xa0two"},
+		{"test&nbsp;two", "test\302\240two"},
+		{"test&#160;two", "test\302\240two"},
 		//{"test&#160two", "test\xa0two"}
 	};
 	for (size_t i = 0; i < sizeof(inputs) / sizeof(char*[2]); ++i)

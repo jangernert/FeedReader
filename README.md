@@ -11,91 +11,98 @@ FeedReader is a modern desktop application designed to complement existing web-b
 Website : http://jangernert.github.io/FeedReader/<br/>
 For translators : https://hosted.weblate.org/projects/feedreader/
 
-
-
-## Dependencies
-- `build-essential`
-- `meson`
-- `ninja-build`
-- `vala (>=0.38)`
-- `pkg-config`
-- `libgirepository1.0-dev`
-- `libgtk-3-dev (>= 3.22)`
-- `libgumbo-dev`
-- `libsoup2.4-dev`
-- `libjson-glib-dev`
-- `libwebkit2gtk-4.0-dev (>=2.20)`
-- `libsqlite3-dev`
-- `libsecret-1-dev`
-- `libnotify-dev`
-- `libxml2-dev`
-- `libunity-dev (optional)`
-- `librest-dev`
-- `libgee-0.8-dev`
-- `libgstreamer1.0-dev`
-- `libgstreamer-plugins-base1.0-dev (gstreamer-pbutils-1.0)`
-- `libgoa-1.0-dev (>= 3.20)`
-- `libcurl-dev`
-- `libpeas-dev`
-
-
 ## How to install
-### Arch Linux : <br/>
-```bash
-pacman -S feedreader
-```
-### Fedora : <br/>
-```bash
-sudo dnf install feedreader
-```
-### Solus : <br/>
-```bash
-sudo eopkg it feedreader
-```
 
-### openSUSE : <br/>
-```bash
-sudo zypper install feedreader
-```
-
-### Ubuntu : <br/>
-The easiest way to install the latest FeedReader right now is to build from source, which you can do with this script:
-```bash
-curl https://raw.githubusercontent.com/jangernert/FeedReader/master/scripts/install_ubuntu.sh | bash 
-```
-
-On Ubuntu 18.10 or newer you can install FeedReader with
-```bash
-sudo apt install feedreader
-```
-
-### Debian Testing : <br/>
-```bash
-sudo apt install feedreader
-```
-
-### Flatpak
-
-FeedReader is now availble as Flatpak and should be installable on all major Linux distributions that support the Flatpak Application Framework eg. Fedora, Debian, Ubuntu, elementaryOS, Arch, openSuSE, Mageia and many more.
+The Flatpak build works on any distro and will always track the newest release.
+For that reason, it's the only way we recommend that you install FeedReader (we
+really don't have the resources to support multiple distro-specific package).
 
 For more information about Flatpak and how to use or install it for your distribution see the [Flatpak webpage](http://flatpak.org).
 
 Besides installing the Flatpak Framework, you should also install the following portal packages using your distributions package manager:
-- `xdg-desktop-portal`
-- `xdg-desktop-portal-gtk`
 
-#### Via Flathub
-Make sure to follow the Flatpak [setup guide](https://flatpak.org/setup/) for your distribution before installing FeedReader. You must ensure Flatpak is installed and add the Flathub repo. Then you can run:
-<pre>
+  - `xdg-desktop-portal`
+  - `xdg-desktop-portal-gtk`
+
+Follow the Flatpak [setup guide](https://flatpak.org/setup/) for your distribution before installing FeedReader. You must ensure Flatpak is installed and add the Flathub repo. Then you can run:
+
+```
 flatpak install flathub org.gnome.FeedReader
-</pre>
+```
 
+## Build from source
 
-### Manual installation
+These are the instructions for building and testing locally. We generally
+recommend that you use the Flatpak build whenever possible though.
+
+### Ubuntu
+
+Install dependencies:
+
+```
+sudo apt-get install \
+	build-essential \
+	meson \
+	ninja-build \
+	vala \
+	pkg-config \
+	libgirepository1.0-dev \
+	libgtk-3-dev \
+	libgumbo-dev \
+	libsoup2.4-dev \
+	libjson-glib-dev \
+	libwebkit2gtk-4.0-dev \
+	libsqlite3-dev \
+	libsecret-1-dev \
+	libnotify-dev \
+	libxml2-dev \
+	libunity-dev \
+	librest-dev \
+	libgee-0.8-dev \
+	libgstreamer1.0-dev \
+	libgstreamer-plugins-base1.0-dev \
+	libgoa-1.0-dev \
+	libcurl-dev \
+	libpeas-dev
+
+### Fedora
+
+Install dependencies:
+
+```
+RUN dnf install \
+	gcc \
+	gettext \
+	git \
+	gnome-online-accounts-devel \
+	gstreamer1-devel \
+	gstreamer1-plugins-base-devel \
+	gtk3-devel \
+	gumbo-parser-devel \
+	json-glib-devel \
+	libcurl-devel \
+	libgee-devel \
+	libnotify-devel \
+	libpeas-devel \
+	libsecret-devel \
+	libsoup-devel \
+	libxml2-devel \
+	meson \
+	rest-devel \
+	sqlite-devel \
+	vala \
+	webkitgtk4-devel \
+	appstream \
+	desktop-file-utils \
+	libunity-devel
+```
+
+### Build
+
 ```
 git clone --recursive https://github.com/jangernert/FeedReader
 cd ./FeedReader
 meson builddir --prefix=/usr
-sudo ninja -C builddir install
+ninja -C builddir install
+# Now run `feedreader`
 ```
-Arch Linux users can build the latest version using `yaourt -S feedreader-git`

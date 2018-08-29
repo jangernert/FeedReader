@@ -30,12 +30,14 @@ char *cleantext(GumboNode *node)
 {
 	if (node->type == GUMBO_NODE_TEXT)
 	{
-		char* text = g_strdup(node->v.text.text);
-		if (text == NULL) {
+		char *text = g_strdup(node->v.text.text);
+		if (text == NULL)
+		{
 			return NULL;
 		}
 		text = g_strstrip(text);
-		if (strlen(text) == 0) {
+		if (strlen(text) == 0)
+		{
 			g_free(text);
 			return NULL;
 		}
@@ -59,10 +61,14 @@ char *cleantext(GumboNode *node)
 		}
 		strs[num_nonempty] = NULL;
 
-		char *output = g_strjoinv(" ", strs);
-		for (size_t i = 0; i < num_nonempty; ++i)
+		char *output = NULL;
+		if (num_nonempty > 0)
 		{
-			g_free(strs[i]);
+			output = num_nonempty == 0 ? NULL : g_strjoinv(" ", strs);
+			for (size_t i = 0; i < num_nonempty; ++i)
+			{
+				g_free(strs[i]);
+			}
 		}
 		free(strs);
 		return output;

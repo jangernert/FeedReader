@@ -85,7 +85,6 @@ constants = vcs_tag(
 subdir('libraries/libgd')
 subdir('libraries/libgtkimageview')
 subdir('libraries/libIvy')
-subdir('libraries/libVilistextum')
 subdir('libraries/WebExtension')
 subdir('data')
 
@@ -93,14 +92,6 @@ subdir('data')
 # VAPI's
 libgd_vapi          = vala_compiler.find_library('gd-1.0', dirs: VAPI_DIR)
 gtkimageview_vapi   = vala_compiler.find_library('gtkimageview', dirs: VAPI_DIR)
-libvilistextum_vapi = vala_compiler.find_library('libvilistextum', dirs: VAPI_DIR)
-
-# libVilistextum
-libvilistextum  = declare_dependency(
-  link_with: vilistextum_lib,
-  include_directories: vilistextum_inc,
-  dependencies: libvilistextum_vapi
-)
 
 # libgd
 libgd = declare_dependency(
@@ -248,7 +239,6 @@ feedreader_deps = [
     posix,
     libivy,
     libgtkimageview,
-    libvilistextum,
     libgd
   ]
 
@@ -289,7 +279,6 @@ executable(
   ],
   dependencies: [
     gtkimageview_vapi,
-    libvilistextum_vapi,
     webkit2gtk
   ],
   install: true

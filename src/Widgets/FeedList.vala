@@ -948,14 +948,16 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		/*
 			Copy selected feed url to clipboard
 		*/
-		if (feed_id != ""){
-			var feed =  DataBase.readOnly().read_feed(feed_id);
+		if (feed_id != "" && feed_id != null){
+			var feed = DataBase.readOnly().read_feed(feed_id);
 			if (feed != null){
 				string feed_url = feed.getXmlUrl();
-				Gdk.Display display = MainWindow.get_default().get_display ();
-				Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display (display, Gdk.SELECTION_CLIPBOARD);
+				if (feed_url != null) {
+					Gdk.Display display = MainWindow.get_default().get_display();
+					Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_CLIPBOARD);
 
-				clipboard.set_text(feed_url, feed_url.length);
+					clipboard.set_text(feed_url, feed_url.length);
+				}
 			}
 		}
 	}

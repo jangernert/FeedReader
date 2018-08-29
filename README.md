@@ -64,6 +64,7 @@ sudo apt-get install \
 	libgoa-1.0-dev \
 	libcurl-dev \
 	libpeas-dev
+```
 
 ### Fedora
 

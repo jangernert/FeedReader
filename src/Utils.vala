@@ -99,7 +99,7 @@ public class FeedReader.Utils : GLib.Object {
 		}
 	}
 
-	public static string UTF8fix(string? old_string, bool removeHTML = false)
+	public static string UTF8fix(string? old_string, bool remove_html = false)
 	{
 		if(old_string == null)
 		{
@@ -107,23 +107,12 @@ public class FeedReader.Utils : GLib.Object {
 			return "NULL";
 		}
 
-		int rm_html = 0;
-		if(removeHTML)
-			rm_html = 1;
-
-		string? output = old_string.replace("\n"," ").strip();
-
-		output = libVilistextum.parse(old_string, rm_html);
-
-		if(output != null)
+		string output = old_string.make_valid().replace("\n"," ").strip();
+		if (remove_html)
 		{
-			output = output.replace("\n"," ").strip();
-			if(output != "")
-			{
-				return output;
-			}
+
 		}
-		return old_string;
+		return output;
 	}
 
 	public static string[] getDefaultExpandedCategories()

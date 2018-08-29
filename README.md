@@ -21,6 +21,7 @@ For translators : https://hosted.weblate.org/projects/feedreader/
 - `pkg-config`
 - `libgirepository1.0-dev`
 - `libgtk-3-dev (>= 3.22)`
+- `libgumbo-dev`
 - `libsoup2.4-dev`
 - `libjson-glib-dev`
 - `libwebkit2gtk-4.0-dev (>=2.20)`

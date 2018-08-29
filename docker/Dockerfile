@@ -8,6 +8,7 @@ RUN dnf -y install \
         gstreamer1-devel \
         gstreamer1-plugins-base-devel \
         gtk3-devel \
+        gumbo-parser-devel \
         json-glib-devel \
         libcurl-devel \
         libgee-devel \

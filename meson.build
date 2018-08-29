@@ -227,7 +227,7 @@ c_args = [
 
 vala_args = [
   '--enable-experimental',
-  '--target-glib','2.50'
+  '--target-glib','2.52'
 ]
 
 feedreader_deps = [

@@ -52,6 +52,13 @@
   </provides>
   <releases>
 
+    <release version="2.3.0" date="2018-08-29">
+      <description>
+        <ul>
+          <li>Replace libvilistextum with Gumbo parser and GLib's UTF-8 fixing</li>
+        </ul>
+      </description>
+    </release>
     <release version="2.2.1" date="2018-08-26">
       <description>
         <ul>

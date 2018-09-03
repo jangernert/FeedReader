@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2018-09-02 12:16+0000\n"
+"PO-Revision-Date: 2018-09-04 09:16+0000\n"
 "Last-Translator: Nicolas Granger <nicolas.granger.m@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/feedreader/"
 "translations/fr/>\n"
@@ -124,6 +124,13 @@ msgid ""
 "keyboard shortcuts and a database that keeps all your old articles as long "
 "as you like."
 msgstr ""
+"Combine tous les avantages d'un service web tels que la synchronisation "
+"entre vos appareils avec tout ce que vous pouvez attendre d'une application "
+"de bureautique: des notifications intégrées au bureau, une recherche rapide, "
+"filtrage, étiquetage, partage vers des services de lecture différée \"read-"
+"it-later\" tels que pocket ou instapaper, des raccourcis claviers et une "
+"base de donnée pour conserver les anciens articles aussi longtemps que "
+"désiré."
 
 #: data/org.gnome.FeedReader.desktop.in:5
 msgid "Read feeds from web services"
@@ -976,9 +983,8 @@ msgid "Select next/previous article"
 msgstr "Sélectionner l’article suivant/précédent"
 
 #: src/Widgets/ShortcutsWindow.vala:64
-#, fuzzy
 msgid "Toggle reading status of selected article"
-msgstr "Modifier le statut de lecture de l’article sélectionné"
+msgstr "Changer le statut de lecture de l’article sélectionné"
 
 #: src/Widgets/ShortcutsWindow.vala:65
 #, fuzzy

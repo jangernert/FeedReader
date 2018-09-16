@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2017-11-16 02:55+0000\n"
-"Last-Translator: ezjerry liao <ezjerry@gmail.com>\n"
+"PO-Revision-Date: 2018-09-17 07:21+0000\n"
+"Last-Translator: zelos-h <b.blank.0001@gmail.com>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
 "feedreader/translations/zh_Hant/>\n"
 "Language: zh_TW\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2.18-dev\n"
+"X-Generator: Weblate 3.2-dev\n"
 
 #: Constants.vala.in:26
 msgid "Desktop Client for various RSS Services"
@@ -23,11 +23,11 @@ msgstr ""
 
 #: Constants.vala.in:36
 msgid "About"
-msgstr ""
+msgstr "關於"
 
 #: Constants.vala.in:37 src/Widgets/ColumnViewHeader.vala:101
 msgid "Settings"
-msgstr ""
+msgstr "設定"
 
 #: Constants.vala.in:38
 msgid "Change Account"

@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2018-09-11 02:21+0000\n"
+"PO-Revision-Date: 2018-09-28 07:30+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
 "feedreader/translations/nb/>\n"
@@ -285,7 +285,7 @@ msgstr "Send"
 
 #: plugins/share/Email/EmailForm.vala:65
 msgid "Write Email"
-msgstr "Skriv epost"
+msgstr "Skriv e-post"
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:100
 msgid "Username or Password incorrect"

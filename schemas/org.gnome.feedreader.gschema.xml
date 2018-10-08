@@ -5,6 +5,8 @@
 		<value nick="SPRING" value="1"/>
 		<value nick="MIDNIGHT" value="2"/>
 		<value nick="PARCHMENT" value="3"/>
+		<value nick="CLASSIC" value="4"/>
+		<value nick="ELEMENTARY" value="5"/>
 	</enum>
 
 	<enum id="org.gnome.feedreader.drop-articles-duration">

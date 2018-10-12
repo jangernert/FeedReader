@@ -55,6 +55,10 @@ img {
     height: auto;
 }
 
+* {
+    max-width: 100%;
+}
+
 ol,
 ul {
     list-style: disc outside none;

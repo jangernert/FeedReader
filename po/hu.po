@@ -2,8 +2,16 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
+"PO-Revision-Date: 2018-10-19 21:30+0000\n"
+"Last-Translator: Gyuris Gellért <bubu@ujevangelizacio.hu>\n"
+"Language-Team: Hungarian <https://hosted.weblate.org/projects/feedreader/"
+"translations/hu/>\n"
+"Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.2.1\n"
 
 #: Constants.vala.in:26
 msgid "Desktop Client for various RSS Services"
@@ -15,11 +23,11 @@ msgstr ""
 
 #: Constants.vala.in:36
 msgid "About"
-msgstr ""
+msgstr "Névjegy"
 
 #: Constants.vala.in:37 src/Widgets/ColumnViewHeader.vala:101
 msgid "Settings"
-msgstr ""
+msgstr "Beállítások"
 
 #: Constants.vala.in:38
 msgid "Change Account"
@@ -27,11 +35,11 @@ msgstr ""
 
 #: Constants.vala.in:39 src/Widgets/ShortcutsWindow.vala:29
 msgid "Quit"
-msgstr ""
+msgstr "Kilépés"
 
 #: Constants.vala.in:40
 msgid "Report a Bug"
-msgstr ""
+msgstr "Hibajelentés"
 
 #: Constants.vala.in:41
 msgid "Bounties"

@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2018-07-01 04:49+0000\n"
-"Last-Translator: Oswaldo Goite <oswaldo.goite@gmail.com>\n"
+"PO-Revision-Date: 2018-10-19 21:30+0000\n"
+"Last-Translator: rafasaal88 <rafasaal88@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/feedreader/"
 "translations/es/>\n"
 "Language: es\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.1-dev\n"
+"X-Generator: Weblate 3.2.1\n"
 
 #: Constants.vala.in:26
 msgid "Desktop Client for various RSS Services"
@@ -31,7 +31,7 @@ msgstr "Cliente de Escritorio para varios servicios RSS"
 
 #: Constants.vala.in:31
 msgid "translator-credits"
-msgstr ""
+msgstr "Créditos-tradución"
 
 #: Constants.vala.in:36
 msgid "About"
@@ -42,9 +42,8 @@ msgid "Settings"
 msgstr "Configuración"
 
 #: Constants.vala.in:38
-#, fuzzy
 msgid "Change Account"
-msgstr "¿Quiere cambiar de cuenta?"
+msgstr "Cambiar de cuenta"
 
 #: Constants.vala.in:39 src/Widgets/ShortcutsWindow.vala:29
 msgid "Quit"
@@ -56,16 +55,15 @@ msgstr "Reporta un error"
 
 #: Constants.vala.in:41
 msgid "Bounties"
-msgstr ""
+msgstr "Recompensas"
 
 #: Constants.vala.in:42
 msgid "Shortcuts"
 msgstr "Atajos"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:3
-#, fuzzy
 msgid "FeedReader Autostart"
-msgstr "Cuentas de FeedReader"
+msgstr "Autoiniciar FeedReader"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:4
 #: data/org.gnome.FeedReader.desktop.in:4
@@ -75,7 +73,7 @@ msgstr "ID de Cliente:"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:6
 msgid "Categories=Network;Feed;"
-msgstr ""
+msgstr "Categoría=Red;Feed;"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:8
 #: data/org.gnome.FeedReader.desktop.in:8
@@ -111,7 +109,7 @@ msgstr "URL de Tiny Tiny RSS:"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:17
 msgid "feedly"
-msgstr ""
+msgstr "feedly"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:18
 msgid "ownCloud"

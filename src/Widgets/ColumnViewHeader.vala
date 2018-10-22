@@ -90,22 +90,12 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 		m_header_left.get_style_context().add_class("header_right");
 		m_header_left.get_style_context().add_class("titlebar");
 		m_header_left.set_size_request(500, 0);
-
-		if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() != "gnome")
-		{
-			var menubutton = new Gtk.MenuButton();
-			menubutton.image = new Gtk.Image.from_icon_name("emblem-system-symbolic", Gtk.IconSize.MENU);
-			menubutton.set_size_request(32, 32);
-			menubutton.set_use_popover(true);
-			menubutton.set_menu_model(Utils.getMenu());
-			menubutton.set_tooltip_text(_("Settings"));
-			m_header_left.pack_end(menubutton);
-		}
-		else if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() == "gnome")
-		{
-			FeedReaderApp.get_default().app_menu = Utils.getMenu();
-		}
-
+		
+		var menubutton = new Gtk.MenuButton();
+		menubutton.image = new Gtk.Image.from_icon_name("open-menu-symbolic", Gtk.IconSize.MENU);
+		menubutton.set_use_popover(true);
+		menubutton.set_menu_model(Utils.getMenu());
+		m_header_left.pack_end(menubutton);
 
 		m_header_left.pack_end(m_search);
 		m_header_left.pack_start(m_modeButton);

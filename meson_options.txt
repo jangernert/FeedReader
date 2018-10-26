@@ -4,6 +4,11 @@ option('share-plugins',
         value : ['browser', 'email', 'instapaper', 'pocket', 'telegram', 'twitter', 'wallabag'],
         description: 'List of share plugins to install'
 )
+option('statusicon',
+        type: 'boolean',
+        value: false,
+        description: 'Enables status icon'
+)
 option('backend-plugins',
         type: 'array',
         choices: ['bazqux', 'feedbin', 'feedhq', 'feedly', 'fresh', 'inoreader', 'local', 'oldreader', 'owncloud', 'ttrss'],

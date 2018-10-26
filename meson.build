@@ -262,6 +262,11 @@ else
 	message('libUnity support OFF')
 endif
 
+if get_option('statusicon')
+        message('Status icon support ON')
+        vala_args += ['-D', 'STATUSICON']
+endif
+
 # Creating an executable file
 feedreader_lib = shared_library(
   'FeedReader',

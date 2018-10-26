@@ -15,12 +15,20 @@
 
 using GLib;
 using Gtk;
+using Gdk;
 
 namespace FeedReader {
 
 	public const string QUICKLIST_ABOUT_STOCK = N_("About FeedReader");
 
 	public class FeedReaderApp : Gtk.Application {
+
+#if STATUSICON
+		private StatusIcon m_sicon;
+		private Gtk.Menu m_imenu;
+		private Pixbuf m_icon_default;
+		private Pixbuf m_icon_unread;
+#endif
 
 		private MainWindow m_window;
 		private bool m_online = true;
@@ -190,9 +198,100 @@ namespace FeedReader {
 				FeedReaderBackend.get_default().checkOnlineAsync.begin();
 			}
 
+#if STATUSICON
+			if (m_sicon == null)
+			{
+				prepareStatusIcons();
+				setupStatusIcon();
+			}
+#endif
+
 			m_window.show_all();
 			m_window.present();
 		}
+
+#if STATUSICON
+		private void setupStatusIcon()
+		{
+				m_sicon = new StatusIcon.from_pixbuf(m_icon_default);
+				m_sicon.set_visible(true);
+
+				m_sicon.activate.connect(() => {
+					if (m_window.is_visible()) {
+						m_window.hide();
+					} else {
+						m_window.show_all();
+						m_window.present();
+					}
+				});
+
+				m_imenu = new Gtk.Menu();
+
+				var item = new ImageMenuItem.from_stock(Stock.ABOUT, null);
+				item.activate.connect(() => {
+					m_window.activate_action("about", null);
+				});
+				m_imenu.append(item);
+
+				m_imenu.append(new SeparatorMenuItem());
+
+				item = new ImageMenuItem.from_stock(Stock.QUIT, null);
+				item.activate.connect(() => {
+					activate_action("quit", null);
+				});
+				m_imenu.append(item);
+
+				m_imenu.show_all();
+
+				m_sicon.popup_menu.connect((btn, time) => {
+					m_imenu.popup(null, null, null, btn, time);
+				});
+
+				FeedReaderBackend.get_default().syncFinished.connect(updateStatusIconCount);
+				FeedReaderBackend.get_default().springCleanFinished.connect(updateStatusIconCount);
+				FeedReaderBackend.get_default().refreshFeedListCounter.connect(updateStatusIconCount);
+				updateStatusIconCount();
+		}
+
+		private void updateStatusIconCount()
+		{
+			GLib.Idle.add(() => {
+				if(!Settings.state().get_boolean("spring-cleaning"))
+				{
+					var count = DataBase.readOnly().get_unread_total();
+
+					if (count > 0)
+						m_sicon.set_from_pixbuf(m_icon_unread);
+					else
+						m_sicon.set_from_pixbuf(m_icon_default);
+				}
+
+				return GLib.Source.REMOVE;
+			});
+		}
+
+		private void prepareStatusIcons()
+		{
+			try {
+				m_icon_default = Gtk.IconTheme.get_default().load_icon("org.gnome.FeedReader", 64, 0);
+			} catch (Error e) {
+				Logger.error("Failed to load status icon: %s".printf(e.message));
+				return;
+			}
+
+			var surface = Gdk.cairo_surface_create_from_pixbuf(m_icon_default, 1, null);
+			var cr = new Cairo.Context(surface);
+
+			var w = m_icon_default.get_width();
+			var h = m_icon_default.get_height();
+
+			cr.set_source_rgba(0.0, 0.975, 0.0, 1);
+			cr.arc(w - 15, 15, 15, 0, 2 * Math.PI);
+			cr.fill();
+
+			m_icon_unread = Gdk.pixbuf_get_from_surface(surface, 0, 0, w, h);
+		}
+#endif
 
 		public override int command_line(ApplicationCommandLine command_line)
 		{

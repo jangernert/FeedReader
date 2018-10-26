@@ -13,6 +13,12 @@ FeedReader is a modern desktop application designed to complement existing web-b
 Website : http://jangernert.github.io/FeedReader/<br/>
 For translators : https://hosted.weblate.org/projects/feedreader/
 
+
+## How to install
+The Flatpak build works on any distro and will always track the newest release. For that reason, it's the only way we recommend that you install FeedReader (we really don't have the resources to support multiple distro-specific package).
+For more information about Flatpak and how to use or install it for your distribution see the [Flatpak webpage](http://flatpak.org).
+ 
+
 ## Build from source
 
 These are the instructions for building and testing locally. We generally

@@ -464,7 +464,6 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public void removeFeed(string feedID)
 	{
-		m_utils.deleteIcon(feedID);
 		return;
 	}
 

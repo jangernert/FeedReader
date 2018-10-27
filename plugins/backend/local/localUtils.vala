@@ -94,20 +94,4 @@ public class FeedReader.localUtils : GLib.Object {
 
 		return "";
 	}
-
-	public bool deleteIcon(string feedID)
-	{
-		try
-		{
-			string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/";
-			var file = GLib.File.new_for_path(icon_path + feedID + ".ico");
-			file.delete();
-			return true;
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("localUtils - deleteIcon: " + e.message);
-		}
-		return false;
-	}
 }

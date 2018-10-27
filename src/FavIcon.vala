@@ -33,6 +33,21 @@ public class FeedReader.FavIcon : GLib.Object
 		return icon;
 	}
 
+	public static void delete_feed(string feed_id)
+	{
+		if(m_map == null)
+			return;
+
+		FavIcon icon;
+		m_map.unset(feed_id, out icon);
+		if(icon == null)
+			return;
+
+		icon.delete.begin((obj,res) => {
+			icon.delete.end(res);
+		});
+	}
+
 	private Feed? m_feed;
 	private Gee.Promise<Gdk.Pixbuf?> m_pixbuf = null;
 	private ResourceMetadata m_metadata;
@@ -160,6 +175,31 @@ public class FeedReader.FavIcon : GLib.Object
 	{
 		string filename_prefix = fileNamePrefix();
 		return @"$filename_prefix.txt";
+	}
+
+	private async void delete()
+	{
+		try
+		{
+			var icon_file = File.new_for_path(iconFileName());
+			yield icon_file.delete_async();
+		}
+		catch (GLib.Error e)
+		{
+			var feed_id = m_feed.getFeedID();
+			Logger.warning(@"Error deleting icon for feed $feed_id: " + e.message);
+		}
+
+		try
+		{
+			var metadata_file = File.new_for_path(metadataFileName());
+			yield metadata_file.delete_async();
+		}
+		catch (GLib.Error e)
+		{
+			var feed_id = m_feed.getFeedID();
+			Logger.warning(@"Error deleting icon metadata for feed $feed_id: " + e.message);
+		}
 	}
 
 	private async InputStream? downloadFavIcon(GLib.Cancellable? cancellable = null) throws GLib.Error

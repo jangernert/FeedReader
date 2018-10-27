@@ -726,7 +726,10 @@ namespace FeedReader {
 			asyncPayload pl = () => { FeedServer.get_default().removeFeed(feedID); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			asyncPayload pl2 = () => { DataBase.writeAccess().delete_feed(feedID); };
+			asyncPayload pl2 = () => {
+				FeedReader.FavIcon.delete_feed(feedID);
+				DataBase.writeAccess().delete_feed(feedID);
+			};
 			callAsync.begin((owned)pl2, (obj, res) => {
 				callAsync.end(res);
 				newFeedList();

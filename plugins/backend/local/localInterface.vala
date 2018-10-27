@@ -388,7 +388,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		{
 			string cID = createCategory(newCatName, null);
 			var cat = new Category(cID, newCatName, 0, 99, CategoryID.MASTER.to_string(), 1);
-			var list = new Gee.LinkedList<Category>();
+			var list = new Gee.ArrayList<Category>();
 			list.add(cat);
 			m_db_write.write_categories(list);
 			catIDs.add(cID);
@@ -402,12 +402,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			catIDs.add("0");
 		}
 
-		feedID = "feedID00001";
-
-		if(!m_db.isTableEmpty("feeds"))
-		{
-			feedID = "feedID%05d".printf(int.parse(m_db.getMaxID("feeds", "feed_id").substring(6)) + 1);
-		}
+		feedID = Uuid.string_random();
 
 		Logger.info(@"addFeed: ID = $feedID");
 		Feed? Feed = m_utils.downloadFeed(m_session, feedURL, feedID, catIDs, out errmsg);
@@ -415,7 +410,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		if(Feed != null)
 		{
 			if(!m_db.feed_exists(Feed.getURL())) {
-				var list = new Gee.LinkedList<Feed>();
+				var list = new Gee.ArrayList<Feed>();
 				list.add(Feed);
 				m_db_write.write_feeds(list);
 				return true;
@@ -427,21 +422,16 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public void addFeeds(Gee.List<Feed> feeds)
 	{
-		var finishedFeeds = new Gee.LinkedList<Feed>();
-
-		int highestID = 0;
-
-		if(!m_db.isTableEmpty("feeds"))
-			highestID = int.parse(m_db.getMaxID("feeds", "feed_id").substring(6)) + 1;
+		var finishedFeeds = new Gee.ArrayList<Feed>();
 
 		foreach(Feed f in feeds)
 		{
-			string feedID = "feedID" + highestID.to_string("%05d");
-			highestID++;
+			string feedID = Uuid.string_random();
 
-			Logger.info(@"addFeed: ID = $feedID");
+			string url = f.getXmlUrl();
+			Logger.info(@"addFeed: url = $url, ID = $feedID");
 			string errmsg = "";
-			Feed? Feed = m_utils.downloadFeed(m_session, f.getXmlUrl(), feedID, f.getCatIDs(), out errmsg);
+			Feed? Feed = m_utils.downloadFeed(m_session, url, feedID, f.getCatIDs(), out errmsg);
 
 			if(Feed != null)
 			{

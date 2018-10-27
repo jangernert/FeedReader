@@ -67,9 +67,7 @@ public class FeedReader.FavIcon : GLib.Object
 		if(m_pixbuf == null || (m_pixbuf.future.ready && m_metadata.is_expired()))
 		{
 			m_pixbuf = new Gee.Promise<Gdk.Pixbuf?>();
-			load.begin((obj, res) => {
-				load.end(res);
-			});
+			yield load();
 		}
 		try
 		{
@@ -147,15 +145,31 @@ public class FeedReader.FavIcon : GLib.Object
 		return new MemoryInputStream.from_data(data);
 	}
 
+	private string fileNamePrefix()
+	{
+		return m_icon_path + m_feed.getFeedFileName();
+	}
+
+	private string iconFileName()
+	{
+		string filename_prefix = fileNamePrefix();
+		return @"$filename_prefix.ico";
+	}
+
+	private string metadataFileName()
+	{
+		string filename_prefix = fileNamePrefix();
+		return @"$filename_prefix.txt";
+	}
+
 	private async InputStream? downloadFavIcon(GLib.Cancellable? cancellable = null) throws GLib.Error
 	{
 		var datastream = try_load_data_uri(m_feed.getIconURL());
 		if(datastream != null)
 			return datastream;
 
-		string filename_prefix = m_icon_path + m_feed.getFeedFileName();
-		string local_filename = @"$filename_prefix.ico";
-		string metadata_filename = @"$filename_prefix.txt";
+		string icon_filename = iconFileName();
+		string metadata_filename = metadataFileName();
 
 		if(!yield Utils.ensure_path(m_icon_path))
 			return null;
@@ -179,7 +193,7 @@ public class FeedReader.FavIcon : GLib.Object
 		}
 		if(use_cached)
 		{
-			var file = File.new_for_path(local_filename);
+			var file = File.new_for_path(icon_filename);
 			try
 			{
 				return yield file.read_async();
@@ -299,8 +313,7 @@ public class FeedReader.FavIcon : GLib.Object
 			return null;
 		}
 
-		string filename_prefix = m_icon_path + m_feed.getFeedFileName();
-		string local_filename = @"$filename_prefix.ico";
+		string icon_filename = iconFileName();
 
 		string etag = m_metadata.etag;
 		string last_modified = m_metadata.last_modified;
@@ -334,7 +347,7 @@ public class FeedReader.FavIcon : GLib.Object
 		var status = message.status_code;
 		if(status == 304)
 		{
-			var file = File.new_for_path(local_filename);
+			var file = File.new_for_path(icon_filename);
 			return yield file.read_async();
 		}
 		else if(status == 404 || data == null)
@@ -343,7 +356,7 @@ public class FeedReader.FavIcon : GLib.Object
 		}
 		else if(status == 200)
 		{
-			var local_file = File.new_for_path(local_filename);
+			var local_file = File.new_for_path(icon_filename);
 			try
 			{
 				yield local_file.replace_contents_async(data, null, false, FileCreateFlags.NONE, null, null);

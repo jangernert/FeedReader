@@ -469,22 +469,19 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public string createCategory(string title, string? parentID)
 	{
-		string catID = "catID00001";
+		string catID;
 
-		if(!m_db.isTableEmpty("categories"))
+		string? id = m_db.getCategoryID(title);
+		if(id == null)
 		{
-			string? id = m_db.getCategoryID(title);
-			if(id == null)
-			{
-				catID = "catID%05d".printf(int.parse(m_db.getMaxID("categories", "categorieID").substring(5)) + 1);
-			}
-			else
-			{
-				catID = id;
-			}
+			catID = Uuid.string_random();
+		}
+		else
+		{
+			catID = id;
 		}
 
-		Logger.info("createCategory: ID = " + catID);
+		Logger.info(@"createCategory: title= $title ID = $catID");
 		return catID;
 	}
 

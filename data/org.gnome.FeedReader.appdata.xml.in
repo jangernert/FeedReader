@@ -51,7 +51,16 @@
     <binary>feedreader</binary>
   </provides>
   <releases>
-
+    <release version="2.4.0" date="2018-10-28">
+      <description>
+        <ul>
+          <li>Replace GNOME application menu with a menu button in the header</li>
+          <li>Scale large images in articles to fit in the window</li>
+          <li>Local plugin: Fix a bug where a new feed could use a deleted feed's favicon</li>
+          <li>More translations</li>
+        </ul>
+      </description>
+    </release>
     <release version="2.3.0" date="2018-08-29">
       <description>
         <ul>

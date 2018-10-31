@@ -31,15 +31,15 @@ msgstr "設定"
 
 #: Constants.vala.in:38
 msgid "Change Account"
-msgstr ""
+msgstr "切換帳號"
 
 #: Constants.vala.in:39 src/Widgets/ShortcutsWindow.vala:29
 msgid "Quit"
-msgstr ""
+msgstr "離開"
 
 #: Constants.vala.in:40
 msgid "Report a Bug"
-msgstr ""
+msgstr "回報 Bug"
 
 #: Constants.vala.in:41
 msgid "Bounties"
@@ -51,7 +51,7 @@ msgstr ""
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:3
 msgid "FeedReader Autostart"
-msgstr ""
+msgstr "FeedReader 自動開始"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:4
 #: data/org.gnome.FeedReader.desktop.in:4
@@ -84,7 +84,7 @@ msgstr ""
 
 #: data/org.gnome.FeedReader.appdata.xml.in:14
 msgid "Currently supported services:"
-msgstr ""
+msgstr "目前支援的服務:"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:16
 msgid "Tiny Tiny RSS"
@@ -118,7 +118,7 @@ msgstr ""
 
 #: data/org.gnome.FeedReader.desktop.in:19 src/FeedReader.vala:21
 msgid "About FeedReader"
-msgstr ""
+msgstr "關於 FeedReader"
 
 #. http auth stuff ----------------------------------------------------
 #: plugins/backend/bazqux/bazquxInterface.vala:65
@@ -134,7 +134,7 @@ msgstr ""
 #: plugins/share/Instapaper/InstapaperSetup.vala:55
 #: plugins/share/Wallabag/WallabagSetup.vala:76
 msgid "Username:"
-msgstr ""
+msgstr "使用者名稱:"
 
 #: plugins/backend/bazqux/bazquxInterface.vala:66
 #: plugins/backend/feedbin/feedbinInterface.vala:66
@@ -149,7 +149,7 @@ msgstr ""
 #: plugins/share/Instapaper/InstapaperSetup.vala:56
 #: plugins/share/Wallabag/WallabagSetup.vala:77
 msgid "Password:"
-msgstr ""
+msgstr "密碼:"
 
 #: plugins/backend/bazqux/bazquxInterface.vala:96
 #: plugins/backend/feedhq/feedhqInterface.vala:96
@@ -164,7 +164,7 @@ msgstr ""
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:172
 #: plugins/backend/ttrss/ttrssInterface.vala:151 src/Share/ServiceSetup.vala:56
 msgid "Login"
-msgstr ""
+msgstr "登入"
 
 #: plugins/backend/feedbin/feedbinInterface.vala:101
 msgid "Please log in to Feedbin to enjoy using FeedReader"
@@ -186,7 +186,7 @@ msgstr ""
 
 #: plugins/backend/local/localInterface.vala:66
 msgid "Done"
-msgstr ""
+msgstr "完成"
 
 #: plugins/backend/local/localInterface.vala:67
 msgid "Adding Feeds"
@@ -214,7 +214,7 @@ msgstr ""
 
 #: plugins/backend/ttrss/ttrssAPI.vala:809
 msgid "Invalid URL"
-msgstr ""
+msgstr "無效的網址"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:812
 msgid "URL content is HTML, no feeds available"

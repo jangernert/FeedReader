@@ -568,6 +568,24 @@ namespace FeedReader {
 
 		public void removeCategory(string catID)
 		{
+			var feeds = DataBase.readOnly().read_feeds();
+			foreach(Feed feed in feeds)
+			{
+				if(feed.hasCat(catID))
+				{
+					moveFeed(feed.getFeedID(), catID);
+				}
+			}
+
+			var cats = DataBase.readOnly().read_categories(feeds);
+			foreach(var cat in cats)
+			{
+				if(cat.getParent() == catID)
+				{
+					moveCategory(cat.getCatID(), uncategorizedID());
+				}
+			}
+
 			asyncPayload pl = () => { FeedServer.get_default().deleteCategory(catID); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 

@@ -647,26 +647,6 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 	public void delete_category(string catID)
 	{
 		m_db.execute("DELETE FROM main.categories WHERE categorieID = ?", { catID });
-
-		if(FeedServer.get_default().supportMultiCategoriesPerFeed())
-		{
-			var rows = m_db.execute("SELECT feed_id, category_id FROM feeds WHERE instr(category_id, ?) > 0", { catID });
-			foreach(var row in rows)
-			{
-				string feedID = row[0].to_string();
-				string catIDs = row[1].to_string().replace(catID + ",", "");
-
-				m_db.execute("UPDATE main.feeds set category_id = ? WHERE feed_id = ?", { catIDs, feedID });
-			}
-		}
-		else
-		{
-			m_db.execute("UPDATE main.feeds set category_id = ? WHERE category_id = ?", { FeedServer.get_default().uncategorizedID(), catID });
-			if(FeedServer.get_default().supportMultiLevelCategories())
-			{
-				m_db.execute("UPDATE main.categories set Parent = \"-2\" WHERE categorieID = ?", { catID });
-			}
-		}
 	}
 
 	public void rename_category(string catID, string newName)

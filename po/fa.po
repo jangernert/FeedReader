@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2018-05-17 13:40+0000\n"
-"Last-Translator: Goudarz Jafari <goudarz.jafari@gmail.com>\n"
+"PO-Revision-Date: 2018-11-07 09:07+0000\n"
+"Last-Translator: Mostafa Ahangarha <ahangarha@gmail.com>\n"
 "Language-Team: Persian <https://hosted.weblate.org/projects/feedreader/"
 "translations/fa/>\n"
 "Language: fa\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.0-dev\n"
+"X-Generator: Weblate 3.3-dev\n"
 
 #: Constants.vala.in:26
 msgid "Desktop Client for various RSS Services"
@@ -35,7 +35,7 @@ msgstr ""
 
 #: Constants.vala.in:39 src/Widgets/ShortcutsWindow.vala:29
 msgid "Quit"
-msgstr ""
+msgstr "خروج"
 
 #: Constants.vala.in:40
 msgid "Report a Bug"
@@ -292,13 +292,13 @@ msgstr ""
 #. no login, so change the labels
 #: plugins/share/Telegram/TelegramSetup.vala:30 src/Widgets/AddPopover.vala:51
 msgid "Add"
-msgstr ""
+msgstr "افزودن"
 
 #: plugins/share/Telegram/TelegramSetup.vala:31
 #: src/Widgets/CategorieRow.vala:447 src/Widgets/FeedRow.vala:241
 #: src/Widgets/TagRow.vala:195
 msgid "Remove"
-msgstr ""
+msgstr "حذف"
 
 #: plugins/share/Telegram/TelegramSetup.vala:38
 msgid "Info: Telegram would need to be installed for this plugin to work."
@@ -325,7 +325,7 @@ msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:73 src/Widgets/AddPopover.vala:47
 msgid "URL:"
-msgstr ""
+msgstr "نشانی:"
 
 #: plugins/share/Wallabag/WallabagSetup.vala:74
 msgid "Client ID:"
@@ -365,26 +365,26 @@ msgstr ""
 
 #: src/Backend/FeedServer.vala:191 src/Backend/FeedServer.vala:294
 msgid "Getting feeds and categories"
-msgstr ""
+msgstr "دریافت خوراک‌ها و دسته‌بندی‌ها"
 
 #: src/Backend/FeedServer.vala:243
 msgid "Getting articles"
-msgstr ""
+msgstr "دریافت مقاله‌ها"
 
 #. get marked articles
 #: src/Backend/FeedServer.vala:323
 msgid "Getting starred articles"
-msgstr ""
+msgstr "دریافت مقاله‌های ستاره‌دار"
 
 #. get articles for each tag
 #: src/Backend/FeedServer.vala:330
 msgid "Getting tagged articles"
-msgstr ""
+msgstr "دریافت مقاله‌های برچسب‌دار"
 
 #. get unread articles
 #: src/Backend/FeedServer.vala:348
 msgid "Getting unread articles"
-msgstr ""
+msgstr "دریافت مقاله‌های خوانده‌نشده"
 
 #: src/DataBaseReadOnly.vala:243
 msgid "Unknown tag"
@@ -393,7 +393,7 @@ msgstr ""
 #: src/DataBaseReadOnly.vala:271 src/Widgets/AddPopover.vala:38
 #: src/Widgets/FeedList.vala:506
 msgid "Uncategorized"
-msgstr ""
+msgstr "دسته‌بندی‌نشده"
 
 #: src/Model/Article.vala:188
 msgid "Yesterday"
@@ -401,17 +401,17 @@ msgstr "دیروز"
 
 #: src/Notification.vala:21 src/Widgets/ArticleList/ArticleList.vala:551
 msgid "New articles"
-msgstr ""
+msgstr "مقاله‌های جدید"
 
 #: src/Notification.vala:27
 #, c-format
 msgid "There is 1 new article (%u unread)"
-msgstr ""
+msgstr "یک مقاله جدید موجود است (%u خوانده‌نشده)"
 
 #: src/Notification.vala:29
 #, c-format
 msgid "There are %u new articles (%u unread)"
-msgstr ""
+msgstr "%u مقاله جدید موجود است (%u خوانده‌نشده)"
 
 #: src/Share/ServiceSetup.vala:61
 msgid "Logout"
@@ -440,7 +440,7 @@ msgstr ""
 
 #: src/Widgets/AddPopover.vala:48
 msgid "Category:"
-msgstr ""
+msgstr "دسته‌بندی:"
 
 #: src/Widgets/AddPopover.vala:65
 msgid "OPML File:"
@@ -452,11 +452,11 @@ msgstr ""
 
 #: src/Widgets/AddPopover.vala:73
 msgid "Import"
-msgstr ""
+msgstr "واردکردن"
 
 #: src/Widgets/AddPopover.vala:92 src/Widgets/FeedListFooter.vala:113
 msgid "Add feed"
-msgstr ""
+msgstr "افزودن خوراک"
 
 #: src/Widgets/AddPopover.vala:93
 msgid "Import OPML"
@@ -513,11 +513,11 @@ msgstr ""
 #: src/Widgets/CategorieRow.vala:393 src/Widgets/RemovePopover.vala:112
 #, c-format
 msgid "Category \"%s\" removed"
-msgstr ""
+msgstr "دسته‌بندی «%s» پاک شد"
 
 #: src/Widgets/CategorieRow.vala:445 src/Widgets/FeedRow.vala:233
 msgid "Mark as read"
-msgstr ""
+msgstr "علامت‌زدن به عنوان خوانده‌شده"
 
 #: src/Widgets/CategorieRow.vala:446 src/Widgets/FeedRow.vala:235
 #: src/Widgets/TagRow.vala:194
@@ -526,16 +526,16 @@ msgstr "تغییر نام"
 
 #: src/Widgets/CategorieRow.vala:448
 msgid "Remove (with Feeds)"
-msgstr ""
+msgstr "حذف (همراه با خوراک)"
 
 #: src/Widgets/CategorieRow.vala:501 src/Widgets/FeedRow.vala:270
 #: src/Widgets/TagRow.vala:272
 msgid "rename"
-msgstr ""
+msgstr "تغییر نام"
 
 #: src/Widgets/CategorieRow.vala:503 src/Widgets/TagRow.vala:274
 msgid "add"
-msgstr ""
+msgstr "افزودن"
 
 #: src/Widgets/ColumnViewHeader.vala:37
 msgid "All"
@@ -621,11 +621,12 @@ msgstr ""
 
 #: src/Widgets/LoginPage.vala:39
 msgid "Where are your feeds?"
-msgstr ""
+msgstr "خوراک شما کجاست؟"
 
 #: src/Widgets/LoginPage.vala:43
 msgid "Please select the RSS service you are using and log in to get going."
 msgstr ""
+"لطفا خدمت RSS مورد استفاده خود را انتخاب کرده و برای ادامه، به آن وارد شوید."
 
 #: src/Widgets/MainWindow.vala:347
 msgid "Ignore all TLS errors from now on"
@@ -728,7 +729,7 @@ msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:48
 msgid "Interface"
-msgstr ""
+msgstr "رابط"
 
 #: src/Widgets/SettingsDialog.vala:49
 msgid "Internals"
@@ -736,43 +737,43 @@ msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:50
 msgid "Share"
-msgstr ""
+msgstr "هم‌رسانی"
 
 #: src/Widgets/SettingsDialog.vala:71
 msgid "Feed List:"
-msgstr ""
+msgstr "سیاهه خوراک:"
 
 #: src/Widgets/SettingsDialog.vala:73
 msgid "Only show feeds"
-msgstr ""
+msgstr "فقط خوراک‌ها را نشان بده"
 
 #: src/Widgets/SettingsDialog.vala:80
 msgid "Only show unread"
-msgstr ""
+msgstr "فقط خوانده‌نشده‌ها را نشان بده"
 
 #: src/Widgets/SettingsDialog.vala:85
 msgid "Sort Feed List by"
-msgstr ""
+msgstr "سیاهه خوراک به ترتیب"
 
 #: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
-msgstr ""
+msgstr "دریافت شد"
 
 #: src/Widgets/SettingsDialog.vala:85
 msgid "Alphabetically"
-msgstr ""
+msgstr "الفبایی"
 
 #: src/Widgets/SettingsDialog.vala:90 src/Widgets/SettingsDialog.vala:111
 msgid "Theme"
-msgstr ""
+msgstr "پوسته"
 
 #: src/Widgets/SettingsDialog.vala:90
 msgid "Gtk+"
-msgstr ""
+msgstr "Gtk+"
 
 #: src/Widgets/SettingsDialog.vala:90
 msgid "Dark"
-msgstr ""
+msgstr "تیره"
 
 #: src/Widgets/SettingsDialog.vala:90
 msgid "elementary"
@@ -780,23 +781,23 @@ msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:95
 msgid "Article List:"
-msgstr ""
+msgstr "فهرست مقاله:"
 
 #: src/Widgets/SettingsDialog.vala:97
 msgid "Sort articles by"
-msgstr ""
+msgstr "مقالات به ترتیب"
 
 #: src/Widgets/SettingsDialog.vala:97
 msgid "Date"
-msgstr ""
+msgstr "تاریخ"
 
 #: src/Widgets/SettingsDialog.vala:102
 msgid "Oldest first"
-msgstr ""
+msgstr "قدیمی‌تر بودن"
 
 #: src/Widgets/SettingsDialog.vala:102
 msgid "Only affects \"Unread\" column"
-msgstr ""
+msgstr "فقط بر ستون «خوانده‌نشده» تاثیر می‌گذارد"
 
 #: src/Widgets/SettingsDialog.vala:107
 msgid "Mark read by scrolling past"
@@ -804,19 +805,20 @@ msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:109
 msgid "Article View:"
-msgstr ""
+msgstr "نمایش مقاله:"
 
 #: src/Widgets/SettingsDialog.vala:111
 msgid "Default"
-msgstr ""
+msgstr "پیش‌فرض"
 
 #: src/Widgets/SettingsDialog.vala:111
+#, fuzzy
 msgid "Spring"
-msgstr ""
+msgstr "چشمه"
 
 #: src/Widgets/SettingsDialog.vala:111
 msgid "Midnight"
-msgstr ""
+msgstr "نیمه‌شب"
 
 #: src/Widgets/SettingsDialog.vala:111
 msgid "Parchment"
@@ -824,47 +826,47 @@ msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:116
 msgid "Font Familly"
-msgstr ""
+msgstr "خانواده فونت"
 
 #: src/Widgets/SettingsDialog.vala:141
 msgid "Sync:"
-msgstr ""
+msgstr "همگام‌سازی:"
 
 #: src/Widgets/SettingsDialog.vala:143
 msgid "Number of articles"
-msgstr ""
+msgstr "تعداد مقاله‌ها"
 
 #: src/Widgets/SettingsDialog.vala:145
 msgid "Interval in Minutes (0 = OFF)"
-msgstr ""
+msgstr "تناوب بر حسب دقیقه (صفر = خاموش)"
 
 #: src/Widgets/SettingsDialog.vala:150
 msgid "Database:"
-msgstr ""
+msgstr "پايگاه داده:"
 
 #: src/Widgets/SettingsDialog.vala:152
 msgid "Delete articles after"
-msgstr ""
+msgstr "پاک کردن مقاله‌ها بعد از"
 
 #: src/Widgets/SettingsDialog.vala:153
 msgid "Never"
-msgstr ""
+msgstr "هرگز"
 
 #: src/Widgets/SettingsDialog.vala:153
 msgid "1 Week"
-msgstr ""
+msgstr "یک هفته"
 
 #: src/Widgets/SettingsDialog.vala:153
 msgid "1 Month"
-msgstr ""
+msgstr "یک ماه"
 
 #: src/Widgets/SettingsDialog.vala:153
 msgid "6 Months"
-msgstr ""
+msgstr "شش ماه"
 
 #: src/Widgets/SettingsDialog.vala:155
 msgid "Additional Functionality:"
-msgstr ""
+msgstr "کارکرد بیشتر:"
 
 #: src/Widgets/SettingsDialog.vala:157
 msgid "Content Grabber"
@@ -888,68 +890,68 @@ msgstr ""
 
 #: src/Widgets/SharePopover.vala:62
 msgid "Add accounts"
-msgstr ""
+msgstr "افزودن حساب‌ها"
 
 #. --------------------------------------------------
 #: src/Widgets/ShortcutsWindow.vala:22
 msgid "General"
-msgstr ""
+msgstr "عمومی"
 
 #: src/Widgets/ShortcutsWindow.vala:27
 msgid "Refresh"
-msgstr ""
+msgstr "تازه‌سازی"
 
 #: src/Widgets/ShortcutsWindow.vala:28
 msgid "Search"
-msgstr ""
+msgstr "جستجو"
 
 #. --------------------------------------------------
 #. --------------------------------------------------
 #: src/Widgets/ShortcutsWindow.vala:37
 msgid "Feed List"
-msgstr ""
+msgstr "سیاهه خوراک"
 
 #: src/Widgets/ShortcutsWindow.vala:42
 msgid "Select next item"
-msgstr ""
+msgstr "انتخاب مورد بعدی"
 
 #: src/Widgets/ShortcutsWindow.vala:43
 msgid "Select previous item"
-msgstr ""
+msgstr "انتخاب مورد قبلی"
 
 #: src/Widgets/ShortcutsWindow.vala:44
 msgid "Collapse/Expand categories"
-msgstr ""
+msgstr "باز/بسته کردن دسته‌بندی‌ها"
 
 #: src/Widgets/ShortcutsWindow.vala:45
 msgid "Mark the currently selected as read"
-msgstr ""
+msgstr "علامت زدن موارد انتخابی به عنوان خوانده‌شده"
 
 #. --------------------------------------------------
 #. --------------------------------------------------
 #: src/Widgets/ShortcutsWindow.vala:54
 msgid "Article List"
-msgstr ""
+msgstr "سیاهه مقاله‌ها"
 
 #: src/Widgets/ShortcutsWindow.vala:63
 msgid "Select next/previous article"
-msgstr ""
+msgstr "انتخاب مقاله بعدی/قبلی"
 
 #: src/Widgets/ShortcutsWindow.vala:64
 msgid "Toggle reading status of selected article"
-msgstr ""
+msgstr "تغییر وضعیت خوانده‌شدن مقاله انتخاب شده"
 
 #: src/Widgets/ShortcutsWindow.vala:65
 msgid "Toggle marking of selected article"
-msgstr ""
+msgstr "تغییر علامت مقاله انتخاب شده"
 
 #: src/Widgets/ShortcutsWindow.vala:66
 msgid "Open the URL of the selected article"
-msgstr ""
+msgstr "بازکردن نشانی مقاله انتخاب شده"
 
 #: src/Widgets/ShortcutsWindow.vala:67
 msgid "Scroll all the way up/down"
-msgstr ""
+msgstr "پیمایش به ابتدا/انتها"
 
 #: src/Widgets/ShortcutsWindow.vala:68
 msgid "Center the currently selected article"
@@ -959,11 +961,11 @@ msgstr ""
 #. --------------------------------------------------
 #: src/Widgets/ShortcutsWindow.vala:79
 msgid "Article View"
-msgstr ""
+msgstr "نمایش مقاله"
 
 #: src/Widgets/ShortcutsWindow.vala:84
 msgid "Scroll up/down"
-msgstr ""
+msgstr "پیمایش به بالا/پایین"
 
 #: src/Widgets/SpringCleanPage.vala:28
 msgid ""

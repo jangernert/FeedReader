@@ -149,24 +149,17 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		this.show_all();
 
 		Logger.debug("MainWindow: determining state");
-		if(FeedReaderBackend.get_default().isOnline() && !Settings.state().get_boolean("spring-cleaning"))
+		if(FeedReaderBackend.get_default().isOnline())
 		{
 			loadContent();
 		}
+		else if(!DataBase.readOnly().isEmpty())
+		{
+			showOfflineContent();
+		}
 		else
 		{
-			if(Settings.state().get_boolean("spring-cleaning"))
-			{
-				showSpringClean();
-			}
-			else if(!DataBase.readOnly().isEmpty())
-			{
-				showOfflineContent();
-			}
-			else
-			{
-				showLogin();
-			}
+			showLogin();
 		}
 	}
 

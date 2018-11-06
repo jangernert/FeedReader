@@ -21,7 +21,7 @@
 			<default>false</default>
 			<summary>if window is maximized</summary>
 			<description>
-				Weather the window was maximized on close so it can be restored in the same way on startup.
+				Whether the window was maximized on close so it can be restored in the same way on startup.
 			</description>
 		</key>
 
@@ -112,14 +112,6 @@
 			<summary>currently updating</summary>
 			<description>
 				If the FeedReader is currently updating.
-			</description>
-		</key>
-
-		<key name="spring-cleaning" type="b">
-			<default>false</default>
-			<summary>Clean up the DB</summary>
-			<description>
-				Do a vacuum of the db. No other operation can access the db during this.
 			</description>
 		</key>
 

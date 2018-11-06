@@ -25,6 +25,7 @@ namespace FeedReader {
 		private bool m_offline = true;
 		private bool m_cacheSync = false;
 		private uint m_timeout_source_id = 0;
+		private Mutex m_sync_lock;
 		private delegate void asyncPayload();
 
 		public signal void syncStarted();
@@ -185,62 +186,69 @@ namespace FeedReader {
 
 		private void sync(bool initSync = false, GLib.Cancellable? cancellable = null)
 		{
-			if(Settings.state().get_boolean("currently-updating")
-			|| Settings.state().get_boolean("spring-cleaning"))
+			// Prevent multiple concurrent syncs or spring cleanings
+			// We would prefer to use MutexLocker but it doesn't seem to work
+			m_sync_lock.lock();
+			try
 			{
-				Logger.debug("Cant sync because login failed or sync/clean already ongoing");
-				return;
-			}
+				if(Settings.state().get_boolean("currently-updating"))
+				{
+					Logger.debug("Cant sync because login failed or sync/clean already ongoing");
+					return;
+				}
 
-			if(Utils.springCleaningNecessary())
+				if(Utils.springCleaningNecessary())
+				{
+					Logger.info("backend: spring cleaning");
+					springCleanStarted();
+					DataBase.writeAccess().springCleaning();
+					springCleanFinished();
+				}
+
+				if(cancellable != null && cancellable.is_cancelled())
+					return;
+
+				Logger.info("backend: sync started");
+				syncStarted();
+				Settings.state().set_boolean("currently-updating", true);
+
+				if(!checkOnline())
+				{
+					Logger.info("Cancelling sync because we're not online");
+					finishSync();
+					return;
+				}
+
+				if(cancellable != null && cancellable.is_cancelled())
+				{
+					finishSync();
+					return;
+				}
+
+				m_cacheSync = true;
+
+				if(initSync && FeedServer.get_default().doInitSync())
+					FeedServer.get_default().InitSyncContent(cancellable);
+				else
+					FeedServer.get_default().syncContent(cancellable);
+
+				if(cancellable != null && cancellable.is_cancelled())
+				{
+					finishSync();
+					return;
+				}
+
+				updateBadge();
+				m_cacheSync = false;
+				FeedServer.get_default().grabContent.begin(cancellable, (obj, res) => {
+					FeedServer.get_default().grabContent.end(res);
+					finishSync();
+				});
+			}
+			finally
 			{
-				Logger.info("backend: spring cleaning");
-				Settings.state().set_boolean("spring-cleaning", true);
-				springCleanStarted();
-				DataBase.writeAccess().springCleaning();
-				Settings.state().set_boolean("spring-cleaning", false);
-				springCleanFinished();
+				m_sync_lock.unlock();
 			}
-
-			if(cancellable != null && cancellable.is_cancelled())
-				return;
-
-			Logger.info("backend: sync started");
-			syncStarted();
-			Settings.state().set_boolean("currently-updating", true);
-
-			if(!checkOnline())
-			{
-				Logger.info("Cancelling sync because we're not online");
-				finishSync();
-				return;
-			}
-
-			if(cancellable != null && cancellable.is_cancelled())
-			{
-				finishSync();
-				return;
-			}
-
-			m_cacheSync = true;
-
-			if(initSync && FeedServer.get_default().doInitSync())
-				FeedServer.get_default().InitSyncContent(cancellable);
-			else
-				FeedServer.get_default().syncContent(cancellable);
-
-			if(cancellable != null && cancellable.is_cancelled())
-			{
-				finishSync();
-				return;
-			}
-
-			updateBadge();
-			m_cacheSync = false;
-			FeedServer.get_default().grabContent.begin(cancellable, (obj, res) => {
-				FeedServer.get_default().grabContent.end(res);
-				finishSync();
-			});
 		}
 
 		private void finishSync()
@@ -761,8 +769,7 @@ namespace FeedReader {
 		public void updateBadge()
 		{
 #if LIBUNITY
-			if(!Settings.state().get_boolean("spring-cleaning")
-			&& Settings.tweaks().get_boolean("show-badge"))
+			if(Settings.tweaks().get_boolean("show-badge"))
 			{
 				var count = DataBase.readOnly().get_unread_total();
 				Logger.debug("backend: update badge count %u".printf(count));

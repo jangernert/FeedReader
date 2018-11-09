@@ -51,6 +51,13 @@
     <binary>feedreader</binary>
   </provides>
   <releases>
+    <release version="2.4.1" date="2018-11-08">
+      <description>
+        <ul>
+          <li>Fix a bug where database "spring cleaning" would get stuck forever if interrupted</li>
+        </ul>
+      </description>
+    </release>
     <release version="2.4.0" date="2018-10-28">
       <description>
         <ul>

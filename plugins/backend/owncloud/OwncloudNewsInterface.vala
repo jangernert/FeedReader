@@ -297,6 +297,11 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		m_api.updateArticleMarked(articleID, marked);
 	}
 
+	public bool alwaysSetReadByID()
+	{
+		return false;
+	}
+
 	public void setFeedRead(string feedID)
 	{
 		m_api.markFeedRead(feedID, false);

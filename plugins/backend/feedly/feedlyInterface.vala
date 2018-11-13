@@ -202,6 +202,11 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		}
 	}
 
+	public bool alwaysSetReadByID()
+	{
+		return false;
+	}
+
 	public void setFeedRead(string feedID)
 	{
 		m_api.mark_as_read(feedID, "feeds", ArticleStatus.READ);

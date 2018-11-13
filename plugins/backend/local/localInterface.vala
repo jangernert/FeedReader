@@ -335,6 +335,11 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		return;
 	}
 
+	public bool alwaysSetReadByID()
+	{
+		return false;
+	}
+
 	public void setFeedRead(string feedID)
 	{
 		return;

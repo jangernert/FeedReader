@@ -302,6 +302,11 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		m_api.updateArticleMarked(int.parse(articleID), marked);
 	}
 
+	public bool alwaysSetReadByID()
+	{
+		return false;
+	}
+
 	public void setFeedRead(string feedID)
 	{
 		m_api.catchupFeed(feedID, false);

@@ -357,6 +357,17 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
+	//--------------------------------------------------------------------------------------
+	// Should setArticleIsRead always be used instead of setFeedRead, setCategoryRead or
+	// markAllItemsRead?
+	// By using IDs as identifier, the articles are known, but it may be less efficient.
+	// If "true", the methods setFeedRead/setCategoryRead/markAllItemsRead never get called.
+	//--------------------------------------------------------------------------------------
+	public bool alwaysSetReadByID()
+	{
+
+	}
+
 
 	//--------------------------------------------------------------------------------------
 	// Mark all articles of the feed as read

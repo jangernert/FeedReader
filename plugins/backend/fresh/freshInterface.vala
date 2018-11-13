@@ -308,6 +308,11 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 			m_api.editTags(articleID, null, "user/-/state/com.google/starred");
 	}
 
+	public bool alwaysSetReadByID()
+	{
+		return false;
+	}
+
 	public void setFeedRead(string feedID)
 	{
 		m_api.markAllAsRead(feedID);

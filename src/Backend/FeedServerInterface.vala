@@ -60,6 +60,8 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract bool logout();
 
+	public abstract bool alwaysSetReadByID();
+
 	public abstract void setArticleIsRead(string articleIDs, ArticleStatus read);
 
 	public abstract void setArticleIsMarked(string articleID, ArticleStatus marked);

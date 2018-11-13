@@ -309,6 +309,11 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		}
 	}
 
+	public bool alwaysSetReadByID()
+	{
+		return false;
+	}
+
 	public void setFeedRead(string feed_id)
 	{
 		setRead(feed_id, FeedListType.FEED);

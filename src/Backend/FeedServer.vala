@@ -815,6 +815,14 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_plugin.setArticleIsMarked(articleID, marked);
 	}
 
+	public bool alwaysSetReadByID()
+	{
+		if(!m_pluginLoaded)
+			return false;
+
+		return m_plugin.alwaysSetReadByID();
+	}
+
 	public void setFeedRead(string feedID)
 	{
 		if(!m_pluginLoaded)

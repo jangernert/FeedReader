@@ -505,17 +505,46 @@ namespace FeedReader {
 
 		public void markFeedAsRead(string feedID, bool isCat)
 		{
+			var useID = FeedServer.get_default().alwaysSetReadByID();
+			var articleIDs = "";
+			if(useID)
+			{
+				var listType = isCat ? FeedListType.CATEGORY : FeedListType.FEED;
+				var articles = DataBase.readOnly().read_articles(feedID, listType, ArticleListState.UNREAD, "", -1);
+				foreach (var article in articles)
+				{
+					articleIDs += "," + article.getArticleID();
+				}
+				if (articleIDs != "")
+				{
+					articleIDs = articleIDs.substring(1);
+				}
+			}
+
 			if(isCat)
 			{
 				if(m_offline)
 				{
-					CachedActionManager.get_default().markCategoryRead(feedID);
+					if(useID)
+						CachedActionManager.get_default().markArticleRead(articleIDs, ArticleStatus.READ);
+					else
+						CachedActionManager.get_default().markCategoryRead(feedID);
 				}
 				else
 				{
 					if(m_cacheSync)
-						ActionCache.get_default().markCategoryRead(feedID);
-					asyncPayload pl = () => { FeedServer.get_default().setCategoryRead(feedID); };
+					{
+						if(useID)
+							ActionCache.get_default().markArticleRead(articleIDs, ArticleStatus.READ);
+						else
+							ActionCache.get_default().markCategoryRead(feedID);
+					}
+					asyncPayload pl = () => {
+						if(useID)
+							FeedServer.get_default().setArticleIsRead(articleIDs, ArticleStatus.READ);
+						else
+							FeedServer.get_default().setCategoryRead(feedID);
+					};
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
 
@@ -531,13 +560,26 @@ namespace FeedReader {
 			{
 				if(m_offline)
 				{
-					CachedActionManager.get_default().markFeedRead(feedID);
+					if(useID)
+						CachedActionManager.get_default().markArticleRead(articleIDs, ArticleStatus.READ);
+					else
+						CachedActionManager.get_default().markFeedRead(feedID);
 				}
 				else
 				{
 					if(m_cacheSync)
-						ActionCache.get_default().markFeedRead(feedID);
-					asyncPayload pl = () => { FeedServer.get_default().setFeedRead(feedID); };
+					{
+						if(useID)
+							ActionCache.get_default().markArticleRead(articleIDs, ArticleStatus.READ);
+						else
+							ActionCache.get_default().markFeedRead(feedID);
+					}
+					asyncPayload pl = () => {
+						if(useID)
+							FeedServer.get_default().setArticleIsRead(articleIDs, ArticleStatus.READ);
+						else
+							FeedServer.get_default().setFeedRead(feedID);
+					};
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
 
@@ -553,15 +595,43 @@ namespace FeedReader {
 
 		public void markAllItemsRead()
 		{
+			var useID = FeedServer.get_default().alwaysSetReadByID();
+			var articleIDs = "";
+			if(useID)
+			{
+				var articles = DataBase.readOnly().read_articles(FeedID.ALL.to_string(), FeedListType.FEED, ArticleListState.UNREAD, "", -1);
+				foreach (var article in articles)
+				{
+					articleIDs += "," + article.getArticleID();
+				}
+				if (articleIDs != "")
+				{
+					articleIDs = articleIDs.substring(1);
+				}
+			}
+
 			if(m_offline)
 			{
-				CachedActionManager.get_default().markAllRead();
+				if(useID)
+					CachedActionManager.get_default().markArticleRead(articleIDs, ArticleStatus.READ);
+				else
+					CachedActionManager.get_default().markAllRead();
 			}
 			else
 			{
 				if(m_cacheSync)
-					ActionCache.get_default().markAllRead();
-				asyncPayload pl = () => { FeedServer.get_default().markAllItemsRead(); };
+				{
+					if(useID)
+						ActionCache.get_default().markArticleRead(articleIDs, ArticleStatus.READ);
+					else
+						ActionCache.get_default().markAllRead();
+				}
+				asyncPayload pl = () => {
+					if(useID)
+						FeedServer.get_default().setArticleIsRead(articleIDs, ArticleStatus.READ);
+					else
+						FeedServer.get_default().markAllItemsRead();
+				};
 				callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 			}
 

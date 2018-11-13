@@ -246,6 +246,11 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 			m_api.edidTag(articleID, "user/-/state/com.google/starred", false);
 	}
 
+	public bool alwaysSetReadByID()
+	{
+		return false;
+	}
+
 	public void setFeedRead(string feedID)
 	{
 		m_api.markAsRead(feedID);

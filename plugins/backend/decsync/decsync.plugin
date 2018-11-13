@@ -1,0 +1,9 @@
+[Plugin]
+Module=decsync
+Loader=C
+Name=DecSync Backend
+Version=0.1
+Description=Adds a DecSync back-end to FeedReader. No RSS-service required.
+Authors=Jan Lukas Gernert <jangernert@gmail.com>, Aldo Gunsing <dev@aldogunsing.nl>
+Copyright=Copyright © 2015-16 Jan Lukas Gernert, Copyright © 2018 Aldo Gunsing
+Website=https://github.com/39aldo39/DecSync

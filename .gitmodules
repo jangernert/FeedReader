@@ -2,3 +2,6 @@
 	path = data/GrabberConfig
 	url = https://github.com/fivefilters/ftr-site-config
     branch = master
+[submodule "libdecsync"]
+	path = plugins/backend/decsync/libdecsync
+	url = https://github.com/39aldo39/libdecsync-vala

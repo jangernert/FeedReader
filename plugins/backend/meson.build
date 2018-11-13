@@ -1,5 +1,6 @@
 supported_backend_plugins = [
   'bazqux',
+  'decsync',
   'feedbin',
   'feedhq',
   'feedly',

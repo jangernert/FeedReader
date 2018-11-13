@@ -6,7 +6,7 @@ option('share-plugins',
 )
 option('backend-plugins',
         type: 'array',
-        choices: ['bazqux', 'feedbin', 'feedhq', 'feedly', 'fresh', 'inoreader', 'local', 'oldreader', 'owncloud', 'ttrss'],
-        value : ['bazqux', 'feedbin', 'feedhq', 'feedly', 'fresh', 'inoreader', 'local', 'oldreader', 'owncloud', 'ttrss'],
+        choices: ['bazqux', 'decsync', 'feedbin', 'feedhq', 'feedly', 'fresh', 'inoreader', 'local', 'oldreader', 'owncloud', 'ttrss'],
+        value : ['bazqux', 'decsync', 'feedbin', 'feedhq', 'feedly', 'fresh', 'inoreader', 'local', 'oldreader', 'owncloud', 'ttrss'],
         description: 'List of backend plugins to install'
 )

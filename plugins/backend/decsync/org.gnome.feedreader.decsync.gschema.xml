@@ -1,0 +1,11 @@
+<schemalist>
+	<schema id="org.gnome.feedreader.decsync" path="/org/gnome/feedreader/decsync/" gettext-domain="feedreader">
+		<key name="decsync-dir" type="s">
+			<default>""</default>
+			<summary>DecSync directory</summary>
+			<description>
+				DecSync directory
+			</description>
+		</key>
+	</schema>
+</schemalist>

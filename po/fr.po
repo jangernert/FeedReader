@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2018-09-21 13:24+0000\n"
-"Last-Translator: Jean-Pierre HULIN <jeanpierre.hulin99@gmail.com>\n"
+"PO-Revision-Date: 2018-11-16 21:07+0000\n"
+"Last-Translator: wellinkstein <guilbaud.jeremie@tutanota.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/feedreader/"
 "translations/fr/>\n"
 "Language: fr\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.2-dev\n"
+"X-Generator: Weblate 3.3-dev\n"
 
 #: Constants.vala.in:26
 msgid "Desktop Client for various RSS Services"
@@ -256,9 +256,8 @@ msgid "The content is invalid XML."
 msgstr "Le contenu est un XML invalide."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:834
-#, fuzzy
 msgid "Error reaching tt-rss"
-msgstr "Erreur pour atteindre tt-rss"
+msgstr "Erreur en contactant tt-rss"
 
 #: plugins/backend/ttrss/ttrssInterface.vala:70
 msgid "Tiny Tiny RSS URL:"
@@ -307,16 +306,13 @@ msgid "waiting"
 msgstr "chargement"
 
 #: plugins/share/Telegram/Telegram.vala:81
-#, fuzzy
 msgid "Telegram"
 msgstr "Telegram"
 
 #: plugins/share/Telegram/TelegramForm.vala:23
-#, fuzzy
 msgid "Hey, check out this interesting article I used FeedReader to read"
 msgstr ""
-"Salut, regarde cet article intéressant, que je viens de lire - envoyé par "
-"FeedReader"
+"Salut, regarde cet article intéressant que j'ai lu en utilisant FeedReader"
 
 #: plugins/share/Telegram/TelegramForm.vala:55
 msgid "Send Telegram"
@@ -649,9 +645,9 @@ msgid "Remove only from %s"
 msgstr "Supprimer seulement de %s"
 
 #: src/Widgets/FeedRow.vala:445
-#, fuzzy, c-format
+#, c-format
 msgid "Feed removed: %s"
-msgstr "Flux « %s » supprimé"
+msgstr "Flux enlevé : %s"
 
 #: src/Widgets/FullscreenHeader.vala:26
 msgid "Leave fullscreen mode"

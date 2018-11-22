@@ -56,11 +56,15 @@ public class FeedbinAPI : Object {
 	}
 
 	private Soup.Message request(string method, string last_part, string? input = null) throws FeedbinError
+	requires (method == "DELETE" || method == "GET" || method == "POST")
+	requires (input == null || method != "GET")
+	ensures (result.status_code >= 200)
+	ensures (result.status_code < 400)
 	{
 		var path = m_base_uri + last_part;
 		var message = new Soup.Message(method, path);
 
-		if(method == "POST" || method == "PUT")
+		if(method == "POST")
 			message.request_headers.append("Content-Type", "application/json; charset=utf-8");
 
 		if(input != null)
@@ -99,19 +103,21 @@ public class FeedbinAPI : Object {
 
 	// TODO: JSON utils?
 	private static DateTime get_datetime_member(Json.Object obj, string name) throws FeedbinError
+	requires (name != "")
 	{
 		var s = obj.get_string_member(name);
 		return string_to_datetime(s);
 	}
 
 	private Soup.Message post_request(string path, string input) throws FeedbinError
+	requires (input != "")
 	{
 		return request("POST", path, input);
 	}
 
-	private Soup.Message delete_request(string path, string? input = null) throws FeedbinError
+	private Soup.Message delete_request(string path) throws FeedbinError
 	{
-		return request("DELETE", path, input);
+		return request("DELETE", path);
 	}
 
 	private Soup.Message get_request(string path) throws FeedbinError
@@ -142,6 +148,7 @@ public class FeedbinAPI : Object {
 	}
 
 	private Json.Node get_json(string path) throws FeedbinError
+	requires (path != "")
 	{
 		var response = get_request(path);
 		return parse_json(response);
@@ -198,6 +205,7 @@ public class FeedbinAPI : Object {
 	}
 
 	public Gee.List<Subscription?> get_subscriptions() throws FeedbinError
+	ensures (!result.contains(null))
 	{
 		var root = get_json("subscriptions.json");
 		var subscriptions = new Gee.ArrayList<Subscription?>();
@@ -272,6 +280,7 @@ public class FeedbinAPI : Object {
 	}
 
 	public Gee.List<Tagging?> get_taggings() throws FeedbinError
+	ensures (!result.contains(null))
 	{
 		var root = get_json("taggings.json");
 		var taggings = new Gee.ArrayList<Tagging?>();
@@ -311,6 +320,8 @@ public class FeedbinAPI : Object {
 	}
 
 	public Gee.List<Entry?> get_entries(int page, bool only_starred, DateTime? since, int64? feed_id = null) throws FeedbinError
+	requires (page >= 0)
+	ensures (!result.contains(null))
 	{
 		string starred = only_starred ? "true" : "false";
 		string path = @"entries.json?per_page=100&page=$page&starred=$starred&include_enclosure=true";
@@ -373,6 +384,7 @@ public class FeedbinAPI : Object {
 	}
 
 	private void set_entries_status(string type, Gee.Collection<int64?> entry_ids, bool create) throws FeedbinError
+	requires (!entry_ids.contains(null))
 	{
 		Json.Array array = new Json.Array();
 		foreach(var id in entry_ids)
@@ -388,11 +400,13 @@ public class FeedbinAPI : Object {
 	}
 
 	public void set_entries_read(Gee.Collection<int64?> entry_ids, bool read) throws FeedbinError
+	requires (!entry_ids.contains(null))
 	{
 		set_entries_status("unread_entries", entry_ids, !read);
 	}
 
 	public void set_entries_starred(Gee.Collection<int64?> entry_ids, bool starred) throws FeedbinError
+	requires (!entry_ids.contains(null))
 	{
 		set_entries_status("starred_entries", entry_ids, starred);
 	}

@@ -61,6 +61,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 	}
 
 	public Gtk.Box? getWidget()
+	ensures (result != null)
 	{
 		var user_label = new Gtk.Label(_("Username:"));
 		var password_label = new Gtk.Label(_("Password:"));
@@ -126,7 +127,6 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public void showHtAccess()
 	{
-		return;
 	}
 
 	public void writeData()
@@ -140,7 +140,6 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public async void postLoginAction()
 	{
-		return;
 	}
 
 	public bool extractCode(string redirectURL)
@@ -473,14 +472,14 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 	public void moveCategory(string category_id, string new_parent_id)
 	{
 		// Feedbin doesn't have multi-level categories
-		return;
 	}
 
 	public string createCategory(string title, string? parent_id)
+	ensures (result == title)
 	{
 		// Categories are created and destroyed based on feeds having them.
 		// There are no empty categories in Feedbin
-		return "";
+		return title;
 	}
 
 	public void deleteCategory(string category)
@@ -625,6 +624,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 	}
 
 	public int getUnreadCount()
+	ensures (result >= 0)
 	{
 		try
 		{
@@ -638,6 +638,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 	}
 
 	public void getArticles(int count, ArticleStatus what_to_get, DateTime? since, string? feed_id_str, bool is_tag_id, GLib.Cancellable? cancellable = null)
+	requires (count >= 0)
 	{
 		try
 		{

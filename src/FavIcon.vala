@@ -34,6 +34,7 @@ public class FeedReader.FavIcon : GLib.Object
 	}
 
 	public static void delete_feed(string feed_id)
+	ensures (m_map == null || !m_map.has_key(feed_id))
 	{
 		if(m_map == null)
 			return;
@@ -60,11 +61,15 @@ public class FeedReader.FavIcon : GLib.Object
 	}
 
 	private int get_scale_factor()
+	ensures (result > 0)
 	{
 		return MainWindow.get_default().get_style_context().get_scale();
 	}
 
 	private Cairo.Surface create_surface_from_pixbuf(Gdk.Pixbuf pixbuf)
+	requires (pixbuf.width > 0)
+	requires (pixbuf.height > 0)
+	ensures (result.status() == Cairo.Status.SUCCESS)
 	{
 		return Gdk.cairo_surface_create_from_pixbuf(pixbuf, get_scale_factor(), null);
 	}
@@ -161,6 +166,7 @@ public class FeedReader.FavIcon : GLib.Object
 	}
 
 	private string fileNamePrefix()
+	requires(m_feed != null)
 	{
 		return m_icon_path + m_feed.getFeedFileName();
 	}
@@ -179,6 +185,9 @@ public class FeedReader.FavIcon : GLib.Object
 
 	private async void delete()
 	{
+		if (m_feed == null)
+			return;
+
 		try
 		{
 			var icon_file = File.new_for_path(iconFileName());
@@ -203,6 +212,7 @@ public class FeedReader.FavIcon : GLib.Object
 	}
 
 	private async InputStream? downloadFavIcon(GLib.Cancellable? cancellable = null) throws GLib.Error
+	requires(m_feed != null)
 	{
 		var datastream = try_load_data_uri(m_feed.getIconURL());
 		if(datastream != null)

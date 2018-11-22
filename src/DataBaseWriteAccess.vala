@@ -18,6 +18,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 	private static DataBase? m_dataBase = null;
 
 	public static new DataBase writeAccess()
+	ensures (m_dataBase != null)
 	{
 		if(m_dataBase == null)
 		{
@@ -83,7 +84,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		Settings.state().set_int("last-spring-cleaning", (int)now.to_unix());
 	}
 
-	public void dropOldArtilces(int weeks)
+	public void dropOldArticles(int weeks)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("articleID");

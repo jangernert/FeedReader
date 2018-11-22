@@ -47,6 +47,7 @@ public class FeedReader.SQLite : GLib.Object {
 
 	// Backwards compatibility interface
 	public Sqlite.Statement prepare(string query)
+	requires (query != "")
 	{
 		Sqlite.Statement stmt;
 		int rc = m_db.prepare_v2(query, query.length, out stmt);
@@ -66,6 +67,7 @@ public class FeedReader.SQLite : GLib.Object {
 	}
 
 	public void simple_query(string query)
+	requires (query != "")
 	{
 		string errmsg;
 		int ec = m_db.exec(query, null, out errmsg);
@@ -76,6 +78,7 @@ public class FeedReader.SQLite : GLib.Object {
 	}
 
 	public Gee.List<Gee.List<Sqlite.Value?>> execute(string query, GLib.Value?[]? params = null)
+	requires (query != "")
 	{
 		Sqlite.Statement stmt;
 		int rc = m_db.prepare_v2(query, query.length, out stmt);

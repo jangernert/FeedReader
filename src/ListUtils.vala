@@ -15,6 +15,7 @@
 
 public class FeedReader.ListUtils {
 	public static Gee.List<T> single<T>(T v)
+	ensures (result.size == 1)
 	{
 		var res = new Gee.ArrayList<T>();
 		res.add(v);

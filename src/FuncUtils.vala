@@ -17,12 +17,13 @@ public class FeedReader.FuncUtils : GLib.Object {
 	public delegate B MapFunction<A, B>(A value);
 
 	public static Gee.List<B> map<A, B>(Gee.Collection<A> items, MapFunction<A, B> f)
+	ensures (result.size == items.size)
 	{
-		var result = new Gee.ArrayList<B>();
+		var res = new Gee.ArrayList<B>();
 		foreach(var item in items)
 		{
-			result.add(f(item));
+			res.add(f(item));
 		}
-		return result;
+		return res;
 	}
 }

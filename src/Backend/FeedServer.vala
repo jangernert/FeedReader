@@ -276,7 +276,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		var drop_weeks = drop_articles.to_weeks();
 		if(drop_weeks != null)
-			DataBase.writeAccess().dropOldArtilces(-(int)drop_weeks);
+			DataBase.writeAccess().dropOldArticles(-(int)drop_weeks);
 
 		var now = new DateTime.now_local();
 		Settings.state().set_int("last-sync", (int)now.to_unix());

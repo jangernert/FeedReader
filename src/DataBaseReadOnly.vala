@@ -149,6 +149,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	}
 
 	public bool isTableEmpty(string table)
+	requires (table != "")
 	{
 		var query = @"SELECT COUNT(*) FROM $table";
 		var rows = m_db.execute(query);
@@ -253,7 +254,6 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		else
 			return 0;
 	}
-
 
 	public string getCategoryName(string catID)
 	{
@@ -458,6 +458,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	}
 
 	public int getRowCountHeadlineByDate(string date)
+	ensures (result >= 0)
 	{
 		var rows = m_db.execute("SELECT COUNT(*) FROM articles WHERE date > ?", { date });
 		assert(rows.size == 1 && rows[0].size == 1);
@@ -465,8 +466,9 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	}
 
 	public int getArticleCountNewerThanID(string articleID, string feedID, FeedListType selectedType, ArticleListState state, string searchTerm, int searchRows = 0)
+	requires (searchRows >= 0)
+	ensures (result >= 0)
 	{
-		int result = 0;
 		string orderBy = ((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.RECEIVED) ? "rowid" : "date";
 
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
@@ -546,11 +548,11 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 		Sqlite.Statement stmt = m_db.prepare(query2.get());
 
+		int res = 0;
 		while (stmt.step () == Sqlite.ROW) {
-			result = stmt.column_int(0);
+			res = stmt.column_int(0);
 		}
-
-		return result;
+		return res;
 	}
 
 	public Gee.List<string> getFeedIDofCategorie(string categorieID)
@@ -849,7 +851,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		return query.substring(0, or) + ")";
 	}
 
-	public int getTagCount()
+	public uint getTagCount()
 	{
 		var rows = m_db.execute("SELECT COUNT(*) FROM tags WHERE instr(tagID, \"global.\") = 0");
 		assert(rows.size == 1 && rows[0].size == 1);
@@ -1009,6 +1011,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	}
 
 	public Gee.List<Article> read_articles(string id, FeedListType selectedType, ArticleListState state, string searchTerm, uint limit = 20, uint offset = 0, int searchRows = 0)
+	requires (limit > 0)
 	{
 		var query = articleQuery(id, selectedType, state, searchTerm);
 

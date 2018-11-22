@@ -52,5 +52,7 @@ RUN dnf -y install \
 RUN pip3 install --user --upgrade meson
 
 RUN gem install bundler
-RUN git clone https://github.com/feedbin/feedbin.git
+# Using this fork of Feedbin since we don't setup Stripe:
+#
+RUN git clone --single-branch -b stripe_optional https://github.com/brendanlong/feedbin.git
 RUN cd feedbin && bundle

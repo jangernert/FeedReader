@@ -298,3 +298,25 @@ executable(
 
 # Post install script
 meson.add_install_script('meson_post_install.py')
+
+# tests
+
+stringutils_test = executable(
+  'test_stringutils',
+  [
+    'src/TestStringUtils.vala'
+  ],
+  c_args: c_args,
+  # The tests intentionally don't catch exceptions
+  vala_args: vala_args + ['--disable-warnings'],
+  dependencies: feedreader_deps,
+  link_with: [
+    feedreader_lib
+  ]
+)
+
+if gtester.found()
+    test('StringUtils', gtester, args:['-k', '-o', meson.build_root() + '/stringutils.gtester.log', stringutils_test])
+else
+    test('StringUtils', stringutils_test)
+endif

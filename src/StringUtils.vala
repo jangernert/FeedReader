@@ -38,6 +38,7 @@ public class FeedReader.StringUtils {
 	}
 
 	public static Gee.List<string> sql_quote(Gee.List<string> l)
+	ensures (result.size == l.size)
 	{
 		for(int i = 0; i < l.size; i++)
 		{

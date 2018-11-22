@@ -220,6 +220,7 @@ c_args = [
   '-g',
   '-w',
   '-rdynamic',
+  '-Wno-deprecated-declarations',
   '-DVERSION="' + meson.project_version() + '"',
   '-DGETTEXT_PACKAGE="'+ meson.project_name() +'"',
   '-DGNOMELOCALEDIR="' + LOCALE_DIR + '"',
@@ -228,7 +229,8 @@ c_args = [
 
 vala_args = [
   '--enable-experimental',
-  '--target-glib','2.52'
+  '--target-glib','2.52',
+  '--enable-deprecated'
 ]
 
 feedreader_deps = [

@@ -10,6 +10,7 @@ RUN dnf -y install \
         gtk3-devel \
         gumbo-parser-devel \
         json-glib-devel \
+        libappstream-glib \
         libcurl-devel \
         libgee-devel \
         libnotify-devel \

@@ -313,7 +313,9 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			}
 			else
 			{
-				var feedrow = new FeedRow(item, item.getCatIDs()[0], 0);
+				var categories = item.getCatIDs();
+				var first_category = categories.size > 0 ? categories[0] : "";
+				var feedrow = new FeedRow(item, first_category, 0);
 				m_list.insert(feedrow, 3);
 				feedrow.setAsRead.connect(markSelectedRead);
 				feedrow.moveUP.connect(moveUP);

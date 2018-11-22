@@ -16,7 +16,7 @@
 [DBus (name = "org.gnome.FeedReader.ArticleView")]
 interface FeedReaderWebExtension : Object
 {
-	public abstract void recalculate() throws IOError;
+	public abstract void recalculate() throws Error, IOError;
 	public signal void onClick(string path, int width, int height, string url);
 	public signal void message(string message);
 }
@@ -560,7 +560,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 				&& m_currentView != null)
 					m_messenger.recalculate();
 			}
-			catch(GLib.IOError e)
+			catch(Error e)
 			{
 				Logger.warning("ArticleView: recalculate " + e.message);
 			}

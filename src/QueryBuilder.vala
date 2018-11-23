@@ -222,11 +222,11 @@ public class FeedReader.QueryBuilder : GLib.Object {
 				else if(m_type == QueryType.INSERT_OR_REPLACE)
 					query.append("OR REPLACE ");
 
-				query.append_printf(
-					"INTO %s (%s) VALUES (%s)",
-					m_table,
-					StringUtils.join(m_fields,  ", "),
-					StringUtils.join(m_values, ", "));
+				query.append_printf("INTO %s (", m_table);
+				StringUtils.stringbuilder_append_join(query, m_fields, ", ");
+				query.append(") VALUES (");
+				StringUtils.stringbuilder_append_join(query, m_values, ", ");
+				query.append_c(')');
 				break;
 
 			case QueryType.UPDATE:
@@ -255,10 +255,9 @@ public class FeedReader.QueryBuilder : GLib.Object {
 
 
 			case QueryType.SELECT:
-				query.append_printf(
-					"SELECT %s FROM %s",
-					StringUtils.join(m_fields, ", "),
-					m_table);
+				query.append("SELECT ");
+				StringUtils.stringbuilder_append_join(query, m_fields, ", ");
+				query.append_printf(" FROM %s", m_table);
 
 				append_conditions(query);
 
@@ -286,7 +285,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
 			return;
 
 		query.append(" WHERE ");
-		query.append(StringUtils.join(m_conditions, " AND "));
+		StringUtils.stringbuilder_append_join(query, m_conditions, " AND ");
 	}
 
 	public void print()

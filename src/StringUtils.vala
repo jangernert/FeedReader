@@ -37,6 +37,18 @@ public class FeedReader.StringUtils {
 		return string.joinv(sep, l.to_array());
 	}
 
+	public static void stringbuilder_append_join(StringBuilder out, Gee.Collection<string> l, string sep)
+	{
+		bool first = true;
+		foreach (var v in l)
+		{
+			if (!first)
+				out.append(sep);
+			out.append(v);
+			first = false;
+		}
+	}
+
 	public static Gee.List<string> sql_quote(Gee.List<string> l)
 	ensures (result.size == l.size)
 	{

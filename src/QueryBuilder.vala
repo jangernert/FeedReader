@@ -39,7 +39,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		m_table = table;
 	}
 
-	public void insert_value_pair(string field, string value)
+	private void insert_value_pair(string field, string value)
 	requires (m_type == QueryType.INSERT
 		|| m_type == QueryType.INSERT_OR_IGNORE
 		|| m_type == QueryType.INSERT_OR_REPLACE)
@@ -48,32 +48,44 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		m_values.add(value);
 	}
 
+	public void insert_param(string field, string value)
+	requires (value.has_prefix("$") && !value.contains("'"))
+	{
+		insert_value_pair(field, value);
+	}
+
+	public void insert_int(string field, int64 value)
+	{
+		insert_value_pair(field, value.to_string());
+	}
+
 	public void select_field(string field)
 	requires (m_type == QueryType.SELECT)
 	{
 		m_fields.add(field);
 	}
 
-	public void update_param(string field, string value)
+	private void update(string field, string value)
 	requires (m_type == QueryType.UPDATE)
-	requires (value.has_prefix("$") && !value.contains("'"))
 	{
 		m_fields.add(field);
 		m_values.add(value);
 	}
 
-	public void update_string(string field, string value)
-	requires (m_type == QueryType.UPDATE)
+	public void update_param(string field, string value)
+	requires (value.has_prefix("$") && !value.contains("'"))
 	{
-		m_fields.add(field);
-		m_values.add(SQLite.quote_string(value));
+		update(field, value);
+	}
+
+	public void update_string(string field, string value)
+	{
+		update(field, SQLite.quote_string(value));
 	}
 
 	public void update_int(string field, int64 value)
-	requires (m_type == QueryType.UPDATE)
 	{
-		m_fields.add(field);
-		m_values.add(value.to_string());
+		update(field, value.to_string());
 	}
 
 	private void where_equal(string field, string safe_value)

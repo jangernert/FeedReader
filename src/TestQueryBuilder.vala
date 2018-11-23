@@ -38,10 +38,11 @@ void main(string[] args)
 
 	Test.add_data_func("/querybuilder/simple-update", () => {
 		var query = new QueryBuilder(QueryType.UPDATE, "example");
-		query.update_value_pair("asdf", "5");
-		query.update_value_pair("othercol", "asd'", true);
+		query.update_int("asdf", 5);
+		query.update_string("othercol", "asd'");
+		query.update_param("test", "$TEST");
 
-		assert(query.to_string() == "UPDATE example SET asdf = 5, othercol = 'asd'''");
+		assert(query.to_string() == "UPDATE example SET asdf = 5, othercol = 'asd''', test = $TEST");
 	});
 
 	Test.add_data_func("/querybuilder/simple-delete", () => {

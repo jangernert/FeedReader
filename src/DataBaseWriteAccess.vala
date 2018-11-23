@@ -240,8 +240,8 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		m_db.simple_query("BEGIN TRANSACTION");
 
 		var query = new QueryBuilder(QueryType.UPDATE, "main.tags");
-		query.update_value_pair("title", "$TITLE");
-		query.update_value_pair("\"exists\"", "1");
+		query.update_param("title", "$TITLE");
+		query.update_int("\"exists\"", 1);
 		query.where_equal("tagID", "$TAGID");
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
@@ -308,9 +308,9 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		// first reset all articles
 		var reset_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
 		if(field == "unread")
-			reset_query.update_value_pair(field, ArticleStatus.READ.to_string());
+			reset_query.update_int(field, ArticleStatus.READ.to_int());
 		else if(field == "marked")
-			reset_query.update_value_pair(field, ArticleStatus.UNMARKED.to_string());
+			reset_query.update_int(field, ArticleStatus.UNMARKED.to_int());
 		m_db.simple_query(reset_query.to_string());
 
 
@@ -320,9 +320,9 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		var update_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
 
 		if(field == "unread")
-			update_query.update_value_pair(field, ArticleStatus.UNREAD.to_string());
+			update_query.update_int(field, ArticleStatus.UNREAD.to_int());
 		else if(field == "marked")
-			update_query.update_value_pair(field, ArticleStatus.MARKED.to_string());
+			update_query.update_int(field, ArticleStatus.MARKED.to_int());
 
 		update_query.where_equal("articleID", "$ARTICLEID");
 
@@ -345,9 +345,9 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 	public void writeContent(Article article)
 	{
 		var update_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-		update_query.update_value_pair("html", "$HTML");
-		update_query.update_value_pair("preview", "$PREVIEW");
-		update_query.update_value_pair("contentFetched", "1");
+		update_query.update_param("html", "$HTML");
+		update_query.update_param("preview", "$PREVIEW");
+		update_query.update_int("contentFetched", 1);
 		update_query.where_equal("articleID", article.getArticleID(), true, true);
 
 		Sqlite.Statement stmt = m_db.prepare(update_query.to_string());
@@ -377,9 +377,9 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		m_db.simple_query("BEGIN TRANSACTION");
 
 		var update_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-		update_query.update_value_pair("unread", "$UNREAD");
-		update_query.update_value_pair("marked", "$MARKED");
-		update_query.update_value_pair("lastModified", "$LASTMODIFIED");
+		update_query.update_param("unread", "$UNREAD");
+		update_query.update_param("marked", "$MARKED");
+		update_query.update_param("lastModified", "$LASTMODIFIED");
 		update_query.where_equal("articleID", "$ARTICLEID", true, false);
 
 		Sqlite.Statement stmt = m_db.prepare(update_query.to_string());
@@ -562,7 +562,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 	public void markCategorieRead(string catID)
 	{
 		var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-		query.update_value_pair("unread", ArticleStatus.READ.to_string());
+		query.update_int("unread", ArticleStatus.READ.to_int());
 		query.where_in_strings("feedID", getFeedIDofCategorie(catID));
 		m_db.simple_query(query.to_string());
 	}

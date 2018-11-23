@@ -222,29 +222,11 @@ public class FeedReader.QueryBuilder : GLib.Object {
 				else if(m_type == QueryType.INSERT_OR_REPLACE)
 					query.append("OR REPLACE ");
 
-				query.append("INTO ");
-				query.append(m_table);
-				query.append(" ");
-
-				var insert_fields = new StringBuilder();
-				foreach(string field in m_fields)
-				{
-					insert_fields.append(",");
-					insert_fields.append(field);
-				}
-				insert_fields.overwrite(0, "(").append(")");
-				query.append(insert_fields.str);
-
-				query.append(" VALUES ");
-
-				var insert_values = new StringBuilder();
-				foreach(string value in m_values)
-				{
-					insert_values.append(",");
-					insert_values.append(value);
-				}
-				insert_values.overwrite(0, "(").append(")");
-				query.append(insert_values.str);
+				query.append_printf(
+					"INTO %s (%s) VALUES (%s)",
+					m_table,
+					StringUtils.join(m_fields,  ", "),
+					StringUtils.join(m_values, ", "));
 				break;
 
 

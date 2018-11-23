@@ -129,7 +129,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		}
 	}
 
-	public void write_feeds(Gee.List<Feed> feeds)
+	public void write_feeds(Gee.Collection<Feed> feeds)
 	{
 		m_db.simple_query("BEGIN TRANSACTION");
 
@@ -180,7 +180,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		write_tags(list);
 	}
 
-	public void write_tags(Gee.List<Tag> tags)
+	public void write_tags(Gee.Collection<Tag> tags)
 	{
 		m_db.simple_query("BEGIN TRANSACTION");
 
@@ -214,9 +214,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 
 	public void update_tag(Tag tag)
 	{
-		var list = new Gee.ArrayList<Tag>();
-		list.add(tag);
-		update_tags(list);
+		update_tags(ListUtils.single(tag));
 
 		if(FeedServer.get_default().tagIDaffectedByNameChange())
 		{
@@ -359,9 +357,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 
 	public void update_article(Article article)
 	{
-		var list = new Gee.ArrayList<Article>();
-		list.add(article);
-		update_articles(list);
+		update_articles(ListUtils.single(article));
 	}
 
 	public void update_articles(Gee.List<Article> articles)

@@ -187,7 +187,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			query.addEqualsCondition(status_column, status.to_string());
 		query.addCustomCondition(getUncategorizedFeedsQuery());
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
 		int unread = 0;
 		while (stmt.step() == Sqlite.ROW) {
@@ -313,7 +313,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			query.addCustomCondition(@"date BETWEEN $smallerDate AND $biggerDate");
 		}
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
 		var articles = new Gee.ArrayList<Article>();
 		while (stmt.step () == Sqlite.ROW)
@@ -364,7 +364,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		query.selectField("articleID, unread, marked");
 		query.addRangeConditionString("articleID", ids);
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
 		var articles = new Gee.HashMap<string, Article>();
 
@@ -423,7 +423,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		query.selectField("count(*)");
 		query.addCustomCondition(getUncategorizedQuery());
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
 		while (stmt.step () == Sqlite.ROW) {
 			int count = stmt.column_int(0);
@@ -477,9 +477,9 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		query.selectField(orderBy);
 
 		if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
-			query2.addCustomCondition(@"$orderBy < (%s)".printf(query.get()));
+			query2.addCustomCondition(@"$orderBy < (%s)".printf(query.to_string()));
 		else
-			query2.addCustomCondition(@"$orderBy > (%s)".printf(query.get()));
+			query2.addCustomCondition(@"$orderBy > (%s)".printf(query.to_string()));
 
 
 		if(selectedType == FeedListType.FEED && feedID != FeedID.ALL.to_string())
@@ -542,7 +542,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 		query2.orderBy(orderBy, desc);
 
-		Sqlite.Statement stmt = m_db.prepare(query2.get());
+		Sqlite.Statement stmt = m_db.prepare(query2.to_string());
 
 		int res = 0;
 		while (stmt.step () == Sqlite.ROW) {
@@ -558,7 +558,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		var query = new QueryBuilder(QueryType.SELECT, "feeds");
 		query.selectField("feed_id, category_id");
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
 		while (stmt.step() == Sqlite.ROW) {
 			string catString = stmt.column_text(1);
@@ -608,7 +608,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		query.selectField("feed_id");
 		query.addCustomCondition(getUncategorizedQuery());
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
 		string feedIDs = "";
 		while (stmt.step () == Sqlite.ROW) {
@@ -684,7 +684,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			query.orderBy("name", true);
 		}
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
 		while (stmt.step () == Sqlite.ROW) {
 			string feedID = stmt.column_text(0);
@@ -736,7 +736,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			query.orderBy("name", true);
 		}
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
 		while (stmt.step () == Sqlite.ROW) {
 			string feedID = stmt.column_text(0);
@@ -882,7 +882,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			query.orderBy("orderID", true);
 		}
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
 		while(stmt.step () == Sqlite.ROW)
 		{
@@ -1018,7 +1018,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		query.limit(limit);
 		query.offset(offset);
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
 		var tmp = new Gee.LinkedList<Article>();
 		while (stmt.step () == Sqlite.ROW)

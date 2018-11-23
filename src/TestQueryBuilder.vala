@@ -6,40 +6,40 @@ void main(string[] args)
 
 	Test.add_data_func("/querybuilder/simple-select", () => {
 		var query = new QueryBuilder(QueryType.SELECT, "example");
-		query.selectField("column1");
-		query.selectField("column2");
+		query.select_field("column1");
+		query.select_field("column2");
 
 		assert(query.to_string() == "SELECT column1, column2 FROM example");
 	});
 
 	Test.add_data_func("/querybuilder/simple-insert", () => {
 		var query = new QueryBuilder(QueryType.INSERT, "example");
-		query.insertValuePair("asdf", "$VALUE");
-		query.insertValuePair("othercol", "5");
+		query.insert_value_pair("asdf", "$VALUE");
+		query.insert_value_pair("othercol", "5");
 
 		assert(query.to_string() == "INSERT INTO example (asdf, othercol) VALUES ($VALUE, 5)");
 	});
 
 	Test.add_data_func("/querybuilder/simple-insert-or-ignore", () => {
 		var query = new QueryBuilder(QueryType.INSERT_OR_IGNORE, "example");
-		query.insertValuePair("asdf", "$VALUE");
-		query.insertValuePair("othercol", "5");
+		query.insert_value_pair("asdf", "$VALUE");
+		query.insert_value_pair("othercol", "5");
 
 		assert(query.to_string() == "INSERT OR IGNORE INTO example (asdf, othercol) VALUES ($VALUE, 5)");
 	});
 
 	Test.add_data_func("/querybuilder/simple-insert-or-replace", () => {
 		var query = new QueryBuilder(QueryType.INSERT_OR_REPLACE, "example");
-		query.insertValuePair("asdf", "$VALUE");
-		query.insertValuePair("othercol", "5");
+		query.insert_value_pair("asdf", "$VALUE");
+		query.insert_value_pair("othercol", "5");
 
 		assert(query.to_string() == "INSERT OR REPLACE INTO example (asdf, othercol) VALUES ($VALUE, 5)");
 	});
 
 	Test.add_data_func("/querybuilder/simple-update", () => {
 		var query = new QueryBuilder(QueryType.UPDATE, "example");
-		query.updateValuePair("asdf", "5");
-		query.updateValuePair("othercol", "asd'", true);
+		query.update_value_pair("asdf", "5");
+		query.update_value_pair("othercol", "asd'", true);
 
 		assert(query.to_string() == "UPDATE example SET asdf = 5, othercol = 'asd'''");
 	});
@@ -52,20 +52,20 @@ void main(string[] args)
 
 	Test.add_data_func("/querybuilder/complex-select", () => {
 		var query = new QueryBuilder(QueryType.SELECT, "test");
-		query.selectField("column1");
-		query.selectField("column2");
-		query.selectField("column3");
-		query.orderBy("column2", true);
-		query.addEqualsCondition("column3", "\"something'", false, true);
-		query.addEqualsCondition("column2", "5", true, false);
-		query.addCustomCondition("this is custom");
-		query.addRangeConditionString(
+		query.select_field("column1");
+		query.select_field("column2");
+		query.select_field("column3");
+		query.order_by("column2", true);
+		query.where_equal("column3", "\"something'", false, true);
+		query.where_equal("column2", "5", true, false);
+		query.where("this is custom");
+		query.where_in_string(
 			"column5",
 			new Gee.ArrayList<string>.wrap(new string[]{
 				"asdf",
 				"something with a ' in it"
 			}));
-		query.addRangeConditionInt(
+		query.where_in_int(
 			"column6",
 			new Gee.ArrayList<int>.wrap(new int[]{
 				-5,

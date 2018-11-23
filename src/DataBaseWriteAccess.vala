@@ -87,14 +87,14 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 	public void dropOldArticles(int weeks)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
-		query.selectField("articleID");
-		query.selectField("feedID");
-		query.addCustomCondition("datetime(date, 'unixepoch', 'localtime') <= datetime('now', '-%i days')".printf(weeks*7));
-		query.addEqualsCondition("marked", ArticleStatus.UNMARKED.to_string());
+		query.select_field("articleID");
+		query.select_field("feedID");
+		query.where("datetime(date, 'unixepoch', 'localtime') <= datetime('now', '-%i days')".printf(weeks*7));
+		query.where_equal("marked", ArticleStatus.UNMARKED.to_string());
 		if(FeedServer.get_default().useMaxArticles())
 		{
 			int syncCount = Settings.general().get_int("max-articles");
-			query.addCustomCondition(@"rowid BETWEEN 1 AND (SELECT rowid FROM articles ORDER BY rowid DESC LIMIT 1 OFFSET $syncCount)");
+			query.where(@"rowid BETWEEN 1 AND (SELECT rowid FROM articles ORDER BY rowid DESC LIMIT 1 OFFSET $syncCount)");
 		}
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
@@ -134,13 +134,13 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		m_db.simple_query("BEGIN TRANSACTION");
 
 		var query = new QueryBuilder(QueryType.INSERT_OR_REPLACE, "main.feeds");
-		query.insertValuePair("feed_id", "$FEEDID");
-		query.insertValuePair("name", "$FEEDNAME");
-		query.insertValuePair("url", "$FEEDURL");
-		query.insertValuePair("category_id", "$CATID");
-		query.insertValuePair("subscribed", "1");
-		query.insertValuePair("xmlURL", "$XMLURL");
-		query.insertValuePair("iconURL", "$ICONURL");
+		query.insert_value_pair("feed_id", "$FEEDID");
+		query.insert_value_pair("name", "$FEEDNAME");
+		query.insert_value_pair("url", "$FEEDURL");
+		query.insert_value_pair("category_id", "$CATID");
+		query.insert_value_pair("subscribed", "1");
+		query.insert_value_pair("xmlURL", "$XMLURL");
+		query.insert_value_pair("iconURL", "$ICONURL");
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
@@ -193,10 +193,10 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		m_db.simple_query("BEGIN TRANSACTION");
 
 		var query = new QueryBuilder(QueryType.INSERT_OR_IGNORE, "main.tags");
-		query.insertValuePair("tagID", "$TAGID");
-		query.insertValuePair("title", "$LABEL");
-		query.insertValuePair("\"exists\"", "1");
-		query.insertValuePair("color", "$COLOR");
+		query.insert_value_pair("tagID", "$TAGID");
+		query.insert_value_pair("title", "$LABEL");
+		query.insert_value_pair("\"exists\"", "1");
+		query.insert_value_pair("color", "$COLOR");
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
@@ -240,9 +240,9 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		m_db.simple_query("BEGIN TRANSACTION");
 
 		var query = new QueryBuilder(QueryType.UPDATE, "main.tags");
-		query.updateValuePair("title", "$TITLE");
-		query.updateValuePair("\"exists\"", "1");
-		query.addEqualsCondition("tagID", "$TAGID");
+		query.update_value_pair("title", "$TITLE");
+		query.update_value_pair("\"exists\"", "1");
+		query.where_equal("tagID", "$TAGID");
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
@@ -268,12 +268,12 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		m_db.simple_query("BEGIN TRANSACTION");
 
 		var query = new QueryBuilder(QueryType.INSERT_OR_REPLACE, "main.categories");
-		query.insertValuePair("categorieID", "$CATID");
-		query.insertValuePair("title", "$FEEDNAME");
-		query.insertValuePair("orderID", "$ORDERID");
-		query.insertValuePair("\"exists\"", "1");
-		query.insertValuePair("Parent", "$PARENT");
-		query.insertValuePair("Level", "$LEVEL");
+		query.insert_value_pair("categorieID", "$CATID");
+		query.insert_value_pair("title", "$FEEDNAME");
+		query.insert_value_pair("orderID", "$ORDERID");
+		query.insert_value_pair("\"exists\"", "1");
+		query.insert_value_pair("Parent", "$PARENT");
+		query.insert_value_pair("Level", "$LEVEL");
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
@@ -308,9 +308,9 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		// first reset all articles
 		var reset_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
 		if(field == "unread")
-			reset_query.updateValuePair(field, ArticleStatus.READ.to_string());
+			reset_query.update_value_pair(field, ArticleStatus.READ.to_string());
 		else if(field == "marked")
-			reset_query.updateValuePair(field, ArticleStatus.UNMARKED.to_string());
+			reset_query.update_value_pair(field, ArticleStatus.UNMARKED.to_string());
 		m_db.simple_query(reset_query.to_string());
 
 
@@ -320,11 +320,11 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		var update_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
 
 		if(field == "unread")
-			update_query.updateValuePair(field, ArticleStatus.UNREAD.to_string());
+			update_query.update_value_pair(field, ArticleStatus.UNREAD.to_string());
 		else if(field == "marked")
-			update_query.updateValuePair(field, ArticleStatus.MARKED.to_string());
+			update_query.update_value_pair(field, ArticleStatus.MARKED.to_string());
 
-		update_query.addEqualsCondition("articleID", "$ARTICLEID");
+		update_query.where_equal("articleID", "$ARTICLEID");
 
 		Sqlite.Statement stmt = m_db.prepare(update_query.to_string());
 
@@ -345,10 +345,10 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 	public void writeContent(Article article)
 	{
 		var update_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-		update_query.updateValuePair("html", "$HTML");
-		update_query.updateValuePair("preview", "$PREVIEW");
-		update_query.updateValuePair("contentFetched", "1");
-		update_query.addEqualsCondition("articleID", article.getArticleID(), true, true);
+		update_query.update_value_pair("html", "$HTML");
+		update_query.update_value_pair("preview", "$PREVIEW");
+		update_query.update_value_pair("contentFetched", "1");
+		update_query.where_equal("articleID", article.getArticleID(), true, true);
 
 		Sqlite.Statement stmt = m_db.prepare(update_query.to_string());
 
@@ -377,10 +377,10 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		m_db.simple_query("BEGIN TRANSACTION");
 
 		var update_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-		update_query.updateValuePair("unread", "$UNREAD");
-		update_query.updateValuePair("marked", "$MARKED");
-		update_query.updateValuePair("lastModified", "$LASTMODIFIED");
-		update_query.addEqualsCondition("articleID", "$ARTICLEID", true, false);
+		update_query.update_value_pair("unread", "$UNREAD");
+		update_query.update_value_pair("marked", "$MARKED");
+		update_query.update_value_pair("lastModified", "$LASTMODIFIED");
+		update_query.where_equal("articleID", "$ARTICLEID", true, false);
 
 		Sqlite.Statement stmt = m_db.prepare(update_query.to_string());
 
@@ -428,19 +428,19 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		m_db.simple_query("BEGIN TRANSACTION");
 
 		var query = new QueryBuilder(QueryType.INSERT_OR_IGNORE, "main.articles");
-		query.insertValuePair("articleID", "$ARTICLEID");
-		query.insertValuePair("feedID", "$FEEDID");
-		query.insertValuePair("title", "$TITLE");
-		query.insertValuePair("author", "$AUTHOR");
-		query.insertValuePair("url", "$URL");
-		query.insertValuePair("html", "$HTML");
-		query.insertValuePair("preview", "$PREVIEW");
-		query.insertValuePair("unread", "$UNREAD");
-		query.insertValuePair("marked", "$MARKED");
-		query.insertValuePair("date", "$DATE");
-		query.insertValuePair("guidHash", "$GUIDHASH");
-		query.insertValuePair("lastModified", "$LASTMODIFIED");
-		query.insertValuePair("contentFetched", "0");
+		query.insert_value_pair("articleID", "$ARTICLEID");
+		query.insert_value_pair("feedID", "$FEEDID");
+		query.insert_value_pair("title", "$TITLE");
+		query.insert_value_pair("author", "$AUTHOR");
+		query.insert_value_pair("url", "$URL");
+		query.insert_value_pair("html", "$HTML");
+		query.insert_value_pair("preview", "$PREVIEW");
+		query.insert_value_pair("unread", "$UNREAD");
+		query.insert_value_pair("marked", "$MARKED");
+		query.insert_value_pair("date", "$DATE");
+		query.insert_value_pair("guidHash", "$GUIDHASH");
+		query.insert_value_pair("lastModified", "$LASTMODIFIED");
+		query.insert_value_pair("contentFetched", "0");
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
@@ -510,8 +510,8 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 	private void write_taggings(Article article)
 	{
 		var query = new QueryBuilder(QueryType.INSERT_OR_REPLACE, "main.taggings");
-		query.insertValuePair("articleID", "$ARTICLEID");
-		query.insertValuePair("tagID", "$TAGID");
+		query.insert_value_pair("articleID", "$ARTICLEID");
+		query.insert_value_pair("tagID", "$TAGID");
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
@@ -534,9 +534,9 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 	private void write_enclosures(Article article)
 	{
 		var query = new QueryBuilder(QueryType.INSERT_OR_REPLACE, "main.Enclosures");
-		query.insertValuePair("articleID", "$ARTICLEID");
-		query.insertValuePair("url", "$URL");
-		query.insertValuePair("type", "$TYPE");
+		query.insert_value_pair("articleID", "$ARTICLEID");
+		query.insert_value_pair("url", "$URL");
+		query.insert_value_pair("type", "$TYPE");
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
@@ -562,8 +562,8 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 	public void markCategorieRead(string catID)
 	{
 		var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-		query.updateValuePair("unread", ArticleStatus.READ.to_string());
-		query.addRangeConditionString("feedID", getFeedIDofCategorie(catID));
+		query.update_value_pair("unread", ArticleStatus.READ.to_string());
+		query.where_in_string("feedID", getFeedIDofCategorie(catID));
 		m_db.simple_query(query.to_string());
 	}
 
@@ -614,8 +614,8 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 	{
 		Logger.warning("DataBase: Deleting articles without feed");
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
-		query.selectField("feed_id");
-		query.addEqualsCondition("subscribed", "0", true, false);
+		query.select_field("feed_id");
+		query.where_equal("subscribed", "0", true, false);
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 		while(stmt.step () == Sqlite.ROW)
@@ -723,9 +723,9 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		m_db.simple_query("BEGIN TRANSACTION");
 
 		var query = new QueryBuilder(QueryType.INSERT_OR_IGNORE, "main.CachedActions");
-		query.insertValuePair("action", "$ACTION");
-		query.insertValuePair("id", "$ID");
-		query.insertValuePair("argument", "$ARGUMENT");
+		query.insert_value_pair("action", "$ACTION");
+		query.insert_value_pair("id", "$ID");
+		query.insert_value_pair("argument", "$ARGUMENT");
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 

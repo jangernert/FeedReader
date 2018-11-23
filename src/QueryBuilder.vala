@@ -68,12 +68,9 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		|| m_type == QueryType.SELECT
 		|| m_type == QueryType.DELETE)
 	{
-		string condition = "%s = %s";
+		string condition = positive ? "%s = %s" : "%s <> %s";
 
 		string quoted_value = is_string ? SQLite.quote_string(value) : value;
-
-		if(!positive)
-			condition = "NOT " + condition;
 
 		m_conditions.add(condition.printf(field, quoted_value));
 	}

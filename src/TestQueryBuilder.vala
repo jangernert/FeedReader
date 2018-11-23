@@ -77,7 +77,7 @@ void main(string[] args)
 		print("%s\n", query.to_string());
 		assert(query.to_string() == "SELECT column1, column2, column3 " +
 									"FROM test " +
-									"WHERE NOT column3 = '\"something''' " +
+									"WHERE column3 <> '\"something''' " +
 									"AND column2 = 5 " +
 									"AND this is custom " +
 									"AND column5 IN ('asdf', 'something with a '' in it') " +

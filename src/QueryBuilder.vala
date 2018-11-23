@@ -31,8 +31,8 @@ public class FeedReader.QueryBuilder : GLib.Object {
 	private GLib.StringBuilder m_insert_fields;
 	private GLib.StringBuilder m_insert_values;
 	private string m_orderBy;
-	private string m_limit;
-	private string m_offset;
+	private uint? m_limit = null;
+	private uint? m_offset = null;
 
 	public QueryBuilder(QueryType type, string table)
 	{
@@ -42,8 +42,6 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		m_type = type;
 		m_table = table;
 		m_orderBy = "";
-		m_limit = "";
-		m_offset = "";
 		m_insert_fields = new GLib.StringBuilder();
 		m_insert_values = new GLib.StringBuilder();
 	}
@@ -213,26 +211,16 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		return false;
 	}
 
-	public bool limit(uint limit)
+	public void limit(uint limit)
+	requires (m_type == QueryType.SELECT)
 	{
-		if(m_type == QueryType.SELECT)
-		{
-			m_limit = " LIMIT %u".printf(limit);
-			return true;
-		}
-		Logger.error("limit");
-		return false;
+		m_limit = limit;
 	}
 
-	public bool offset(uint offset)
+	public void offset(uint offset)
+	requires (m_type == QueryType.SELECT)
 	{
-		if(m_type == QueryType.SELECT)
-		{
-			m_offset = " OFFSET %u".printf(offset);
-			return true;
-		}
-		Logger.error("offset");
-		return false;
+		m_offset = offset;
 	}
 
 	public string to_string()
@@ -313,8 +301,11 @@ public class FeedReader.QueryBuilder : GLib.Object {
 				query.append(m_table);
 				query.append(buildConditions());
 				query.append(m_orderBy);
-				query.append(m_limit);
-				query.append(m_offset);
+				if (m_limit != null)
+					query.append_printf(" LIMIT %u", m_limit);
+
+				if (m_offset != null)
+					query.append_printf(" OFFSET %u", m_offset);
 				break;
 		}
 

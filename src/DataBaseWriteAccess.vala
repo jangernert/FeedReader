@@ -90,7 +90,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		query.select_field("articleID");
 		query.select_field("feedID");
 		query.where("datetime(date, 'unixepoch', 'localtime') <= datetime('now', '-%i days')".printf(weeks*7));
-		query.where_equal("marked", ArticleStatus.UNMARKED.to_string());
+		query.where_equal_int("marked", ArticleStatus.UNMARKED.to_int());
 		if(FeedServer.get_default().useMaxArticles())
 		{
 			int syncCount = Settings.general().get_int("max-articles");
@@ -242,7 +242,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		var query = new QueryBuilder(QueryType.UPDATE, "main.tags");
 		query.update_param("title", "$TITLE");
 		query.update_int("\"exists\"", 1);
-		query.where_equal("tagID", "$TAGID");
+		query.where_equal_param("tagID", "$TAGID");
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
@@ -324,7 +324,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		else if(field == "marked")
 			update_query.update_int(field, ArticleStatus.MARKED.to_int());
 
-		update_query.where_equal("articleID", "$ARTICLEID");
+		update_query.where_equal_param("articleID", "$ARTICLEID");
 
 		Sqlite.Statement stmt = m_db.prepare(update_query.to_string());
 
@@ -348,7 +348,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		update_query.update_param("html", "$HTML");
 		update_query.update_param("preview", "$PREVIEW");
 		update_query.update_int("contentFetched", 1);
-		update_query.where_equal("articleID", article.getArticleID(), true, true);
+		update_query.where_equal_string("articleID", article.getArticleID());
 
 		Sqlite.Statement stmt = m_db.prepare(update_query.to_string());
 
@@ -380,7 +380,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		update_query.update_param("unread", "$UNREAD");
 		update_query.update_param("marked", "$MARKED");
 		update_query.update_param("lastModified", "$LASTMODIFIED");
-		update_query.where_equal("articleID", "$ARTICLEID", true, false);
+		update_query.where_equal_param("articleID", "$ARTICLEID");
 
 		Sqlite.Statement stmt = m_db.prepare(update_query.to_string());
 
@@ -615,7 +615,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		Logger.warning("DataBase: Deleting articles without feed");
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.select_field("feed_id");
-		query.where_equal("subscribed", "0", true, false);
+		query.where_equal_int("subscribed", 0);
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 		while(stmt.step () == Sqlite.ROW)

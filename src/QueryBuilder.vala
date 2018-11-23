@@ -30,7 +30,8 @@ public class FeedReader.QueryBuilder : GLib.Object {
 	private Gee.List<string> m_conditions;
 	private GLib.StringBuilder m_insert_fields;
 	private GLib.StringBuilder m_insert_values;
-	private string m_orderBy;
+	private string? m_orderByColumn = null;
+	private bool m_orderDescending = false;
 	private uint? m_limit = null;
 	private uint? m_offset = null;
 
@@ -41,7 +42,6 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		m_conditions = new Gee.ArrayList<string>();
 		m_type = type;
 		m_table = table;
-		m_orderBy = "";
 		m_insert_fields = new GLib.StringBuilder();
 		m_insert_values = new GLib.StringBuilder();
 	}
@@ -192,23 +192,11 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		return false;
 	}
 
-	public bool orderBy(string field, bool desc)
+	public void orderBy(string field, bool desc)
+	requires (m_type == QueryType.SELECT)
 	{
-		if(m_type == QueryType.SELECT)
-		{
-			m_orderBy = " ORDER BY ";
-			m_orderBy += field;
-			m_orderBy += " COLLATE NOCASE";
-
-			if(desc)
-				m_orderBy += " DESC";
-			else
-				m_orderBy += " ASC";
-
-			return true;
-		}
-		Logger.error("orderBy");
-		return false;
+		m_orderByColumn = field;
+		m_orderDescending = desc;
 	}
 
 	public void limit(uint limit)
@@ -300,7 +288,14 @@ public class FeedReader.QueryBuilder : GLib.Object {
 				query.append(" FROM ");
 				query.append(m_table);
 				query.append(buildConditions());
-				query.append(m_orderBy);
+
+				if (m_orderByColumn != null) {
+					query.append_printf(
+						" ORDER BY %s COLLATE NOCASE %s",
+						m_orderByColumn,
+						m_orderDescending ? "DESC" : "ASC");
+				}
+
 				if (m_limit != null)
 					query.append_printf(" LIMIT %u", m_limit);
 

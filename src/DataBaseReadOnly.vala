@@ -181,11 +181,11 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	private uint count_status_uncategorized(ArticleStatus status)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("count(*)");
+		query.select_field("count(*)");
 		var status_column = status.column();
 		if(status_column != null)
-			query.addEqualsCondition(status_column, status.to_string());
-		query.addCustomCondition(getUncategorizedFeedsQuery());
+			query.where_equal(status_column, status.to_string());
+		query.where(getUncategorizedFeedsQuery());
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
@@ -304,13 +304,13 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		var sorting = (ArticleListSort)Settings.general().get_enum("articlelist-sort-by");
 
 		if(sorting == ArticleListSort.RECEIVED)
-			query.addCustomCondition(@"date BETWEEN (SELECT rowid FROM articles WHERE articleID = \"$id1\") AND (SELECT rowid FROM articles WHERE articleID = \"$id2\")");
+			query.where(@"date BETWEEN (SELECT rowid FROM articles WHERE articleID = \"$id1\") AND (SELECT rowid FROM articles WHERE articleID = \"$id2\")");
 		else
 		{
 			bool bigger = (date1.to_unix() > date2.to_unix());
 			var biggerDate = (bigger) ? date1.to_unix() : date2.to_unix();
 			var smallerDate = (bigger) ? date2.to_unix() : date1.to_unix();
-			query.addCustomCondition(@"date BETWEEN $smallerDate AND $biggerDate");
+			query.where(@"date BETWEEN $smallerDate AND $biggerDate");
 		}
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
@@ -361,8 +361,8 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	public Gee.HashMap<string, Article> read_article_stats(Gee.List<string> ids)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("articleID, unread, marked");
-		query.addRangeConditionString("articleID", ids);
+		query.select_field("articleID, unread, marked");
+		query.where_in_string("articleID", ids);
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
@@ -420,8 +420,8 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	public bool haveFeedsWithoutCat()
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "feeds");
-		query.selectField("count(*)");
-		query.addCustomCondition(getUncategorizedQuery());
+		query.select_field("count(*)");
+		query.where(getUncategorizedQuery());
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
@@ -465,65 +465,65 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	requires (searchRows >= 0)
 	ensures (result >= 0)
 	{
-		string orderBy = ((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.RECEIVED) ? "rowid" : "date";
+		string order_by = ((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.RECEIVED) ? "rowid" : "date";
 
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.addEqualsCondition("articleID", articleID, true, true);
+		query.where_equal("articleID", articleID, true, true);
 
 		var query2 = new QueryBuilder(QueryType.SELECT, "articles");
-		query2.selectField("count(*)");
+		query2.select_field("count(*)");
 
 
-		query.selectField(orderBy);
+		query.select_field(order_by);
 
 		if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
-			query2.addCustomCondition(@"$orderBy < (%s)".printf(query.to_string()));
+			query2.where(@"$order_by < (%s)".printf(query.to_string()));
 		else
-			query2.addCustomCondition(@"$orderBy > (%s)".printf(query.to_string()));
+			query2.where(@"$order_by > (%s)".printf(query.to_string()));
 
 
 		if(selectedType == FeedListType.FEED && feedID != FeedID.ALL.to_string())
 		{
-			query2.addEqualsCondition("feedID", feedID, true, true);
+			query2.where_equal("feedID", feedID, true, true);
 		}
 		else if(selectedType == FeedListType.CATEGORY && feedID != CategoryID.MASTER.to_string() && feedID != CategoryID.TAGS.to_string())
 		{
-			query2.addRangeConditionString("feedID", getFeedIDofCategorie(feedID));
+			query2.where_in_string("feedID", getFeedIDofCategorie(feedID));
 		}
 		else if(feedID == CategoryID.TAGS.to_string())
 		{
-			query2.addCustomCondition(getAllTagsCondition());
+			query2.where(getAllTagsCondition());
 		}
 		else if(selectedType == FeedListType.TAG)
 		{
-			query2.addCustomCondition("articleID IN (%s)".printf(StringUtils.join(StringUtils.sql_quote(read_taggings_by_tag_id(feedID)), ",")));
+			query2.where("articleID IN (%s)".printf(StringUtils.join(StringUtils.sql_quote(read_taggings_by_tag_id(feedID)), ",")));
 		}
 
 		if(state == ArticleListState.UNREAD)
 		{
-			query2.addEqualsCondition("unread", ArticleStatus.UNREAD.to_string());
+			query2.where_equal("unread", ArticleStatus.UNREAD.to_string());
 		}
 		else if(state == ArticleListState.MARKED)
 		{
-			query2.addEqualsCondition("marked", ArticleStatus.MARKED.to_string());
+			query2.where_equal("marked", ArticleStatus.MARKED.to_string());
 		}
 
 		if(searchTerm != ""){
 			if(searchTerm.has_prefix("title: "))
 			{
-				query2.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE title MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
+				query2.where("articleID IN (SELECT articleID FROM fts_table WHERE title MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
 			}
 			else if(searchTerm.has_prefix("author: "))
 			{
-				query2.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE author MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
+				query2.where("articleID IN (SELECT articleID FROM fts_table WHERE author MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
 			}
 			else if(searchTerm.has_prefix("content: "))
 			{
-				query2.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE preview MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
+				query2.where("articleID IN (SELECT articleID FROM fts_table WHERE preview MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
 			}
 			else
 			{
-				query2.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE fts_table MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
+				query2.where("articleID IN (SELECT articleID FROM fts_table WHERE fts_table MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
 			}
 		}
 
@@ -538,9 +538,9 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		// FIXME: this adds to query but we never use query again (only query2)
 		// is this a bug?
 		if(searchRows != 0)
-			query.addCustomCondition(@"articleID in (SELECT articleID FROM articles ORDER BY $orderBy $asc LIMIT $searchRows)");
+			query.where(@"articleID in (SELECT articleID FROM articles ORDER BY $order_by $asc LIMIT $searchRows)");
 
-		query2.orderBy(orderBy, desc);
+		query2.order_by(order_by, desc);
 
 		Sqlite.Statement stmt = m_db.prepare(query2.to_string());
 
@@ -556,7 +556,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		var feedIDs = new Gee.ArrayList<string>();
 
 		var query = new QueryBuilder(QueryType.SELECT, "feeds");
-		query.selectField("feed_id, category_id");
+		query.select_field("feed_id, category_id");
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
@@ -605,8 +605,8 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	protected string getUncategorizedFeedsQuery()
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "feeds");
-		query.selectField("feed_id");
-		query.addCustomCondition(getUncategorizedQuery());
+		query.select_field("feed_id");
+		query.where(getUncategorizedQuery());
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
@@ -678,10 +678,10 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		Gee.List<Feed> feeds = new Gee.ArrayList<Feed>();
 
 		var query = new QueryBuilder(QueryType.SELECT, "feeds");
-		query.selectField("*");
+		query.select_field("*");
 		if(Settings.general().get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
 		{
-			query.orderBy("name", true);
+			query.order_by("name", true);
 		}
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
@@ -729,11 +729,11 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		var feeds = new Gee.ArrayList<Feed>();
 
 		var query = new QueryBuilder(QueryType.SELECT, "feeds");
-		query.selectField("*");
-		query.addCustomCondition(getUncategorizedQuery());
+		query.select_field("*");
+		query.where(getUncategorizedQuery());
 		if(Settings.general().get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
 		{
-			query.orderBy("name", true);
+			query.order_by("name", true);
 		}
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
@@ -871,15 +871,15 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		Gee.List<Category> tmp = new Gee.ArrayList<Category>();
 
 		var query = new QueryBuilder(QueryType.SELECT, "categories");
-		query.selectField("*");
+		query.select_field("*");
 
 		if(Settings.general().get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
 		{
-			query.orderBy("title", true);
+			query.order_by("title", true);
 		}
 		else
 		{
-			query.orderBy("orderID", true);
+			query.order_by("orderID", true);
 		}
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
@@ -931,63 +931,63 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 	public QueryBuilder articleQuery(string id, FeedListType selectedType, ArticleListState state, string searchTerm)
 	{
-		string orderBy = ((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.RECEIVED) ? "rowid" : "date";
+		string order_by = ((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.RECEIVED) ? "rowid" : "date";
 
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("ROWID");
-		query.selectField("feedID");
-		query.selectField("articleID");
-		query.selectField("title");
-		query.selectField("author");
-		query.selectField("url");
-		query.selectField("preview");
-		query.selectField("unread");
-		query.selectField("marked");
-		query.selectField("date");
-		query.selectField("guidHash");
+		query.select_field("ROWID");
+		query.select_field("feedID");
+		query.select_field("articleID");
+		query.select_field("title");
+		query.select_field("author");
+		query.select_field("url");
+		query.select_field("preview");
+		query.select_field("unread");
+		query.select_field("marked");
+		query.select_field("date");
+		query.select_field("guidHash");
 
 		if(selectedType == FeedListType.FEED && id != FeedID.ALL.to_string())
 		{
-			query.addEqualsCondition("feedID", id, true, true);
+			query.where_equal("feedID", id, true, true);
 		}
 		else if(selectedType == FeedListType.CATEGORY && id != CategoryID.MASTER.to_string() && id != CategoryID.TAGS.to_string())
 		{
-			query.addRangeConditionString("feedID", getFeedIDofCategorie(id));
+			query.where_in_string("feedID", getFeedIDofCategorie(id));
 		}
 		else if(id == CategoryID.TAGS.to_string())
 		{
-			query.addCustomCondition(getAllTagsCondition());
+			query.where(getAllTagsCondition());
 		}
 		else if(selectedType == FeedListType.TAG)
 		{
-			query.addCustomCondition("articleID IN (%s)".printf(StringUtils.join(StringUtils.sql_quote(read_taggings_by_tag_id(id)), ",")));
+			query.where("articleID IN (%s)".printf(StringUtils.join(StringUtils.sql_quote(read_taggings_by_tag_id(id)), ",")));
 		}
 
 		if(state == ArticleListState.UNREAD)
 		{
-			query.addEqualsCondition("unread", ArticleStatus.UNREAD.to_string());
+			query.where_equal("unread", ArticleStatus.UNREAD.to_string());
 		}
 		else if(state == ArticleListState.MARKED)
 		{
-			query.addEqualsCondition("marked", ArticleStatus.MARKED.to_string());
+			query.where_equal("marked", ArticleStatus.MARKED.to_string());
 		}
 
 		if(searchTerm != ""){
 			if(searchTerm.has_prefix("title: "))
 			{
-				query.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE title MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
+				query.where("articleID IN (SELECT articleID FROM fts_table WHERE title MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
 			}
 			else if(searchTerm.has_prefix("author: "))
 			{
-				query.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE author MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
+				query.where("articleID IN (SELECT articleID FROM fts_table WHERE author MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
 			}
 			else if(searchTerm.has_prefix("content: "))
 			{
-				query.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE preview MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
+				query.where("articleID IN (SELECT articleID FROM fts_table WHERE preview MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
 			}
 			else
 			{
-				query.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE fts_table MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
+				query.where("articleID IN (SELECT articleID FROM fts_table WHERE fts_table MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
 			}
 		}
 
@@ -995,7 +995,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
 			desc = false;
 
-		query.orderBy(orderBy, desc);
+		query.order_by(order_by, desc);
 
 		return query;
 	}
@@ -1011,8 +1011,8 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 		if(searchRows != 0)
 		{
-			string orderBy = ((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.RECEIVED) ? "rowid" : "date";
-			query.addCustomCondition(@"articleID in (SELECT articleID FROM articles ORDER BY $orderBy $desc LIMIT $searchRows)");
+			string order_by = ((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.RECEIVED) ? "rowid" : "date";
+			query.where(@"articleID in (SELECT articleID FROM articles ORDER BY $order_by $desc LIMIT $searchRows)");
 		}
 
 		query.limit(limit);

@@ -28,8 +28,8 @@ public class FeedReader.QueryBuilder : GLib.Object {
 	private Gee.List<string> m_fields;
 	private Gee.List<string> m_values;
 	private Gee.List<string> m_conditions;
-	private string? m_orderByColumn = null;
-	private bool m_orderDescending = false;
+	private string? m_order_by_column = null;
+	private bool m_order_descending = false;
 	private uint? m_limit = null;
 	private uint? m_offset = null;
 
@@ -42,7 +42,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		m_table = table;
 	}
 
-	public bool insertValuePair(string field, string value)
+	public bool insert_value_pair(string field, string value)
 	{
 		switch(m_type)
 		{
@@ -53,22 +53,22 @@ public class FeedReader.QueryBuilder : GLib.Object {
 				m_values.add(value);
 				return true;
 		}
-		Logger.error("insertValuePair");
+		Logger.error("insert_value_pair");
 		return false;
 	}
 
-	public bool selectField(string field)
+	public bool select_field(string field)
 	{
 		if(m_type == QueryType.SELECT)
 		{
 			m_fields.add(field);
 			return true;
 		}
-		Logger.error("selectField");
+		Logger.error("select_field");
 		return false;
 	}
 
-	public bool updateValuePair(string field, string value, bool isString = false)
+	public bool update_value_pair(string field, string value, bool isString = false)
 	{
 		if(m_type == QueryType.UPDATE)
 		{
@@ -78,12 +78,12 @@ public class FeedReader.QueryBuilder : GLib.Object {
 			m_values.add(quoted_value);
 			return true;
 		}
-		Logger.error("updateValuePair");
+		Logger.error("update_value_pair");
 
 		return false;
 	}
 
-	public bool addEqualsCondition(string field, string value, bool positive = true, bool isString = false)
+	public bool where_equal(string field, string value, bool positive = true, bool isString = false)
 	{
 		if(m_type == QueryType.UPDATE
 		|| m_type == QueryType.SELECT
@@ -99,11 +99,11 @@ public class FeedReader.QueryBuilder : GLib.Object {
 			m_conditions.add(condition.printf(field, quoted_value));
 			return true;
 		}
-		Logger.error("addEqualsConditionString");
+		Logger.error("where_equalString");
 		return false;
 	}
 
-	public bool addCustomCondition(string condition)
+	public bool where(string condition)
 	{
 		if(m_type == QueryType.UPDATE
 		|| m_type == QueryType.SELECT
@@ -112,11 +112,11 @@ public class FeedReader.QueryBuilder : GLib.Object {
 			m_conditions.add(condition);
 			return true;
 		}
-		Logger.error("addCustomCondition");
+		Logger.error("where");
 		return false;
 	}
 
-	public bool addRangeConditionString(string field, Gee.List<string> values, bool instr = false)
+	public bool where_in_string(string field, Gee.List<string> values, bool instr = false)
 	{
 		if(!instr)
 		{
@@ -149,17 +149,17 @@ public class FeedReader.QueryBuilder : GLib.Object {
 			{
 				foreach(string value in values)
 				{
-					this.addCustomCondition("instr(field, %s) > 0".printf(SQLite.quote_string(value)));
+					this.where("instr(field, %s) > 0".printf(SQLite.quote_string(value)));
 				}
 			}
 			return true;
 		}
 
-		Logger.error("addRangeConditionString");
+		Logger.error("where_in_string");
 		return false;
 	}
 
-	public bool addRangeConditionInt(string field, Gee.List<int> values)
+	public bool where_in_int(string field, Gee.List<int> values)
 	{
 		if(m_type == QueryType.UPDATE
 		|| m_type == QueryType.SELECT
@@ -181,15 +181,15 @@ public class FeedReader.QueryBuilder : GLib.Object {
 			}
 			return true;
 		}
-		Logger.error("addRangeConditionInt");
+		Logger.error("where_in_int");
 		return false;
 	}
 
-	public void orderBy(string field, bool desc)
+	public void order_by(string field, bool desc)
 	requires (m_type == QueryType.SELECT)
 	{
-		m_orderByColumn = field;
-		m_orderDescending = desc;
+		m_order_by_column = field;
+		m_order_descending = desc;
 	}
 
 	public void limit(uint limit)
@@ -258,11 +258,11 @@ public class FeedReader.QueryBuilder : GLib.Object {
 
 				append_conditions(query);
 
-				if (m_orderByColumn != null) {
+				if (m_order_by_column != null) {
 					query.append_printf(
 						" ORDER BY %s COLLATE NOCASE %s",
-						m_orderByColumn,
-						m_orderDescending ? "DESC" : "ASC");
+						m_order_by_column,
+						m_order_descending ? "DESC" : "ASC");
 				}
 
 				if (m_limit != null)

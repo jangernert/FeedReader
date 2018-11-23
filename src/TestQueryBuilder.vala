@@ -57,8 +57,8 @@ void main(string[] args)
 		query.select_field("column2");
 		query.select_field("column3");
 		query.order_by("column2", true);
-		query.where_equal("column3", "\"something'", false, true);
-		query.where_equal("column2", "5", true, false);
+		query.where_equal_string("column3", "\"something'");
+		query.where_equal_int("column2", 5);
 		query.where("this is custom");
 		query.where_in_strings(
 			"column5",
@@ -72,7 +72,7 @@ void main(string[] args)
 		print("%s\n", query.to_string());
 		assert(query.to_string() == "SELECT column1, column2, column3 " +
 									"FROM test " +
-									"WHERE column3 <> '\"something''' " +
+									"WHERE column3 = '\"something''' " +
 									"AND column2 = 5 " +
 									"AND this is custom " +
 									"AND column5 IN ('asdf', 'something with a '' in it') " +

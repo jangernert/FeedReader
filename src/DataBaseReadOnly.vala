@@ -184,7 +184,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		query.select_field("count(*)");
 		var status_column = status.column();
 		if(status_column != null)
-			query.where_equal(status_column, status.to_string());
+			query.where_equal_int(status_column, status.to_int());
 		query.where(getUncategorizedFeedsQuery());
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
@@ -468,7 +468,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		string order_by = ((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.RECEIVED) ? "rowid" : "date";
 
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.where_equal("articleID", articleID, true, true);
+		query.where_equal_string("articleID", articleID);
 
 		var query2 = new QueryBuilder(QueryType.SELECT, "articles");
 		query2.select_field("count(*)");
@@ -484,7 +484,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 		if(selectedType == FeedListType.FEED && feedID != FeedID.ALL.to_string())
 		{
-			query2.where_equal("feedID", feedID, true, true);
+			query2.where_equal_string("feedID", feedID);
 		}
 		else if(selectedType == FeedListType.CATEGORY && feedID != CategoryID.MASTER.to_string() && feedID != CategoryID.TAGS.to_string())
 		{
@@ -501,11 +501,11 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 		if(state == ArticleListState.UNREAD)
 		{
-			query2.where_equal("unread", ArticleStatus.UNREAD.to_string());
+			query2.where_equal_int("unread", ArticleStatus.UNREAD.to_int());
 		}
 		else if(state == ArticleListState.MARKED)
 		{
-			query2.where_equal("marked", ArticleStatus.MARKED.to_string());
+			query2.where_equal_int("marked", ArticleStatus.MARKED.to_int());
 		}
 
 		if(searchTerm != ""){
@@ -948,7 +948,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 		if(selectedType == FeedListType.FEED && id != FeedID.ALL.to_string())
 		{
-			query.where_equal("feedID", id, true, true);
+			query.where_equal_string("feedID", id);
 		}
 		else if(selectedType == FeedListType.CATEGORY && id != CategoryID.MASTER.to_string() && id != CategoryID.TAGS.to_string())
 		{
@@ -965,11 +965,11 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 		if(state == ArticleListState.UNREAD)
 		{
-			query.where_equal("unread", ArticleStatus.UNREAD.to_string());
+			query.where_equal_int("unread", ArticleStatus.UNREAD.to_int());
 		}
 		else if(state == ArticleListState.MARKED)
 		{
-			query.where_equal("marked", ArticleStatus.MARKED.to_string());
+			query.where_equal_int("marked", ArticleStatus.MARKED.to_int());
 		}
 
 		if(searchTerm != ""){

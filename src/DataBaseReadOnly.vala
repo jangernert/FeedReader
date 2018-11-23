@@ -456,20 +456,6 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		return rows.size != 0;
 	}
 
-	public bool category_exists(string catID)
-	{
-		var rows = m_db.execute("SELECT 1 FROM categories WHERE categorieID = ? LIMIT 1", { catID });
-		return rows.size != 0;
-	}
-
-	public int getRowCountHeadlineByDate(string date)
-	ensures (result >= 0)
-	{
-		var rows = m_db.execute("SELECT COUNT(*) FROM articles WHERE date > ?", { date });
-		assert(rows.size == 1 && rows[0].size == 1);
-		return rows[0][0].to_int();
-	}
-
 	public int getArticleCountNewerThanID(string articleID, string feedID, FeedListType selectedType, ArticleListState state, string searchTerm)
 	ensures (result >= 0)
 	{
@@ -504,7 +490,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 		else if(selectedType == FeedListType.TAG)
 		{
-			query2.where("articleID IN (%s)".printf(StringUtils.join(StringUtils.sql_quote(read_taggings_by_tag_id(feedID)), ",")));
+			query2.where_in_strings("articleID", read_taggings_by_tag_id(feedID));
 		}
 
 		if(state == ArticleListState.UNREAD)
@@ -643,7 +629,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	{
 		var rows = m_db.execute("SELECT COUNT(*) FROM main.feeds WHERE url = ? LIMIT 1", { feed_url });
 		assert(rows.size == 1 && rows[0].size == 1);
-		// Why > 1 and not > 0?
+		// FIXME: Why > 1 and not > 0?
 		return rows[0][0].to_int() > 1;
 	}
 
@@ -821,6 +807,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			row[3].to_int());
 	}
 
+	// FIXME: Inline this as a subquery
 	protected string getAllTagsCondition()
 	{
 		var tags = read_tags();
@@ -832,33 +819,24 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		return "(%s)".printf(StringUtils.join(conditions, " OR "));
 	}
 
-	public uint getTagCount()
-	{
-		var rows = m_db.execute("SELECT COUNT(*) FROM tags WHERE instr(tagID, 'global.') = 0");
-		assert(rows.size == 1 && rows[0].size == 1);
-		return rows[0][0].to_int();
-	}
-
 	public Gee.List<Category> read_categories_level(int level, Gee.List<Feed>? feeds = null)
 	{
 		var categories = read_categories(feeds);
-		var tmpCategories = new Gee.ArrayList<Category>();
+		var results = new Gee.ArrayList<Category>();
 
 		foreach(Category cat in categories)
 		{
 			if(cat.getLevel() == level)
 			{
-				tmpCategories.add(cat);
+				results.add(cat);
 			}
 		}
 
-		return tmpCategories;
+		return results;
 	}
 
 	public Gee.List<Category> read_categories(Gee.List<Feed>? feeds = null)
 	{
-		Gee.List<Category> tmp = new Gee.ArrayList<Category>();
-
 		var query = new QueryBuilder(QueryType.SELECT, "categories");
 		query.select_field("*");
 
@@ -873,13 +851,14 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
+		var results = new Gee.ArrayList<Category>();
 		while(stmt.step () == Sqlite.ROW)
 		{
 			string catID = stmt.column_text(0);
 
 			if(feeds == null || showCategory(catID, feeds))
 			{
-				var tmpcategory = new Category(
+				var category = new Category(
 					catID,
 					stmt.column_text(1),
 					(feeds == null) ? 0 : Utils.categoryGetUnread(catID, feeds),
@@ -888,11 +867,11 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					stmt.column_int(5)
 				);
 
-				tmp.add(tmpcategory);
+				results.add(category);
 			}
 		}
 
-		return tmp;
+		return results;
 	}
 
 	public Gee.List<Article> readUnfetchedArticles()
@@ -1009,27 +988,27 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
-		var tmp = new Gee.LinkedList<Article>();
+		var results = new Gee.LinkedList<Article>();
 		while (stmt.step () == Sqlite.ROW)
 		{
-			tmp.add(new Article(
-								stmt.column_text(2),																		// articleID
-								stmt.column_text(3),																		// title
-								stmt.column_text(5),																		// url
-								stmt.column_text(1),																		// feedID
-								(ArticleStatus)stmt.column_int(7),															// unread
-								(ArticleStatus)stmt.column_int(8),															// marked
-								null,																						// html
-								stmt.column_text(6),																		// preview
-								stmt.column_text(4),																		// author
-								new GLib.DateTime.from_unix_local(stmt.column_int(9)),										// date
-								stmt.column_int(0),																			// sortID
-								read_taggings_by_article_id(stmt.column_text(2)),															// tags
-								read_enclosures(stmt.column_text(2)),														// enclosures
-								stmt.column_text(10)																		// guid
-							));
+			results.add(new Article(
+				stmt.column_text(2),																		// articleID
+				stmt.column_text(3),																		// title
+				stmt.column_text(5),																		// url
+				stmt.column_text(1),																		// feedID
+				(ArticleStatus)stmt.column_int(7),															// unread
+				(ArticleStatus)stmt.column_int(8),															// marked
+				null,																						// html
+				stmt.column_text(6),																		// preview
+				stmt.column_text(4),																		// author
+				new GLib.DateTime.from_unix_local(stmt.column_int(9)),										// date
+				stmt.column_int(0),																			// sortID
+				read_taggings_by_article_id(stmt.column_text(2)),															// tags
+				read_enclosures(stmt.column_text(2)),														// enclosures
+				stmt.column_text(10)																		// guid
+			));
 		}
 
-		return tmp;
+		return results;
 	}
 }

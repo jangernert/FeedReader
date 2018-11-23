@@ -186,7 +186,6 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		if(status_column != null)
 			query.addEqualsCondition(status_column, status.to_string());
 		query.addCustomCondition(getUncategorizedFeedsQuery());
-		query.build();
 
 		Sqlite.Statement stmt = m_db.prepare(query.get());
 
@@ -313,7 +312,6 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			var smallerDate = (bigger) ? date2.to_unix() : date1.to_unix();
 			query.addCustomCondition(@"date BETWEEN $smallerDate AND $biggerDate");
 		}
-		query.build();
 
 		Sqlite.Statement stmt = m_db.prepare(query.get());
 
@@ -365,7 +363,6 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
 		query.selectField("articleID, unread, marked");
 		query.addRangeConditionString("articleID", ids);
-		query.build();
 
 		Sqlite.Statement stmt = m_db.prepare(query.get());
 
@@ -425,7 +422,6 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		var query = new QueryBuilder(QueryType.SELECT, "feeds");
 		query.selectField("count(*)");
 		query.addCustomCondition(getUncategorizedQuery());
-		query.build();
 
 		Sqlite.Statement stmt = m_db.prepare(query.get());
 
@@ -479,7 +475,6 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 
 		query.selectField(orderBy);
-		query.build();
 
 		if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
 			query2.addCustomCondition(@"$orderBy < (%s)".printf(query.get()));
@@ -540,11 +535,12 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			asc = "ASC";
 		}
 
+		// FIXME: this adds to query but we never use query again (only query2)
+		// is this a bug?
 		if(searchRows != 0)
 			query.addCustomCondition(@"articleID in (SELECT articleID FROM articles ORDER BY $orderBy $asc LIMIT $searchRows)");
 
 		query2.orderBy(orderBy, desc);
-		query2.build();
 
 		Sqlite.Statement stmt = m_db.prepare(query2.get());
 
@@ -561,7 +557,6 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 		var query = new QueryBuilder(QueryType.SELECT, "feeds");
 		query.selectField("feed_id, category_id");
-		query.build();
 
 		Sqlite.Statement stmt = m_db.prepare(query.get());
 
@@ -612,7 +607,6 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		var query = new QueryBuilder(QueryType.SELECT, "feeds");
 		query.selectField("feed_id");
 		query.addCustomCondition(getUncategorizedQuery());
-		query.build();
 
 		Sqlite.Statement stmt = m_db.prepare(query.get());
 
@@ -689,7 +683,6 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		{
 			query.orderBy("name", true);
 		}
-		query.build();
 
 		Sqlite.Statement stmt = m_db.prepare(query.get());
 
@@ -742,7 +735,6 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		{
 			query.orderBy("name", true);
 		}
-		query.build();
 
 		Sqlite.Statement stmt = m_db.prepare(query.get());
 
@@ -890,8 +882,6 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			query.orderBy("orderID", true);
 		}
 
-		query.build();
-
 		Sqlite.Statement stmt = m_db.prepare(query.get());
 
 		while(stmt.step () == Sqlite.ROW)
@@ -1027,7 +1017,6 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 		query.limit(limit);
 		query.offset(offset);
-		query.build();
 
 		Sqlite.Statement stmt = m_db.prepare(query.get());
 

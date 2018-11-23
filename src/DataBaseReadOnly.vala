@@ -470,8 +470,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		return rows[0][0].to_int();
 	}
 
-	public int getArticleCountNewerThanID(string articleID, string feedID, FeedListType selectedType, ArticleListState state, string searchTerm, int searchRows = 0)
-	requires (searchRows >= 0)
+	public int getArticleCountNewerThanID(string articleID, string feedID, FeedListType selectedType, ArticleListState state, string searchTerm)
 	ensures (result >= 0)
 	{
 		string order_by = ((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.RECEIVED) ? "rowid" : "date";
@@ -537,17 +536,10 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 
 		bool desc = true;
-		string asc = "DESC";
 		if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
 		{
 			desc = false;
-			asc = "ASC";
 		}
-
-		// FIXME: this adds to query but we never use query again (only query2)
-		// is this a bug?
-		if(searchRows != 0)
-			query.where(@"articleID in (SELECT articleID FROM articles ORDER BY $order_by $asc LIMIT $searchRows)");
 
 		query2.order_by(order_by, desc);
 

@@ -237,7 +237,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		return false;
 	}
 
-	public new string get()
+	public string to_string()
 	{
 		if(!m_noError)
 		{
@@ -348,6 +348,6 @@ public class FeedReader.QueryBuilder : GLib.Object {
 
 	public void print()
 	{
-		Logger.debug(get());
+		Logger.debug(to_string());
 	}
 }

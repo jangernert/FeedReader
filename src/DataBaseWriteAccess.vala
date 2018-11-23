@@ -97,7 +97,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 			query.addCustomCondition(@"rowid BETWEEN 1 AND (SELECT rowid FROM articles ORDER BY rowid DESC LIMIT 1 OFFSET $syncCount)");
 		}
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 		while (stmt.step () == Sqlite.ROW) {
 			delete_article(stmt.column_text(0), stmt.column_text(1));
 		}
@@ -142,7 +142,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		query.insertValuePair("xmlURL", "$XMLURL");
 		query.insertValuePair("iconURL", "$ICONURL");
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
 		int feedID_pos   = stmt.bind_parameter_index("$FEEDID");
 		int feedName_pos = stmt.bind_parameter_index("$FEEDNAME");
@@ -198,7 +198,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		query.insertValuePair("\"exists\"", "1");
 		query.insertValuePair("color", "$COLOR");
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
 		int tagID_position = stmt.bind_parameter_index("$TAGID");
 		int label_position = stmt.bind_parameter_index("$LABEL");
@@ -244,7 +244,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		query.updateValuePair("\"exists\"", "1");
 		query.addEqualsCondition("tagID", "$TAGID");
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
 		int title_position = stmt.bind_parameter_index("$TITLE");
 		int tagID_position = stmt.bind_parameter_index("$TAGID");
@@ -275,7 +275,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		query.insertValuePair("Parent", "$PARENT");
 		query.insertValuePair("Level", "$LEVEL");
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
 		int catID_position       = stmt.bind_parameter_index("$CATID");
 		int feedName_position    = stmt.bind_parameter_index("$FEEDNAME");
@@ -311,7 +311,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 			reset_query.updateValuePair(field, ArticleStatus.READ.to_string());
 		else if(field == "marked")
 			reset_query.updateValuePair(field, ArticleStatus.UNMARKED.to_string());
-		m_db.simple_query(reset_query.get());
+		m_db.simple_query(reset_query.to_string());
 
 
 		m_db.simple_query("BEGIN TRANSACTION");
@@ -326,7 +326,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 
 		update_query.addEqualsCondition("articleID", "$ARTICLEID");
 
-		Sqlite.Statement stmt = m_db.prepare(update_query.get());
+		Sqlite.Statement stmt = m_db.prepare(update_query.to_string());
 
 		int articleID_position = stmt.bind_parameter_index("$ARTICLEID");
 		assert (articleID_position > 0);
@@ -350,7 +350,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		update_query.updateValuePair("contentFetched", "1");
 		update_query.addEqualsCondition("articleID", article.getArticleID(), true, true);
 
-		Sqlite.Statement stmt = m_db.prepare(update_query.get());
+		Sqlite.Statement stmt = m_db.prepare(update_query.to_string());
 
 		int html_position = stmt.bind_parameter_index("$HTML");
 		int preview_position = stmt.bind_parameter_index("$PREVIEW");
@@ -382,7 +382,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		update_query.updateValuePair("lastModified", "$LASTMODIFIED");
 		update_query.addEqualsCondition("articleID", "$ARTICLEID", true, false);
 
-		Sqlite.Statement stmt = m_db.prepare(update_query.get());
+		Sqlite.Statement stmt = m_db.prepare(update_query.to_string());
 
 		int unread_position = stmt.bind_parameter_index("$UNREAD");
 		int marked_position = stmt.bind_parameter_index("$MARKED");
@@ -442,7 +442,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		query.insertValuePair("lastModified", "$LASTMODIFIED");
 		query.insertValuePair("contentFetched", "0");
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
 		int articleID_position = stmt.bind_parameter_index("$ARTICLEID");
 		int feedID_position = stmt.bind_parameter_index("$FEEDID");
@@ -513,7 +513,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		query.insertValuePair("articleID", "$ARTICLEID");
 		query.insertValuePair("tagID", "$TAGID");
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
 		int articleID_position = stmt.bind_parameter_index("$ARTICLEID");
 		int tagID_position = stmt.bind_parameter_index("$TAGID");
@@ -538,7 +538,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		query.insertValuePair("url", "$URL");
 		query.insertValuePair("type", "$TYPE");
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
 		int articleID_position = stmt.bind_parameter_index("$ARTICLEID");
 		int url_position = stmt.bind_parameter_index("$URL");
@@ -564,7 +564,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
 		query.updateValuePair("unread", ArticleStatus.READ.to_string());
 		query.addRangeConditionString("feedID", getFeedIDofCategorie(catID));
-		m_db.simple_query(query.get());
+		m_db.simple_query(query.to_string());
 	}
 
 	public void markFeedRead(string feedID)
@@ -617,7 +617,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		query.selectField("feed_id");
 		query.addEqualsCondition("subscribed", "0", true, false);
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 		while(stmt.step () == Sqlite.ROW)
 		{
 			delete_articles(stmt.column_text(0));
@@ -727,7 +727,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		query.insertValuePair("id", "$ID");
 		query.insertValuePair("argument", "$ARGUMENT");
 
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
 		int action_position = stmt.bind_parameter_index("$ACTION");
 		int id_position = stmt.bind_parameter_index("$ID");

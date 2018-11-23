@@ -54,13 +54,26 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		m_fields.add(field);
 	}
 
-	public void update_value_pair(string field, string value, bool is_string = false)
+	public void update_param(string field, string value)
+	requires (m_type == QueryType.UPDATE)
+	requires (value.has_prefix("$") && !value.contains("'"))
+	{
+		m_fields.add(field);
+		m_values.add(value);
+	}
+
+	public void update_string(string field, string value)
 	requires (m_type == QueryType.UPDATE)
 	{
 		m_fields.add(field);
+		m_values.add(SQLite.quote_string(value));
+	}
 
-		string quoted_value = is_string ? SQLite.quote_string(value) : value;
-		m_values.add(quoted_value);
+	public void update_int(string field, int64 value)
+	requires (m_type == QueryType.UPDATE)
+	{
+		m_fields.add(field);
+		m_values.add(value.to_string());
 	}
 
 	public void where_equal(string field, string value, bool positive = true, bool is_string = false)

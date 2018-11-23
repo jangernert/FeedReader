@@ -13,6 +13,15 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
+public enum FeedReader.QueryType {
+	INSERT,
+	INSERT_OR_IGNORE,
+	INSERT_OR_REPLACE,
+	UPDATE,
+	SELECT,
+	DELETE
+}
+
 public class FeedReader.QueryBuilder : GLib.Object {
 
 	private GLib.StringBuilder m_query;

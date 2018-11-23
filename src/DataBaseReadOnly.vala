@@ -362,7 +362,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
 		query.select_field("articleID, unread, marked");
-		query.where_in_string("articleID", ids);
+		query.where_in_strings("articleID", ids);
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
@@ -488,7 +488,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 		else if(selectedType == FeedListType.CATEGORY && feedID != CategoryID.MASTER.to_string() && feedID != CategoryID.TAGS.to_string())
 		{
-			query2.where_in_string("feedID", getFeedIDofCategorie(feedID));
+			query2.where_in_strings("feedID", getFeedIDofCategorie(feedID));
 		}
 		else if(feedID == CategoryID.TAGS.to_string())
 		{
@@ -952,7 +952,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 		else if(selectedType == FeedListType.CATEGORY && id != CategoryID.MASTER.to_string() && id != CategoryID.TAGS.to_string())
 		{
-			query.where_in_string("feedID", getFeedIDofCategorie(id));
+			query.where_in_strings("feedID", getFeedIDofCategorie(id));
 		}
 		else if(id == CategoryID.TAGS.to_string())
 		{

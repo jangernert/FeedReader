@@ -59,17 +59,11 @@ void main(string[] args)
 		query.where_equal("column3", "\"something'", false, true);
 		query.where_equal("column2", "5", true, false);
 		query.where("this is custom");
-		query.where_in_string(
+		query.where_in_strings(
 			"column5",
 			new Gee.ArrayList<string>.wrap(new string[]{
 				"asdf",
 				"something with a ' in it"
-			}));
-		query.where_in_int(
-			"column6",
-			new Gee.ArrayList<int>.wrap(new int[]{
-				-5,
-				1
 			}));
 		query.limit(100);
 		query.offset(5);
@@ -81,7 +75,6 @@ void main(string[] args)
 									"AND column2 = 5 " +
 									"AND this is custom " +
 									"AND column5 IN ('asdf', 'something with a '' in it') " +
-									"AND column6 IN (-5, 1) " +
 									"ORDER BY column2 " +
 									"COLLATE NOCASE DESC " +
 									"LIMIT 100 " +

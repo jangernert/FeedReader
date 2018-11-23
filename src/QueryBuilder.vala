@@ -83,51 +83,18 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		m_conditions.add(condition);
 	}
 
-	public void where_in_string(string field, Gee.List<string> values, bool instr = false)
+	public void where_in_strings(string field, Gee.List<string> values)
 	requires (m_type == QueryType.UPDATE
 		|| m_type == QueryType.SELECT
 		|| m_type == QueryType.DELETE)
 	{
-		if(!instr)
-		{
-			if (values.size == 0)
-			{
-				m_conditions.add("1 <> 1");
-			}
-			else {
-				var compound_values = new GLib.StringBuilder();
-				foreach(string value in values)
-				{
-					compound_values.append(SQLite.quote_string(value));
-					compound_values.append(", ");
-				}
-				compound_values.erase(compound_values.len - 2);
-				m_conditions.add("%s IN (%s)".printf(field, compound_values.str));
-			}
-		}
-		else
-		{
+		if (values.size == 0) {
+			m_conditions.add("1 <> 1");
+		} else {
+			var compound_values = new GLib.StringBuilder();
 			foreach(string value in values)
 			{
-				this.where("instr(field, %s) > 0".printf(SQLite.quote_string(value)));
-			}
-		}
-	}
-
-	public void where_in_int(string field, Gee.List<int> values)
-	requires (m_type == QueryType.UPDATE
-		|| m_type == QueryType.SELECT
-		|| m_type == QueryType.DELETE)
-	{
-		if (values.size == 0)
-		{
-			m_conditions.add("1 <> 1");
-		}
-		else {
-			var compound_values = new GLib.StringBuilder();
-			foreach(int value in values)
-			{
-				compound_values.append(value.to_string());
+				compound_values.append(SQLite.quote_string(value));
 				compound_values.append(", ");
 			}
 			compound_values.erase(compound_values.len - 2);

@@ -25,9 +25,9 @@ public enum FeedReader.QueryType {
 public class FeedReader.QueryBuilder : GLib.Object {
 	private QueryType m_type;
 	private string m_table;
-	private Gee.List<string> m_fields;
-	private Gee.List<string> m_values;
-	private Gee.List<string> m_conditions;
+	private Gee.List<string> m_fields = new Gee.ArrayList<string>();
+	private Gee.List<string> m_values = new Gee.ArrayList<string>();
+	private Gee.List<string> m_conditions = new Gee.ArrayList<string>();
 	private string? m_order_by_column = null;
 	private bool m_order_descending = false;
 	private uint? m_limit = null;
@@ -35,9 +35,6 @@ public class FeedReader.QueryBuilder : GLib.Object {
 
 	public QueryBuilder(QueryType type, string table)
 	{
-		m_fields = new Gee.ArrayList<string>();
-		m_values = new Gee.ArrayList<string>();
-		m_conditions = new Gee.ArrayList<string>();
 		m_type = type;
 		m_table = table;
 	}

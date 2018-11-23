@@ -243,14 +243,14 @@ public class FeedReader.QueryBuilder : GLib.Object {
 					query.append(m_values.get(i));
 				}
 
-				query.append(buildConditions());
+				append_conditions(query);
 				break;
 
 
 			case QueryType.DELETE:
 				query.append("DELETE FROM ");
 				query.append(m_table);
-				query.append(buildConditions());
+				append_conditions(query);
 				break;
 
 
@@ -260,7 +260,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
 					StringUtils.join(m_fields, ", "),
 					m_table);
 
-				query.append(buildConditions());
+				append_conditions(query);
 
 				if (m_orderByColumn != null) {
 					query.append_printf(
@@ -280,21 +280,13 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		return query.str;
 	}
 
-	private string buildConditions()
+	private void append_conditions(StringBuilder query)
 	{
 		if(m_conditions.size == 0)
-			return "";
+			return;
 
-		var conditions = new GLib.StringBuilder();
-		conditions.append(" WHERE ");
-
-		foreach(string condition in m_conditions)
-		{
-			conditions.append(condition);
-			conditions.append(" AND ");
-		}
-		conditions.erase(conditions.len-4);
-		return conditions.str;
+		query.append(" WHERE ");
+		query.append(StringUtils.join(m_conditions, " AND "));
 	}
 
 	public void print()

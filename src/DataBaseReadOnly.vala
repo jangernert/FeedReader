@@ -185,7 +185,12 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		var status_column = status.column();
 		if(status_column != null)
 			query.where_equal_int(status_column, status.to_int());
-		query.where(getUncategorizedFeedsQuery());
+
+
+		var subquery = new QueryBuilder(QueryType.SELECT, "feeds");
+		subquery.select_field("feed_id");
+		subquery.where(getUncategorizedQuery());
+		query.where("feedID IN (%s)".printf(subquery.to_string()));
 
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
 
@@ -220,7 +225,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 	public int getTagColor()
 	{
-		var rows = m_db.execute("SELECT COUNT(*) FROM tags WHERE instr(tagID, \"global.\") = 0");
+		var rows = m_db.execute("SELECT COUNT(*) FROM tags WHERE instr(tagID, 'global.') = 0");
 		assert(rows.size == 1 && rows[0].size == 1);
 		int tagCount = rows[0][0].to_int();
 		return tagCount % Constants.COLORS.length;
@@ -304,7 +309,11 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		var sorting = (ArticleListSort)Settings.general().get_enum("articlelist-sort-by");
 
 		if(sorting == ArticleListSort.RECEIVED)
-			query.where(@"date BETWEEN (SELECT rowid FROM articles WHERE articleID = \"$id1\") AND (SELECT rowid FROM articles WHERE articleID = \"$id2\")");
+			query.where(
+				"date BETWEEN (SELECT rowid FROM articles WHERE articleID = %s) AND (SELECT rowid FROM articles WHERE articleID = %s)"
+				.printf(
+					SQLite.quote_string(id1),
+					SQLite.quote_string(id2)));
 		else
 		{
 			bool bigger = (date1.to_unix() > date2.to_unix());
@@ -589,7 +598,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	protected string getUncategorizedQuery()
 	{
 		string catID = FeedServer.get_default().uncategorizedID();
-		return "category_id = \"%s\"".printf(catID);
+		return "category_id = %s".printf(SQLite.quote_string(catID));
 	}
 
 	protected bool showCategory(string catID, Gee.List<Feed> feeds)
@@ -600,22 +609,6 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			return false;
 		}
 		return true;
-	}
-
-	protected string getUncategorizedFeedsQuery()
-	{
-		var query = new QueryBuilder(QueryType.SELECT, "feeds");
-		query.select_field("feed_id");
-		query.where(getUncategorizedQuery());
-
-		Sqlite.Statement stmt = m_db.prepare(query.to_string());
-
-		string feedIDs = "";
-		while (stmt.step () == Sqlite.ROW) {
-			feedIDs += "\"" + stmt.column_text(0) + "\"" + ",";
-		}
-
-		return "feedID IN (%s)".printf(feedIDs.substring(0, feedIDs.length-1));
 	}
 
 	public string getFeedIDofArticle(string articleID)
@@ -773,7 +766,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 	public Gee.List<Tag> read_tags()
 	{
-		var rows = m_db.execute("SELECT * FROM tags WHERE instr(tagID, \"global.\") = 0");
+		var rows = m_db.execute("SELECT * FROM tags WHERE instr(tagID, 'global.') = 0");
 
 		var tags = new Gee.ArrayList<Tag>();
 		foreach(var row in rows)
@@ -833,19 +826,17 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	protected string getAllTagsCondition()
 	{
 		var tags = read_tags();
-		string query = "(";
+		var conditions = new Gee.ArrayList<string>();
 		foreach(Tag tag in tags)
 		{
-			query += "instr(\"tags\", \"%s\") > 0 OR ".printf(tag.getTagID());
+			conditions.add("instr(\"tags\", %s) > 0".printf(SQLite.quote_string(tag.getTagID())));
 		}
-
-		int or = query.char_count()-4;
-		return query.substring(0, or) + ")";
+		return "(%s)".printf(StringUtils.join(conditions, " OR "));
 	}
 
 	public uint getTagCount()
 	{
-		var rows = m_db.execute("SELECT COUNT(*) FROM tags WHERE instr(tagID, \"global.\") = 0");
+		var rows = m_db.execute("SELECT COUNT(*) FROM tags WHERE instr(tagID, 'global.') = 0");
 		assert(rows.size == 1 && rows[0].size == 1);
 		return rows[0][0].to_int();
 	}
@@ -960,7 +951,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 		else if(selectedType == FeedListType.TAG)
 		{
-			query.where("articleID IN (%s)".printf(StringUtils.join(StringUtils.sql_quote(read_taggings_by_tag_id(id)), ",")));
+			query.where_in_strings("articleID", read_taggings_by_tag_id(id));
 		}
 
 		if(state == ArticleListState.UNREAD)

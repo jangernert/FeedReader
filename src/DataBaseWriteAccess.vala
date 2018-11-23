@@ -159,18 +159,10 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 
 		foreach(var feed_item in feeds)
 		{
-			string catString = "";
-			foreach(string category in feed_item.getCatIDs())
-			{
-				catString += category + ",";
-			}
-
-			catString = catString.substring(0, catString.length-1);
-
 			stmt.bind_text(feedID_pos, feed_item.getFeedID());
 			stmt.bind_text(feedName_pos, feed_item.getTitle());
 			stmt.bind_text(feedURL_pos, feed_item.getURL());
-			stmt.bind_text(catID_pos, catString);
+			stmt.bind_text(catID_pos, StringUtils.join(feed_item.getCatIDs(), ","));
 			stmt.bind_text(xmlURL_pos, feed_item.getXmlUrl());
 			stmt.bind_text(iconURL_pos, feed_item.getIconURL());
 

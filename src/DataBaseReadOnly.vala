@@ -517,22 +517,28 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 
 		if(searchTerm != ""){
+			string search_column;
 			if(searchTerm.has_prefix("title: "))
 			{
-				query2.where("articleID IN (SELECT articleID FROM fts_table WHERE title MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
+				search_column = "title";
 			}
 			else if(searchTerm.has_prefix("author: "))
 			{
-				query2.where("articleID IN (SELECT articleID FROM fts_table WHERE author MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
+				search_column = "author";
 			}
 			else if(searchTerm.has_prefix("content: "))
 			{
-				query2.where("articleID IN (SELECT articleID FROM fts_table WHERE preview MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
+				search_column = "preview";
 			}
 			else
 			{
-				query2.where("articleID IN (SELECT articleID FROM fts_table WHERE fts_table MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
+				search_column = "fts_table";
 			}
+			query2.where(
+				"articleID IN (SELECT articleID FROM fts_table WHERE %s MATCH %s)"
+				.printf(
+					search_column,
+					SQLite.quote_string(Utils.prepareSearchQuery(searchTerm))));
 		}
 
 		bool desc = true;

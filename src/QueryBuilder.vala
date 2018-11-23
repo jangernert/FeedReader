@@ -28,8 +28,6 @@ public class FeedReader.QueryBuilder : GLib.Object {
 	private Gee.List<string> m_fields;
 	private Gee.List<string> m_values;
 	private Gee.List<string> m_conditions;
-	private GLib.StringBuilder m_insert_fields;
-	private GLib.StringBuilder m_insert_values;
 	private string? m_orderByColumn = null;
 	private bool m_orderDescending = false;
 	private uint? m_limit = null;
@@ -42,8 +40,6 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		m_conditions = new Gee.ArrayList<string>();
 		m_type = type;
 		m_table = table;
-		m_insert_fields = new GLib.StringBuilder();
-		m_insert_values = new GLib.StringBuilder();
 	}
 
 	public bool insertValuePair(string field, string value)
@@ -230,23 +226,25 @@ public class FeedReader.QueryBuilder : GLib.Object {
 				query.append(m_table);
 				query.append(" ");
 
+				var insert_fields = new StringBuilder();
 				foreach(string field in m_fields)
 				{
-					m_insert_fields.append(",");
-					m_insert_fields.append(field);
+					insert_fields.append(",");
+					insert_fields.append(field);
 				}
-				m_insert_fields.overwrite(0, "(").append(")");
-				query.append(m_insert_fields.str);
+				insert_fields.overwrite(0, "(").append(")");
+				query.append(insert_fields.str);
 
 				query.append(" VALUES ");
 
+				var insert_values = new StringBuilder();
 				foreach(string value in m_values)
 				{
-					m_insert_values.append(",");
-					m_insert_values.append(value);
+					insert_values.append(",");
+					insert_values.append(value);
 				}
-				m_insert_values.overwrite(0, "(").append(")");
-				query.append(m_insert_values.str);
+				insert_values.overwrite(0, "(").append(")");
+				query.append(insert_values.str);
 				break;
 
 

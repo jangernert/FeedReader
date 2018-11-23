@@ -229,22 +229,20 @@ public class FeedReader.QueryBuilder : GLib.Object {
 					StringUtils.join(m_values, ", "));
 				break;
 
-
 			case QueryType.UPDATE:
-				query.append("UPDATE ");
-				query.append(m_table);
-				query.append(" SET ");
+				query.append_printf("UPDATE %s SET ", m_table);
 
 				assert(m_fields.size > 0);
 				for(int i = 0; i < m_fields.size; i++)
 				{
+					if (i > 0)
+						query.append(", ");
+
 					query.append(m_fields.get(i));
 					query.append(" = ");
 					query.append(m_values.get(i));
-					query.append(", ");
 				}
 
-				query.erase(query.len-2);
 				query.append(buildConditions());
 				break;
 
@@ -257,16 +255,11 @@ public class FeedReader.QueryBuilder : GLib.Object {
 
 
 			case QueryType.SELECT:
-				query.append("SELECT ");
-				assert(m_fields.size > 0);
-				foreach(string field in m_fields)
-				{
-					query.append(field);
-					query.append(", ");
-				}
-				query.erase(query.len-2);
-				query.append(" FROM ");
-				query.append(m_table);
+				query.append_printf(
+					"SELECT %s FROM %s",
+					StringUtils.join(m_fields, ", "),
+					m_table);
+
 				query.append(buildConditions());
 
 				if (m_orderByColumn != null) {

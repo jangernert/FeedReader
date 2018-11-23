@@ -42,128 +42,59 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		m_table = table;
 	}
 
-	public bool insert_value_pair(string field, string value)
+	public void insert_value_pair(string field, string value)
+	requires (m_type == QueryType.INSERT
+		|| m_type == QueryType.INSERT_OR_IGNORE
+		|| m_type == QueryType.INSERT_OR_REPLACE)
 	{
-		switch(m_type)
-		{
-			case QueryType.INSERT:
-			case QueryType.INSERT_OR_IGNORE:
-			case QueryType.INSERT_OR_REPLACE:
-				m_fields.add(field);
-				m_values.add(value);
-				return true;
-		}
-		Logger.error("insert_value_pair");
-		return false;
+		m_fields.add(field);
+		m_values.add(value);
 	}
 
-	public bool select_field(string field)
+	public void select_field(string field)
+	requires (m_type == QueryType.SELECT)
 	{
-		if(m_type == QueryType.SELECT)
-		{
-			m_fields.add(field);
-			return true;
-		}
-		Logger.error("select_field");
-		return false;
+		m_fields.add(field);
 	}
 
-	public bool update_value_pair(string field, string value, bool isString = false)
+	public void update_value_pair(string field, string value, bool is_string = false)
+	requires (m_type == QueryType.UPDATE)
 	{
-		if(m_type == QueryType.UPDATE)
-		{
-			m_fields.add(field);
+		m_fields.add(field);
 
-			string quoted_value = isString ? SQLite.quote_string(value) : value;
-			m_values.add(quoted_value);
-			return true;
-		}
-		Logger.error("update_value_pair");
-
-		return false;
+		string quoted_value = is_string ? SQLite.quote_string(value) : value;
+		m_values.add(quoted_value);
 	}
 
-	public bool where_equal(string field, string value, bool positive = true, bool isString = false)
-	{
-		if(m_type == QueryType.UPDATE
+	public void where_equal(string field, string value, bool positive = true, bool is_string = false)
+	requires (m_type == QueryType.UPDATE
 		|| m_type == QueryType.SELECT
 		|| m_type == QueryType.DELETE)
-		{
-			string condition = "%s = %s";
+	{
+		string condition = "%s = %s";
 
-			string quoted_value = isString ? SQLite.quote_string(value) : value;
+		string quoted_value = is_string ? SQLite.quote_string(value) : value;
 
-			if(!positive)
-				condition = "NOT " + condition;
+		if(!positive)
+			condition = "NOT " + condition;
 
-			m_conditions.add(condition.printf(field, quoted_value));
-			return true;
-		}
-		Logger.error("where_equalString");
-		return false;
+		m_conditions.add(condition.printf(field, quoted_value));
 	}
 
-	public bool where(string condition)
-	{
-		if(m_type == QueryType.UPDATE
+	public void where(string condition)
+	requires (m_type == QueryType.UPDATE
 		|| m_type == QueryType.SELECT
 		|| m_type == QueryType.DELETE)
-		{
-			m_conditions.add(condition);
-			return true;
-		}
-		Logger.error("where");
-		return false;
+	{
+		m_conditions.add(condition);
 	}
 
-	public bool where_in_string(string field, Gee.List<string> values, bool instr = false)
+	public void where_in_string(string field, Gee.List<string> values, bool instr = false)
+	requires (m_type == QueryType.UPDATE
+		|| m_type == QueryType.SELECT
+		|| m_type == QueryType.DELETE)
 	{
 		if(!instr)
-		{
-			if(m_type == QueryType.UPDATE
-			|| m_type == QueryType.SELECT
-			|| m_type == QueryType.DELETE)
-			{
-				if (values.size == 0)
-				{
-					m_conditions.add("1 <> 1");
-				}
-				else {
-					var compound_values = new GLib.StringBuilder();
-					foreach(string value in values)
-					{
-						compound_values.append(SQLite.quote_string(value));
-						compound_values.append(", ");
-					}
-					compound_values.erase(compound_values.len - 2);
-					m_conditions.add("%s IN (%s)".printf(field, compound_values.str));
-				}
-				return true;
-			}
-		}
-		else
-		{
-			if(m_type == QueryType.UPDATE
-			|| m_type == QueryType.SELECT
-			|| m_type == QueryType.DELETE)
-			{
-				foreach(string value in values)
-				{
-					this.where("instr(field, %s) > 0".printf(SQLite.quote_string(value)));
-				}
-			}
-			return true;
-		}
-
-		Logger.error("where_in_string");
-		return false;
-	}
-
-	public bool where_in_int(string field, Gee.List<int> values)
-	{
-		if(m_type == QueryType.UPDATE
-		|| m_type == QueryType.SELECT
-		|| m_type == QueryType.DELETE)
 		{
 			if (values.size == 0)
 			{
@@ -171,18 +102,43 @@ public class FeedReader.QueryBuilder : GLib.Object {
 			}
 			else {
 				var compound_values = new GLib.StringBuilder();
-				foreach(int value in values)
+				foreach(string value in values)
 				{
-					compound_values.append(value.to_string());
+					compound_values.append(SQLite.quote_string(value));
 					compound_values.append(", ");
 				}
 				compound_values.erase(compound_values.len - 2);
 				m_conditions.add("%s IN (%s)".printf(field, compound_values.str));
 			}
-			return true;
 		}
-		Logger.error("where_in_int");
-		return false;
+		else
+		{
+			foreach(string value in values)
+			{
+				this.where("instr(field, %s) > 0".printf(SQLite.quote_string(value)));
+			}
+		}
+	}
+
+	public void where_in_int(string field, Gee.List<int> values)
+	requires (m_type == QueryType.UPDATE
+		|| m_type == QueryType.SELECT
+		|| m_type == QueryType.DELETE)
+	{
+		if (values.size == 0)
+		{
+			m_conditions.add("1 <> 1");
+		}
+		else {
+			var compound_values = new GLib.StringBuilder();
+			foreach(int value in values)
+			{
+				compound_values.append(value.to_string());
+				compound_values.append(", ");
+			}
+			compound_values.erase(compound_values.len - 2);
+			m_conditions.add("%s IN (%s)".printf(field, compound_values.str));
+		}
 	}
 
 	public void order_by(string field, bool desc)

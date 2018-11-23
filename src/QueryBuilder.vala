@@ -73,10 +73,9 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		if(m_type == QueryType.UPDATE)
 		{
 			m_fields.add(field);
-			if(isString)
-				m_values.add("'%s'".printf(value));
-			else
-				m_values.add(value);
+
+			string quoted_value = isString ? SQLite.quote_string(value) : value;
+			m_values.add(quoted_value);
 			return true;
 		}
 		Logger.error("updateValuePair");
@@ -92,13 +91,12 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		{
 			string condition = "%s = %s";
 
-			if(isString)
-				condition = "%s = \"%s\"";
+			string quoted_value = isString ? SQLite.quote_string(value) : value;
 
 			if(!positive)
 				condition = "NOT " + condition;
 
-			m_conditions.add(condition.printf(field, value));
+			m_conditions.add(condition.printf(field, quoted_value));
 			return true;
 		}
 		Logger.error("addEqualsConditionString");
@@ -134,11 +132,10 @@ public class FeedReader.QueryBuilder : GLib.Object {
 					var compound_values = new GLib.StringBuilder();
 					foreach(string value in values)
 					{
-						compound_values.append("\"");
-						compound_values.append(value);
-						compound_values.append("\",");
+						compound_values.append(SQLite.quote_string(value));
+						compound_values.append(", ");
 					}
-					compound_values.erase(compound_values.len - 1);
+					compound_values.erase(compound_values.len - 2);
 					m_conditions.add("%s IN (%s)".printf(field, compound_values.str));
 				}
 				return true;
@@ -152,7 +149,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
 			{
 				foreach(string value in values)
 				{
-					this.addCustomCondition("instr(field, \"%s\") > 0".printf(value));
+					this.addCustomCondition("instr(field, %s) > 0".printf(SQLite.quote_string(value)));
 				}
 			}
 			return true;

@@ -25,7 +25,6 @@ public enum FeedReader.QueryType {
 public class FeedReader.QueryBuilder : GLib.Object {
 	private QueryType m_type;
 	private string m_table;
-	private bool m_noError;
 	private Gee.List<string> m_fields;
 	private Gee.List<string> m_values;
 	private Gee.List<string> m_conditions;
@@ -42,7 +41,6 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		m_conditions = new Gee.ArrayList<string>();
 		m_type = type;
 		m_table = table;
-		m_noError = true;
 		m_orderBy = "";
 		m_limit = "";
 		m_offset = "";
@@ -239,12 +237,6 @@ public class FeedReader.QueryBuilder : GLib.Object {
 
 	public string to_string()
 	{
-		if(!m_noError)
-		{
-			Logger.error("build query");
-			return "error setting up the query";
-		}
-
 		var query = new GLib.StringBuilder();
 		switch(m_type)
 		{

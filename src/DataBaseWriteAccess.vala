@@ -563,7 +563,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 	{
 		var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
 		query.update_value_pair("unread", ArticleStatus.READ.to_string());
-		query.where_in_string("feedID", getFeedIDofCategorie(catID));
+		query.where_in_strings("feedID", getFeedIDofCategorie(catID));
 		m_db.simple_query(query.to_string());
 	}
 

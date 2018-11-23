@@ -301,6 +301,26 @@ meson.add_install_script('meson_post_install.py')
 
 # tests
 
+querybuilder_test = executable(
+  'test_querybuilder',
+  [
+    'src/TestQueryBuilder.vala'
+  ],
+  c_args: c_args,
+  # The tests intentionally don't catch exceptions
+  vala_args: vala_args + ['--disable-warnings'],
+  dependencies: feedreader_deps,
+  link_with: [
+    feedreader_lib
+  ]
+)
+
+if gtester.found()
+    test('QueryBuilder', gtester, args:['-k', '-o', meson.build_root() + '/querybuilder.gtester.log', querybuilder_test])
+else
+    test('QueryBuilder', querybuilder_test)
+endif
+
 stringutils_test = executable(
   'test_stringutils',
   [

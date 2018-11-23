@@ -174,9 +174,9 @@ public class FeedReader.QueryBuilder : GLib.Object {
 				foreach(int value in values)
 				{
 					compound_values.append(value.to_string());
-					compound_values.append(",");
+					compound_values.append(", ");
 				}
-				compound_values.erase(compound_values.len - 1);
+				compound_values.erase(compound_values.len - 2);
 				m_conditions.add("%s IN (%s)".printf(field, compound_values.str));
 			}
 			return true;

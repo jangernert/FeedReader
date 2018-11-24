@@ -69,7 +69,6 @@ void main(string[] args)
 		query.limit(100);
 		query.offset(5);
 
-		print("%s\n", query.to_string());
 		assert(query.to_string() == "SELECT column1, column2, column3 " +
 									"FROM test " +
 									"WHERE column3 = '\"something''' " +

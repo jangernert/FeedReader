@@ -17,9 +17,12 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 	protected SQLite m_db;
 
+	static construct {
+		Sqlite.config(Sqlite.Config.LOG, errorLogCallback);
+	}
+
 	public DataBaseReadOnly(string db_file = "feedreader-%01i.db".printf(Constants.DB_SCHEMA_VERSION))
 	{
-		Sqlite.config(Sqlite.Config.LOG, errorLogCallback);
 		string db_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/" + db_file;
 
 		Logger.debug(@"Opening Database: $db_path");

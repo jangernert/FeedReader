@@ -185,7 +185,6 @@ vala_sources = [
   'src/Share/ShareAccountInterface.vala',
   'src/Logger.vala',
   'src/Enums.vala',
-  'src/FuncUtils.vala',
   'src/DataBaseReadOnly.vala',
   'src/ListUtils.vala',
   'src/Settings.vala',

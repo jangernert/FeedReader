@@ -1,4 +1,4 @@
-FROM docker.io/fedora:latest
+FROM docker.io/fedora:29
 
 RUN dnf -y install \
         gcc \
@@ -39,6 +39,7 @@ RUN dnf -y install \
 		libidn-devel \
 		libxml2-devel \
 		libxslt-devel \
+		make \
 		nodejs \
 		postgresql \
 		postgresql-devel \
@@ -56,4 +57,5 @@ RUN gem install bundler
 # Using this fork of Feedbin since we don't setup Stripe:
 #
 RUN git clone --single-branch -b stripe_optional https://github.com/brendanlong/feedbin.git
+RUN bundle config build.nokogiri --use-system-libraries
 RUN cd feedbin && bundle

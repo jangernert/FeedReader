@@ -51,6 +51,14 @@
     <binary>feedreader</binary>
   </provides>
   <releases>
+    <release version="2.5.0" date="2018-11-23">
+      <description>
+        <ul>
+		  <li>Attempt to unlock the keyring on startup if necessary</li>
+          <li>Improvements to the database internals to make crashes less likely</li>
+		</ul>
+      </description>
+    </release>
     <release version="2.4.1" date="2018-11-08">
       <description>
         <ul>

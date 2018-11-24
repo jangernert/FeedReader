@@ -1,6 +1,26 @@
 version: 2
+
 jobs:
   build:
+    docker:
+      # See docker/Dockerfile
+      - image: feedreader/fedora-feedreader-devel
+
+    working_directory: ~/FeedReader
+    steps:
+      - checkout
+      - run:
+          name: Configure
+          command: meson builddir
+      - run:
+          name: Build
+          command: cd builddir && ninja -j4
+      - persist_to_workspace:
+          root: ~/FeedReader
+          paths:
+            - '*'
+
+  test:
     docker:
       # See docker/Dockerfile
       - image: feedreader/fedora-feedreader-devel
@@ -20,7 +40,7 @@ jobs:
       - image: postgres:9.6.5-alpine
       - image: redis:3.2.11-alpine
 
-    working_directory: ~/FeedReader
+    working_directory: ~
     steps:
       - run:
           name: Setup Feedbin
@@ -34,21 +54,16 @@ jobs:
           name: Run Feedbin
           command: cd /feedbin && rackup
           background: true
-      - checkout
-      - run:
-          name: Configure
-          command: meson builddir
-      - run:
-          name: Build
-          command: cd builddir && ninja -j4
+      - attach_workspace:
+          at: ~/FeedReader
       - run:
           name: Test
-          command: cd builddir && ninja test
+          command: cd ~/FeedReader/builddir && ninja test
       - run:
           name: Generate JUnit XML
           command: |
               mkdir -p /tmp/test-results/junit/
-              cd builddir
+              cd ~/FeedReader/builddir
               for f in *.gtester.log; do
                   xsltproc -o /tmp/test-results/junit/$(basename $f .gtester.log).xml ../gtester-to-junit-4.xsl $f;
               done
@@ -58,3 +73,13 @@ jobs:
       - store_artifacts:
           path: /tmp/test-results/junit
           destination: test-results
+
+workflows:
+  version: 2
+
+  main:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build

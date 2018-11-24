@@ -300,43 +300,29 @@ executable(
 meson.add_install_script('meson_post_install.py')
 
 # tests
+tests = [
+  'QueryBuilder',
+  'StringUtils'
+]
 
-querybuilder_test = executable(
-  'test_querybuilder',
-  [
-    'src/TestQueryBuilder.vala'
-  ],
-  c_args: c_args,
-  # The tests intentionally don't catch exceptions
-  vala_args: vala_args + ['--disable-warnings'],
-  dependencies: feedreader_deps,
-  link_with: [
-    feedreader_lib
-  ]
-)
+foreach test_name : tests
+  test_target = executable(
+    'test_' + test_name.to_lower(),
+    [
+      'src/Test' + test_name + '.vala'
+    ],
+    c_args: c_args,
+    # The tests intentionally don't catch exceptions
+    vala_args: vala_args + ['--disable-warnings'],
+    dependencies: feedreader_deps,
+    link_with: [
+      feedreader_lib
+    ]
+  )
 
-if gtester.found()
-    test('QueryBuilder', gtester, args:['-k', '-o', meson.build_root() + '/querybuilder.gtester.log', querybuilder_test])
-else
-    test('QueryBuilder', querybuilder_test)
-endif
-
-stringutils_test = executable(
-  'test_stringutils',
-  [
-    'src/TestStringUtils.vala'
-  ],
-  c_args: c_args,
-  # The tests intentionally don't catch exceptions
-  vala_args: vala_args + ['--disable-warnings'],
-  dependencies: feedreader_deps,
-  link_with: [
-    feedreader_lib
-  ]
-)
-
-if gtester.found()
-    test('StringUtils', gtester, args:['-k', '-o', meson.build_root() + '/stringutils.gtester.log', stringutils_test])
-else
-    test('StringUtils', stringutils_test)
-endif
+  if gtester.found()
+      test(test_name, gtester, args:['-k', '-o', meson.build_root() + '/' + test_name.to_lower() + '.gtester.log', test_target])
+  else
+      test(test_name, test_target)
+  endif
+endforeach

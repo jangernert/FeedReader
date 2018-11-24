@@ -24,7 +24,7 @@ namespace FeedReader {
 		public const string copyright     = "Copyright © 2014-2018 Jan Lukas Gernert";
 		public const string version       = "@VERSION@";
 		public const string comments      = N_("Desktop Client for various RSS Services");
-		public const string[] authors     = { "Jan Lukas Gernert", "Bilal Elmoussaoui", "Anwesh Reddy" , "Jason Scurtu", null };
+		public const string[] authors     = { "Jan Lukas Gernert", "Bilal Elmoussaoui", "Brendan Long", "Anwesh Reddy" , "Jason Scurtu", null };
 		public const string[] documenters = { "nobody", null };
 		public const string[] artists     = {"Jan Lukas Gernert", "Harvey Cabaguio", "Jorge Marques", "Andrew Joyce", null};
 		public const string iconName      = "org.gnome.FeedReader";

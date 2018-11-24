@@ -56,11 +56,6 @@ public class FeedReader.FeedServer : GLib.Object {
 				if(secrets == null)
 					secrets = Secret.Collection.create_sync(secret_service, "Login", Secret.COLLECTION_DEFAULT, Secret.CollectionCreateFlags.COLLECTION_CREATE_NONE);
 
-				// Attempt to unlock the keyring if it wasn't already
-				var collections_to_unlock = new List<Secret.Collection>();
-				collections_to_unlock.append(secrets);
-				secret_service.unlock_sync(collections_to_unlock, null, null);
-
 				// Intentionally creating a new database handle here so we don't
 				// have to deal with threading issues. *Do not use the static
 				// getter for this!*

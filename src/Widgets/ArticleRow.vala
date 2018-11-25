@@ -393,16 +393,12 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		var copyArticleURL_action = new GLib.SimpleAction("copyArticleURL", null);
 		copyArticleURL_action.activate.connect(() => {
 				copyArticleURL(m_article.getArticleID());
-				Logger.debug("Clicked");
-				//  pop.hide();
 		});
 		copyArticleURL_action.set_enabled(true);
 		FeedReaderApp.get_default().add_action(copyArticleURL_action);
 
 		var menu = new GLib.Menu();
 		menu.append(_("Copy URL"), "copyArticleURL");
-
-
 
 		pop.set_position(Gtk.PositionType.BOTTOM);
 		pop.bind_model(menu, "app");

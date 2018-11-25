@@ -361,22 +361,57 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 
 	private bool rowClick(Gdk.EventButton event)
 	{
-		// only accept left mouse button
-		if(event.button != 1)
-			return false;
+		switch (event.button) {
+			//if double left clicked, open the article in an external browser:
+			case 1:
+				if (event.type != Gdk.EventType.@2BUTTON_PRESS) return false;
 
-		// only double click
-		if(event.type != Gdk.EventType.@2BUTTON_PRESS)
-			return false;
+				try{
+					Gtk.show_uri_on_window(MainWindow.get_default(), m_article.getURL(), Gdk.CURRENT_TIME);
+				}
+				catch(GLib.Error e){
+					Logger.debug("could not open the link in an external browser: %s".printf(e.message));
+				}
+				break;
 
-		try{
-			Gtk.show_uri_on_window(MainWindow.get_default(), m_article.getURL(), Gdk.CURRENT_TIME);
-		}
-		catch(GLib.Error e){
-			Logger.debug("could not open the link in an external browser: %s".printf(e.message));
+			//If right clicked, show context menu:
+			case 3:
+				this.onRightClick();
+				break;
+
+			//Otherwise return false;
+			default:
+				return false;
 		}
 
 		return true;
+	}
+
+	private void onRightClick()
+	{
+		var pop = new Gtk.Popover(this);
+		var copyArticleURL_action = new GLib.SimpleAction("copyArticleURL", null);
+		copyArticleURL_action.activate.connect(() => {
+				copyArticleURL(m_article.getArticleID());
+				Logger.debug("Clicked");
+				//  pop.hide();
+		});
+		copyArticleURL_action.set_enabled(true);
+		FeedReaderApp.get_default().add_action(copyArticleURL_action);
+
+		var menu = new GLib.Menu();
+		menu.append(_("Copy URL"), "copyArticleURL");
+
+
+
+		pop.set_position(Gtk.PositionType.BOTTOM);
+		pop.bind_model(menu, "app");
+		pop.closed.connect(() => {
+			this.unset_state_flags(Gtk.StateFlags.PRELIGHT);
+		});
+
+		pop.show();
+		this.set_state_flags(Gtk.StateFlags.PRELIGHT, true);
 	}
 
 
@@ -615,6 +650,22 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 	public string getURL()
 	{
 		return m_article.getURL();
+	}
+
+	public void copyArticleURL(string article_id){
+		/*
+			Copy selected article url to clipboard
+		*/
+		if (article_id != ""){
+			Article? article =  DataBase.readOnly().read_article(article_id);
+			if (article != null){
+				string article_url = article.getURL();
+				Gdk.Display display = MainWindow.get_default().get_display ();
+				Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display (display, Gdk.SELECTION_CLIPBOARD);
+
+				clipboard.set_text(article_url, article_url.length);
+			}
+		}
 	}
 
 	public void reveal(bool reveal, uint duration = 500)

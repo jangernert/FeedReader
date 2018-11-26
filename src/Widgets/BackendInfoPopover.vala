@@ -74,9 +74,9 @@ public class FeedReader.BackendInfoPopover : Gtk.Popover {
 		}
 
 
-		if(BackendFlags.FREE_SOFTWARE in m_info.flags)
+		if(BackendFlags.OPEN_SOURCE in m_info.flags)
 		{
-			var icon = getIcon("feed-gpl-symbolic", "Free Software");
+			var icon = getIcon("feed-open-source-symbolic", "Open Source");
 			grid.attach(icon, 1, 1, 1, 1);
 		}
 		else if(BackendFlags.PROPRIETARY in m_info.flags)

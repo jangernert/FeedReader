@@ -34,7 +34,7 @@
 		<file preprocess="xml-stripblanks">icons/24x24/status/feed-cloud-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">icons/24x24/status/feed-copyright-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">icons/24x24/status/feed-free-symbolic.svg</file>
-		<file preprocess="xml-stripblanks">icons/24x24/status/feed-gpl-symbolic.svg</file>
+		<file preprocess="xml-stripblanks">icons/24x24/status/feed-open-source-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">icons/24x24/status/feed-local-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">icons/24x24/status/feed-nonfree-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">icons/24x24/status/feed-rss-symbolic.svg</file>

@@ -38,7 +38,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public BackendFlags getFlags()
 	{
-		return (BackendFlags.LOCAL | BackendFlags.FREE_SOFTWARE | BackendFlags.FREE);
+		return (BackendFlags.LOCAL | BackendFlags.OPEN_SOURCE | BackendFlags.FREE);
 	}
 
 	public string getID()

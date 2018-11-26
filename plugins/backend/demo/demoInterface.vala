@@ -40,7 +40,7 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	// - LOCAL
 	// - HOSTED
 	// - SELF_HOSTED
-	// - FREE_SOFTWARE
+	// - OPEN_SOURCE
 	// - PROPRIETARY
 	// - FREE
 	// - PAID_PREMIUM

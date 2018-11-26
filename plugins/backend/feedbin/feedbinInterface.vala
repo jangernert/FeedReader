@@ -37,7 +37,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public BackendFlags getFlags()
 	{
-		return (BackendFlags.HOSTED | BackendFlags.PROPRIETARY | BackendFlags.PAID);
+		return (BackendFlags.HOSTED | BackendFlags.OPEN_SOURCE | BackendFlags.PAID);
 	}
 
 	public string getID()

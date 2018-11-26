@@ -42,7 +42,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 
 	public BackendFlags getFlags()
 	{
-		return (BackendFlags.SELF_HOSTED | BackendFlags.FREE_SOFTWARE | BackendFlags.FREE);
+		return (BackendFlags.SELF_HOSTED | BackendFlags.OPEN_SOURCE | BackendFlags.FREE);
 	}
 
 	public string getID()

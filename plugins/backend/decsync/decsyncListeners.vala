@@ -266,7 +266,7 @@ public class FeedReader.DecsyncListeners : GLib.Object {
 
 	private static void addCategory(decsyncInterface plugin, string catID)
 	{
-		if (catID == plugin.uncategorizedID() || catID == CategoryID.MASTER.to_string() || plugin.m_db.category_exists(catID))
+		if (catID == plugin.uncategorizedID() || catID == CategoryID.MASTER.to_string() || plugin.m_db.read_category(catID) != null)
 		{
 			return;
 		}

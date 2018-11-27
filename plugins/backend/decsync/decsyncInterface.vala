@@ -470,7 +470,7 @@ public class FeedReader.decsyncInterface : Peas.ExtensionBase, FeedServerInterfa
 	public string createCategory(string title, string? parentID)
 	{
 		string? catID = m_db.getCategoryID(title);
-		while (catID == null || m_db.category_exists(catID))
+		while (catID == null || m_db.read_category(catID) != null)
 		{
 			catID = "catID%05d".printf(Random.int_range(0, 100000));
 		}

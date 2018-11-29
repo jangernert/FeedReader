@@ -393,9 +393,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		{
 			string cID = createCategory(newCatName, null);
 			var cat = new Category(cID, newCatName, 0, 99, CategoryID.MASTER.to_string(), 1);
-			var list = new Gee.ArrayList<Category>();
-			list.add(cat);
-			m_db_write.write_categories(list);
+			m_db_write.write_categories(ListUtils.single(cat));
 			catIDs.add(cID);
 		}
 		else if(catID != null && newCatName == null)
@@ -410,14 +408,12 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		feedID = Uuid.string_random();
 
 		Logger.info(@"addFeed: ID = $feedID");
-		Feed? Feed = m_utils.downloadFeed(m_session, feedURL, feedID, catIDs, out errmsg);
+		Feed? feed = m_utils.downloadFeed(m_session, feedURL, feedID, catIDs, out errmsg);
 
-		if(Feed != null)
+		if(feed != null)
 		{
-			if(!m_db.feed_exists(Feed.getURL())) {
-				var list = new Gee.ArrayList<Feed>();
-				list.add(Feed);
-				m_db_write.write_feeds(list);
+			if(!m_db.feed_exists(feed.getURL())) {
+				m_db_write.write_feeds(ListUtils.single(feed));
 				return true;
 			}
 		}
@@ -436,14 +432,14 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			string url = f.getXmlUrl();
 			Logger.info(@"addFeed: url = $url, ID = $feedID");
 			string errmsg = "";
-			Feed? Feed = m_utils.downloadFeed(m_session, url, feedID, f.getCatIDs(), out errmsg);
+			Feed? feed = m_utils.downloadFeed(m_session, url, feedID, f.getCatIDs(), out errmsg);
 
-			if(Feed != null)
+			if(feed != null)
 			{
-				if(Feed.getTitle() != "No Title")
-					Feed.setTitle(f.getTitle());
+				if(feed.getTitle() != "No Title")
+					feed.setTitle(f.getTitle());
 
-				finishedFeeds.add(Feed);
+				finishedFeeds.add(feed);
 			}
 			else
 				Logger.error("Couldn't add Feed: " + f.getXmlUrl());

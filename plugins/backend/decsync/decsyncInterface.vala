@@ -389,9 +389,7 @@ public class FeedReader.decsyncInterface : Peas.ExtensionBase, FeedServerInterfa
 		{
 			string cID = createCategory(newCatName, null);
 			var cat = new Category(cID, newCatName, 0, 99, CategoryID.MASTER.to_string(), 1);
-			var list = new Gee.ArrayList<Category>();
-			list.add(cat);
-			m_db_write.write_categories(list);
+			m_db_write.write_categories(ListUtils.single(cat));
 			catIDs.add(cID);
 		}
 		else if(catID != null && newCatName == null)
@@ -406,20 +404,18 @@ public class FeedReader.decsyncInterface : Peas.ExtensionBase, FeedServerInterfa
 		feedID = feedURL;
 
 		Logger.info(@"addFeed: ID = $feedID");
-		Feed? Feed = m_utils.downloadFeed(m_session, feedURL, feedID, catIDs, out errmsg);
+		Feed? feed = m_utils.downloadFeed(m_session, feedURL, feedID, catIDs, out errmsg);
 
-		if(Feed != null)
+		if(feed != null)
 		{
-			if(!m_db.feed_exists(Feed.getURL())) {
-				var list = new Gee.ArrayList<Feed>();
-				list.add(Feed);
-				m_db_write.write_feeds(list);
+			if(!m_db.feed_exists(feed.getURL())) {
+				m_db_write.write_feeds(ListUtils.single(feed));
 
 				if (updateDecsync)
 				{
 					m_sync.setEntry({"feeds", "subscriptions"}, stringToNode(feedID), boolToNode(true));
-					renameFeed(feedID, Feed.getTitle());
-					moveFeed(feedID, Feed.getCatString(), null);
+					renameFeed(feedID, feed.getTitle());
+					moveFeed(feedID, feed.getCatString(), null);
 				}
 
 				m_sync.executeStoredEntries({"feeds", "names"}, new Unit(),

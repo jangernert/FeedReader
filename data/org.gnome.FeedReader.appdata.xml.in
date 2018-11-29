@@ -51,6 +51,16 @@
     <binary>feedreader</binary>
   </provides>
   <releases>
+    <release version="2.5.1" date="2018-11-29">
+      <description>
+        <ul>
+		  <li>Add right-click menu on article rows to copy URL</li>
+		  <li>Try to unlock the keyring when we use it instead of at startup</li>
+		  <li>Change how we delete categories so feeds and subcategories are recategorized correctly</li>
+          <li>Feedbin Plugin: Mark Feedbin as free software</li>
+		</ul>
+      </description>
+    </release>
     <release version="2.5.0" date="2018-11-23">
       <description>
         <ul>

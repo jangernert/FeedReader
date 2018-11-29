@@ -271,9 +271,7 @@ public class FeedReader.DecsyncListeners : GLib.Object {
 			return;
 		}
 		var cat = new Category(catID, catID, 0, 99, CategoryID.MASTER.to_string(), 1);
-		var list = new Gee.LinkedList<Category>();
-		list.add(cat);
-		plugin.m_db_write.write_categories(list);
+		plugin.m_db_write.write_categories(ListUtils.single(cat));
 		plugin.m_sync.executeStoredEntries({"categories", "names"}, new Unit(),
 			stringEquals(catID)
 		);

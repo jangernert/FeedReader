@@ -511,14 +511,12 @@ namespace FeedReader {
 			{
 				var listType = isCat ? FeedListType.CATEGORY : FeedListType.FEED;
 				var articles = DataBase.readOnly().read_articles(feedID, listType, ArticleListState.UNREAD, "", -1);
+				var articleIDsList = new Gee.ArrayList<string>();
 				foreach (var article in articles)
 				{
-					articleIDs += "," + article.getArticleID();
+					articleIDsList.add(article.getArticleID());
 				}
-				if (articleIDs != "")
-				{
-					articleIDs = articleIDs.substring(1);
-				}
+				articleIDs = StringUtils.join(articleIDsList, ",");
 			}
 
 			if(isCat)
@@ -600,14 +598,12 @@ namespace FeedReader {
 			if(useID)
 			{
 				var articles = DataBase.readOnly().read_articles(FeedID.ALL.to_string(), FeedListType.FEED, ArticleListState.UNREAD, "", -1);
+				var articleIDsList = new Gee.ArrayList<string>();
 				foreach (var article in articles)
 				{
-					articleIDs += "," + article.getArticleID();
+					articleIDsList.add(article.getArticleID());
 				}
-				if (articleIDs != "")
-				{
-					articleIDs = articleIDs.substring(1);
-				}
+				articleIDs = StringUtils.join(articleIDsList, ",");
 			}
 
 			if(m_offline)

@@ -364,13 +364,7 @@ public class FeedReader.decsyncInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public string createTag(string caption)
 	{
-		string tagID = "1";
-
-		if(!m_db.isTableEmpty("tags"))
-			tagID = (int.parse(m_db.getMaxID("tags", "tagID")) + 1).to_string();
-
-		Logger.info("createTag: ID = " + tagID);
-		return tagID;
+		return "";
 	}
 
 	public void deleteTag(string tagID)

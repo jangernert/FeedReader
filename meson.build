@@ -88,6 +88,9 @@ subdir('libraries/libgtkimageview')
 subdir('libraries/libIvy')
 subdir('libraries/htmlclean')
 subdir('libraries/WebExtension')
+subdir('libraries/libnxml')
+subdir('libraries/libmrss')
+subdir('libraries/rss-glib')
 subdir('data')
 
 
@@ -95,6 +98,7 @@ subdir('data')
 libgd_vapi          = vala_compiler.find_library('gd-1.0', dirs: VAPI_DIR)
 gtkimageview_vapi   = vala_compiler.find_library('gtkimageview', dirs: VAPI_DIR)
 htmlclean_vapi      = vala_compiler.find_library('htmlclean', dirs: VAPI_DIR)
+rss_glib_vapi       = vala_compiler.find_library('rss-glib-1.0', dirs: VAPI_DIR)
 
 # htmlclean
 htmlclean  = declare_dependency(
@@ -124,6 +128,13 @@ libgtkimageview = declare_dependency(
 libivy = declare_dependency(
   link_with: ivy_lib,
   include_directories: ivy_inc
+)
+
+# lib_rss_glib
+lib_rss_glib = declare_dependency(
+  link_with: rss_glib_lib,
+  include_directories: rss_glib_inc,
+  dependencies: rss_glib_vapi
 )
 
 vala_sources = [
@@ -187,6 +198,7 @@ vala_sources = [
   'src/Enums.vala',
   'src/DataBaseReadOnly.vala',
   'src/ListUtils.vala',
+  'src/Rfc822.vala',
   'src/Settings.vala',
   'src/StringUtils.vala',
   'src/Structs.vala',

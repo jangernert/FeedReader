@@ -64,7 +64,7 @@ public class FeedReader.DecsyncUtils : GLib.Object {
 			return null;
 		}
 		string xml = (string)msg.response_body.flatten().data;
-		string url = "https://google.com";
+		string? url = null;
 
 		// parse
 		Rss.Parser parser = new Rss.Parser();

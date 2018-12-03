@@ -41,11 +41,10 @@ public class FeedReader.localUtils : GLib.Object {
 			return null;
 		}
 		string xml = (string)msg.response_body.flatten().data;
-		string url = "https://google.com";
+		string? url = null;
 
 		// parse
 		Rss.Parser parser = new Rss.Parser();
-
 		try
 		{
 			parser.load_from_data(xml, xml.length);

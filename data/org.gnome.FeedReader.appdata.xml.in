@@ -51,6 +51,13 @@
     <binary>feedreader</binary>
   </provides>
   <releases>
+    <release version="2.6.0" date="2018-12-03">
+      <description>
+        <ul>
+		  <li>Add DecSync plugin</li>
+		</ul>
+      </description>
+    </release>
     <release version="2.5.1" date="2018-11-29">
       <description>
         <ul>

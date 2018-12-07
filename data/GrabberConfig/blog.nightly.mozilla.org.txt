@@ -1,0 +1,4 @@
+title: //h1
+date: //time/@datetime
+
+test_url: https://blog.nightly.mozilla.org/2018/06/27/protecting-your-privacy-in-firefox-pre-release/

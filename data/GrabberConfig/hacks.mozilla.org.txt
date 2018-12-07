@@ -1,0 +1,5 @@
+title: //div[@id="content-head"]//h1
+date: //abbr[@class='published']/@title
+author: //h3[@class='post__author']//a[@class='url']
+
+test_url: https://hacks.mozilla.org/2018/01/making-webassembly-even-faster-firefoxs-new-streaming-and-tiering-compiler/

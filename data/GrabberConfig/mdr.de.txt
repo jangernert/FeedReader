@@ -1,0 +1,14 @@
+body: //div[contains(@class, 'section') and contains(@class, 'sectionZ')]
+date: //p[@class='timestamp']
+
+strip_id_or_class: hidden
+strip_id_or_class: conComments
+strip_id_or_class: firstMediaFull
+
+# Will remove all image and video embeds for a cleaner reading experience.
+strip_id_or_class: cssBoxTeaserStandard
+strip_id_or_class: cssBoxTeaserLink
+
+test_url: https://www.mdr.de/sachsen-anhalt/dessau/anhalt/todesursache-koethen-herzinfarkt-100.html
+test_url: https://www.mdr.de/sachsen-anhalt/magdeburg/magdeburg/ein-job-fuer-jonas-100.html
+test_url: https://www.mdr.de/sachsen-anhalt/dessau/anhalt/koethen-demonstration-am-sonntag-100.html

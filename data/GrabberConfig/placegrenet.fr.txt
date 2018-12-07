@@ -1,0 +1,23 @@
+title: //h1[contains(concat(' ',normalize-space(@class),' '),' entry-title ')]
+
+author: //span[@class='auteurcat']
+
+body: //div[contains(concat(' ',normalize-space(@class),' '),' entry-content ')]
+
+find_string: <strong>FOCUS &#8211; 
+replace_string: <strong>
+
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' ms-auth-header ')]/ancestor::fieldset
+
+# Wallabag-specific login directives (not supported in FTR):
+requires_login: yes
+not_logged_in_xpath: //div[contains(concat(' ',normalize-space(@class),' '),' ms-auth-header ')]
+login_uri: https://www.placegrenet.fr/wp-login.php
+login_username_field: log
+login_password_field: pwd
+login_extra_fields: rememberme=forever
+login_extra_fields: wp-submit=Se connecter
+login_extra_fields: testcookie=1
+
+test_url: https://www.placegrenet.fr/2018/07/27/condition-animale-pressee-par-des-associations-la-ville-de-grenoble-vote-un-voeu-pour-interpeller-letat/201804
+

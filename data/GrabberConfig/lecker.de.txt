@@ -1,0 +1,23 @@
+# author: kreativmonkey
+
+# Article information
+title: //h1
+
+
+# Content
+body: //article[contains(@class, 'recipe')]
+
+
+# Cleanup
+strip_id_or_class: social-bar
+strip_id_or_class: social-bar-sticky
+strip_id_or_class: dikr-teaser-native
+strip_id_or_class: list--tags
+strip_id_or_class: nativendo-artikel
+strip_id_or_class: adverteaser
+strip_id_or_class: taboolaWrapper
+strip_id_or_class: dikr-responsive-ads-slot
+strip_id_or_class: article-header__copyright
+
+test_url: http://www.lecker.de/lachstatar-mit-honig-limetten-dressing-64756.html
+test_content: entkernen und fein würfeln

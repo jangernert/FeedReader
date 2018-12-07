@@ -1,0 +1,16 @@
+body: //section[contains(@class, 'main')]
+author: //span[contains(@class, 'display-name')]
+date: //span[@class="date"]
+
+strip_id_or_class: related
+strip: //aside
+strip: //svg
+# For Gumbo parsing <svg>, <math> namespaced elems
+strip: //*[local-name() = 'svg']
+strip: //div[contains(@class, 'storytype-label-wrapper')]
+strip: //figcaption[contains(@class, 'caption')]
+
+prune: yes
+tidy: no
+
+test_url: https://earther.com/ireland-is-officially-the-first-country-to-divest-from-1827552460

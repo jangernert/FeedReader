@@ -1,0 +1,9 @@
+title: //h1[@class='mainContentTitle']
+date: //span[@class='publication']/time/@datetime
+
+body: //div[@class='articleText']
+strip_id_or_class: rekommenderade
+strip_id_or_class: disqus
+strip_id_or_class: annonser
+
+test_url: http://www.lalibre.be/actu/international/emmanuelle-mignon-l-ex-directrice-de-cabinet-de-sarkozy-mise-en-examen-56b10c9d3570b1fc10e24f20

@@ -1,0 +1,4 @@
+body: //div[contains(@class, 'field-name-body') or contains(@class, 'featured-image')]
+
+test_url: http://www.maxim.com/rss-feeds.xml
+test_url: http://www.maxim.com/entertainment/article/second-city-chicago-goes-flames

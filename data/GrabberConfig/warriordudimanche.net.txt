@@ -1,0 +1,4 @@
+title: //article[contains(concat(' ',normalize-space(@class),' '),' article ')]//header//h1
+body: //article[contains(concat(' ',normalize-space(@class),' '),' article ')]//section
+
+test_url: http://warriordudimanche.net/article458/589065212a599

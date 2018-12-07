@@ -1,0 +1,12 @@
+
+body: //div[@id='artLinkAnc']
+body: //div[contains(concat(' ',normalize-space(@class),' '),' artAcc ')] | //div[contains(concat(' ',normalize-space(@class),' '),' artTxt ')]
+
+author: substring-before(//label[contains(concat(' ',normalize-space(@class),' '),' artAuth ')], ', Le ')
+
+# remove the sentence about buying the newspaper:
+strip: //a[starts-with(@href, 'https://abo.socialter.fr/')]/parent::*
+
+test_url: http://www.socialter.fr/fr/module/99999672/696/ynis_varoufkis__si_je_deviens_un_bon_politicien_flinguez_moi
+test_url: http://www.socialter.fr/fr/module/99999672/659/enqute__comment_leurope_bidouille_ses_objectifs_de_transition_nergtique
+

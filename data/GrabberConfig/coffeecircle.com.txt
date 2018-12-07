@@ -1,0 +1,8 @@
+tidy: no
+prune: no
+body: //div[@class='post--title'] | //div[@class='blog-content']
+strip_id_or_class: tag
+strip_id_or_class: photoset-grid
+strip_id_or_class: newsletter
+
+test_url: https://www.coffeecircle.com/de/b/cold-brew-eiskaffee

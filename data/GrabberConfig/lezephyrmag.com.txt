@@ -1,0 +1,6 @@
+
+body: //div[contains(concat(' ',normalize-space(@class),' '),' entry-content ')]
+
+strip_id_or_class: swp_social_panel
+
+test_url: https://lezephyrmag.com/libre/paroles/jean-roch-waro-voyager-avec-la-musique-est-un-acte-poetique/

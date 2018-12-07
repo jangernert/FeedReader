@@ -1,0 +1,16 @@
+title://h1
+
+author://span[@class="article-authornames"]/a
+
+body: //div[@class='article-view__content']
+
+# this line breaks the parser
+#replace_string("padding-bottom:): "
+
+
+strip://div[@class='adbox-wrapper__label']
+strip://div[@class='adbox-rectangle']
+strip://div[@class='adbox-rectangle']
+strip://div[contains(@class,'article-view__share-links-top')]
+
+test_url: http://www.computerbase.de/news/2012-06/verbraucherzentrale-mahnt-blizzard-fuer-diablo-3-ab/

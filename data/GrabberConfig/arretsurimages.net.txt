@@ -1,0 +1,14 @@
+title://div[@id="titrage-contenu"]/h1[@class="title"]
+author: //div[@id="titrage-contenu"]//a[starts-with(@href,'/recherche.php?auteur_id=')]
+body: //div[@class="contenu-html"]/div[@class="page-pane"]
+
+# Wallabag-specific login directives (not supported in FTR)
+requires_login: yes
+
+login_uri: http://www.arretsurimages.net/forum/login.php
+login_username_field: username
+login_password_field: password
+
+not_logged_in_xpath: //body[@class="not-logged-in"]
+
+test_url: http://www.arretsurimages.net/chroniques/2017-03-04/Mathilde-Larrere-aux-vraies-origines-du-8-mars-id9619

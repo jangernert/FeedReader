@@ -1,0 +1,50 @@
+author: //meta[@name="author"]/@content
+title: //meta[@property="og:title"]/@content
+date: //meta[@property="article:published_time"]/@content
+
+# //picture selector seems to cause problems with text extraction.
+# body: //picture[contains(@class, 'c-picture')] | //div[contains(@class, 'c-entry-content') or contains(@class, 'c-entry-hero__image')]
+body: //div[contains(@class, 'c-entry-content') or contains(@class, 'c-entry-hero__image')]
+# for vergecasts, e.g. http://www.theverge.com/2013/8/22/4648566/the-vergecast-090-august-22th-2013-video
+body: //article
+body: //div[contains(concat(' ',normalize-space(@class),' '),' l-col__main ')]
+
+strip: //aside
+strip: //nav
+
+strip_id_or_class: gallery
+strip_id_or_class: article-meta
+strip_id_or_class: story-navigation
+strip_id_or_class: slegend
+strip_id_or_class: related-product-meta
+strip_id_or_class: comments
+strip_id_or_class: ui-jump-list
+strip_id_or_class: pullquote
+strip_id_or_class: m-ad
+strip_id_or_class: social-sharing
+strip_id_or_class: m-video-entry__excerpt
+strip_id_or_class: hidden
+strip_id_or_class: m-article__follow-bar
+strip_id_or_class: m-article__share-buttons
+strip_id_or_class: l-col__sidebar
+strip_id_or_class: c-river
+strip_id_or_class: chorus-ad-placement
+strip_id_or_class: c-related-list
+
+#2017
+strip_id_or_class: e-image__meta
+replace_string(<strong> </strong>): <!-- nothing -->
+
+replace_string(<noscript>): <div>
+replace_string(</noscript>): </div>
+
+parser: html5php
+
+test_url: http://www.theverge.com/2017/1/12/14244634/signal-app-secure-messaging-trump-surveillance-encryption
+test_contains: While he now lives in an Oakland apartment
+
+test_url: http://www.theverge.com/2012/2/29/2821763/lytro-review
+test_url: http://www.theverge.com/2011/11/3/2534861/nokia-lumia-800-review
+test_url: http://www.theverge.com/2013/2/24/4026114/barnes-noble-shifting-focus-away-from-nook-hardware
+test_url: http://www.theverge.com/2014/6/19/5824072/top-shelf-living-the-dream
+test_url: http://www.theverge.com/rss/frontpage

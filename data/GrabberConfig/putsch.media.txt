@@ -1,0 +1,27 @@
+
+body: //div[contains(concat(' ',normalize-space(@class),' '),' full-width-media" ')]
+
+date: //time/@datetime
+
+prune: no
+
+strip: //time
+strip: //script
+strip_id_or_class: author
+strip_id_or_class: private
+strip_id_or_class: entry-title
+strip_id_or_class: social-fixed
+
+test_url: https://putsch.media/20180628/culture/art-et-expos/la-nuit-des-eglises-a-la-decouverte-dun-patrimoine-francais/
+
+# ----------------------------------------------------------
+# Wallabag-specific login directives (not supported in FTR):
+# ----------------------------------------------------------
+requires_login: yes
+# login required if both the login form and the private div are present:
+not_logged_in_xpath: //form[@id='login_form']
+login_uri: https://putsch.media/wp-ajax.php
+login_username_field: user
+login_password_field: pass
+login_extra_fields: action=login
+

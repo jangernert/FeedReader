@@ -1,0 +1,3 @@
+author: //a[@class="url fn spip_in"]
+
+test_url: https://www.fakirpresse.info/les-patrons-ca-osent-tout

@@ -1,0 +1,6 @@
+title: //h1
+author: //address
+date: //div[@class="entry-info"]//time/@datetime
+body: //div[@class="entry-content"]
+
+test_url: https://blog.mozilla.org/blog/2018/06/07/parlez-vous-deutsch-rhagor-o-leisiau-i-common-voice/

@@ -1,0 +1,19 @@
+#bypass cookie check
+single_page_link: //a[contains(@href, '/cookiewall/accept')]
+
+title: //h1[@itemprop="headline"]
+body: //figure[contains(@class, 'article__top-image')] | //div[@itemprop="articleBody"]
+
+strip_id_or_class: ad-space
+
+strip: //div[contains(@class, 'media-container') and contains(@class, 'pull-right')]
+
+tidy: no
+prune: no
+
+parser: html5php
+
+test_url: http://www.volkskrant.nl/sport/dossier-wereldvoetbalbond-fifa-wankelt~a4042695/
+test_contains: Het ging om de omstreden
+
+test_url: http://www.volkskrant.nl/nieuws/rss.xml

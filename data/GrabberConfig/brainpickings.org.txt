@@ -1,0 +1,7 @@
+title: //h1[@class='entry-title']
+body: //div[@class='entry_content']
+strip: //div[@id='bottom_donation']
+strip: //div[@id='bottom_newsletter']
+strip: //div[@id='end_print']
+
+test_url: https://www.brainpickings.org/2016/05/26/river-of-shadows-rebecca-solnit-muybridge/

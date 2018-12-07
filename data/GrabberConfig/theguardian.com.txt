@@ -1,0 +1,51 @@
+body: //article
+body: //div[contains(concat(' ',normalize-space(@class),' '),' content__main ')]//div[contains(concat(' ',normalize-space(@class),' '),' gs-container ')]
+strip: //article//div[contains(@class, 'content__secondary-column')]
+strip: //article//aside
+strip: //article//div[contains(@class, 'block-share')]
+strip: //article//div[@class='submeta']
+strip: //article//span[contains(@class, 'inline-expand-image')]
+strip: //article//div[@class='kindleWidget']
+strip: //article//div[@class='email-subscription']
+strip: //article//script
+strip: //article//figure[contains(@class, 'element-audio')]
+strip: //article//a[contains(@style, 'display: none')]
+strip: //article/div[@class='paidfor-band']
+strip: //header
+strip: //div[@class='content__main-column']
+strip: //div[contains(@class, 'content-footer')]
+strip: //footer
+
+strip_id_or_class: hide-on-mobile
+strip_id_or_class: reveal-caption
+strip_id_or_class: readerquestions
+strip_id_or_class: submeta
+
+strip: //figcaption
+
+
+author: //article//p[@class='byline']
+date: //article//time/@datetime
+strip: //article//div[contains(@class, 'content__meta-container')]
+
+native_ad_clue: //meta[@property='article:tag' and contains(@content, 'partner zone')]
+native_ad_clue: //meta[@property='video:tag' and contains(@content, 'partner zone')]
+
+prune: no
+tidy: no
+
+test_url: http://www.theguardian.com/world/2013/oct/04/nsa-gchq-attack-tor-network-encryption
+test_contains: The National Security Agency has made repeated attempts to develop
+test_contains: The agency did not directly address those questions, instead providing a statement.
+
+test_url: http://www.theguardian.com/world/2013/oct/03/edward-snowden-files-john-lanchester
+test_contains: In August, the editor of the Guardian rang me up and asked if I would spend a week in New York
+test_contains: As the second most senior judge in the country, Lord Hoffmann, said in 2004 about a previous version of our anti-terrorism laws
+
+test_url: http://www.theguardian.com/commentisfree/2014/jun/15/britishness-search-identity-my-part-in-camerons-odyssey
+test_url: http://www.theguardian.com/world/2016/feb/17/ankara-explosion-turkey-injures-large-number-of-people-reports-say
+test_url: http://www.theguardian.com/uk-news/2016/feb/11/trident-the-british-question
+test_url: https://www.theguardian.com/books/live/2016/oct/13/nobel-prize-in-literature-2016-liveblog
+
+# Native ad
+test_url: http://www.theguardian.com/sustainable-business/fairtrade-partner-zone/chocolate-cocoa-production-risk

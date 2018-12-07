@@ -1,0 +1,4 @@
+body: //div[@id='article_container']
+strip_id_or_class: social
+
+test_url: http://www.nj.com/eagles/index.ssf/2018/04/should_eagles_trade_brandon_graham_observations.html#incart_river_index

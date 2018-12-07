@@ -1,0 +1,6 @@
+title: //h1[@itemprop='headline']
+author: //span[@itemprop='author']
+body: //article[@itemprop='articleBody']
+date: //span[@itemprop='datePublished']/@content
+
+test_url: http://be.hardware.info/reviews/6197/game-pcs-van-0-25-en-5-jaar-oud-review-tijd-om-te-upgraden

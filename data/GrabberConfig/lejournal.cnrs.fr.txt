@@ -1,0 +1,11 @@
+single_page_link: //a[@class='print-page']
+
+title: //h1[@class='node-title']
+
+body: //div[@class='article-contenu']
+
+# Strip duplicated pictures
+strip_id_or_class: white-popup
+strip_id_or_class: definition
+
+test_url: https://lejournal.cnrs.fr/articles/la-ceramique-sert-a-tout

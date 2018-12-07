@@ -1,0 +1,22 @@
+
+body://div[@id='content']//div[contains(concat(' ',normalize-space(@class),' '),' main ')]
+
+author: //div[@id='content']//span[@itemprop='author']
+
+strip_id_or_class: barre-outils
+strip_id_or_class: barre-sociale
+strip_id_or_class: reserveabonnes
+
+test_url: https://www.courrierdesbalkans.fr/Confrontes-a-une-crise-de-main-d-oeuvre-les-employeurs-du-Banat-recrutent-en
+
+#-----------------------------------------------------------
+# Wallabag-specific login directives (not supported in FTR):
+#-----------------------------------------------------------
+requires_login: yes
+not_logged_in_xpath: //div[contains(concat(' ',normalize-space(@class),' '),' formulaire_login ')]
+login_uri: https://www.courrierdesbalkans.fr/
+login_username_field: var_login
+login_password_field: password
+login_extra_fields: formulaire_action=login
+login_extra_fields: formulaire_action_args=@=xpath('//input[@name="formulaire_action_args"]', request_html('https://www.courrierdesbalkans.fr/'))
+

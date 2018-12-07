@@ -1,0 +1,4 @@
+http_header(user-agent): Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36
+
+test_url: http://www.globalresearch.ca/fallujah-is-being-slaughtered-silently/5495520
+test_contains: what is unknown about this city

@@ -1,0 +1,2 @@
+body: //div[@class="article-body"]
+test_url: https://www.warnerbros.fr/articles/magic-mike-xxl-adam-rodriguez-portrait

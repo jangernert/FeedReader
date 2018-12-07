@@ -1,0 +1,4 @@
+body://div[contains(@class, 'entry-content')]
+date://h2[contains(@class, 'date-header')]
+title://h3[contains(@class, 'post-title')]
+test_url: http://ciaosamin.com/ciao/2015/12/28/recipe-million-dollar-caramels

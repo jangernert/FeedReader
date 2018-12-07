@@ -1,0 +1,4 @@
+title: //h1[@class="entry-title"]
+author: //a[@class='url fn n']
+
+test_url: https://pixellibre.net/2017/10/vie-privee-smartphones-applications/

@@ -1,0 +1,3 @@
+http_header(user-agent): PHP/7.2
+
+test_url: https://www.happyassassin.net/2014/01/25/uefi-boot-how-does-that-actually-work-then/

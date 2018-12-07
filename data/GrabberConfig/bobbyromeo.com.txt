@@ -1,0 +1,4 @@
+strip_id_or_class: adsbygoogle
+strip_id_or_class: yarpp-related
+
+test_url: http://bobbyromeo.com/technology/xiaomi-smart-1080p-wifi-ip-camera-rtsp-streaming-hack/

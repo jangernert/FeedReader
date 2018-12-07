@@ -1,0 +1,5 @@
+body: //div[contains(concat(' ',normalize-space(@class),' '),' news-single-item ')]
+title: //div[contains(concat(' ',normalize-space(@class),' '),' news-single-item ')]//h1
+strip_id_or_class: news-single-backlink
+
+test_url: http://www.rhenus.com/en/infocenter/press/single-news/article/rhenus-sells-freight-forwarding-centre-in-fellbach-to-raben/

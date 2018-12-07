@@ -1,0 +1,3 @@
+body: //div[contains(concat(' ',normalize-space(@class),' '),' content-description ')]
+
+test_url: https://www.ecranlarge.com/films/news/997080-star-wars-les-derniers-jedi-de-nouvelles-photos-de-rey-et-luke-en-mode-badass

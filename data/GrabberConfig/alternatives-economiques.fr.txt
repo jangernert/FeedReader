@@ -1,0 +1,20 @@
+# Publication date
+date: //header[contains(concat(' ',normalize-space(@class),' '),' o-page__content__head ')]//div[contains(concat(' ',normalize-space(@class),' '),' o-infos ')]//time[contains(concat(' ',normalize-space(@class),' '),' o-infos__date ')]
+
+# Author
+author: //header[contains(concat(' ',normalize-space(@class),' '),' o-page__content__head ')]//div[contains(concat(' ',normalize-space(@class),' '),' o-infos ')]//a[contains(concat(' ',normalize-space(@class),' '),' o-infos__author ')]
+
+# Remove quotes and others
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' o-page__footer ')]
+strip_id_or_class: c-same-subject
+strip_id_or_class: c-kiosk--single
+strip_id_or_class: o-page__footer
+strip_id_or_class: o-page__figure__trigger
+strip_id_or_class: c-comments
+strip_id_or_class: c-epigraph
+
+# Strip optional [removed because clearer like this
+#strip_id_or_class: o-page__content__head
+
+# Test URL
+test_url: https://www.alternatives-economiques.fr/etats-unis-overdoses-tuent-plus-armes-a-feu/00085167

@@ -1,0 +1,25 @@
+title: //meta[@name='og:title']/@content
+
+author: //meta[@name='author']/@content
+
+body: //div[contains(concat(' ',normalize-space(@class),' '),' td-post-header ')]//*[contains(concat(' ',normalize-space(@class),' '),' td-post-sub-title ')] | //div[contains(concat(' ',normalize-space(@class),' '),' td-post-content ')]
+
+strip_id_or_class: send-gift-article-email
+strip_id_or_class: point-final
+strip_id_or_class: at-above-post
+strip_id_or_class: at-below-post
+
+test_url: https://www.mediacites.fr/actu/2017/12/05/lhistoire-de-mediacites-a-laube-de-son-1er-anniversaire/
+
+# Wallabag-specific login directives (not supported in FTR):
+requires_login: yes
+login_uri: https://www.mediacites.fr/mon-compte/
+not_logged_in_xpath: //div[contains(concat(' ',normalize-space(@class),' '),' restrictblock ')]
+login_username_field: rcp_user_login 
+login_password_field: rcp_user_pass
+login_extra_fields: rcp_login_nonce=@=xpath('//form[@id="rcp_login_form"]//input[@name="rcp_login_nonce"]', request_html('https://www.mediacites.fr/mon-compte/'))
+login_extra_fields: rcp_user_remember=1
+login_extra_fields: rcp_action=login
+login_extra_fields: rcp_redirect=https://www.mediacites.fr/mon-compte/
+login_extra_fields: rcp_login_submit=Connexion
+test_url: https://www.mediacites.fr/toulouse/enquete-toulouse/2018/07/17/les-eaux-troubles-du-canal-du-midi/

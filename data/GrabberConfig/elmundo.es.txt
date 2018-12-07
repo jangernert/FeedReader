@@ -1,0 +1,8 @@
+title: //h1[@class='js-headline']
+body: //div[@itemprop='articleBody']
+author: //li[@class='author-name']
+
+strip: //figure[0]
+strip: //aside
+
+test_url: http://www.elmundo.es/cataluna/2018/01/14/5a5b3be9e5fdea3f118b45c6.html

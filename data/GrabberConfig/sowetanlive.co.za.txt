@@ -1,0 +1,7 @@
+body: //div[contains(concat(' ',normalize-space(@class),' '),' article-widgets ')]
+strip_id_or_class: related_articles
+find_string:=s180"
+replace_string:=s750"
+
+test_url: https://www.sowetanlive.co.za/rss/?publication=sowetan-live
+test_url: https://www.sowetanlive.co.za/sundayworld/news/2017-11-08-manana-should-pay-medical-bills-for-assault-victims-court-told/

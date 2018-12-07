@@ -1,0 +1,15 @@
+title: //h2[@class='entry-title']
+body: //article
+author: //span[contains(concat(' ',normalize-space(@class),' '),' author ')]
+date: //time
+
+strip: //iframe
+strip: //img[@id='amazon-track']
+strip: //div[@class='featured-image']
+strip: //img[@id='gaz-track']
+strip: //aside
+strip_id_or_class: NEWS_BODY
+strip_id_or_class: NEWS_RELATED
+strip_id_or_class: social-full
+
+test_url: https://www.redeszone.net/2017/02/07/masmovil-implementa-redes-cgn-carrier-grade-nat-conoce-todos-los-problemas-tendras/

@@ -1,0 +1,11 @@
+
+body: //div[contains(concat(' ',normalize-space(@class),' '),' entry-content ')]
+
+# strip section about related articles and everything following:
+strip: //strong[(text()='A voir aussi sur artsixMic :') or (text()='A lire aussi sur artsixMic :')]/ancestor::*/following-sibling::*
+strip: //strong[(text()='A voir aussi sur artsixMic :') or (text()='A lire aussi sur artsixMic :')]
+
+test_url: https://www.artsixmic.fr/mais-qui-est-donc-marcelline-l-aubergine/
+test_url: https://www.artsixmic.fr/elia-pagliarino-sur-les-traces-des-tatouages-polynesiens/
+
+

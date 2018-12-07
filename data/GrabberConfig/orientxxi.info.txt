@@ -1,0 +1,12 @@
+
+body: //section[@id='chapo'] | //div[@itemprop='articleBody'] 
+
+author: //meta[@property="article:author"]/@content
+
+strip_id_or_class: campagne_dons
+strip_id_or_class: campagne_lettre
+
+tidy: no
+prune: no
+
+test_url: https://orientxxi.info/magazine/hirak-stick-approach-the-only-response-of-moroccan-power,2562

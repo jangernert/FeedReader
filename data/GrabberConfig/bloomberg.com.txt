@@ -1,0 +1,11 @@
+date: //*[@itemprop='datePublished']/@datetime
+author: //meta[@name="sailthru.author"]/@content
+body: //div[contains(@class, 'body-copy')]
+
+strip_id_or_class: inline-newsletter
+strip_id_or_class: terminal-tout-container
+strip_id_or_class: lede
+
+test_url: http://www.bloomberg.com/news/articles/2015-12-30/will-your-job-disappear-by-2024-
+test_contains: Every week, hosts Tori Stilwell
+test_url: https://www.bloomberg.com/news/articles/2016-12-06/apple-to-start-publishing-ai-research-to-hasten-deep-learning

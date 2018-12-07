@@ -1,0 +1,12 @@
+
+title: //a[contains(concat(' ',normalize-space(@class),' '),' titre_news ')]
+body: //div[@id='titre']
+
+find_string: lang="en-US"
+replace_string: lang="fr-FR"
+
+strip_id_or_class: titre_news
+strip_id_or_class: group1
+
+test_url: http://www.montelimar-news.fr/article/parfum-de-jazz-en-drome-provencale/1/9654.html#955c5
+

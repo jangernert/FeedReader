@@ -1,0 +1,2 @@
+body: //div[@itemprop="articleBody"]
+test_url: http://www.yourerie.com/news/news-article/d/story/cd-release-party-at-pi-downs/22898/G_gFL3mSQkWH_DW2wLuMOA

@@ -1,0 +1,8 @@
+title: //h1[@id='page-title']
+author: //div[contains(concat(' ',normalize-space(@class),' '),' highwire-citation-jnl-eneuro-styles-article-title-complete-plus ')]//div[contains(concat(' ',normalize-space(@class),' '),' highwire-cite-authors ')]
+body: //div[contains(concat(' ',normalize-space(@class),' '),' fulltext-view ')]
+date: //div[contains(concat(' ',normalize-space(@class),' '),' highwire-citation-jnl-eneuro-styles-article-title-complete-plus ')]//div[contains(concat(' ',normalize-space(@class),' '),' highwire-cite-metadata ')]//span[contains(concat(' ',normalize-space(@class),' '),' highwire-cite-metadata-date ') and (contains(concat(' ',normalize-space(@class),' '),' highwire-cite-metadata '))]
+strip: //header[@id='section-header']
+strip: //footer[@id='section-footer']
+prune: yes
+test_url: http://www.jneurosci.org/content/22/13/5344.full

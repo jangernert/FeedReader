@@ -1,0 +1,13 @@
+
+body: //div[contains(concat(' ',normalize-space(@class),' '),' entry-content ')]
+
+author: substring-before(//div[contains(concat(' ',normalize-space(@class),' '),' entry-content ')]//strong[text()='Auteur :']/following-sibling::em, ',')
+
+strip_id_or_class: sharify-container
+
+# strip the "read also" paragraph about related article:
+strip: //strong[text()='Lire aussi']/following-sibling::a[contains(@href, '//www.natura-sciences.com/')]/parent::p
+
+test_url: http://www.natura-sciences.com/agriculture/miscanthus-huile-de-ricin-biosource.html
+test_url: http://www.natura-sciences.com/environnement/montagne-dor-guyane-projet-minier.html
+

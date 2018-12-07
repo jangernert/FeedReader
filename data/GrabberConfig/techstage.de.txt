@@ -1,0 +1,9 @@
+strip_id_or_class: teaser
+strip_id_or_class: a-pvg
+strip_id_or_class: a-pvg-deal__price
+strip_id_or_class: a-pvg__logo
+strip_id_or_class: a-grid
+strip_id_or_class: comments_container
+strip: //a-tabs
+
+test_url: http://techstage.de/-4156945

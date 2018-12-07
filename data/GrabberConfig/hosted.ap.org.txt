@@ -1,0 +1,5 @@
+body: //table[@class='ap-smallphoto-table'] | //div[@class='body']//*[@class='entry-content']
+tidy: no
+strip_image_src: analytics.apnewsregistry
+
+test_url: http://hosted.ap.org/dynamic/stories/L/LT_MEXICO_MIGRANT_CARAVAN?SITE=PALEH&SECTION=HOME&TEMPLATE=DEFAULT&CTIME=2018-04-29-14-34-45

@@ -1,0 +1,16 @@
+
+# remark: the web page we obtain will inevitably contains more than one article,
+# we keep only the first one:
+body: (//div[contains(concat(' ',normalize-space(@class),' '),' article__edito ')])[1]
+
+author: (//header[contains(concat(' ',normalize-space(@class),' '),' article__header ')])[1]//p[contains(concat(' ',normalize-space(@class),' '),' author-info__content__text ')]/a
+
+tidy: no
+prune: no
+
+strip: //script
+strip_id_or_class: support-block
+strip_id_or_class: subscription-box
+strip_id_or_class: container_hidden
+
+test_url: https://limprevu.fr/articles/17-05-2018/pour-embrasser-le-numerique-noubliez-pas-la-langue/

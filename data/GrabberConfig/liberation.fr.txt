@@ -1,0 +1,7 @@
+body: //div[contains(concat(' ',normalize-space(@class),' '),' width-padded-left ')]
+strip_id_or_class: article-rel-item
+author: //div[@class='article-head-metas']/a
+date: //span[@class='date']/time
+
+test_url: http://www.liberation.fr/elections-presidentielle-legislatives-2017/2017/04/14/pas-assez-enthousiastes-ils-se-font-virer-d-un-meeting-de-fillon_1562897
+test_contains: Alors comment expliquer

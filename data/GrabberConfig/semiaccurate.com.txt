@@ -1,0 +1,13 @@
+tidy: no
+prune: no
+
+title: //section[@id='content']//h1
+date: //span[@class='date']
+author: //span[@class='post-author']/a
+
+body: //div[@class='entry-content']
+
+strip: //div[@id='ts-fab-below']
+strip: //div[@class='sharedaddy sd-sharing-enabled']
+
+test_url: http://semiaccurate.com/2015/04/21/ubuntu-strips-phone-os-core/

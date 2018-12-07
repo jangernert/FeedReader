@@ -1,0 +1,9 @@
+title: //h1[@class='article--title']
+body: //div[@id='paragraphs']
+
+strip: //figure
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' article--info ')]
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' distinguished--content ')]
+strip: //div[@class='distinguished']
+
+test_url: https://www.muyinteresante.es/naturaleza/articulo/los-5-fenomenos-meteorologicos-mas-mortales-521495629629

@@ -1,0 +1,7 @@
+body: //*[@class='ar-annotation'] | //div[contains(@class='ar-content')]
+strip_id_or_class: ar-link-to-another
+strip_id_or_class: ar-tags
+next_page_link: //a[@data-tracker='Navigace,NextChapter']
+
+test_url: http://www.mobilmania.cz/clanky/10-tipu-na-nejlepsi-tablet-pod-stromecek-vanoce-2015/sc-3-a-1332803/default.aspx
+test_url: http://www.mobilmania.cz/clanky/tyden-mobilne-311-kyklop-od-asusu-a-fenomen-5g/sc-3-a-1332804/default.aspx

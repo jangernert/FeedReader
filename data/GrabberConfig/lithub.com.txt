@@ -1,0 +1,4 @@
+body: //div[contains(concat(' ',normalize-space(@class),' '),' post_wrapper_inner ')]//div[contains(concat(' ',normalize-space(@class),' '),' post_inner_wrapper ')]
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' post_tag ')]
+
+test_url: http://lithub.com/why-indie-presses-are-opening-bookstores/

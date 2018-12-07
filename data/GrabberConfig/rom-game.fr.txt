@@ -1,0 +1,4 @@
+author: //div[@id="main"]//a[contains(@href, "/auteurs/")]
+date: //meta[@itemprop="datePublished"]/@content
+
+test_url: https://www.rom-game.fr/news/3371-Goldeneye+007+devient+Goldeneye+25.html

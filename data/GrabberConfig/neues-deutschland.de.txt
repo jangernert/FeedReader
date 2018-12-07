@@ -1,0 +1,9 @@
+title: //h1//span
+date: //div[@class='Date']
+
+body: //article//div[contains(concat(' ',normalize-space(@class),' '),' Content ')]
+
+strip_id_or_class: 'Content-Ad'
+strip_id_or_class: 'ArticleShopAd'
+
+test_url: http://www.neues-deutschland.de/artikel/1009093.mutmassliche-rechtsterroristen-in-freital-festgenommen.html

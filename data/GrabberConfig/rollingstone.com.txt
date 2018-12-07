@@ -1,0 +1,15 @@
+body: //div[@id='collection-items-container']
+body: //div[contains(@class, 'article-content')]
+
+prune: no
+
+next_page_link: //link[@rel="next"]/@href
+if_page_contains: //a[contains(@class, 'pagination-collection')]
+
+strip_id_or_class: module-more-news
+strip_id_or_class: module-related
+
+test_url: http://www.rollingstone.com/politics/news/the-plastic-bag-wars-20110725
+# mult-page article
+test_url: http://www.rollingstone.com/culture/pictures/beyond-gypsy-blancharde-when-mothers-harm-their-kids-w437364
+test_contains: Former chemist and mother of three

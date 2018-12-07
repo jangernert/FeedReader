@@ -1,0 +1,17 @@
+# 2011-10-25 - carlo@... - Initial setup.
+
+single_page_link: //li[@class='print']/a/@href
+
+title: //h1
+author: //meta[@name="byline"]/@content
+date: //meta[@name="date"]/@content
+
+strip: //span[@class="see"]
+strip: //div[@class="byline"]
+strip: //div[@id="date2"]
+strip: //h1
+strip: //div[@class='post-rail-ad']
+strip: //div[@class='post-rail-content']
+strip: //aside[@class='post-rail']
+
+test_url: http://business.time.com/2012/08/22/can-entrepreneurship-bring-change-where-the-arab-spring-has-not/

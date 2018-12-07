@@ -1,0 +1,4 @@
+title: //h1[@class='entry-title']
+body: //div[@class='content']
+
+test_url: https://www.gurusblog.com/archives/las-subastas-de-joyas-de-christies-y-sothebys-rompen-todos-los-records-historicos/15/11/2018/

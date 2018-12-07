@@ -1,0 +1,17 @@
+body: //article[contains(@class, 'content')]
+
+date: //li[contains(@class, 'content__meta__date')]
+
+title: //h2[contains(@class, 'content__title')]
+
+author: //div[contains(@class, 'content__author__info__name')]//strong
+
+strip: //div[contains(@class, 'content__kicker')]
+strip: //figure[contains(@class, 'image__article__top')]
+strip: //div/div/ul[contains(@class, 'breadcrumbs')]
+strip: //aside/ul[contains(@class, 'content__meta')]
+strip: //aside[contains(@class, 'hide-for-print')]
+strip: //div[contains(@class, 'hide-for-print')]
+strip: //div[contains(@class, 'content__author')]
+
+test_url: https://www.spektrum.de/news/europas-vernichtende-jahrtausendduerre/1584414

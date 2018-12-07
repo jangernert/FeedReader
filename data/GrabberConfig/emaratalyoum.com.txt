@@ -1,0 +1,8 @@
+body: //div[@id='article-body' or contains(@class, 'articleinlinegallery')]
+
+prune: no
+
+test_url: http://www.emaratalyoum.com/politics/news/2015-10-10-1.828836
+test_url: http://www.emaratalyoum.com/sports/arab-and-international/2013-08-29-1.601844
+test_url: http://www.emaratalyoum.com/sports/arab-and-international/2013-08-29-1.601842
+test_url: http://www.emaratalyoum.com/public-sports-1.533088?ot=ot.AjaxPageLayout

@@ -1,0 +1,6 @@
+title: //*[@class='title']
+author: //*[@class='author']
+prune: no
+
+test_url: https://chomsky.info/20150120/
+test_contains: The crimes also elicited a flood of commentary

@@ -1,0 +1,18 @@
+
+body: //article[@class="alaune"]
+
+strip_id_or_class: retour
+strip_id_or_class: subheader
+
+test_url: http://www.touteduc.fr/fr/culture/id-9978-l-ife-dresse-un-panorama-des-politiques-de-jeunesse-et-pointe-du-doigt-les-manques-du-systeme-francais
+
+#-----------------------------------------------------------
+# Wallabag-specific login directives (not supported in FTR):
+#-----------------------------------------------------------
+requires_login: yes
+not_logged_in_xpath: //a[text()='Se connecter &rarr;']
+login_uri: http://www.touteduc.fr/fr/espace-membre/accueil
+login_username_field: login
+login_password_field: password
+login_extra_fields: connexion-submit=Connexion
+

@@ -1,0 +1,6 @@
+title: //h1[contains(@class, 'page-title')]
+
+body: //div[@id='block-privacy-international-content']/div[contains(@class, 'group-left')]
+prune: no
+
+test_url: https://privacyinternational.org/feature/2433/i-asked-online-tracking-company-all-my-data-and-heres-what-i-found

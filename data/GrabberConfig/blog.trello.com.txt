@@ -1,0 +1,7 @@
+title: //div[contain(@class, 'post-header')]
+body: //div[contains(concat(' ',normalize-space(@class),' '),' post-body ')]
+author: //a[contains(@class, 'author-link')]
+date: //span[contains(@class, 'byline-date')]
+  
+test_url: http://blog.trello.com/how-to-set-better-life-goals
+test_url: http://blog.trello.com/6-mistakes-when-you-work-in-office-but-have-remote-team-members

@@ -1,0 +1,12 @@
+title: //h1[@class='title']
+
+body: //section[@class='section']
+strip: //div[@class='swiper-wrapper']
+#strip: //figcaption[@class='ficaption']
+#strip: //figcaption/span
+
+date: //span[@class='published-time']
+
+
+test_url: https://futurezone.at/produkte/lego-verkauft-bugatti-chiron-aus-3599-teilen/400044290
+test_url: https://futurezone.at/science/nasa-verkuendet-am-donnerstag-neue-entdeckung-am-mars/400047008

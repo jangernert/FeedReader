@@ -1,0 +1,12 @@
+find_string:display:none
+replace_string:display:inline
+
+find_string:<img src
+replace_string:<div/><img src
+
+body:  //*[@id="cc-comicbody"] | //*[@id="aftercomic"]
+
+test_url: http://www.smbc-comics.com/index.php?id=2039
+
+prune: no
+tidy: no

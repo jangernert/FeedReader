@@ -1,0 +1,9 @@
+date: //li[@class='date']
+body: (//article[@class='sectbody'])[1]
+title: concat(//article[@class='sectbody']/h4,': ',//article[@class='sectbody']/h1)
+author: //a[@class='author']/h4
+strip: //p[@class='caption']
+strip_id_or_class: ad_bin
+strip_id_or_class: rack
+
+test_url: https://www.taz.de/!5504959/

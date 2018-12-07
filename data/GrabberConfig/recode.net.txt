@@ -1,0 +1,4 @@
+body: //div[contains(concat(' ',normalize-space(@class),' '),' c-entry-content ')]
+
+test_url: https://www.recode.net/2017/6/7/15749994/alphabet-project-wing-autonomous-drone-tracking-faa-nasa
+test_url: https://www.recode.net/2017/6/10/15774936/apple-podcast-analytics-wwdc

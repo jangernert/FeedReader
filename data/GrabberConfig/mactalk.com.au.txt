@@ -1,0 +1,4 @@
+author://div[@class="article_username_container_full"]
+date://div[@class="article_username_container"]
+body://div[@class="article cms_clear restore postcontainer"]
+test_url: http://www.mactalk.com.au/content.php?r=3759-The-iPad-that-still-won-t-die-iOS-9-on-the-iPad-2

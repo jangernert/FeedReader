@@ -1,0 +1,2 @@
+body: //div[contains(concat(' ',normalize-space(@class),' '),' all_external_links ')]
+test_url: https://pmf.silvrback.com/fixing-tethering-on-android-kitkat

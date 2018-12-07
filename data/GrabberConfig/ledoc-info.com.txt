@@ -1,0 +1,22 @@
+
+title: //h1[contains(concat(' ',normalize-space(@class),' '),' entry-title ')]
+
+body: //div[contains(concat(' ',normalize-space(@class),' '),' single-thumb ')] | //div[contains(concat(' ',normalize-space(@class),' '),' entry-content ')]
+
+strip_id_or_class: message_pms
+strip_id_or_class: td_login_message
+strip_id_or_class: td_pay_message
+strip_id_or_class: dkpdf-button-container
+
+test_url: https://ledoc-info.com/2018/07/01/photodoc-lallee-tourisme-passage-plus-glauque-de-montpellier/
+
+# Wallabag-specific login directives (not supported in FTR):
+requires_login: yes
+login_uri: https://ledoc-info.com/wp-login.php
+not_logged_in_xpath: //div[contains(concat(' ',normalize-space(@class),' '),' login_message ')]
+login_username_field: log
+login_password_field: pwd
+login_extra_fields: rememberme=forever
+login_extra_fields: wp-submit=Se connecter
+
+test_url: https://ledoc-info.com/2018/02/08/grande-motte-projets-divisent/

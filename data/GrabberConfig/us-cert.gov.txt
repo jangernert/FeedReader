@@ -1,0 +1,9 @@
+# Page title
+title: //h1[@id='page-title']
+# Page subtitle
+title: //h2[@id='page-sub-title']
+# Page metadata
+date: //footer[contains(concat(' ',normalize-space(@class),' '),' submitted ')]
+# Page body
+body: //article[contains(concat(' ',normalize-space(@class),' '),' node ')]//div[contains(concat(' ',normalize-space(@class),' '),' content ') and (contains(concat(' ',normalize-space(@class),' '),' clearfix '))]
+test_url: https://www.us-cert.gov/ncas/alerts/TA17-181A

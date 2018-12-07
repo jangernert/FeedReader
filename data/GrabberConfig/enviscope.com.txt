@@ -1,0 +1,21 @@
+
+
+body: //div[@id='content-texte']
+title: //html/head/title
+
+test_url: https://www.enviscope.com/environnement/electricite-des-industriels-flexi-consommateurs-se-regroupent/63151
+
+# ----------------------------------------------------------
+# Wallabag-specific login directives (not supported in FTR):
+# ----------------------------------------------------------
+requires_login: yes
+not_logged_in_xpath: //div[contains(concat(' ',normalize-space(@class),' '),' btn-abo-container ')]
+login_uri: https://www.enviscope.com/login
+login_username_field: log
+login_password_field: pwd
+login_extra_fields: action=login
+login_extra_fields: instance=
+login_extra_fields: redirect_to=https://www.enviscope.com/wp-admin/
+login_extra_fields: rememberme=forever
+login_extra_fields: wp-submit=Se+connecter
+

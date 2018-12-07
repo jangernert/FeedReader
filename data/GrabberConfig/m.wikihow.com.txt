@@ -1,0 +1,14 @@
+body: //div[@id='content_wrapper']
+prune: no
+#tidy: no
+strip_id_or_class: gatEditSection
+strip_id_or_class: relatedwikihows
+strip_id_or_class: edit-page
+strip_id_or_class: step_num
+strip_id_or_class: image_details
+strip_id_or_class: mh-method-thumbs-template
+
+strip: //div[@id='article_rating_mobile']
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' ur_nav_container ')]
+
+test_url: http://m.wikihow.com/Check-out-a-Used-Car-Before-Buying-It

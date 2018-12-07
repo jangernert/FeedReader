@@ -1,0 +1,20 @@
+# Author: Jan Lukas Gernert
+
+tidy: no
+prune: no
+
+title: //div[@class='Newsheader']/h1
+#date: //time
+#author: //a[@rel='author']
+
+body: //div[@id='Newswrap']
+body: //div[@class='text']
+body: //article
+
+strip: //div[@id='Newscontents']
+strip: //div[@class='Newsbanner']
+strip: //style
+
+
+
+test_url: http://www.teamliquid.net/forum/starcraft-2/484380-code-s-ro32-group-c-on-the-way-back-s2-2015

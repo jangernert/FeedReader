@@ -1,0 +1,10 @@
+title: //meta[@name='og:title']/@content
+body: //main[@class='l-content']/section[@class='l-section']/div
+
+strip: //div[@id='jp-relatedposts']
+
+prune: no
+tidy: no
+
+test_url: https://www.leblogduhacker.fr/pourquoi-est-il-important-detre-discret-sur-internet/
+

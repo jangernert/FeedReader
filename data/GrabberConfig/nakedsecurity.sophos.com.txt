@@ -1,0 +1,5 @@
+body: //div[@class='entry-content']
+title: //div[@class='entry-title']
+strip: //div[@class='entry-sharing']
+
+test_url: https://nakedsecurity.sophos.com/2016/04/04/new-ransomware-with-an-old-trick-petya-parties-like-its-1989/

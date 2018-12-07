@@ -1,0 +1,3 @@
+http_header(user-agent): PHP/7.2
+
+test_url: https://blogs.gnome.org/aday/2017/08/08/the-gnome-way/

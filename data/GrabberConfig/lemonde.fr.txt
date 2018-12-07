@@ -1,0 +1,60 @@
+title: //h1[@class='article__title']
+
+# We can have multiple authors
+author: //span[contains(concat(' ',normalize-space(@class),' '),' author__name ')]
+
+# Last edition date (if any)
+date: //time[@itemprop='dateModified']/@datetime
+# Publication date
+date: //time[@itemprop='datePublished']/@datetime
+
+body: //section[@class='article__content']
+
+# Another body selector and strip for video-only links
+body: //section[contains(concat(' ',normalize-space(@class), ' '), ' video ')]
+strip: //div[contains(concat(' ',normalize-space(@class), ' '), ' related-content--video ')]
+
+# Remove "Lire aussi" blocks
+strip: //section[contains(concat(' ',normalize-space(@class),' '),' catcher ')]
+
+# Remove "Lire aussi" paragraphs (just containing "Lire" in strong and a link)
+strip: //p[contains(strong, 'Lire') and a]
+
+# Remove comments
+strip: //*[contains(@class, 'comments')]
+
+# Remove "Article réservé aux abonnés"
+strip: //p[@class='article__status']
+
+# Remove quotes highlighted in articles, doublons with content
+# We use parent::blockquote to avoid a remaining empty blockquote node
+strip: //p[@class='article__quote']/parent::blockquote
+
+# Remove share buttons
+strip://ul[contains(@class, 'meta__social')]
+
+# Remove the insane "conjugaison.lemonde.fr" links:
+find_string: <a target='_blank' onclick='return false;' class='lien_interne conjug'
+replace_string: <input type='hidden' style='display:none;' 
+
+# Remove the insane cross-linking categories "Toute l’actualité"
+find_string: <a class="lien_interne rub"
+replace_string: <input type="hidden" style="display:none;"
+
+requires_login: yes
+
+login_uri: https://secure.lemonde.fr/sfuser/connexion
+login_username_field: connection[mail]
+login_password_field: connection[password]
+
+login_extra_fields: connection[_token]=@=xpath("//form//input[@id='connection__token']", request_html(config.getLoginUri()))
+
+not_logged_in_xpath: //section[contains(concat(' ',normalize-space(@class),' '),' paywall__container ')]//p[@class='paywall__login']
+
+
+prune: no
+
+test_url: http://www.lemonde.fr/economie/article/2011/07/05/moody-s-abaisse-la-note-du-portugal-de-quatre-crans_1545237_3234.html
+test_url: http://www.lemonde.fr/big-browser/article/2017/10/27/assassinat-de-kennedy-ce-qu-on-a-appris-dans-les-documents-declassifies_5207029_4832693.html
+test_url: https://www.lemonde.fr/pixels/article/2018/07/14/douze-jeux-video-pour-s-amuser-a-plusieurs_5331269_4408996.html
+test_url: https://www.lemonde.fr/sante/video/2016/04/07/diabete-pourquoi-une-telle-progression-de-l-epidemie_4898147_1651302.html

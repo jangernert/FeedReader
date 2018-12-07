@@ -1,0 +1,6 @@
+author: //meta[@name="author"]/@content
+body: //div[@class="entry-content"]
+strip: //div[@class="stagi-sous-article-rotation"]
+strip_id_or_class: korben-sous-article
+
+test_url: https://korben.info/gitcoin-aider-a-financer-les-developpements-open-source-avec-de-lethereum.html

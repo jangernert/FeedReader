@@ -1,0 +1,41 @@
+
+replace_string(lang="en"): lang="fr"
+
+#-----------------------------------------------------------
+# for text articles
+#-----------------------------------------------------------
+test_url: https://www.revue-farouest.fr/appelez-moi-ernest/
+
+body: //div[@class='ep_intro'] | //div[@class='ep_wisy']
+
+author: //div[@class='ep_auteur_box']//a
+
+strip_id_or_class: rcp_paid_only
+strip_id_or_class: BouttonPartageEpisode
+
+#-----------------------------------------------------------
+# for video articles:
+#-----------------------------------------------------------
+test_url: https://www.revue-farouest.fr/videos/manon-bril-youtube-antique/
+
+body: //iframe | //div[@id='info_article']
+
+author: //div[@class='AuteurDateVideo']//a
+
+prune: no
+strip: //script
+
+strip_id_or_class: party_payant
+strip_id_or_class: pop-register
+
+#-----------------------------------------------------------
+# Wallabag-specific login directives (not supported in FTR):
+#-----------------------------------------------------------
+requires_login: yes
+not_logged_in_xpath: //div[contains(concat(' ',normalize-space(@class),' '),' rcp_paid_only ')|contains(concat(' ',normalize-space(@class),' '),' party_payant ')]
+login_uri: https://www.revue-farouest.fr/wp-admin/admin-ajax.php
+login_extra_fields: action=ajaxlogin
+login_username_field: username
+login_password_field: password
+login_extra_fields: security=@=xpath('//input[@name="security"]', request_html('https://www.revue-farouest.fr/'))
+

@@ -1,0 +1,25 @@
+
+body: //div[@itemprop='text']
+author: //div[contains(concat(' ',normalize-space(@class),' '),' postauthor ')]//div[contains(concat(' ',normalize-space(@class),' '),' authordesc ')]//a
+
+strip_id_or_class: postinfo
+strip_id_or_class: pmpro_content_message 
+
+test_url: https://www.switchonpaper.com/2018/07/18/otobong-nkanga-ethique-de-la-cooperation/
+
+# ----------------------------------------------------------
+# Wallabag-specific login directives (not supported in FTR):
+# ----------------------------------------------------------
+requires_login: yes
+not_logged_in_xpath: //div[contains(concat(' ',normalize-space(@class),' '),' pmpro_content_message ')]
+login_uri: https://www.switchonpaper.com/login/
+login_username_field: log
+login_password_field: pwd
+login_extra_fields: redirect_to=https://www.switchonpaper.com/wp-admin/
+login_extra_fields: rememberme=forever
+login_extra_fields: submit=Se+connecter
+login_extra_fields: testcookie=@=xpath('//input[@name="testcookie"]', request_html('https://www.switchonpaper.com/se-connecter/'))
+
+test_url: https://www.switchonpaper.com/2018/07/25/gustav-metzgeragir-ou-perir/
+
+

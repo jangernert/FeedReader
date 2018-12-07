@@ -1,0 +1,10 @@
+prune: no
+body: //div[@class='corps-news text-enrichi-default']
+body: //div[@class='corps-article text-enrichi-default']
+body: //div[@class='corps-video text-enrichi-default']
+strip: //div[@class='bloc-contact-auteur']
+strip: //div[@class='liens-avis-lecteur']
+
+test_url: http://www.jeuxvideo.com/news/431383/lancement-cosmique-pour-devouring-stars.htm
+test_url: http://www.jeuxvideo.com/test/431612/massive-chalice-du-tour-par-tour-medieval-independant.htm
+test_url: http://www.jeuxvideo.com/videos/431381/devouring-stars-moisson-d-etoiles.htm

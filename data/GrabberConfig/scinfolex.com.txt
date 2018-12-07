@@ -1,0 +1,3 @@
+author: //div[@class="entry-meta"]//a[contains(@class, "url")]
+
+test_url: https://scinfolex.com/2018/09/15/la-directive-copyright-nest-pas-une-defaite-pour-linternet-libre-et-ouvert/

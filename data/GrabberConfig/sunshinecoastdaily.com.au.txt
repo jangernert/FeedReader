@@ -1,0 +1,12 @@
+body: //section//article//p
+
+strip: //aside
+strip: //div[@class='margin-top-15']
+strip: //p[@class='tags']
+
+author: //span[@class='byline']//ul[@class='piped']//li[1]
+date: //span[@class='byline']//ul[@class='piped']//li[2]
+
+parser: html5php
+
+test_url: https://www.sunshinecoastdaily.com.au/news/questions-over-accuseds-clothes-in-milos-murder-tr/3141729/

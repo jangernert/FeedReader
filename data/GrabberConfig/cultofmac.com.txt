@@ -1,0 +1,8 @@
+strip_id_or_class: tags
+strip_id_or_class: post-more
+strip_id_or_class: sidebar
+strip_id_or_class: social-container
+
+author: //a[@rel='author']
+
+test_url: https://www.cultofmac.com/568215/eu-may-force-iphone-to-switch-from-lightning-to-usb/

@@ -1,0 +1,3 @@
+body: //div[contains(concat(' ',normalize-space(@class),' '),' content-post ')]
+test_url: https://propakistani.pk/2017/06/23/eid-mubarak-happy-holidays-everyone/
+test_contains: away from work for Eid Holidays

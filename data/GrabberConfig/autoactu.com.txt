@@ -1,0 +1,5 @@
+
+body: //div[@id="bloc_actu"]/parent::*
+title: //div[@id="content"]/h1[1]
+
+test_url: http://www.autoactu.com/thomas-owsianski-nomme-president-d-audi-chine.shtml

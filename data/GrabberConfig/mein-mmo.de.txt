@@ -1,0 +1,4 @@
+body: //div[@class='gp-entry-text']
+strip: //aside
+
+test_url: http://mein-mmo.de/pokemon-go-15-staerksten-pokemon-der-2-generation/

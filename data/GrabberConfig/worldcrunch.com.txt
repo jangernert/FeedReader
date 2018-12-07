@@ -1,0 +1,12 @@
+
+body: //div[contains(concat(' ',normalize-space(@class),' '),' article-subtitle ')] | //div[contains(concat(' ',normalize-space(@class),' '),' article-text ')]
+
+author: //meta[@property="article:author"]/@content | //a[contains(concat(' ',normalize-space(@class),' '),' original-author ')]
+
+date: //meta[@property="article:published"]/@content
+
+prune: no
+
+strip: //p/em[normalize-space(text())='See more from']/a[starts-with(@href,'https://www.worldcrunch.com/')]/parent::em
+
+test_url: https://www.worldcrunch.com/business-finance/why-philosophers-are-hot-profiles-on-corporate-job-market

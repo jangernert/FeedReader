@@ -1,0 +1,9 @@
+title: //h1[@class='entry-title']
+body: //div[@class='text']
+author: //li[@class='entry-author']//a
+date: //li[@class='entry-date']
+
+# first image inside the article
+strip: //div[@class='text']//img[1]
+
+test_url: http://www.muylinux.com/2016/03/22/kde-plasma-5-6

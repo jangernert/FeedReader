@@ -1,0 +1,5 @@
+body: //div[@id="mainBody"]
+prune: no
+test_url: http://msdn.microsoft.com/en-us/library/hh542796(VS.103).aspx
+test_url: https://msdn.microsoft.com/library/hh191443(vs.110).aspx
+test_contains: An async method typically contains

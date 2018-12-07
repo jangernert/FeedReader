@@ -1,0 +1,6 @@
+title: //h1[@class="main-title"]
+author: //span[@class="recipe-author__name"]
+body: //div[@id="sticky-desktop-only"]
+strip: //div[@id="bloc-video"]
+
+test_url: http://www.marmiton.org/recettes/recette_gateau-au-chocolat-fondant-rapide_166352.aspx

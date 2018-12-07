@@ -1,0 +1,11 @@
+
+author: //meta[@itemprop="author"]/@content
+
+body: //div[contains(concat(' ',normalize-space(@class),' '),' gp-entry-content ')]
+
+strip_id_or_class: gp-entry-meta
+strip_id_or_class: gp-entry-header
+strip_id_or_class: gp-post-navigation
+strip_id_or_class: mashsb-container
+
+test_url: http://www.kingz.fr/trois-nouvelles-fresques-berges-de-seine/

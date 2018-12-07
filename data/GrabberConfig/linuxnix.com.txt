@@ -1,0 +1,4 @@
+body: //div[contains(concat(' ',normalize-space(@class),' '),' entry-content ')]
+strip_id_or_class: ts-fab-wrapper
+
+test_url: https://www.linuxnix.com/how-to-rotate-logs-manually-in-linux/

@@ -1,0 +1,8 @@
+body://section[@class='descriptif'] | //section[contains(@class, 'texte')] | //section[@class='notes']
+
+# Last edition date (if any)
+date: //time[@itemprop='dateModified']/@datetime
+# Publication date
+date: //time[@itemprop='datePublished']/@datetime
+
+test_url: http://nota-bene.org/Une-situation-qui-AMPire

@@ -1,0 +1,20 @@
+body: //article
+
+strip_id_or_class: article_author
+strip_id_or_class: tag_articles
+strip_id_or_class: article_insert
+strip_id_or_class: col-right
+strip_id_or_class: aside_blockquote
+strip_id_or_class: article-header__infos article-infos
+strip_id_or_class: article-infos--top-article
+strip_id_or_class: tag
+strip_id_or_class: category
+strip_id_or_class: sharing-tools
+strip_id_or_class: feed-articles-aside
+strip_id_or_class: article-signature
+strip_id_or_class: article-header__breadcrumb
+
+src_lazy_load_attr: data-full-src
+
+test_url: http://www.slate.fr/story/115631/twitter-devin-tirages-ligue-champions
+test_url: http://www.slate.fr/story/159244/katie-nouvelle-drogue-zombie

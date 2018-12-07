@@ -1,0 +1,4 @@
+body: //div[@class='subsection_wrap']
+next_page_link: //ul[@class='pagination']//a[contains(text(), '»')]
+
+test_url: http://www.houstonchronicle.com/nasa/adrift/1/

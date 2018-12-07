@@ -1,0 +1,3 @@
+strip_id_or_class: article-linktoanother
+
+test_url: http://finexpert.e15.cz/budiz-teplo-eu-stedre-zadotuje-nejen-plynovy-kotel

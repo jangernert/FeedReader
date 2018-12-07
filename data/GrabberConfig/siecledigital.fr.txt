@@ -1,0 +1,10 @@
+title: //meta[@property="og:title"]/@content 
+body: //div[contains(concat(' ',normalize-space(@class),' '),' post-content ')]
+
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' essb_links ')]
+
+prune: no
+tidy: no
+
+test_url: https://siecledigital.fr/2018/08/10/twitter-condamne-france-ufc-que-choisir/
+

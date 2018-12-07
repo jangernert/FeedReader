@@ -1,0 +1,16 @@
+title: //header/h2
+strip: //header/h2
+
+body: //div[@class='article__header-teaser'] | //div[@class='article__content']//p | //div[@class='article__content']//img | //div[@class='article__content']//a
+strip: //ul[contains(@class, 'sharingbar')]
+strip: //ol[@class='teaser__widget']
+
+author: substring-after(//div[@class='article__header-author'], 'Von ')
+author: substring-after(//div[@class='article__header-author'], 'Interview: ')
+author: //div[@class='article__header-author']
+
+date: //meta[@property='article:modified_time']/@content
+
+test_url: http://www.jetzt.de/hauptsache-reset/haeftlinge-als-unternehmensgruender
+test_url: http://www.jetzt.de/maedchenfrage/maedchen-fragen-jungs-warum-balanciert-ihr-an-roten-ampeln-auf-dem-rad 
+test_url: http://www.jetzt.de/meine-theorie/das-perfekte-alter-ist-eine-frage-der-perspektive

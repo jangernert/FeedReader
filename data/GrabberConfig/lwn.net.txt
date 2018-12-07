@@ -1,0 +1,49 @@
+# HTML5 anyone? The 1980s called, they want their HTML4 back.
+# LWN uses so little markup that you really have to be creative.
+
+tidy: yes
+prune: no
+
+single_page_link: //div[@class='ArticleText']//a[contains(text(), 'Full Story')]/@href
+single_page_link: concat(//div[@class='ArticleText']//a[contains(text(), 'Read more')]/@href, 'bigpage')
+if_page_contains: //div[@class='ArticleText']//a[contains(text(), 'Read more')]
+
+title: //h1
+
+# After tiding the document, <b> becomes <strong>.
+author: //div[@class='FeatureByline']/strong
+date: //div[@class='FeatureByline']/text()[preceding-sibling::br]
+strip: //div[@class='FeatureByline']
+author: substring-after(//div[@class='GAByline']/p[2], 'by ')
+date: //div[@class='GAByline']/p[1]
+strip: //div[@class='GAByline']
+
+# tidy will take care of fixing the tag mess that we make here.
+replace_string(<p class="Cat1HL">): <h1>
+replace_string(<h2 class="SummaryHL">): <h3>
+replace_string(<p class="Cat2HL">): <h2>
+
+# Make extracting the content before "Log in to post comments" easier.
+# And by "easier" I mean possible in all cases without going through
+# a lot of XPath pain.
+replace_string(<hr width="60%" align="left">): <div class="ftrss-strip">
+replace_string(to post comments)): </div>
+strip: //div[@class='ftrss-strip']
+body: //div[@class='ArticleText']
+strip: //table[@class='Form']
+
+requires_login: yes
+
+login_uri: https://lwn.net/login
+login_username_field: Username
+login_password_field: Password
+
+not_logged_in_xpath: /html/body/div[3]/div[1]/form[@class="loginform"]
+
+test_url: http://lwn.net/Articles/668318/
+test_url: http://lwn.net/Articles/668695/
+test_url: http://lwn.net/Articles/669114/
+test_url: http://lwn.net/Articles/670209/
+test_url: http://lwn.net/Articles/670209/rss
+test_url: http://lwn.net/Articles/668318/rss
+test_url: http://lwn.net/Articles/670062/

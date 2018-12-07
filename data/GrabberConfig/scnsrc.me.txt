@@ -1,0 +1,4 @@
+body: //div[@class='storycontent']
+tidy: no
+test_url: http://www.scnsrc.me/assassins-creed-2016-720p-bluray-x264-sparks/
+replace_string(height="240"): width="240" height="240"

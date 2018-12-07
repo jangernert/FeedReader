@@ -1,0 +1,35 @@
+
+title: //h1[contains(concat(' ',normalize-space(@class),' '),' entry-title ')]
+
+body: //div[contains(concat(' ',normalize-space(@class),' '),' content ')]
+
+author: //div[contains(concat(' ',normalize-space(@class),' '),' td-post-header ')]//small//div[contains(concat(' ',normalize-space(@class),' '),' bestof-meta-autor ')]
+
+date: //meta[@property="og:updated_time"]/@content
+
+strip_id_or_class: wc-memberships-content-restricted-message
+strip_id_or_class: box_protegee_abonne
+strip_id_or_class: share-bottom
+strip_id_or_class: share-comment
+strip_id_or_class: wpb_wrapper
+strip: //ul[@id='actions']
+
+test_url: https://marsactu.fr/a-miramas-village-vitrine-en-carton-pate-et-vrai-centre-ville-en-coulisses/
+
+# ----------------------------------------------------------
+# Wallabag-specific login directives (not supported in FTR):
+# ----------------------------------------------------------
+requires_login: yes
+not_logged_in_xpath: //div[contains(concat(' ',normalize-space(@class),' '),' box_protegee_abonne ')]
+login_uri: https://marsactu.fr/wp-login.php
+login_username_field: log
+login_password_field: pwd
+login_extra_fields: rememberme=forever
+login_extra_fields: wp-submit=Se+connecter
+login_extra_fields: testcookie=1
+login_extra_fields: redirect_to=@=xpath('//input[@name="redirect_to"]', request_html('https://marsactu.fr/wp-login.php'))
+# Remark: in the previous line, the @=xpath(...) is not necessary because
+#         the value of "redirect_to" is dynamic but because we need a call
+#         to request_html('https://marsactu.fr/wp-login.php') in order to
+#         initialize the session cookie mandatory for the login to succeed.
+

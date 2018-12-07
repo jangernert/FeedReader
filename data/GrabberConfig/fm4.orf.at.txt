@@ -1,0 +1,14 @@
+author: //div[@class='authorDescription']/h2
+body: //div[@id='story']
+title: //h1[@class='detail']
+
+date: translate(translate(substring-before(substring-after(//p[@class='date'],'Erstellt am:'), ' Uhr'), '. ', '.'), '-', ' ')
+strip: //p[@class='date']
+
+strip: //p[@class='credit']
+
+tidy: no
+prune: no
+parser: html5lib
+
+test_url: http://fm4.orf.at/stories/1689156/

@@ -1,0 +1,3 @@
+single_page_link: //option[contains(@value, 'showall=1')]/@value
+
+test_url: http://www.shahrsakhtafzar.com/fa/review/cpu/11652-amd-ryzen-7-1700x-review

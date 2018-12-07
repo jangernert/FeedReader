@@ -1,0 +1,8 @@
+title: //title
+
+body: //div[@class="entry-content"]
+
+author: //span[@class="author vcard"]
+
+date: //span[@class="entry-date"]
+test_url: http://amptoons.com/blog/?p=22736

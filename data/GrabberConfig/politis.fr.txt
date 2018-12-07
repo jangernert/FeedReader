@@ -1,0 +1,13 @@
+author: //div[contains(concat(' ',normalize-space(@class),' '),' article-author-sign ')]//a[@itemprop='author']
+body://div[contains(concat(' ',normalize-space(@class),' '),' article-text ')]
+
+test_url: https://www.politis.fr/articles/2018/07/john-coltrane-linfinie-creation-39113/
+
+# Wallabag-specific login directives (not supported in FTR)
+requires_login: yes
+login_uri: https://www.politis.fr/compte/login/?next=referrer
+login_username_field: login
+login_password_field: password
+not_logged_in_xpath: //h6[contains(concat(' ',normalize-space(@class),' '),' register-headline ')]
+
+

@@ -1,0 +1,41 @@
+
+author: //div[@itemprop='author']//p[@itemprop='name']
+
+body: //section[contains(concat(' ',normalize-space(@class),' '),' content ')]
+body: //div[contains(concat(' ',normalize-space(@class),' '),' content ')]
+
+prune: no
+
+strip_id_or_class: social
+strip_id_or_class: follow
+strip_id_or_class: page-up
+strip_id_or_class: see-more
+strip_id_or_class: author-box
+strip_id_or_class: mobileHide
+strip_id_or_class: h-alb-titre
+strip_id_or_class: listComments
+strip_id_or_class: share-buttons
+strip_id_or_class: comment-form-bottom
+strip_id_or_class: biblio-action-buttons
+strip: //h2[text()='Pour aller plus loin']/following-sibling::div[contains(concat(' ',normalize-space(@class),' '),' panel ')]
+strip: //h2[text()='Pour aller plus loin']
+strip: //h2[@id="cbdReview"]
+strip: //nav
+
+# book serie:
+test_url: https://culturebd.com/serie-17441-dept.-h
+
+# book review:
+test_url: https://culturebd.com/album-bd/les-enquetes-du-commissaire-raffini/230936-12-rue-des-souvenirs
+
+# interview::
+test_url: https://culturebd.com/actualites/interviews/2018/07/331-wesh-caribou-l-art-du-rire-par-grand-froid
+
+# anecdote:
+test_url: https://culturebd.com/anecdotes/the-end-l-apocalypse-selon-les-doors-255
+
+# author:
+test_url: https://culturebd.com/auteurs/110-rodolphe
+
+# agenda:
+test_url: https://culturebd.com/agenda/exposition-chapeau-bas-spirou-676

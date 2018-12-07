@@ -1,0 +1,4 @@
+body://div[@class='post_inner_wrapper']
+date://div[@class='sub_page_caption']
+strip://div[contains(concat(' ',normalize-space(@class),' '),' post_img ')]
+test_url: http://blog.eleven-labs.com/en/cqrs-pattern-2/

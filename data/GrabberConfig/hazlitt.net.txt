@@ -1,0 +1,5 @@
+body: //div[@id='article-wrap']
+title: //h1[@class='article-title']
+author: //div[@class='article-footer']//div[@class='author-name']/a
+
+test_url: https://hazlitt.net/longreads/real-lolita

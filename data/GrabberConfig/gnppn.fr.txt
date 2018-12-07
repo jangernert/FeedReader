@@ -1,0 +1,5 @@
+title: //h1[@class="entry-title"]
+author: //p[@class="site-title"]
+date: //time[@class="entry-date published"]/@datetime
+
+test_url: https://gnppn.fr/2018/10/21/quotidiens-nationaux-et-abonnement-en-ligne-prime-a-la-penibilite/

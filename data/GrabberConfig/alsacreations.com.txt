@@ -1,0 +1,4 @@
+author: //div[@class="auteur-meta"]//a[contains(@href, '/profil/')]
+date: //div[@class="auteur-meta"]//time/@datetime
+
+test_url: https://www.alsacreations.com/tuto/lire/1771-css-grid-layout-en-production.html

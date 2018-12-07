@@ -1,0 +1,26 @@
+
+body://div[contains(concat(' ',normalize-space(@class),' '),' entry-content ')]
+
+author: //header[contains(concat(' ',normalize-space(@class),' '),' entry-header ')]//a[@rel='author']
+
+strip_id_or_class: abonnement
+strip_id_or_class: authorpage
+strip_id_or_class: article-tags
+strip_id_or_class: entry-footer
+
+test_url: https://courrierdeuropecentrale.fr/prague-budapest-differences/
+
+#-----------------------------------------------------------
+# Wallabag-specific login directives (not supported in FTR):
+#-----------------------------------------------------------
+#requires_login: yes
+not_logged_in_xpath: //a[@href='https://courrierdeuropecentrale.fr/mon-compte/connexion/']
+login_uri: https://courrierdeuropecentrale.fr/mon-compte/connexion/
+login_username_field: rcp_user_login
+login_password_field: rcp_user_pass
+login_extra_fields: rcp_action=login
+login_extra_fields: rcp_user_remember=1
+login_extra_fields: rcp_redirect=https://courrierdeuropecentrale.fr/mon-compte/connexion/
+login_extra_fields: rcp_login_nonce=@=xpath('//input[@name="rcp_login_nonce"]', request_html('https://courrierdeuropecentrale.fr/mon-compte/connexion/'))
+
+test_url: https://courrierdeuropecentrale.fr/la-slovaquie-attire-de-plus-en-plus-de-touristes/

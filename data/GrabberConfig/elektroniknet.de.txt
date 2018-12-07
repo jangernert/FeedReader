@@ -1,0 +1,11 @@
+date: //time
+next_page_link: //li[@class='next']//a
+strip: //aside
+
+# 1 page
+test_url: http://www.elektroniknet.de/elektronik-automotive/wirtschaft/aus-quattro-gmbh-wird-audi-sport-136464.html
+test_contains: etwa 1.200 Mitarbeiter an den Standorten Neckarsulm und Ingolstadt
+
+# 2 pages
+test_url: http://www.elektroniknet.de/elektronik-automotive/sonstiges/machine-learning-wird-demnaechst-massiv-an-bedeutung-gewinnen-136362.html
+test_contains: Ende 2014 übernahm er seine heutige Position als CEO von MBRDNA

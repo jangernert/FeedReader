@@ -1,0 +1,32 @@
+single_page_link: //div[@id='ss-storyText']//p[@class='readMore']/a
+single_page_link: //div[@id='ss-storyText']//p[contains(., 'Mehr dazu')]/a
+
+title: substring-before(//title,' - ')
+body: //div[@id="ss-storyText"]
+author: substring-before(//div[@id="ss-storyText"]//p[contains(text(), ', ORF.at')], ', ORF.at')
+strip: //div[@id="ss-storyText"]//p[contains(text(), ', ORF.at')]
+date: substring-after(//div[@class='storyMeta socialshare']//p[@class='date'],'Publiziert am')
+strip: //p[@class='date']
+
+strip: //p[@class='credit']
+strip: //p[@class='toplink']
+strip: //div[@id="ss-storyText"]/h1
+strip: //div[@class='socialButtons']
+strip: //div[@class='storyMeta socialshare']
+strip: //div[@class='socialShareWrapper']
+strip: //div[@id='socialshareprivacy']
+strip: //div[@class='storyMeta']
+strip: //div[@class='remote']
+
+prune: no
+tidy: no
+
+test_url: http://orf.at/stories/2317355/
+test_url: http://orf.at/stories/2084731/
+test_url: http://orf.at/stories/2317313/2317311/
+test_url: http://wien.orf.at/news/stories/2746414/
+test_url: http://ooe.orf.at/news/stories/2750613/
+test_url: http://science.orf.at/stories/2774991/
+test_url: http://orf.at/stories/2339962/
+test_url: http://orf.at/stories/2339958/
+test_url: http://help.orf.at/stories/1770242/

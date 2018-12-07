@@ -1,0 +1,15 @@
+title: //h2[@class="article-title"]
+body: //div[@id="zenContent"] | //div[@id="block-articlenote"]
+author: //div[@class="article-author"]//a[@class="username"]
+
+# wallabag-specific login directives (not supported in FTR)
+requires_login: yes
+
+login_uri: https://www.canardpc.com/user/login
+login_username_field: name
+login_password_field: pass
+login_extra_fields: form_id=user_login_form
+
+not_logged_in_xpath: //div[@class="messages--error"]
+
+test_url: https://www.canardpc.com/357/fouine-peaks-thimbleweed-park

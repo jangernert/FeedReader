@@ -1,0 +1,6 @@
+title: //header/h1[contains(concat(' ',normalize-space(@class),' '), ' c-article__title ')]
+body: //div[contains(concat(' ',normalize-space(@class),' '), ' c-article__main ')]
+
+strip_id_or_class: c-article__footer
+
+test_url: https://threatpost.com/lock-screen-bypass-bug-quietly-patched-in-handsets/139141/

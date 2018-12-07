@@ -1,0 +1,37 @@
+
+author: //a[@rel='author']
+
+title: //section[@id='pagearticle']/h1[1]
+
+body: //section[@id='pagearticle']
+
+strip: //*[@id='comments']/following-sibling::*
+strip: //*[@id='comments']/following-sibling::text()
+strip: //*[@id='respond']/following-sibling::*
+strip: //*[@id='respond']/following-sibling::text()
+strip: //*[@id='comments']
+strip: //*[@id='respond']
+strip_id_or_class: toptitlepages
+strip_id_or_class: rcp_paid_only
+strip_id_or_class: rcp_restricted
+strip_id_or_class: relpost-thumb-wrapper
+strip_id_or_class: really_simple_share
+strip_id_or_class: copyright
+strip_id_or_class: reply
+strip_id_or_class: cancel-comment-reply
+strip_id_or_class: commentform
+
+test_url: https://dailynord.fr/2018/07/lextraordinaire-oeuvre-de-sergex-ne-a-mericourt/
+
+# ----------------------------------------------------------
+# Wallabag-specific login directives (not supported in FTR):
+# ----------------------------------------------------------
+requires_login: yes
+not_logged_in_xpath: //form[@id='rcp_login_form']
+login_uri: https://dailynord.fr/connexion-a-mon-espace-abonne/
+login_username_field: rcp_user_login 
+login_password_field: rcp_user_pass
+login_extra_fields: rcp_login_nonce=@=xpath('//form[@id="rcp_login_form"]//input[@name="rcp_login_nonce"]', request_html('https://dailynord.fr/connexion-a-mon-espace-abonne/'))
+login_extra_fields: rcp_user_remember=1
+login_extra_fields: rcp_action=login
+login_extra_fields: rcp_redirect=https://dailynord.fr/connexion-a-mon-espace-abonne/

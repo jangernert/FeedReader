@@ -1,0 +1,13 @@
+body: //section[contains(@class, 'body-text')]
+
+strip_id_or_class: highlights
+
+# Avoid redirecting to 'unsupported browser' page
+find_string: <meta http-equiv="refresh"
+replace_string: <meta norefresh
+
+test_url: http://www.cnn.com/2012/05/13/us/new-york-police-policy/index.html
+test_contains: this discriminatory and ineffective practice
+
+test_url: http://rss.cnn.com/rss/edition.rss
+test_url: http://rss.cnn.com/rss/edition_technology.rss

@@ -1,0 +1,8 @@
+body: //div[contains(concat(' ',normalize-space(@class),' '),' post_content_wrapper ')]
+strip_id_or_class: post_share_text
+strip_id_or_class: post_info_cat
+strip_id_or_class: about_the_author
+strip_id_or_class: widgettitle
+strip_id_or_class: post_related
+
+test_url: http://distributistreview.com/distributism-economics-as-if-people-mattered/

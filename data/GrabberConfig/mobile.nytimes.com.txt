@@ -1,0 +1,71 @@
+# mobile.nytimes.com appears to be the same as www.nytimes.com now, 
+# so any changes here should probably also be made to mobile.nytimes.com.txt too
+
+title://h1[@class="articleHeadline"]
+body: //div[contains(concat(' ',normalize-space(@class),' '),' story-body ')]
+body://div[@id="article"]
+body://*[@itemprop="articleBody"]
+body: //div[contains(concat(' ',normalize-space(@class),' '),' g-body-article-container ')]
+body: //article[@id='story']
+strip_id_or_class:articleTools
+strip_id_or_class:readerscomment
+#strip://div[contains(@class, "articleInline runaroundLeft")]
+strip: //div[contains(@class, "doubleRule")]
+# strip image credit - appears as a bold heading
+strip: //div[contains(@class, "articleInline")]//h6
+strip_id_or_class:enlargeThis
+strip_id_or_class:pageLinks
+strip_id_or_class:memberTools
+strip_id_or_class:articleExtras
+strip_id_or_class:singleAd
+strip_id_or_class:byline
+strip_id_or_class:dateline
+strip_id_or_class:articleheadline
+strip_id_or_class:articleBottomExtra
+strip_id_or_class:shareTools
+strip_id_or_class:story-meta
+strip_id_or_class:related-coverage
+strip_id_or_class:ad-header
+strip_id_or_class:bottom-ad
+strip_id_or_class:advert_item
+strip://a[contains(@href, 'nytimes.com/adx/')]
+strip: //nyt_byline
+strip: //span[contains(@class, 'slideshow') or contains(@class, 'video')]
+strip: //p[@class='caption']//a[contains(., 'More Photos')]
+strip_id_or_class: ResponsiveAd
+
+strip_id_or_class: robots-nocontent
+strip_id_or_class: hidden
+
+prune: no
+tidy: no
+
+date: //meta[@property="article:published"]/@content
+date: //meta[@itemprop="datePublished"]/@content
+
+find_string: src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png
+replace_string: ignore-src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png
+find_string: data-mediaviewer-src='https://static01.nyt.com
+replace_string: src='https://static01.nyt.com
+
+single_page_link: //link[contains(@href, 'pagewanted=all')]
+#mobile.nytimes.com looks same as regular www.nytimes.com now
+#single_page_link: //link[@rel='alternate' and contains(@href, 'mobile.nytimes.com')]/@href
+#single_page_link: concat(substring-before(//div[@id='pageLinks']//a[contains(@href, 'pagewanted=')]/@href, 'pagewanted='), 'pagewanted=all') 
+
+strip://h6[@class = 'kicker']
+
+test_url: http://mobile.nytimes.com/2011/07/24/books/review/an-academic-authors-unintentional-masterpiece.html
+test_contains: In this column I want to look at a not uncommon way of writing
+
+test_url: http://mobile.nytimes.com/2012/06/10/arts/television/the-newsroom-aaron-sorkins-return-to-tv.html
+test_contains: IF you’ve seen enough of Aaron Sorkin’s theater
+
+test_url: https://mobile.nytimes.com/interactive/2016/books/review/best-books.html
+test_contains: invention and speculation flow together
+
+test_url: http://mobile.nytimes.com/2013/03/25/world/middleeast/israeli-military-responds-after-patrols-come-under-fire-from-syria.html
+test_url: http://mobile.nytimes.com/2013/08/15/nyregion/when-the-new-york-city-subway-ran-without-rails.html
+test_url: http://mobile.nytimes.com/2004/02/29/weekinreview/correspondence-class-consciousness-china-s-wealthy-live-creed-hobbes-darwin-meet.html
+test_url: http://mobile.nytimes.com/2014/06/19/opinion/gail-collins-romney-and-the-2016-contenders-huddle.html
+test_url: https://mobile.nytimes.com/interactive/2015/12/16/upshot/100000004092329.app.html?_r=2

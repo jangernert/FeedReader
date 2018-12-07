@@ -1,0 +1,19 @@
+body: //div[@class='article-entry text']
+
+author: //div[@class='byline']/a
+
+date: //div[@class="byline"]/time/@datetime
+
+title: //h1[@class="tweet-title"]
+strip_id_or_class: module-crunchbase
+strip_id_or_class: aside aside-related-articles
+
+# The following is for the mobile site
+body: //div[@id="singlentry"]
+author: substring-after(//span[@class="single-post-meta-top"],'rsaquo; ')
+date: substring-before(//div[@class="single-post-meta-top"],' @')
+title: //a[@class="sh2"]
+
+prune: no
+
+test_url: http://techcrunch.com/2016/02/02/spotcap/?ncid=rss&utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+francaistechcrunch+%28TechCrunch+en+Francais%29

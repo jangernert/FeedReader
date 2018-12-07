@@ -1,0 +1,11 @@
+body: //div[contains(@class, 'field-body')]
+strip_image_src: placeholder
+find_string: <noscript>
+replace_string: <div>
+find_string: </noscript>
+replace_string: </div>
+
+prune: no
+
+test_url: http://www.popsci.com/nasa-crashed-another-plane-today
+test_url: http://www.popsci.com/rss.xml

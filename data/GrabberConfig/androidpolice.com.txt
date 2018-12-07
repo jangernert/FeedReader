@@ -1,0 +1,10 @@
+body: //div[@class='post_content']
+date: //div[@class='date_day'] | div[@class='date_month']
+strip_id_or_class: author-box
+strip_id_or_class: multi-page-post
+strip_id_or_class: toc_container
+author: //h2[@class='author-box-heading']/a
+next_page_link: //link[@rel='next']/@href
+
+test_url: http://www.androidpolice.com/2014/03/30/music-boss-for-pebble-can-now-control-playback-and-volume-on-chromecast-content-from-your-smartwatch/
+test_url: http://www.androidpolice.com/2015/12/07/32-new-and-notable-android-games-from-the-last-2-weeks-112415-12715/

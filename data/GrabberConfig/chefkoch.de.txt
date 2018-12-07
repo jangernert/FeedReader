@@ -1,0 +1,57 @@
+prune: no 
+
+########################################
+# Chefkoch Rezepte
+########################################
+
+# Set article informations
+title: //h1[@class = 'page-title']
+author: //span[@class= 'author']
+
+# Content
+body: //div[contains(@class, 'main-content')]
+
+# Cleanup
+strip_id_or_class: text-ads-rezeptbild
+strip_id_or_class: recipe-buttons
+strip_id_or_class: incredientform
+strip_id_or_class: js-how2video-container
+strip_id_or_class: order-online
+strip_id_or_class: mobile-only
+strip_id_or_class: text-ads-unter-zubereitung
+strip_id_or_class: sharing-wrapper
+
+test_url: http://www.chefkoch.de/rezepte/1748851284207014/Schweinefilet-mit-Apfel-Curry-Sauce.html
+test_contains: Das Schweinefilet trocken tupfen und einmal quer halbieren
+
+
+############################################
+# Chefkoch Magazin
+############################################
+
+# Article information
+title: //h1[contains(@class, 'headline-duo__headline')]
+author: //div[@class='article-information__meta']/span[1]
+
+# Content
+body: //div[@class=article-content]
+
+# Cleanup
+strip_id_or_class: slider
+strip_id_or_class: recipe-image-voting
+strip_id_or_class: recipe-comments
+strip_id_or_class: kommentarform
+strip_id_or_class: responsive-ad
+strip_id_or_class: sg-note
+strip_id_or_class: simplora-widget
+strip_id_or_class: recipe2shoppinglist
+strip_id_or_class: gujAd
+strip_id_or_class: teaser-top-small
+strip_id_or_class: rezeptvideos
+strip_id_or_class: recipe-guide-wrapper
+strip_id_or_class: recipe-guide-hint-tile
+strip_id_or_class: container-video
+strip_id_or_class: recipe2shoppinglist
+
+test_url: http://www.chefkoch.de/magazin/artikel/6157/Chefkoch/kamelle-selber-machen.html
+test_contains: Für viele ist der Umzug am Rosenmontag die Gelegenheit, den Bonbon-Vorrat für das ganze Jahr zu sichern.

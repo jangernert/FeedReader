@@ -1,0 +1,36 @@
+# author: kreativmonkey
+
+# Singlepage
+single_page_link: //div[contains(@class, 'pane-eatsmarter-actionbar')]/div[@class='pane-content']/div[contains(@class, 'actionbar-print')]/div[@class='actionbar-item-action']/a
+
+# Article Information
+title: //h1[contains(@class, 'title')]
+
+# Content
+body: //div[contains(@class, 'recipe-printview')]
+
+# Cleanup
+strip_id_or_class: field-name-field-video
+strip_id_or_class: field-name-field-image
+strip_id_or_class: preparation-step-count #evtl auch nicht!
+strip_id_or_class: ad
+strip_id_or_class: adsense
+strip_id_or_class: print-list
+strip_id_or_class: 71M_inreadads
+strip_id_or_class: bring-app
+strip_id_or_class: simplora-widget
+strip_id_or_class: field-name-field-kitchen-utensils
+strip_id_or_class: fivestar-wrapper
+strip_id_or_class: pane-eatsmarter-latest-comments
+strip_id_or_class: traffic-lights-wrapper
+strip_id_or_class: logo
+strip_id_or_class: traffic-lights-wrapper
+strip_id_or_class: info-extra
+strip_id_or_class: simplora-widget
+strip_id_or_class: shoplink
+
+test_url: https://eatsmarter.de/rezepte/chili-schokoladen-sorbet
+test_contains: Die Schokolade fein hacken
+
+test_url: https://eatsmarter.de/rezepte/thunfisch-wraps-1/druckansicht
+test_contains: den Strunk herausschneiden

@@ -1,0 +1,5 @@
+body: //div[@id="component-wrapper"]
+
+strip_id_or_class: tweet-error-text
+
+test_url: https://blog.twitter.com/developer/en_us/topics/tools/2018/new-developer-requirements-to-protect-our-platform.html

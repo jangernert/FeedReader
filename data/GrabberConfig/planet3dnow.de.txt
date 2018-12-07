@@ -1,0 +1,16 @@
+# Author: Jan Lukas Gernert
+
+tidy: no
+prune: no
+
+title: //title
+author: //span[@class='author vcard']/a
+
+body: //article
+next_page_link: //span[@class='multipage-navlink nav-next']/a
+
+strip: //div[@id='pagination_top']
+strip: //header[@class='entry-header']
+strip: //span[@class='multipage-navlink nav-previous']
+
+test_url: http://www.planet3dnow.de/cms/14809-test-fractal-design-node-804/

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2018-08-27 19:37+0000\n"
+"PO-Revision-Date: 2018-12-07 16:08+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/feedreader/"
 "translations/fi/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.2-dev\n"
+"X-Generator: Weblate 3.4-dev\n"
 "X-Launchpad-Export-Date: 2016-01-13 05:53+0000\n"
 
 #: Constants.vala.in:26
@@ -57,9 +57,8 @@ msgid "Shortcuts"
 msgstr "Pikanäppäimet"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:3
-#, fuzzy
 msgid "FeedReader Autostart"
-msgstr "Syötteenlukija"
+msgstr "Syötteenlukijan automaatikäynnistys"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:4
 #: data/org.gnome.FeedReader.desktop.in:4
@@ -68,7 +67,7 @@ msgstr "RSS-sovellus"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:6
 msgid "Categories=Network;Feed;"
-msgstr ""
+msgstr "Categories=Network;Feed;"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:8
 #: data/org.gnome.FeedReader.desktop.in:8
@@ -89,6 +88,8 @@ msgid ""
 "FeedReader is a program designed to complement an already existing web-based "
 "RSS reader account."
 msgstr ""
+"Syötteenlukija on ohjelma, jonka tarkoitus on täydentää olemassa olevan, "
+"selainpohjaisen RSS-lukutilin käyttöä."
 
 #: data/org.gnome.FeedReader.appdata.xml.in:14
 msgid "Currently supported services:"
@@ -413,14 +414,14 @@ msgid "New articles"
 msgstr "Uudet artikkelit"
 
 #: src/Notification.vala:27
-#, fuzzy, c-format
+#, c-format
 msgid "There is 1 new article (%u unread)"
-msgstr "1 uusi artikkeli (%u lukematon)"
+msgstr "Yksi uusi artikkeli (lukemattomia %u)"
 
 #: src/Notification.vala:29
-#, fuzzy, c-format
+#, c-format
 msgid "There are %u new articles (%u unread)"
-msgstr "%u uutta artikkelia (%u lukematonta)"
+msgstr "%u uutta artikkelia (lukemattomia %u)"
 
 #: src/Share/ServiceSetup.vala:61
 msgid "Logout"

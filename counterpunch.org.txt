@@ -1,0 +1,7 @@
+title: //div[@class='main']//h1[contains(@class, 'article-title')]
+author: //div[@class='mainauthorstyle']
+body: //div[@itemprop="articleBody"]
+date: //meta[@itemprop="datePublished"]/@content
+#strip: //td[@width='140']
+
+test_url: http://www.counterpunch.org/2011/09/28/the-dangerous-cult-of-the-guardian/

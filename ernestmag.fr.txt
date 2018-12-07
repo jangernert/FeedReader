@@ -1,0 +1,31 @@
+
+body: //div[contains(concat(' ',normalize-space(@class),' '),' post-video ')] | //div[contains(concat(' ',normalize-space(@class),' '),' post-content ')]
+
+author: //div[contains(concat(' ',normalize-space(@class),' '),' post-author ')]//a[@rel='author']
+
+prune: no
+
+strip: //script
+strip_id_or_class: post-meta
+strip_id_or_class: post-title
+strip_id_or_class: post-category
+strip_id_or_class: woocommerce
+strip_id_or_class: article-cta
+
+test_url: https://www.ernestmag.fr/2018/06/18/coulon-en-chair-en-os-et-en-voix/
+test_url: https://www.ernestmag.fr/2018/07/31/decouvertes-ernest-de-lannee/
+test_url: https://www.ernestmag.fr/2018/04/03/sous-le-manteau-du-volcan/
+
+# ----------------------------------------------------------
+# Wallabag-specific login directives (not supported in FTR):
+# ----------------------------------------------------------
+requires_login: yes
+login_uri: https://www.ernestmag.fr/mon-compte/
+not_logged_in_xpath: //div[contains(concat(' ',normalize-space(@class),' '),' wc-memberships-content-restricted-message ')]
+login_username_field: username
+login_password_field: password
+login_extra_fields: woocommerce-login-nonce=@=xpath('//input[@name="woocommerce-login-nonce"]', request_html('https://www.ernestmag.fr/mon-compte/'))
+login_extra_fields: _wp_http_referer=/mon-compte/
+login_extra_fields: login=Se+connecter
+login_extra_fields: rememberme=forever
+# Remark: login to ernestmag.fr could fail if more than 2 active sessions are detected

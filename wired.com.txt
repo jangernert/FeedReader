@@ -1,0 +1,35 @@
+title: //meta[@property="og:title"]/@content
+author: //meta[@name='Author']/@content
+date: //meta[@name='DisplayDate']/@content
+body: (//article[contains(@class, 'body-copy')])[1]
+body: (//article[contains(@class, 'article-body-component')])[1]
+body: //div[contains(concat(' ',normalize-space(@class),' '),' entry ')]
+strip: //p[contains(., 'Pages:') and contains(., 'View All')]
+strip: //p[@class='caption']
+strip: //div[@class='desc' or @class='slide' or @id='slide-info']
+
+strip_id_or_class: pullquote
+strip_id_or_class: left_rail
+strip_id_or_class: related-container
+strip_id_or_class: radvert-caption-wrap
+strip_id_or_class: related
+strip_id_or_class: article-tags
+strip_id_or_class: visually-hidden
+strip_id_or_class: inset-left-component
+
+# Remove gallery?
+strip_id_or_class: wpgallery
+
+#strip: //text()[contains(., 'nextpage')]
+
+prune: no
+
+# 2017-07-27 No longer used it seems
+# single_page_link: //a[.='View All' and contains(@href, '/all/')]
+
+test_url: https://www.wired.com/2017/07/inside-cubas-diy-internet-revolution/
+test_contains: I should call the hostess once I know
+test_url: http://www.wired.com/cloudline/2011/10/meet-arms-cortex-a15-the-future-of-the-ipad-and-possibly-the-macbook-air/
+test_url: http://www.wired.com/wiredenterprise/2013/09/docker/
+test_url: http://www.wired.com/threatlevel/2012/05/ff_counterfeiter/all/
+test_url: http://www.wired.com/2015/11/i-turned-off-javascript-for-a-whole-week-and-it-was-glorious/

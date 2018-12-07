@@ -1,0 +1,30 @@
+
+body: //div[contains(concat(' ',normalize-space(@class),' '),' td-post-content ')]
+
+title: //div[contains(concat(' ',normalize-space(@class),' '),' entry-title ')]
+title: //h1[contains(concat(' ',normalize-space(@class),' '),' entry-title ')]
+
+author: //div[contains(concat(' ',normalize-space(@class),' '),' td-author-name ')]//a
+author: //div[contains(concat(' ',normalize-space(@class),' '),' author ')]//a
+
+strip_id_or_class: vc_message_box-icon
+strip_id_or_class: mepr-unauthorized-message
+strip_id_or_class: mepr-login-form-wrap
+
+test_url: https://www.japoninfos.com/ces-marques-que-lon-croit-japonaises-mais-qui-ne-le-sont-pas.html
+
+# ----------------------------------------------------------
+# Wallabag-specific login directives (not supported in FTR):
+# ----------------------------------------------------------
+requires_login: yes
+not_logged_in_xpath: //div[contains(concat(' ',normalize-space(@class),' '),' mepr-unauthorized-message ')]
+login_uri: https://www.japoninfos.com/login
+login_username_field: log
+login_password_field: pwd
+login_extra_fields: mepr_is_login_page=true
+login_extra_fields: mepr_process_login_form=true
+login_extra_fields: redirect_to=/login/account
+login_extra_fields: rememberme=forever
+login_extra_fields: wp-submit=Connexion
+
+test_url: https://www.japoninfos.com/trois-expositions-dans-le-cadre-du-festival-japonismes.html

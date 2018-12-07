@@ -1,0 +1,4 @@
+// Stripping of Crayon Syntax Highlighter in duplicate
+strip: //textarea[contains(@class, 'crayon-plain')]
+
+test_url: https://www.arduino-tutorial.de/ein-altes-handy-als-arduino-input/

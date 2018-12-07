@@ -1,0 +1,4 @@
+title: //div[@class='fond_titre']/h1[@class='post-title']
+body: //div[@class="post-chapo"]
+
+test_url:  http://iphonetweak.fr/2016/05/20/apple-watch-deja-jailbreakee

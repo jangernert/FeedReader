@@ -1,0 +1,13 @@
+body: //div[@class='articleContent']
+single_page_link: //a[contains(., 'Singlepage layout')]
+
+strip: //q[@class='streamer']
+strip_id_or_class: notificationsContainer
+prune: no
+
+http_header(user-agent): curl/7.54.0
+
+test_url: http://tweakers.net/feeds/mixed.xml
+test_url: https://tweakers.net/reviews/4110/tv-kijken-zonder-kabels-vodafone-tv-anywhere-en-kpn-play.html
+test_url: https://tweakers.net/reviews/4113/all/hp-spectre-13-x360-convertible-die-vrijwel-alles-goed-doet.html
+test_url: https://tweakers.net/nieuws/142245/amerikaanse-openbaar-aanklager-eist-dat-facebook-encryptie-messenger-verwijdert.html

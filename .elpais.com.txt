@@ -1,0 +1,23 @@
+title: //meta[@name='DC.title']/@content
+title: //div[contains(@class, 'cabecera_noticia')]//h1
+date: //meta[@name='DC.date']/@content
+date: //meta[@name='date']/@content
+body: //div[@class='columna_texto']
+body: //div[@id='cuerpo_noticia']
+body: //div[@class='estructura_2col_1zq']//div[@class='margen_n']
+
+prune: no
+
+strip_id_or_class: disposicion_vertical
+strip_id_or_class: ampliar_foto
+strip_id_or_class: utilidades
+strip_id_or_class: info_relacionada
+strip_id_or_class: m-kiosko
+strip_id_or_class: info_complementa
+
+strip: //div[starts-with(@id, 'sumario') and contains(., 'más información')]
+strip: //div[@id='coment' or @id='foros_not']
+strip: //picture//source
+
+test_url: http://economia.elpais.com/economia/2012/02/07/actualidad/1328611790_342868.html
+test_url: http://internacional.elpais.com/internacional/2012/02/07/actualidad/1328602145_448315.html

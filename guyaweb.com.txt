@@ -1,0 +1,27 @@
+
+body: //div[contains(concat(' ',normalize-space(@class),' '),' news-entry ')]
+
+strip_id_or_class: headline
+strip_id_or_class: post-meta
+strip_id_or_class: post-info
+strip_id_or_class: share-container
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' reserved ')]/following-sibling::*
+strip_id_or_class: reserved
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' form-inner ')]/parent::div/following-sibling::*
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' form-inner ')]/parent::div
+
+test_url: http://www.guyaweb.com/actualites/news/culture/caravane-top-vakans-sillone-guyane/
+
+# ----------------------------------------------------------
+# Wallabag-specific login directives (not supported in FTR):
+# ----------------------------------------------------------
+requires_login: yes
+not_logged_in_xpath: //div[contains(concat(' ',normalize-space(@class),' '),' reserved ')]
+login_uri: https://www.guyaweb.com/
+login_username_field: username
+login_password_field: password
+login_extra_fields: crb_login_user=1
+login_extra_fields: submit=ok
+
+test_url: http://www.guyaweb.com/actualites/news/culture/gabriel-serville-regrette-suppression-de-france-o/
+

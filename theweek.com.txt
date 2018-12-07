@@ -1,0 +1,8 @@
+body: //div[@class="article-body underline"]
+
+strip_id_or_class: appendedAds
+strip_id_or_class: right-ad-container
+strip_id_or_class: ad_wrap
+
+test_url: http://theweek.com/article/index/215763/insider-trading-on-capitol-hill
+test_url: https://theweek.com/articles/642979/why-poor-whites-flock-donald-trump

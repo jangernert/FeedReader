@@ -1,0 +1,3 @@
+next_page_link: //link[@rel='next']
+
+test_url: http://t3n.de/news/zukunftstag-2017-t3n-818436/

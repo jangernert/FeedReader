@@ -1,0 +1,14 @@
+body: //div[contains(concat(' ',normalize-space(@class),' '),' Ig ')]//div//div[contains(concat(' ',normalize-space(@class),' '),' Ct ')]
+
+author: //div[@id='contentPane']//h3//a[@rel="author"]/@content
+
+strip: //*[@title="People who +1'd this"]/../..
+strip: //*[contains(@class, 'a-b-f-i-Hg-Uf')]
+strip: //*[@role='menu']
+strip: //img[contains(@alt, 'profile photo')]
+strip: //*[@class='a-f-i-Ad']
+
+tidy: no
+
+test_url: http://plus.google.com/u/0/117840649766034848455/posts/FddaP6jeCqp
+test_url: https://plus.google.com/+googleplus/posts/d1XubVAZ5hV

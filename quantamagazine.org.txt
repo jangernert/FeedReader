@@ -1,0 +1,4 @@
+body: //div[contains(@class, 'post__content__section')]
+
+test_url: https://www.quantamagazine.org/a-path-less-taken-to-the-peak-of-the-math-world-20170627/
+test_contains: Mathematicians are interested in the following

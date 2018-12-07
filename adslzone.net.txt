@@ -1,0 +1,8 @@
+title: //h1[@class='entry-title']
+body: //article
+
+strip: //div[@class='io-word-count']
+strip: //ol[@class='breadcrumb']
+strip: //aside
+
+test_url: https://www.adslzone.net/2017/12/19/xiaomi-sneaky-santa-17/

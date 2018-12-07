@@ -1,0 +1,4 @@
+body: //div[@class='article-inner']
+strip_id_or_class: date
+author: //div[@class='author']
+test_url: http://www.keyboardmag.com/gear/1183/review-dave-smith-instruments-ob-6/58802

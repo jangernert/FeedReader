@@ -1,0 +1,4 @@
+
+strip_id_or_class: the_champ_sharing_container
+
+test_url: https://lefilrouge.media/etats-unis-nevada-burning-man-festival/

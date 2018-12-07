@@ -1,0 +1,9 @@
+prune: no
+body: //article[@class='anecdote']
+strip: //article[@class='anecdote']/aside/div[@class='column-wrapper']
+strip: //article[@class='anecdote']/aside/div[@id='related-sources-wrapper']/div[@id='related']
+
+
+test_url: http://secouchermoinsbete.fr/62836-audi-a-ete-cree-par-un-ancien-chef-de-chez-mercedes
+test_url: http://secouchermoinsbete.fr/62795-sous-l-eau-a-plus-de-10-metres-votre-sang-est-vert
+test_url: http://secouchermoinsbete.fr/62663-l-invention-qui-pourrait-nettoyer-les-oceans-en-quelques-annees

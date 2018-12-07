@@ -1,0 +1,4 @@
+title: //h1[@class='entry-title']
+body: //div[@id='mvp-content-main']
+
+test_url: https://www.muycomputerpro.com/2017/09/20/fundacion-universidad-empresa-hyperloop-one

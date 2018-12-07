@@ -1,0 +1,7 @@
+title: //h1
+body: //div[contains(concat(' ',normalize-space(@class),' '),' item-content ')]
+strip: //div[@class='inline-ad']
+strip_id_or_class: item-meta
+strip_id_or_class: article-aside
+
+test_url: https://qz.com/897790/cia-documents-from-attacking-pakistan-to-ufo-sightings-here-is-everything-the-declassified-cia-documents-have-on-india/

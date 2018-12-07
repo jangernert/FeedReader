@@ -1,0 +1,5 @@
+body: //div[@class='has-ad-column']
+
+strip: //div[contains(@class, 'articleFragment') and not(contains(@class, 'paragraph'))]
+
+test_url: http://www.thedrive.com/new-cars/12579/why-this-4000-renault-is-as-disruptive-as-the-tesla-model-3

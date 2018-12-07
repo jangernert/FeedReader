@@ -1,0 +1,16 @@
+
+author: //div[contains(concat(' ',normalize-space(@class),' '),' titrearticle ')]/h4/a
+
+body: //div[contains(concat(' ',normalize-space(@class),' '),' module-video ')] | //div[contains(concat(' ',normalize-space(@class),' '),' module-text ')]
+
+strip_id_or_class: titrearticle
+strip_id_or_class: nc_socialPanel
+
+# strip everything following the <h5>TOP</h5> located at the bottom of the article:
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' top ')]/h5[text()='TOP']/ancestor::*/following-sibling::*
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' top ')]/h5[text()='TOP']/parent::div
+
+# text article example:
+test_url: http://nothingbutthewax.com/societe-2/assa-traore-une-antigone-contemporaine/7266/
+# video article example:
+test_url: http://nothingbutthewax.com/video/inside-african-fashion/il-etait-une-fois-le-khanga/6901/

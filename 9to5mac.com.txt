@@ -1,0 +1,4 @@
+strip: //p[preceding::hr]/span[@class="embed-youtube"]
+strip: //hr
+
+test_url: https://9to5mac.com/2017/04/14/toshiba-semiconductor-business-apple-foxconn/

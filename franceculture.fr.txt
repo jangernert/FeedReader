@@ -1,0 +1,4 @@
+body: //div[contains(concat(' ',normalize-space(@class),' '),' text-zone ')]
+src_lazy_load_attr: data-dejavu-src
+
+test_url: https://www.franceculture.fr/emissions/entendez-vous-leco/paroles-deconomistes-24-passer-leconomie-le-role-de-luniversite

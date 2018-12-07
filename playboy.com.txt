@@ -1,0 +1,8 @@
+author: //article//*[@class="author"]
+date: //article//*[@class="publication-date"]
+body: //article
+strip: //article/header
+strip: //article/section
+strip_id_or_class: cta-image
+
+test_url: https://www.playboy.com/read/forget-camming-adult-entertainment-is-taking-over-snapchat

@@ -1,0 +1,4 @@
+body: //div[contains(concat(' ',normalize-space(@class),' '),' b-article__header ')] | //div[contains(@class, 'b-article__lead') or contains(@class, 'b-article__text') or contains(@class, 'b-article__videoclub_embed')]
+
+test_url: https://cz.sputniknews.com/videoklub/201708045748463-kletenka-portal-letuska-pilot/
+test_contains: Chocotravel zveřejnil

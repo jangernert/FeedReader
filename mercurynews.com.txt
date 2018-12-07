@@ -1,0 +1,10 @@
+body: //div[contains(concat(' ',normalize-space(@class),' '),' article-content ')]
+
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' slideshow-ad-video ')]
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' video-ad ')]
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' meta ')]
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' tags ')]
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' twitter-follow ')]
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' button-center-wrapper ')]
+strip: //img[contains(concat(' ',normalize-space(@class),' '),' avatar ')]
+strip: //h3[contains(concat(' ',normalize-space(@class),' '),' vcard ')]

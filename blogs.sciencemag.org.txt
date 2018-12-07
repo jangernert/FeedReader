@@ -1,0 +1,12 @@
+title: //h1
+
+author: //a[contains(@rel, 'author')]
+
+# Publication date
+date: //time
+
+body: //div[@class='article__body']
+
+prune: no
+
+test_url: http://blogs.sciencemag.org/pipeline/archives/2017/08/23/ultrasound-for-brain-drug-delivery-not-so-fast

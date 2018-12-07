@@ -1,0 +1,4 @@
+title: //div[contains(concat(' ',normalize-space(@class),' '),' brandMarginT ')]//h1
+body: //div[contains(concat(' ',normalize-space(@class),' '),' article ')]
+
+test_url: http://www.abc-luxe.com/actus/produits/article/kenzo-world-une-campagne-dejantee-pour-le-premier-parfum-signe-carol-lim-et-humberto-leon

@@ -1,0 +1,4 @@
+author: //p[@class = 'byline']//span[@class='author']
+
+body: //div[@id = 'story-contents']
+test_url: http://itavisen.no/2015/09/08/norske-nettleverandorer-vil-ikke-blokkere-pirate-bay/

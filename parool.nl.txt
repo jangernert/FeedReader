@@ -1,0 +1,9 @@
+#bypass cookie check
+single_page_link: //a[contains(@href, '/accept?url=')]
+
+test_url: http://www.parool.nl/parool/nl/4/AMSTERDAM/article/detail/4042734/2015/05/29/MRSA-bacterie-niet-verder-verspreid-in-Bijlmerbajes.dhtml
+test_contains: De twee gevangenen die
+
+http_header(user-agent): Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
+
+test_url: http://www.parool.nl/amsterdam/rss.xml

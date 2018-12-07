@@ -1,0 +1,5 @@
+author: //div[@itemprop="author"]//img/@alt
+strip: //div[@id="article--sidebar-right"]
+strip: //div[@class="article--tags"]
+
+test_url: https://www.telerama.fr/medias/peertube,-la-plateforme-qui-defie-youtube-avec-lethique,n5715829.php

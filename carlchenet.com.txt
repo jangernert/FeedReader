@@ -1,0 +1,3 @@
+date: //time/@datetime
+
+test_url: https://carlchenet.com/foss-passive-consumerism-kills-our-community/

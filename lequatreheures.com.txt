@@ -1,0 +1,23 @@
+
+body: //article[contains(concat(' ',normalize-space(@class),' '),' post ')]
+
+# the content of the article is actually contained in an <iframe>, 
+# we use the single_page_link directive to redirect to it:
+single_page_link: //div[contains(concat(' ',normalize-space(@class),' '),' content-container ')]//iframe/@data-src-desktop
+
+tidy: no
+prune: no
+
+strip: //script
+
+test_url: https://www.lequatreheures.com/episodes/condamnes-a-lair-libre-travaux-interet-general-prison
+
+#-----------------------------------------------------------
+# Wallabag-specific login directives (not supported in FTR):
+#-----------------------------------------------------------
+requires_login: yes
+not_logged_in_xpath: //a[@href='https://www.lequatreheures.com/abonnez-vous/']
+login_uri: https://www.lequatreheures.com/login/connect/
+login_username_field: username
+login_password_field: password
+login_extra_fields: form_valid_uid=@=xpath('//input[@name="form_valid_uid"]', request_html('https://www.lequatreheures.com/connexion/'))

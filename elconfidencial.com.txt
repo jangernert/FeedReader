@@ -1,0 +1,9 @@
+title: //div[@class='news-header-tit-box']//h1
+body: //div[@id='news-body-center']
+author: //a[@class='news-def-author']
+date: //time
+
+# first image inside the article
+strip: //div[@id='news-body-center']//article
+
+test_url: http://www.elconfidencial.com/tecnologia/2017-02-06/microsoft-windows-google-chrome_1327589/

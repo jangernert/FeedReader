@@ -1,0 +1,16 @@
+title: //article[@id='story-page']/h1
+date: //p[@class="byline"]/time/@datetime
+body: //div[@class="gk__content__container"] | //div[@class="js-pm-refreshed-content"]
+
+strip: //aside[@id="beginning"]
+strip: //select[@id="news_changing_node"]
+
+requires_login: yes
+
+login_uri: https://www.gamekult.com/utilisateur/connexion.html
+login_username_field: _username
+login_password_field: _password
+
+not_logged_in_xpath: //div[contains(@class,"gk__message--warning")]
+
+test_url: https://www.gamekult.com/actualite/quand-les-jeux-se-racontent-en-champ-contrechamp-3050810023.html

@@ -1,0 +1,9 @@
+
+body: //div[contains(concat(' ',normalize-space(@class),' '),' bigslam-single-article-content ')]
+
+author: //div[contains(concat(' ',normalize-space(@class),' '),' bigslam-blog-info-auteurBE ')]
+
+strip_id_or_class: wp_rp_wrap
+strip_id_or_class: arm_setup_form_container
+
+test_url: https://www.basketeurope.com/livenews-fr/lnb/436191/paris-basketball-la-premiere-pierre-est-posee-larena-de-la-porte-de-la-chapelle-cest-le-futur/

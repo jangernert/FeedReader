@@ -1,0 +1,6 @@
+title: //div[@class='meta']/h2/a
+author: //header[@class="c-article__header"]//p[contains(concat(' ',normalize-space(@class),' '),' p-author ')]
+date: //time//@datetime
+body: //div[@id='article']
+strip: //div[@class='domore']
+test_url: http://24ways.org/2011/composing-the-new-canon

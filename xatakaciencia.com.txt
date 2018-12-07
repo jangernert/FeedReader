@@ -1,0 +1,6 @@
+title: //h1//span
+body: //div[contains(concat(' ',normalize-space(@class),' '),' article-content ')]
+
+replace_string(sf-src): src
+
+test_url: https://www.xatakaciencia.com/salud/esta-es-la-imagen-de-las-calorias-recomendadas-que-debes-consumir-en-un-fast-food

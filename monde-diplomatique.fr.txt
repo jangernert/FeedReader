@@ -1,0 +1,19 @@
+title://h1[@class="h1"]
+body: //div[@class="contenu-principal"]/div[@class="texte"]
+
+requires_login: yes
+
+login_uri: https://lecteurs.mondediplo.net?page=connexion_sso 
+login_username_field: email
+login_password_field: mot_de_passe
+
+login_extra_fields: page=connexion
+login_extra_fields: formulaire_action=identification_sso
+login_extra_fields: formulaire_action_args=@=xpath("//form//input[@name='formulaire_action_args']", request_html(config.getLoginUri()))
+login_extra_fields: retour=http://www.monde-diplomatique.fr/
+login_extra_fields: site_distant=http://www.monde-diplomatique.fr/
+login_extra_fields: valider=valider
+
+not_logged_in_xpath: //div[@id="paywall"]
+
+test_url: https://blog.mondediplo.net/2017-01-13-Les-vrais-responsables-des-fausses-nouvelles

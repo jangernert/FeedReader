@@ -1,0 +1,6 @@
+body: //div[@class='story-body']
+prune: no
+tidy: no
+
+test_url: http://www.news.com.au/lifestyle/parenting/babies/dad-shamed-for-taking-baby-into-mackay-shopping-centre-parents-room/news-story/02e22f3df7be275f74825feb63302cc6
+test_contains: Members of the public have come out

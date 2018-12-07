@@ -1,0 +1,9 @@
+# written by Jan Lukas Gernert
+
+title: //div[@id='hero']/h1
+author: //meta[@name='Author']/@content
+body: //section[@id='gallery-film-info-details']
+
+strip: //ul[@id='share']
+
+test_url: http://trailers.apple.com/trailers/independent/londonhasfallen/

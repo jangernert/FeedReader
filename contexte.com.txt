@@ -1,0 +1,29 @@
+
+body: //p[contains(concat(' ',normalize-space(@class),' '),' article-header-lead ')] | //div[contains(concat(' ',normalize-space(@class),' '),' article-text ')]
+body: //div[contains(concat(' ',normalize-space(@class),' '),' article-container ')]
+
+author: //p[contains(concat(' ',normalize-space(@class),' '),' article-header-meta ')]//a[1]
+
+title: //h1[contains(concat(' ',normalize-space(@class),' '),' article-header-title ')]
+
+strip_id_or_class: ad-container
+strip_id_or_class: article-header-title
+strip_id_or_class: article-action-label
+strip_id_or_class: article-action-labels
+strip_id_or_class: article-action-tooltip
+
+http_header(user-agent): Mozilla/5.0 (X11; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0
+
+test_url: https://www.contexte.com/article/pouvoirs/le-groupe-lrm-encaisse-les-coups-de-lopposition-dans-affaire-benalla_89898.html
+
+# ----------------------------------------------------------
+# Wallabag-specific login directives (not supported in FTR):
+# ----------------------------------------------------------
+requires_login: yes
+not_logged_in_xpath: //div[contains(concat(' ',normalize-space(@class),' '),' sign-up-popin ')]
+login_uri: https://www.contexte.com/login/
+login_username_field: username
+login_password_field: password
+login_extra_fields: next=/
+login_extra_fields: csrfmiddlewaretoken=@=xpath('//input[@name="csrfmiddlewaretoken"]', request_html('https://www.contexte.com/login/'))
+

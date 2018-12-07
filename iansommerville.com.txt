@@ -1,0 +1,3 @@
+http_header(user-agent): PHP/5.3
+
+test_url: http://iansommerville.com/blog/a-guide-to-scottish-delicacies-for-tgo-challengers/

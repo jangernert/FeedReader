@@ -1,0 +1,5 @@
+body: //div[@class='article']
+strip_id_or_class: z-max
+strip_id_or_class: readLaterMenu
+
+test_url: https://thepointmag.com/2016/examined-life/can-liberal-education-save-the-sciences

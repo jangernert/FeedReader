@@ -1,0 +1,6 @@
+title: //h1[contains(concat(' ',normalize-space(@class),' '),' title ')]
+body: //div[contains(concat(' ',normalize-space(@class),' '),' lead ')] | //section[contains(concat(' ',normalize-space(@class),' '),' text ')]
+strip: //div(@class='incut i_right') | //div[contains(concat(' ',normalize-space(@class),' '),' mastertag_pic ')]
+date: //span[contains(concat(' ',normalize-space(@class),' '),' date ')]
+author: //span[contains(concat(' ',normalize-space(@class),' '),' author ')]
+test_url: https://in.rbth.com/politics/2016/04/26/is-revolution-in-russia-by-emigres-abroad-possible_588071

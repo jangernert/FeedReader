@@ -1,0 +1,8 @@
+body: //article[contains(concat(' ',normalize-space(@class),' '),' post ')]
+
+strip_id_or_class: readoffline-embed
+strip_id_or_class: fasteasysocialsharing
+strip_id_or_class: entry-tags
+strip_id_or_class: entry-author-bottom
+
+test_url: https://ploum.net/sunrise-le-calendrier-du-futur/

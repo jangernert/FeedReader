@@ -1,0 +1,7 @@
+strip: //div[contains(@style, 'float:right') and contains(., 'advertisement')]
+body: //div[@style="float:left;width:740px;"]
+
+tidy: no
+
+# broken feed?
+test_url: http://www.menshealth.com.sg/fitness/feed

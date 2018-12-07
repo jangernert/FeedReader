@@ -1,0 +1,8 @@
+body: //div[@itemprop="articleBody"]
+
+find_string: <noscript>
+replace_string: <div>
+find_string: </noscript>
+replace_string: </div>
+
+test_url: https://android-developers.googleblog.com/2017/08/introducing-android-8-oreo.html

@@ -1,0 +1,4 @@
+body: //div[@property="content:encoded"]
+
+test_url: http://www.philstar.com/headlines/2017/03/06/1678561/samuel-martires-named-new-sc-justice
+test_url: http://www.philstar.com/rss/breakingnews

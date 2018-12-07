@@ -1,0 +1,4 @@
+title: //h1[contains(concat(' ',normalize-space(@class),' '),' titulo ')]
+body: //article[contains(concat(' ',normalize-space(@class),' '),' texto ')]
+
+test_url: http://ciencia.estadao.com.br/noticias/geral,22-mil-toneladas-de-fosforo-do-saara-fertilizam-a-amazonia,1640532

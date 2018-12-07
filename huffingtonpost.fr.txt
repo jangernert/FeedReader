@@ -1,0 +1,5 @@
+strip_id_or_class: tag-cloud
+strip_id_or_class: follow-us__correction
+strip_id_or_class: corrections_container
+
+test_url: http://www.huffingtonpost.fr/michael-dias/pourquoi-la-generation-y-est-elle-en-train-de-demissionner/

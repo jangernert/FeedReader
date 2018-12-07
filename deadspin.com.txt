@@ -1,0 +1,4 @@
+http_header(user-agent): PHP/5.3
+
+test_url: http://deadspin.com/actually-extra-innings-should-stay-just-as-they-are-1792189890
+test_contains: Imagine watching the last postseason

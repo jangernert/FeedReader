@@ -1,0 +1,6 @@
+prune: no
+body: //div[@class='entry']
+strip: //div[@class='addthis_toolbox']
+strip: //div[@class='yarpp-related']
+
+test_url: http://www.gurumed.org/2015/06/22/nous-entrons-dsormais-dans-la-sixime-extinction-massive/

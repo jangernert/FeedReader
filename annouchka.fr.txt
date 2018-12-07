@@ -1,0 +1,8 @@
+strip_id_or_class: code-block
+strip_id_or_class: hellocoton_vote
+
+strip: //a[@class='c3']
+strip: //a[@class='c4']
+strip: //a[@class='c5']
+
+test_url: http://www.annouchka.fr/5-conseils-pour-profiter-un-peu-plus-de-ses-enfants/

@@ -1,0 +1,16 @@
+title: //h1[@class='title']
+body: //div[@class='l-postSingle-content-main-video'] | //div[contains(concat(' ',normalize-space(@class),' '),' l-postSingle-content-main-content ')]
+author: //a[@class='author']
+date: //div[@class='meta']/time/@datetime
+
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' l-postSingle-content-bottom-share ')]
+strip_id_or_class: articleShare-buttons
+strip_id_or_class: ica-wrapper
+strip_id_or_class: post-author-bio
+strip_id_or_class: post-author-trivia
+replace_string(data-original=): src=
+
+tidy: no
+
+test_url: http://thenextweb.com/apple/2011/10/12/tnw-review-a-complete-guide-to-apples-ios-5-with-icloud-an-os-14-years-in-the-making/
+test_url: http://thenextweb.com/insider/2015/12/06/pornhubs-christmas-ad-wants-you-to-give-premium-subscriptions-to-your-grandparents/

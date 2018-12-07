@@ -1,0 +1,29 @@
+title: //div[@id='content-header']/h1
+author: //span[@class='author']
+body: //div[@id='objectContent']
+strip: //ul[@class='lookupLinksArtikel']
+
+strip: //meta
+strip: //div[@itemprop='publisher']
+strip: //div[@id='content-header']
+strip: //div[@id='pageTop']
+strip: //div[@id='toolbar']
+strip: //div[@id='articleTools']
+strip: //div[@id='weiterLesen']
+strip: //div[@id='communityCanvas']
+strip: //div[@class='credits']
+strip: //div[@id='feature-cover']
+strip: //div[@id='feature-meta']
+strip: //li[@class='empty']
+strip: //ul[@class='lookup-links']
+
+http_header(Cookie): DSGVO_ZUSAGE_V1=true
+
+prune: no
+tidy: no
+
+test_url: http://derstandard.at/1318726018343/Breitband-LTE-Was-bringt-die-neue-Mobilfunk-Generation
+test_url: http://derstandard.at/2000033602592/40-Jahre-fuer-einen-der-nicht-gemeinsam-leben-wollte
+test_url: http://derstandard.at/2000017141382/Feature-Format
+test_url: http://derstandard.at/2000031826169/Die-Mittagspause-ist-den-meisten-heilig
+test_url: http://derstandard.at/2000032076109/Fordern-wir-die-totale-Ueberwachung

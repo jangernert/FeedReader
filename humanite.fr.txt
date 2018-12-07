@@ -1,0 +1,21 @@
+title: //meta[@property='og:title']/@content
+
+author: //div[@id='content']//div[contains(concat(' ',normalize-space(@class),' '),' field-name-field-news-auteur ')]//a
+
+body: //div[@id='content']//div[contains(concat(' ',normalize-space(@class),' '),' field-name-field-news-chapo ')] | //div[@id='content']//div[contains(concat(' ',normalize-space(@class),' '),' field-name-field-news-text ')] | //div[@id='content']//div[contains(concat(' ',normalize-space(@class),' '),' field-name-field-news-encadre ')]
+
+strip_id_or_class: field-name-block-similar-contents
+strip_id_or_class: field-name-field-news-auteur-nom-trias
+
+test_url: https://www.humanite.fr/avignon-korsunovas-tire-bout-portant-sur-tous-les-tartuffe-658245
+
+# Wallabag-specific login directives (not supported in FTR):
+requires_login: yes
+login_uri: https://www.humanite.fr/user/login
+not_logged_in_xpath: //div[contains(concat(' ',normalize-space(@class),' '),' group-paywall ')]
+login_username_field: name 
+login_password_field: pass
+login_extra_fields: form_build_id=@=xpath('//form[@id="user-login"]//input[@name="form_build_id"]', request_html('https://www.humanite.fr/user/login'))
+login_extra_fields: form_id=user_login
+login_extra_fields: op=Se connecter
+test_url: https://www.humanite.fr/musique-arpenter-la-diversite-humaine-au-festival-jazz-des-cinq-continents-658280

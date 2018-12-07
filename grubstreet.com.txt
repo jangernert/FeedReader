@@ -1,0 +1,18 @@
+#copied from nymag.com.txt
+
+title: //h2[contains(@class, 'primary')]
+body: //*[@itemprop="articleBody"]
+body: //div[@id='story']
+author: //*[@class='by']/a
+date: substring-after(//*[@class='date'], 'Published')
+
+#Skip GDPR warning
+http_header(Cookie): nymuc=11111111111
+
+parser: html5php
+tidy: no
+
+next_page_link: //div[@class='page-navigation']//li[@class='next']/a
+
+test_url: http://www.grubstreet.com/2018/06/anthony-bourdain-and-the-silent-epidemic-of-male-suicide.html
+test_contains: Bourdain was a truth-telling globe-trotter

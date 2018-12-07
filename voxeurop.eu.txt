@@ -1,0 +1,15 @@
+
+body: //article//div[contains(concat(' ',normalize-space(@class),' '),' bodytext ')]
+
+author: //div[contains(concat(' ',normalize-space(@class),' '),' contentauthor ')]//a[@rel='author']
+
+prune: no
+
+strip_id_or_class: ctafeedback
+strip_id_or_class: toolssocial
+strip_id_or_class: articlepartner
+
+#Strip the paragraph about the translator:
+strip: //p[@class='floatr ruledtop']/strong/parent::p
+
+test_url: https://voxeurop.eu/en/2018/migrant-crisis-5122095

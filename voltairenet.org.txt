@@ -1,0 +1,4 @@
+title: //h1[contains(concat(' ',normalize-space(@class),' '),' titre_serif_1 ')]
+body: //div[contains(concat(' ',normalize-space(@class),' '),' texte_sans ')]
+
+test_url: http://www.voltairenet.org/article195149.html

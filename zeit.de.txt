@@ -1,0 +1,64 @@
+tidy: no
+prune: no
+
+# Figures are wrapped in a noscript tag which is itself wrapped in a
+# conditional comment. Feed readers will fail to parse this correctly
+# so get rid of the noscript tag altogether.
+replace_string(<noscript): <foo
+
+title: //meta[@property='og:title']/@content
+date: //meta[@name='date']/@content
+
+strip: //span[@class='figure__copyright']
+
+# Self advertisements
+strip: //figure[@class='figure-stamp']
+strip: //a[contains(@title, 'Dieser Text ')]
+strip: //a[contains(@title, 'Dieser Artikel ')]
+strip: //span[@class='figure__text']/text()[contains(., 'Dieser Text ')]
+strip: //span[@class='figure__text']/text()[contains(., 'Dieser Artikel ')]
+
+#######################################
+# ZEIT:
+#######################################
+
+single_page_link: //a[@class='article-toc__onesie']
+
+author: //a[@class='byline__author']/span
+author: substring-after(//span[@class='metadata__source'], 'Quelle: ')
+
+body: //main/article/div[@itemprop='articleBody']
+
+strip: //a[@href='#']
+strip: //form[@id='newsletter-teaser-form']
+strip_id_or_class: 'article-pagination article__item'
+
+test_url: http://www.zeit.de/kultur/film/2012-12/Kurzfilmtag
+test_contains: In drei Minuten die Welt erobern
+test_url: http://www.zeit.de/sport/2016-01/darts-wm-finale-anderson-lewis/komplettansicht
+test_url: http://www.zeit.de/kultur/2015-12/selbstverwirklichung-optimierung-essay
+test_url: http://www.zeit.de/2015/51/selbstdiagnose-gesundheit-zuhause-blut-urin-selbsttest
+test_url: http://www.zeit.de/campus/2015/s2/nebenjob-master-studium-finanzierung
+test_url: http://www.zeit.de/hamburg/politik-wirtschaft/2015-12/hamburg-wohnungsbau-fluechtlinge
+
+#######################################
+# ZEIT MAGAZIN:
+#######################################
+
+next_page_link: //meta[@rel='next']/@href
+
+author: //a[@class='article__head__meta__author']/span
+
+body: //main/article/div[@class='article__wrap']
+
+strip: //div[@class='article__head-wrap']//h1
+strip_id_or_class: article__socialbox
+strip_id_or_class: article__nextread nextread-base is-centered
+strip_id_or_class: js-comments
+strip_id_or_class: article__pagination is-constrained is-centered
+strip_id_or_class: article__head__meta
+
+test_url: http://www.zeit.de/zeit-magazin/2015/51/daisy-ridley-traum
+test_contains: Mein ganzes Leben lang habe
+test_url: http://www.zeit.de/zeit-magazin/2015/52/cyberstalking-internet-stalker-familie-mierau
+test_url: http://www.zeit.de/zeit-magazin/2017/46/harald-martenstein-ddr-toastbrot

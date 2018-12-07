@@ -1,0 +1,10 @@
+body: //div[contains(@class, 'ArticleBody')]
+strip_id_or_class: share
+strip_id_or_class: Share
+strip_id_or_class: footer
+strip_id_or_class: Footer
+strip_id_or_class: Newsletter
+prune: no
+test_url: http://www.thedailybeast.com/articles/2017/04/01/michael-flynn-failed-to-disclose-payments-from-russian-propaganda-network.html
+test_url: http://www.thedailybeast.com/articles/2010/04/06/how-mastercard-predicts-divorce.html
+test_contains: people who are going through a divorce are more likely to miss payments

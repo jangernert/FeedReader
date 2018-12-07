@@ -1,0 +1,6 @@
+date: //span[@class="date"]
+title: //div[contains(concat(' ',normalize-space(@class),' '),' news-meta ')]//h3
+body: //div[contains(concat(' ',normalize-space(@class),' '),' postContent ')]
+author: //div[contains(concat(' ',normalize-space(@class),' '),' authors-infos ')]//h4[contains(concat(' ',normalize-space(@class),' '),' media-heading ') and (contains(concat(' ',normalize-space(@class),' '),' userName '))]
+strip_id_or_class: observateurBandeau
+test_url: http://observers.france24.com/fr/20170407-begpackers-ces-touristes-blancs-mendiant-manche-tour-monde-asie-backpackers

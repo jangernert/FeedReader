@@ -1,0 +1,3 @@
+body: //div[@class='post']
+
+test_url: http://paquier.xyz/postgresql-2/postgres-10-incompatible-changes/

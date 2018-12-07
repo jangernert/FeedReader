@@ -1,0 +1,5 @@
+# Site configuration for CNRS press releases
+
+body: //div[@id="contenu"]//h2[@id="chapeau"] | //div[@id="contenu"]/div[@id="textContenu"]
+
+test_url: http://www2.cnrs.fr/presse/communique/5327.htm

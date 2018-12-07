@@ -1,0 +1,3 @@
+single_page_link: //a[.="Read more…"]/@href
+
+test_url: https://doughellmann.com/blog/2017/02/06/getopt-command-line-option-parsing-pymotw-3/

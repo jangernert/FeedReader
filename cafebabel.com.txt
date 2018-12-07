@@ -1,0 +1,19 @@
+
+body: //div[@id='content']
+
+date: //div[@id='content']//time/@datetime
+
+author: //div[@id='content']//a[contains(concat(' ',normalize-space(@class),' '),' author-link ')]
+
+strip_id_or_class: share
+strip_id_or_class: tags-list
+strip_id_or_class: author-container
+strip_id_or_class: article-participate
+strip_id_or_class: translation-details
+strip_id_or_class: contributor-container
+strip_id_or_class: article-language-selector
+strip: //div[@id='content']//h1[1]
+strip: (//p//time//ancestor::p[1])[starts-with(normalize-space(.), 'Published on ')]
+
+test_url: https://cafebabel.com/es/article/ahmad-shamieh-el-refugiado-sirio-que-pone-en-jaque-a-eslovenia-5b20dfc7f723b325ef3dc566/
+

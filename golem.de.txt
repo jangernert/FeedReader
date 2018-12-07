@@ -1,0 +1,43 @@
+# Author: zinnober
+# Rewrite of original template which fetched the printer-version without pictures
+
+tidy: no
+prune: no
+
+# Set full title
+title: //h1
+
+date: //time
+author: //a[@rel='author']
+
+# Content is here
+body: //article
+
+# Fetch full multipage articles
+next_page_link: //a[@id='atoc_next']
+
+# Remove tracking and ads
+strip_id_or_class: iqadtile4
+
+# General Cleanup
+strip_id_or_class: list-jtoc
+strip_id_or_class: table-jtoc
+strip_id_or_class: implied
+strip_id_or_class: social-
+strip_id_or_class: comments
+strip_id_or_class: footer
+strip_id_or_class: job-market
+strip_id_or_class: tags
+
+# Tidy up galleries (could still be improved, though)
+strip: //img[@src='']
+# This removes valid lists:
+# https://www.golem.de/news/sap-berater-der-coolste-job-nach-tourismusmanager-und-bierbrauer-1807-135389-2.html
+# strip: //li[not(*)]
+strip: //div[contains(@style,'margin')]
+strip: //figure[contains(@id,'gvideo')]
+
+
+# Try yourself
+test_url: http://www.golem.de/news/intel-core-i7-5960x-im-test-die-pc-revolution-beginnt-mit-octacore-und-ddr4-1408-108893.html
+test_url: http://www.golem.de/news/test-infamous-first-light-neonbunter-actionspass-1408-108914.html

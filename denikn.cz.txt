@@ -1,0 +1,16 @@
+title: //h2[contains(concat(' ',normalize-space(@class),' '),' e_title ')] 
+author: //cite[contains(concat(' ',normalize-space(@class),' '),' e_author_t ')] 
+date: //time[@class='e_terms_posted'] 
+strip: //article[contains(concat(' ',normalize-space(@class),' '),' a_art__link ')] 
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' t_thankyou ')]//p 
+body: //div[contains(concat(' ',normalize-space(@class),' '),' b_single_e ')]//p | //div[contains(concat(' ',normalize-space(@class),' '),' a_single__post ')]
+ 
+requires_login: yes 
+ 
+login_uri: https://predplatne.denikn.cz/api/v1/users/login/ 
+login_username_field: email 
+login_password_field: password
+
+not_logged_in_xpath: //form[@class="s_h_usr_login"]
+
+test_url: https://denikn.cz/3186/jsem-vnitrne-vyhorely-mam-odpracovano-cunek-je-stary-provokater-rika-belobradek/

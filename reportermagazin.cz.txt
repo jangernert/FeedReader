@@ -1,0 +1,5 @@
+body: //div[contains(concat(' ',normalize-space(@class),' '),' article-detail__contentArticle ')]
+title: //h1[contains(concat(' ',normalize-space(@class),' '),' article-detail__title ')]
+author: //div[contains(concat(' ',normalize-space(@class),' '),' article-detail__contentArticle ')]
+date: //div[contains(concat(' ',normalize-space(@class),' '),' article-header-big__authorDate ')]
+test_url: https://reportermagazin.cz/a/iJ3Hz/prosime-boha-aby-meli-cesti-lekari-dobry-zivot

@@ -1,0 +1,21 @@
+body: //div[@class='main-content']
+body: //article[contains(@class, 'resp-node')]
+date: //time[@class='date-created']
+strip: //aside
+prune: no
+
+strip_id_or_class: newsletter-form--inline
+
+requires_login: yes
+
+login_uri: https://www.economist.com/user/login
+login_username_field: name
+login_password_field: pass
+
+not_logged_in_xpath: //*[@id="user-login-masthead"]/div[@class='login-form']
+
+test_url: http://www.economist.com/node/21528429
+
+test_url: http://www.economist.com/news/essays/21623373-which-something-old-and-powerful-encountered-vault
+test_contains: the calfskin pages are smooth
+test_contains: Books will evolve online and off

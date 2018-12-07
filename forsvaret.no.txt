@@ -1,0 +1,10 @@
+title: //div[@class="articleHeader"]/h1
+author: //p[@class="byline"]
+date: //p[contains(@class,"publishedDate")]/span
+# remove the right menu
+strip: //div[contains(@class,"aside")]
+# remove some SharePoint webpart label junk
+strip: //div[@id="ctl00_PlaceHolderMain_ArticleLeadField_label"]
+strip: //div[@id="ctl00_PlaceHolderMain_PublishingPageContentField_label"]
+test_url: https://forsvaret.no/aktuelt/historisk-medaljeutdeling
+test_contains: Samarbeidet med Marinen har vært en sann glede

@@ -1,0 +1,21 @@
+
+test_url: https://8e-etage.fr/2018/04/13/podcast-lhistoire-des-mapuches-a-travers-les-siecles/
+
+strip_id_or_class: subscribe-block
+strip_id_or_class: mashsb-container 
+strip_id_or_class: entry-author-box
+strip_id_or_class: it-exchange-membership-restricted-content
+
+# ----------------------------------------------------------
+# Wallabag-specific login directives (not supported in FTR):
+# ----------------------------------------------------------
+requires_login: yes
+not_logged_in_xpath: //div[contains(concat(' ',normalize-space(@class),' '),' subscribe-block ')]
+login_uri: https://8e-etage.fr/
+login_username_field: log
+login_password_field: pwd
+login_extra_fields: rd_login=true
+login_extra_fields: rememberme=on
+
+test_url: https://8e-etage.fr/2018/07/02/la-france-championne-du-pessimisme/
+test_url: https://8e-etage.fr/2018/05/28/au-bresil-les-enfants-precheurs-crevent-lecran/

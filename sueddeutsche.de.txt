@@ -1,0 +1,36 @@
+# Important Note:
+# The last paragraph of any article seems to be a teaser from the sports section.
+
+tidy: no
+prune: no
+autodetect_on_failure: yes
+
+date: //time[@class='timeformat']
+title: //section[@class='header']//h2
+body: //article[@id="sitecontent"]
+author: //meta[@name="author"]/@content
+
+replace_string(<h2>): <h3>
+replace_string(</h2>): </h3>
+
+#strip: //section[@class="header"]
+strip: //section[@class='header']//time
+strip: //section[@class='header']//strong
+strip: //div[@id="article-sidebar-wrapper"]
+strip: //p[@class="anzeige"]
+strip: //section[@class="authors"]
+strip_id_or_class: teaserable-layout
+strip: //noscript
+strip: //div//i
+
+next_page_link: //a[@class='article-paging-nav-btn']
+
+# 1 page
+test_url: http://www.sueddeutsche.de/reise/bergwinter-saisonstart-in-den-skigebieten-geht-schon-1.3251799
+test_contains: Ranalt. Der steile Anstieg kurz nach dem Tunnel.
+# 2 pages
+test_url: http://www.sueddeutsche.de/kultur/politik-und-philosophie-warum-trump-jedes-mittel-recht-ist-1.3256078
+test_contains: Sucht man die Spuren des Pragmatismus
+# 3 pages
+test_url: http://www.sueddeutsche.de/muenchen/mietshaus-am-gaertnerplatz-alles-muss-raus-1.1556693
+test_contains: Kammer zugemauert gewesen und das

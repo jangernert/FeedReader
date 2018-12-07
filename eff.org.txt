@@ -1,0 +1,3 @@
+author: //meta[@name="author"]/@content
+
+test_url: https://www.eff.org/deeplinks/2018/02/john-perry-barlow-internet-pioneer-1947-2018

@@ -1,0 +1,3 @@
+title: //div[@class="big"]
+
+test_url: https://liberation.checknews.fr/question/37211/est-il-vrai-que-la-depense-de-sante-en-france-est-beaucoup-plus-importante-que-dans-les-autres-pays-de-locde

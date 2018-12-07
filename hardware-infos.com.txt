@@ -1,0 +1,10 @@
+tidy: no
+prune: no
+
+title: //div[@class='content post']/h1
+body: //div[@class='post']
+
+next_page_link: //a[preceding::div[@class='pages']]
+
+test_url: http://www.hardware-infos.com/news/5646/amd-bei-next-gen-api-mit-besserer-gpu-auslastung.html
+test_url: http://www.hardware-infos.com/tests/grafikkarten/sapphire-r9-280x-vapor-x-tri-x-oc.html

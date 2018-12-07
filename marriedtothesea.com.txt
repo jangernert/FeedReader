@@ -1,0 +1,4 @@
+body: //img[contains(@src, '.gif')]
+
+test_url: http://www.marriedtothesea.com
+test_url: http://www.marriedtothesea.com/index.php?date=010818

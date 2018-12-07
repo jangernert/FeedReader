@@ -1,0 +1,26 @@
+
+# Any modifications done here should be duplicated in
+#   - africaintelligence.fr.txt
+#   - intelligenceonline.fr.txt
+# as they seems to use the exact same CMS software as lalettrea.fr
+
+body: //div[contains(concat(' ',normalize-space(@class),' '),' article-chapo ')] | //div[contains(concat(' ',normalize-space(@class),' '),' article-body ')]
+
+prune: no
+
+strip_id_or_class: sidenav
+strip_id_or_class: sidenav-content
+strip_id_or_class: article-copyright
+
+#-----------------------------------------------------------
+# Wallabag-specific login directives (not supported in FTR):
+#-----------------------------------------------------------
+requires_login: yes
+not_logged_in_xpath: //form[contains(concat(' ',normalize-space(@class),' '),' form-login ')]
+login_uri: https://www.lalettrea.fr/ajax/login/login
+login_username_field: Identifiant
+login_password_field: MotDePasse
+login_extra_fields: ConnexionAuto=on
+login_extra_fields: OrigineLogin=Landing
+
+test_url: https://www.lalettrea.fr/entreprises_conseil-et-services/2018/06/26/bearingpoint--les-associes-mal-notes-et-les-autres,108314724-gra

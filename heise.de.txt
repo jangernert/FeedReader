@@ -1,0 +1,70 @@
+# Author: zinnober
+# Template should work well with either desktop or mobile version (m.heise.de)
+
+prune: no
+
+date: //p[@class='news_datum']
+author: //span[@class='author']
+
+body: //article | //div[@class='meldung_wrapper'] | //section[@id='artikel_text']
+
+strip: //nav
+
+# General cleanup
+strip: //time
+strip: //header
+strip: //h4[@class='author']
+strip: //div[@class='gallery compact']/h3
+strip: //div[@class='gallery compact']/figcaption
+strip: //p[@class='news_datum']
+strip: //p[@class='artikel_datum']
+strip: //p[@class='news_navi']
+strip: //p[@class='printversion']
+strip: //a[contains(@href, 'mailto')]
+strip: //div[@class='gallery compact']/h2
+strip: //p[@class='themen_foren']
+strip: //style
+strip: //span[@class='source']
+#strip: //div[@class='gallery compact']/figcaption
+strip_id_or_class: comments
+strip_id_or_class: ISI_IGNORE
+#strip_id_or_class: clear
+
+strip_id_or_class: linkurl_grossbild
+strip_id_or_class: image-num
+strip_id_or_class: heisebox_right
+strip_id_or_class: dossier
+strip_id_or_class: latest_posting_snippet
+strip_id_or_class: a-pvgs
+strip_id_or_class: a-pvg__body
+
+# Strip Ads
+strip_id_or_class: ad_
+
+# Some optimizations
+replace_string(<h5>): <h2>
+replace_string(</h5>): </h2>
+replace_string(<title>Druckversion - ): <title>
+replace_string( | heise online</title>): </title>
+replace_string( | c't Magazin</title>): </title>
+replace_string( | Telepolis</title>): </title>
+replace_string( | heise Security</title>): </title>
+replace_string( | heise Autos</title>): </title>
+# this line breaks the parser
+#replace_string(<span class="bild_rechts" style="width:): <p "
+replace_string(<div class="heisebox">): <blockquote>
+
+single_page_link: //a[contains(@href, '?view=print')]
+single_page_link: //a[contains(@title, 'Druck')]
+
+next_page_link: //a[@class='next' and not(contains(text(), 'Artikel'))]
+next_page_link: //a[@title='vor']
+next_page_link: //a[@rel='next']
+
+test_url: http://www.heise.de/open/artikel/Die-Neuerungen-von-Linux-3-15-2196231.html
+test_url: http://m.heise.de/open/artikel/Die-Neuerungen-von-Linux-3-15-2196231.html
+test_url: http://www.heise.de/newsticker/meldung/Ueberwachungstechnik-Die-globale-Handy-Standortueberwachung-2301494.html
+test_url: http://www.heise.de/newsticker/meldung/Bodenradar-fuer-selbstfahrende-Autos-horcht-unter-die-Strasse-3273941.html
+test_url: http://www.heise.de/tp/artikel/49/49473/1.html
+test_url: http://www.heise.de/ct/artikel/Die-Neuerungen-von-Linux-3-15-2196231.html
+test_url: http://heise.de/-3527918

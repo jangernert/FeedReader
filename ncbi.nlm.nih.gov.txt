@@ -1,0 +1,10 @@
+title: //div[contains(concat(' ',normalize-space(@class),' '),' rprt ')]//h1
+author: //div[contains(concat(' ',normalize-space(@class),' '),' auths ')]
+date: //div[contains(concat(' ',normalize-space(@class),' '),' cit ')]
+body: //div[contains(concat(' ',normalize-space(@class),' '),' abstr ')]
+body: //div[contains(concat(' ',normalize-space(@class),' '),' icons ')]
+strip: //div[@id='footer']
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' header ')]
+prune: yes
+test_url: https://www.ncbi.nlm.nih.gov/pubmed/10356353?access_num=10356353&link_type=MED&dopt=Abstract
+

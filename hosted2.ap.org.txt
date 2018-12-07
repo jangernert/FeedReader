@@ -1,0 +1,7 @@
+body: //div[contains(@id, 'photosDiv-')] | //div[contains(@id, 'storyBodyDiv')]//p[contains(@class, 'entry-content')]
+tidy: no
+prune: no
+
+test_url: http://hosted2.ap.org/KSSUC/*/Article_2015-09-24-FBN-Skyboard-Craze/id-589cf87959414856b5cd5e1ad869c68e
+
+test_url: http://hosted2.ap.org/APDefault/*/Article_2015-09-28-US--United%20States-Russia/id-79126486540a4f2ca0b48133013a8b03

@@ -1,0 +1,9 @@
+title: //h1
+body: //section[@class='av_textblock_section']
+
+# Delete date stored as an h3 (first of the page)
+strip: (//section[@class='av_textblock_section']//h3)[1]
+
+# Everything else is well done with opengraph data
+
+test_url: https://www.mbari.org/ctenophore-evolution/

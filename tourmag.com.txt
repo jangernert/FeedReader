@@ -1,0 +1,16 @@
+
+
+body: //h2[contains(concat(' ',normalize-space(@class),' '),' soustitre ')] | //div[contains(concat(' ',normalize-space(@class),' '),' chapeau ')] | //div[contains(concat(' ',normalize-space(@class),' '),' entry-content ')]
+
+author: //meta[@name="author"]/@content
+
+strip_id_or_class: titre
+strip_id_or_class: auteur
+strip_id_or_class: boutons
+strip_id_or_class: boutons_ligne
+strip_id_or_class: module-article_connexe
+
+find_string: <div class="video-wrapper"
+replace_string: [VIDEO]<div class="video-wrapper"
+
+test_url: https://www.tourmag.com/TUI-France-Cap-sur-Sun-by-TUI-un-eductour-inoubliable_a92065.html

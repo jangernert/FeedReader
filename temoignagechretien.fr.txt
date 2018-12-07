@@ -1,0 +1,16 @@
+
+title: //meta[@property='og:title']/@content
+author: //span[contains(concat(' ',normalize-space(@class),' '),' auteur ')]
+body: //article[contains(concat(' ',normalize-space(@class),' '),' node-article ')]
+
+strip_id_or_class: comments
+strip_id_or_class: comment-add
+strip_id_or_class: field-tags
+strip_id_or_class: field-genres
+strip_id_or_class: field-source
+strip_id_or_class: field-categories
+strip_id_or_class: auteur-date-share
+strip_id_or_class: node-produit
+strip: //article[contains(concat(' ',normalize-space(@class),' '),' node-article ')]/h1[1]
+
+test_url: https://temoignagechretien.fr/articles/culture/les-mondes-de-youssou-ndour

@@ -1,0 +1,4 @@
+body: //div[contains(concat(' ',normalize-space(@class),' '),' article ')]
+author: //p[@class="auteur"]/a
+
+test_url: https://www.actualitte.com/article/monde-edition/jean-miguel-pire-n-est-plus-le-conseiller-culture-livre-et-lecture-de-nyssen/84556

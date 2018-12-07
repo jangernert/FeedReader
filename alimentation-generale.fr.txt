@@ -1,0 +1,12 @@
+
+body: //div[@id='arty']
+
+author: //div[contains(concat(' ',normalize-space(@class),' '),' entete ')]//a[starts-with(@href,'https://alimentation-generale.fr/author/')]
+
+strip_id_or_class: entete
+strip_id_or_class: singlenav
+strip_id_or_class: blokpartage
+strip_id_or_class: encontinuwrapper
+strip_id_or_class: blokarticles_lies
+
+test_url: https://alimentation-generale.fr/reportage/la-ferme-du-bonheur-une-oasis-au-milieu-du-bitume/

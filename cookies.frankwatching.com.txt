@@ -1,0 +1,6 @@
+single_page_link: //a[contains(., 'accepteer de cookies')]
+
+test_url: https://cookies.frankwatching.com/?redirect_to=/archive/2018/01/14/airbnb-stapt-met-hotels-in-de-markt-die-ze-zelf-verstoorde/
+test_contains: Je kon er op wachten
+
+test_url: https://www.frankwatching.com/feed/

@@ -1,0 +1,4 @@
+http_header(user-agent): PHP/5.3
+
+test_url: http://jezebel.com/ryan-adams-has-not-been-mad-for-15-years-and-thats-a-pr-1792192941
+test_contains: Adams details an occasion in 2002

@@ -1,0 +1,11 @@
+date: //time[@itemprop="datePublished"]/@datetime
+
+strip: //div[contains(concat(' ',normalize-space(@class),' '),' plusLoin ')]
+strip: //select
+strip_id_or_class: comments
+strip_id_or_class: smart-paging-pager
+
+next_page_link: //div[contains(concat(' ',normalize-space(@class),' '),' smart-paging-pager ')]//a[@title='Aller à la page suivante']
+
+body: //section[contains(concat(' ',normalize-space(@class),' '),' corps ')]
+test_url: http://www.macg.co/aapl/2015/09/tim-cook-rassure-sur-lavenir-du-mac-90957

@@ -1,0 +1,5 @@
+body: //div[@id='container']/div[contains(concat(' ',normalize-space(@class),' '),' row ')]/div[contains(concat(' ',normalize-space(@class),' '),' small-12 ')]
+strip_id_or_class: comicnav
+strip_id_or_class: small-3
+prune: no
+test_url: https://questionablecontent.net/view.php?comic=3844

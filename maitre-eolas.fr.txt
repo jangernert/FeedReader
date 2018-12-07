@@ -1,0 +1,5 @@
+body: //div[@class="post-content"]
+author: //meta[@name="author"]/@content
+date: //meta[@name="date"]/@content
+
+test_url: http://www.maitre-eolas.fr/post/2018/05/13/Pour-en-finir-avec-les-fiches-S

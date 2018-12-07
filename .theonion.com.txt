@@ -1,0 +1,10 @@
+title: //h2[@class='title'] | //h1[contains(concat(' ',normalize-space(@class),' '),'headline')]
+date: substring-before(//p[@class='meta'], '|')
+body: //div[@class='article_body'] | //div[@class='story'] | //div[contains(concat(' ',normalize-space(@class),' '),'post-content')]
+
+strip: //h2[@class='title']
+strip: //p[@class='meta']
+strip: //div[@class='ga_section']
+strip: //div[@id='recent_slider']
+
+test_url: https://politics.theonion.com/inconsolable-jeff-sessions-tries-to-commit-suicide-by-s-1826462420

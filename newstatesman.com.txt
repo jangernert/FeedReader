@@ -1,0 +1,13 @@
+body: //div[(contains(@class,'content')) and (contains(@class,'node-blogs'))]
+body: //div[contains(@class,'field-item')]
+
+date: //div[@class='article-date']
+
+author: //div[@class='author-byline']/a
+
+strip: //ul[@class='flippy']
+strip: //div[contains(@class,'first-appeared-in')]
+
+test_url: https://www.newstatesman.com/world/2018/05/leader-how-italian-election-result-exposed-europe-s-fraying-union
+test_url: https://www.newstatesman.com/culture/books/2018/05/two-faces-philip-roth
+test_url: https://www.newstatesman.com/books/2011/02/montaigne-life-playing

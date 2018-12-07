@@ -1,0 +1,4 @@
+body: //div[contains(concat(' ',normalize-space(@class),' '),' b-article__header ')] | //div[contains(@class, 'b-article__lead') or contains(@class, 'b-article__text') or contains(@class, 'b-article__videoclub_embed')]
+
+test_url: https://sputniknews.com/world/201708131056427079-lefties-scientists-study/
+test_contains: Lefties are luckier as

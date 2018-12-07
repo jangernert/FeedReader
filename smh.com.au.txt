@@ -1,0 +1,18 @@
+body: //article
+title: //h1[@class='cN-headingPage']
+author: //h3[@class='authorName']
+date: //dd[@class='updated dtstamp']
+
+strip: //ul[@class='social sponsored cfix']
+strip: //div[contains(@class, 'hiddenVisually')]
+strip: //dd[@class='updated dtstamp']
+strip: //h3[@class='authorName']
+strip: //ul[@class='social  cfix']
+strip: //div[contains(@id, 'adspot')]
+strip: //aside
+
+strip: //div[contains(@class, 'overlayPlayCountdown')]
+strip: //div[@class='fdVideoWof']//span[@class='gone']
+
+test_url: http://www.smh.com.au/world/donald-trump-travel-ban-us-appeals-court-upholds-suspension-20170209-gu9ta8.html
+test_contains: Trump's January 27 executive order barred

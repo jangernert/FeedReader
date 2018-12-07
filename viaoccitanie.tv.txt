@@ -1,0 +1,19 @@
+
+author: //meta[@name='author']/@content
+body: //div[@id='video-news'] | //div[@class="col-sm-9"]/div[@class='text']
+
+# ---------------------------------
+# replace <iframe> video by a link:
+# ---------------------------------
+find_string: <iframe 
+replace_string: <a 
+find_string: data-src="https://
+replace_string: href="https://
+find_string: ></iframe>
+replace_string: >[video]</a>
+
+strip: //div[@class='related-title']/following-sibling::*
+strip: //div[@class='related-title']
+strip_id_or_class: left-sidebar
+
+test_url: https://viaoccitanie.tv/lartiste-de-plein-vent-michel-batlle-expose-ses-oeuvres-au-chateau-de-lareole/

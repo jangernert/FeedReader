@@ -1,0 +1,8 @@
+
+body: //div[contains(concat(' ',normalize-space(@class),' '),' main ')] | //div[contains(concat(' ',normalize-space(@class),' '),' notes ')]
+
+date: //time[@pubdate='pubdate']/@datetime
+
+author: //span[contains(concat(' ',normalize-space(@class),' '),' author ')]//a
+
+test_url: http://multinationales.org/After-their-attacks-on-climate-science-industrial-lobbyists-target-the

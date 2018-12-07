@@ -1,0 +1,14 @@
+tidy: no
+prune: no
+
+title: //title
+date: //time
+
+body: //div[@class='post-content entry-content']
+
+strip: //a[@id='dd_start']
+strip: //iframe
+strip: //div[@class='dd_outer']
+strip: //comments
+
+test_url: http://vr-zone.com/articles/amd-take-intel-8-core-fm3-socket-zen-desktop-cpus-next-year/91057.html

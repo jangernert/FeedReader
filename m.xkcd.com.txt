@@ -1,0 +1,7 @@
+body: //body
+prune: no
+strip_id_or_class: navButtons
+strip_id_or_class: news
+strip_id_or_class: footerLinks
+strip_id_or_class: altTextLink
+test_url: https://m.xkcd.com/2057/

@@ -1,0 +1,3 @@
+date: //time[contains(@class, 'published')]/@datetime
+
+test_url: https://www.stjv.fr/2018/01/au-sujet-quantic-dream/

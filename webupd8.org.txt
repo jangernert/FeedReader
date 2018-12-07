@@ -1,0 +1,12 @@
+tidy: no
+prune: no
+
+title: //h1[@class='post-title entry-title']/a
+date: //time
+author: //a[@rel='fn author']/span
+
+body: //div[@class='post-body']
+
+strip: //iframe
+
+test_url: http://www.webupd8.org/2015/04/organize-your-unity-launcher-based-on.html

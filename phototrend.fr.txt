@@ -1,0 +1,4 @@
+strip_id_or_class: post-tags
+strip_id_or_class: post-header
+
+test_url: https://phototrend.fr/2016/10/symetrie-instagram-symmetrical-monsters/

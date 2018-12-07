@@ -1,0 +1,19 @@
+title: //h2[contains(@class, 'primary')]
+body: //*[@itemprop="articleBody"]
+body: //div[@id='story']
+author: //*[@class='by']/a
+date: substring-after(//*[@class='date'], 'Published')
+
+#Skip GDPR warning
+http_header(Cookie): nymuc=11111111111
+
+parser: html5php
+tidy: no
+
+next_page_link: //div[@class='page-navigation']//li[@class='next']/a
+
+test_url: http://nymag.com/news/features/wall-street-2012-2/
+test_contains: bonus season is a sacred ritual
+
+test_url: http://nymag.com/daily/intelligencer/2016/04/america-tyranny-donald-trump.html
+test_contains: This rainbow-flag polity

@@ -1,0 +1,5 @@
+body: //div[contains(@class, 'article-content')]
+
+test_url: http://www.sydsvenskan.se/2017-02-09/svensk-gripen-misstankt-for-kokainsmugglingen-i-landskrona
+test_contains: De fann 18 kilo kokain, värt 55 miljoner kronor
+test_url: http://www.sydsvenskan.se/rss.xml

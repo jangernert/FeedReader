@@ -1,0 +1,19 @@
+tidy: no
+prune: no
+
+title: (//span[@itemprop='title'])[last()]
+author: //span[@itemprop='author']//span[@itemprop='name']
+body: //article
+date: //time
+
+strip: //header
+strip: //div[@id='bcr']
+strip: //footer
+strip: //section
+strip: //figure[@class='dynbench']
+strip: //div[@class='pagenavbar']
+
+next_page_link: //span[@class='next']/a
+
+test_url: http://www.hardwareluxx.de/index.php/news/allgemein/netzpolitik/35169-creator-space-youtube-eroeffnet-neues-studio-in-berlin.html
+test_url: http://www.hardwareluxx.de/index.php/artikel/hardware/komplettsysteme/35020-caseking-king-mod-titan-oc-gaming-pc-im-test.html

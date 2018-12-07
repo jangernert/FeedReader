@@ -1,0 +1,6 @@
+prune: no
+body: //div[@itemprop="articleBody"]
+strip: //aside
+strip_id_or_class: partner-spot
+
+test_url: https://www.indiehackers.com/businesses/paleo-meal-plans

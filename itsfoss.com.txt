@@ -1,0 +1,6 @@
+title: //h1
+body: //article[contains(@class,'type-post')]/div[@itemprop='text']
+strip: //a[@rel='dofollow']
+strip: //div[contains(@class,'zem_rp_wrap')]
+strip: //div[@id='shr_canvas2']
+test_url: https://itsfoss.com/fix-gvfsd-smb-high-cpu-ubuntu/

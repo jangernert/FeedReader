@@ -1,0 +1,6 @@
+body: //div[contains(@class, 'article-body')]
+
+prune: no
+
+test_url: https://www.resume.se/nyheter/artiklar/2017/09/19/blossa-lanserar-arets-glogg-via-livestream--hamtar-inspiration-fran-indien
+test_url: http://www.resume.se/rss-nyheter

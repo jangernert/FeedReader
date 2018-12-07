@@ -1,0 +1,9 @@
+title: //header[@class='entry-header']/h1[@class='entry-title']/a
+author: //span[@class="heatmapthemead-post-details"]/span[@class='byline']/span[@class='author vcard']/a
+date: //span[@class="heatmapthemead-post-details"]/a/time/@datetime
+body: //div[@class="post-content description"]
+
+strip: //div[@id="essb_links essb_counters essb_displayed_bottom essb_share essb_template_fancy-retina essb_1179534949 essb_links_right print-no"]
+strip: //div[@class="tagcloud"]
+
+test_url: http://www.ubuntugeek.com/install-glpi-it-and-asset-managemet-software-on-ubuntu-16-04-server.html

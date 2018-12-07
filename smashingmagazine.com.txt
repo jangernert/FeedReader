@@ -1,0 +1,12 @@
+date: //meta[@property="DC.date.issued"]/@content
+
+strip_id_or_class: lt
+strip_id_or_class: top
+strip_id_or_class: pmd
+strip_id_or_class: hsl
+strip_id_or_class: further-reading-on-smashingmag
+
+strip: //a[@class='sot single']
+strip: //div[@class='drop-caps']
+
+test_url: https://www.smashingmagazine.com/2017/06/building-production-ready-css-grid-layout/

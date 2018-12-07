@@ -1,0 +1,23 @@
+title: //h1
+
+# We can have multiple authors
+author: //div[@class='author-name-short']
+
+# Publication date
+date: //time[@itemprop='datePublished']/@datetime
+
+body: //div[@id='article-text']
+
+prune: no
+
+requires_login: true
+not_logged_in_xpath: //div[@class="box-reserved-abo"]
+
+login_uri: https://www.courrierinternational.com/login
+login_username_field: name
+login_password_field: pass
+login_extra_fields: form_build_id=@=xpath('//form[@id="user-login-form"]//input[@name="form_build_id"]', request_html('http://www.courrierinternational.com/login'))
+login_extra_fields: form_id=user_login_block
+login_extra_fields: remember_me=1
+
+test_url: http://www.courrierinternational.com/article/securite-informatique-cyberattaque-une-tempete-planetaire

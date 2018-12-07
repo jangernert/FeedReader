@@ -1,0 +1,15 @@
+body: //div[contains(@class, 'sectionArticle') and contains(@class, 'sectionZ')]
+
+strip_id_or_class: infokasten
+strip_id_or_class: teaserImTeaser
+strip_id_or_class: Comments
+strip_id_or_class: mediaInfo
+strip: //div[contains(@class, 'mediaCon')]//iframe
+strip_id_or_class: metablockwrapper
+
+prune: no
+
+test_url: http://www.tagesschau.de/kommentar/nordkorea-suedkorea-113.html
+test_contains: Staatsmann wahrgenommen
+
+test_url: http://www.tagesschau.de/xml/rss2

@@ -1,0 +1,7 @@
+title: //h1
+body: //div[@class='entrytext']
+
+#GDPR cookies
+http_header(Cookie): wp_devicetype=0; rplpwabt4=1; devicetype=0; osfam=0; de=; client_region=0; wp_gdpr=1|1; rplmct=1; washpost_poe=true;
+
+test_url: http://voices.washingtonpost.com/ezra-klein/2010/10/why_isnt_monetary_policy_discr.html

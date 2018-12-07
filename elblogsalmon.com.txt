@@ -1,0 +1,3 @@
+replace_string(sf-src): src
+
+test_url: https://www.elblogsalmon.com/economia/no-todo-fue-mal-con-el-euro-datos-que-indican-que-fue-una-buena-idea

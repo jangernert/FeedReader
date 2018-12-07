@@ -1,0 +1,7 @@
+title://div[@class='main-title single-title entry-title']
+body://div[@id="content-anchor-inner"]
+date://meta[@content]
+
+strip: //noscript
+
+test_url: https://n0where.net/dump-and-analyze-net-applications-memory-memoscope-net/

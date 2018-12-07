@@ -1,0 +1,11 @@
+
+# body composed of:
+#  - "accroche" : the introduction text
+#  - "presentation-class-wrapper"/h2 : the subtitle of each page for multipage articles
+#  - "field-name-body" : the actual article content
+body: //div[contains(concat(' ',normalize-space(@class),' '),' accroche ')] | //div[contains(concat(' ',normalize-space(@class),' '),' presentation-class-wrapper ')]/h2 | //div[contains(concat(' ',normalize-space(@class),' '),' field-name-body ')]
+
+# the next page is the link contained after the "current" "book_navigation_item"
+next_page_link: //li[contains(concat(' ',normalize-space(@class),' '),' book_navigation_item ') and contains(concat(' ',normalize-space(@class),' '),' current ')]/following-sibling::li[1]/a/@href
+
+test_url: http://www.moto-net.com/article/comparatif-superbike-2018-aprilia-rsv4-rf-vs-bmw-s1000rr-vs-ducati-panigale-v4-s-1-comparo-sbk-2018-page-1-les-nouvelles-du-vieux-continent.html

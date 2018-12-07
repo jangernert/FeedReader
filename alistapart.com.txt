@@ -1,0 +1,12 @@
+title: //h1[@class='entry-title']
+author: //h2/a[@class='fn']
+date: //time[@itemprop='datePublished']
+
+body: //div[@itemprop='articleBody']
+strip: //aside
+strip: //div[@class="utility-side-bar"]
+strip_id_or_class: 'aside-breaker'
+
+prune: no
+test_url: http://www.alistapart.com/articles/organizing-mobile/
+test_url: https://alistapart.com/article/tags-to-dom

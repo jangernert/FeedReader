@@ -1,0 +1,2 @@
+title: //article[contains(@class, 'type_text')]//h2
+test_url: http://blog.eng.xogrp.com/post/154005485319/node-js-promise-enterprise-grade-first-of-all

@@ -1,0 +1,18 @@
+title: //div[@class='blog']/ul[@class='single']/li//h1
+body: //div[@class='blog']/ul[@class='single']/li
+strip: //h1
+strip: //*[@class='post-meta']
+strip: //div[@class='apss-social-share']
+strip: //div[@class='tags']
+strip: //*[@class='nav-single']
+
+strip_id_or_class: post_meta
+strip_id_or_class: social-share
+strip: //nav
+
+# strip_comments:yes
+
+prune:no
+tidy:yes
+
+test_url: http://jameslandrith.com/2016/03/20/so-turnabout-is-not-actual-advocacy-or-how-to-be-a-shitty-person-101/

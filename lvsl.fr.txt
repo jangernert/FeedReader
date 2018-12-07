@@ -1,0 +1,3 @@
+title: //h1[contains(@class,'entry-title')]
+body: //div[contains(@class,'body-content')]
+test_url: http://lvsl.fr/peuple-manifestant-saez-a-t-pondu-hexagone

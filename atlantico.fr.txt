@@ -1,0 +1,12 @@
+body: //div[@id='content']
+
+strip_id_or_class: smart-paging-pager
+strip_id_or_class: content-bot
+strip_id_or_class: article_tools_src
+strip_id_or_class: content-side
+
+next_page_link: //li[@class='pager-next']/a
+
+date: //div[@class='metas']/time/@datetime
+
+test_url: http://www.atlantico.fr/decryptage/running-qu-faut-manger-avant-pendant-et-apres-course-pied-jean-daniel-lalau-3153154.html

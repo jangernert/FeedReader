@@ -1,0 +1,6 @@
+title: //div[@class='entry-content item']/h1[@class='title fn entry-title']
+author: //div[@class="entry-meta"]/span[@class='reviewer']
+date: //div[@class="entry-meta"]/span[@class='dtreviewed']
+body: //div[@class="post-content description"]
+
+test_url: http://iphoneaddict.fr/post/news-179987-insolite-b-o-game-of-thrones-interpretee-nouveaux-instruments-chinois-garageband

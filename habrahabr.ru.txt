@@ -1,0 +1,11 @@
+title: //span[@class="post_title"]
+author: //div[@class="author"]
+date: //div[@class="published"]
+
+body: //div[@class="post__text"]
+
+prune: no
+tidy: no
+
+test_url: http://habrahabr.ru/post/229883/
+test_url: https://habrahabr.ru/company/mailru/blog/324078/

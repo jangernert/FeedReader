@@ -1,0 +1,7 @@
+title: //h1[@class='article-header']
+body: //div[@class='body-content']
+author: //span[@class='author-byline']/a[contains(@id, 'Author')]
+
+strip: //span[contains(@id, 'Article_SourceLabel')]
+
+test_url: http://www.itnews.com.au/feature/the-untold-story-of-iinet-and-internodes-basslink-internet-woes-417296

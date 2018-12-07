@@ -1,0 +1,6 @@
+body: //div[@id='storyContent']
+
+strip_id_or_class: shareArt
+strip_id_or_class: promobox
+
+test_url: http://www.ft.com/cms/s/2/19fe32bc-d6db-11e5-8887-98e7feb46f27.html

@@ -1,0 +1,19 @@
+tidy: no
+prune: no
+
+title: //h2[@class='title']
+date: //div[@class='tidescr']
+
+body: //div[@id='article']
+body: //div[@id='news']
+
+next_page_link: //a[@title='nächste']
+
+strip: //div[@class='topic']
+strip: //h2[@class='title']
+strip: //div[a[contains(@href,'/user/')]]
+strip: //div[@class='picto']
+strip: //p[@class='addinfo']
+strip: //h3[@class='topic']
+
+test_url: http://www.pro-linux.de/artikel/2/1762/ubuntu-und-kubuntu-1504.html

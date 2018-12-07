@@ -1,0 +1,11 @@
+# Need html5lib or replace_string to handle correctly badly included in-content-ad inclusion script. html5lib is a lot slower.
+# parser: html5lib
+replace_string("</div>"): "&lt;/div&gt;"
+body: //article[@class='post-content']
+strip: //span[@class='summary-entry']
+strip: //footer
+
+test_url: http://www.numerama.com/sciences/243352-hubble-detecte-un-trou-noir-supermassif-propulse-hors-de-sa-galaxie.html
+test_url: http://www.numerama.com/tech/242703-free-mobile-et-la-4g-en-illimite-ce-quil-faut-savoir.html
+# Don't know why this one get everything in bold:
+test_url: http://www.numerama.com/business/243686-comme-convenu-quand-lenfer-dune-startup-se-transforme-en-succes-dauto-edition.html

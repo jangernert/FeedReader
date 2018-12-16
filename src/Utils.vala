@@ -650,6 +650,12 @@ public class FeedReader.Utils : GLib.Object {
 			case ArticleTheme.PARCHMENT:
 				theme += "parchment";
 				break;
+			case ArticleTheme.CLASSIC:
+				theme += "classic";
+				break;
+			case ArticleTheme.ELEMENTARY:
+				theme += "elementary";
+				break;
 		}
 
 		string theme_id = "$THEME";

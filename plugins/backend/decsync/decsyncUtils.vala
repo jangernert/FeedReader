@@ -30,7 +30,7 @@ public class FeedReader.DecsyncUtils : GLib.Object {
 		var dir = Utils.gsettingReadString(m_settings, "decsync-dir");
 		if (dir == "")
 		{
-			return getDefaultDecsyncBaseDir();
+			return GLib.Environment.get_variable("DECSYNC_DIR") ?? getDefaultDecsyncBaseDir();
 		}
 		else
 		{

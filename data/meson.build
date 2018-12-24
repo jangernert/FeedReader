@@ -26,7 +26,7 @@ i18n.merge_file(
   output: 'org.gnome.FeedReader.appdata.xml',
   po_dir: PO_DIR,
   install: true,
-  install_dir: join_paths(SHARE_DIR, 'appdata')
+  install_dir: join_paths(SHARE_DIR, 'metainfo')
 )
 
 

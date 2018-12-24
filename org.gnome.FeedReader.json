@@ -22,7 +22,10 @@
     "--talk-name=org.gnome.OnlineAccounts",
     "--own-name=org.gnome.FeedReader.ArticleView",
     "--talk-name=org.freedesktop.Notifications",
-    "--talk-name=org.freedesktop.secrets"
+    "--talk-name=org.freedesktop.secrets",
+    /* Access to DecSync directory */
+    "--env=DECSYNC_DIR=.local/share/decsync",
+    "--filesystem=~/.local/share/decsync"
   ],
   "modules": [{
       "name": "libgee",

@@ -15,38 +15,38 @@
 
 public class FeedReader.Tag : GLib.Object {
 
-	private string m_tagID;
-	private string m_title;
-	private int m_color;
+private string m_tagID;
+private string m_title;
+private int m_color;
 
-	public Tag (string tagID, string title, int color) {
-		m_tagID = tagID;
-		m_title = title;
-		m_color = color;
-	}
+public Tag (string tagID, string title, int color) {
+	m_tagID = tagID;
+	m_title = title;
+	m_color = color;
+}
 
-	public string getTagID()
-	{
-		return m_tagID;
-	}
+public string getTagID()
+{
+	return m_tagID;
+}
 
-	public string getTitle()
-	{
-		return m_title;
-	}
+public string getTitle()
+{
+	return m_title;
+}
 
-	public void setTitle(string title)
-	{
-		m_title = title;
-	}
+public void setTitle(string title)
+{
+	m_title = title;
+}
 
-	public int getColor()
-	{
-		return m_color;
-	}
+public int getColor()
+{
+	return m_color;
+}
 
-	public void setColor(int color)
-	{
-		m_color = color;
-	}
+public void setColor(int color)
+{
+	m_color = color;
+}
 }

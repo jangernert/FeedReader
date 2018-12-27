@@ -18,58 +18,58 @@ using Gtk;
 
 namespace FeedReader {
 
-	public const string QUICKLIST_ABOUT_STOCK = N_("About FeedReader");
+public const string QUICKLIST_ABOUT_STOCK = N_("About FeedReader");
 
-	public class FeedReaderApp : Gtk.Application {
+public class FeedReaderApp : Gtk.Application {
 
-		private MainWindow m_window;
-		private bool m_online = true;
-		private static FeedReaderApp? m_app = null;
-		public static bool m_verbose = false;
-		public signal void callback(string content);
+private MainWindow m_window;
+private bool m_online = true;
+private static FeedReaderApp? m_app = null;
+public static bool m_verbose = false;
+public signal void callback (string content);
 
 
-		public new static FeedReaderApp get_default()
-		{
-			if(m_app == null)
-				m_app = new FeedReaderApp();
+public new static FeedReaderApp get_default()
+{
+	if(m_app == null)
+		m_app = new FeedReaderApp();
 
-			return m_app;
-		}
+	return m_app;
+}
 
-		public bool isOnline()
-		{
-			return m_online;
-		}
+public bool isOnline()
+{
+	return m_online;
+}
 
-		public void setOnline(bool online)
-		{
-			m_online = online;
-		}
+public void setOnline(bool online)
+{
+	m_online = online;
+}
 
-		protected override void startup()
-		{
-			Logger.init(m_verbose);
-			Logger.info("FeedReader " + AboutInfo.version);
+protected override void startup()
+{
+	Logger.init(m_verbose);
+	Logger.info("FeedReader " + AboutInfo.version);
 
-			Settings.state().set_boolean("currently-updating", false);
+	Settings.state().set_boolean("currently-updating", false);
 
-			base.startup();
-		}
+	base.startup();
+}
 
-		public override void activate()
-		{
-			base.activate();
-			WebKit.WebContext.get_default().set_web_extensions_directory(Constants.INSTALL_PREFIX + "/" + Constants.INSTALL_LIBDIR);
+public override void activate()
+{
+	base.activate();
+	WebKit.WebContext.get_default().set_web_extensions_directory(Constants.INSTALL_PREFIX + "/" + Constants.INSTALL_LIBDIR);
 
-			if(m_window == null)
-			{
-				SetupActions();
-				m_window = MainWindow.get_default();
-				m_window.set_icon_name("org.gnome.FeedReader");
-				Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
+	if(m_window == null)
+	{
+		SetupActions();
+		m_window = MainWindow.get_default();
+		m_window.set_icon_name("org.gnome.FeedReader");
+		Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
 
-				FeedReaderBackend.get_default().newFeedList.connect(() => {
+		FeedReaderBackend.get_default().newFeedList.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: newFeedList");
 						ColumnView.get_default().newFeedList();
@@ -77,7 +77,7 @@ namespace FeedReader {
 					});
 				});
 
-				FeedReaderBackend.get_default().refreshFeedListCounter.connect(() => {
+		FeedReaderBackend.get_default().refreshFeedListCounter.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: refreshFeedListCounter");
 						ColumnView.get_default().refreshFeedListCounter();
@@ -85,7 +85,7 @@ namespace FeedReader {
 					});
 				});
 
-				FeedReaderBackend.get_default().updateArticleList.connect(() => {
+		FeedReaderBackend.get_default().updateArticleList.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: updateArticleList");
 						ColumnView.get_default().updateArticleList();
@@ -93,7 +93,7 @@ namespace FeedReader {
 					});
 				});
 
-				FeedReaderBackend.get_default().syncStarted.connect(() => {
+		FeedReaderBackend.get_default().syncStarted.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: syncStarted");
 						MainWindow.get_default().writeInterfaceState();
@@ -102,7 +102,7 @@ namespace FeedReader {
 					});
 				});
 
-				FeedReaderBackend.get_default().syncFinished.connect(() => {
+		FeedReaderBackend.get_default().syncFinished.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: syncFinished");
 						ColumnView.get_default().syncFinished();
@@ -112,7 +112,7 @@ namespace FeedReader {
 					});
 				});
 
-				FeedReaderBackend.get_default().springCleanStarted.connect(() => {
+		FeedReaderBackend.get_default().springCleanStarted.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: springCleanStarted");
 						MainWindow.get_default().showSpringClean();
@@ -120,7 +120,7 @@ namespace FeedReader {
 					});
 				});
 
-				FeedReaderBackend.get_default().springCleanFinished.connect(() => {
+		FeedReaderBackend.get_default().springCleanFinished.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: springCleanFinished");
 						MainWindow.get_default().showContent();
@@ -128,7 +128,7 @@ namespace FeedReader {
 					});
 				});
 
-				FeedReaderBackend.get_default().showArticleListOverlay.connect(() => {
+		FeedReaderBackend.get_default().showArticleListOverlay.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: showArticleListOverlay");
 						ColumnView.get_default().showArticleListOverlay();
@@ -136,31 +136,31 @@ namespace FeedReader {
 					});
 				});
 
-				FeedReaderBackend.get_default().setOffline.connect(() => {
+		FeedReaderBackend.get_default().setOffline.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: setOffline");
 						if(FeedReaderApp.get_default().isOnline())
 						{
-							FeedReaderApp.get_default().setOnline(false);
-							ColumnView.get_default().setOffline();
+						        FeedReaderApp.get_default().setOnline(false);
+						        ColumnView.get_default().setOffline();
 						}
 						return GLib.Source.REMOVE;
 					});
 				});
 
-				FeedReaderBackend.get_default().setOnline.connect(() => {
+		FeedReaderBackend.get_default().setOnline.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: setOnline");
 						if(!FeedReaderApp.get_default().isOnline())
 						{
-							FeedReaderApp.get_default().setOnline(true);
-							ColumnView.get_default().setOnline();
+						        FeedReaderApp.get_default().setOnline(true);
+						        ColumnView.get_default().setOnline();
 						}
 						return GLib.Source.REMOVE;
 					});
 				});
 
-				FeedReaderBackend.get_default().feedAdded.connect((error, errmsg) => {
+		FeedReaderBackend.get_default().feedAdded.connect((error, errmsg) => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: feedAdded");
 						ColumnView.get_default().footerSetReady();
@@ -170,7 +170,7 @@ namespace FeedReader {
 					});
 				});
 
-				FeedReaderBackend.get_default().opmlImported.connect(() => {
+		FeedReaderBackend.get_default().opmlImported.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: opmlImported");
 						ColumnView.get_default().footerSetReady();
@@ -179,7 +179,7 @@ namespace FeedReader {
 					});
 				});
 
-				FeedReaderBackend.get_default().updateSyncProgress.connect((progress) => {
+		FeedReaderBackend.get_default().updateSyncProgress.connect((progress) => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: updateSyncProgress");
 						ColumnView.get_default().getHeader().updateSyncProgress(progress);
@@ -187,114 +187,114 @@ namespace FeedReader {
 					});
 				});
 
-				FeedReaderBackend.get_default().updateBadge();
-				FeedReaderBackend.get_default().checkOnlineAsync.begin();
-			}
+		FeedReaderBackend.get_default().updateBadge();
+		FeedReaderBackend.get_default().checkOnlineAsync.begin();
+	}
 
-			m_window.show_all();
-			m_window.present();
-		}
+	m_window.show_all();
+	m_window.present();
+}
 
-		public override int command_line(ApplicationCommandLine command_line)
-		{
-			var args = command_line.get_arguments();
-			if(args.length > 1)
-			{
-				Logger.debug("FeedReader: callback %s".printf(args[1]));
-				callback(args[1]);
-			}
+public override int command_line(ApplicationCommandLine command_line)
+{
+	var args = command_line.get_arguments();
+	if(args.length > 1)
+	{
+		Logger.debug("FeedReader: callback %s".printf(args[1]));
+		callback (args[1]);
+	}
 
-			activate();
+	activate();
 
-			return 0;
-		}
+	return 0;
+}
 
-		protected override void shutdown()
-		{
-			Logger.debug("Shutdown!");
-			Gst.deinit();
-			base.shutdown();
-		}
+protected override void shutdown()
+{
+	Logger.debug("Shutdown!");
+	Gst.deinit();
+	base.shutdown();
+}
 
-		public async void sync()
-		{
-			SourceFunc callback = sync.callback;
-			ThreadFunc<void*> run = () => {
-				FeedReaderBackend.get_default().startSync();
-				Idle.add((owned) callback);
-				return null;
-			};
+public async void sync()
+{
+	SourceFunc callback = sync.callback;
+	ThreadFunc<void*> run = () => {
+		FeedReaderBackend.get_default().startSync();
+		Idle.add((owned) callback);
+		return null;
+	};
 
-			new GLib.Thread<void*>("sync", run);
-			yield;
-		}
+	new GLib.Thread<void*>("sync", run);
+	yield;
+}
 
-		public void cancelSync()
-		{
-			FeedReaderBackend.get_default().cancelSync();
-		}
+public void cancelSync()
+{
+	FeedReaderBackend.get_default().cancelSync();
+}
 
-		private FeedReaderApp()
-		{
-			GLib.Object(application_id: "org.gnome.FeedReader", flags: ApplicationFlags.HANDLES_COMMAND_LINE);
-		}
+private FeedReaderApp()
+{
+	GLib.Object(application_id: "org.gnome.FeedReader", flags : ApplicationFlags.HANDLES_COMMAND_LINE);
+}
 
-		private void SetupActions()
-		{
-			var quit_action = new SimpleAction("quit", null);
-			quit_action.activate.connect(() => {
+private void SetupActions()
+{
+	var quit_action = new SimpleAction("quit", null);
+	quit_action.activate.connect(() => {
 
 				MainWindow.get_default().writeInterfaceState(true);
 				m_window.close();
 
 				if(Settings.state().get_boolean("currently-updating"))
 				{
-					Logger.debug("Quit: FeedReader seems to be syncing -> trying to cancel");
-					FeedReaderBackend.get_default().cancelSync();
-					while(Settings.state().get_boolean("currently-updating"))
-					{
-						Gtk.main_iteration();
+				        Logger.debug("Quit: FeedReader seems to be syncing -> trying to cancel");
+				        FeedReaderBackend.get_default().cancelSync();
+				        while(Settings.state().get_boolean("currently-updating"))
+				        {
+				                Gtk.main_iteration();
 					}
 
-					Logger.debug("Quit: Sync cancelled -> shutting down");
+				        Logger.debug("Quit: Sync cancelled -> shutting down");
 				}
 				else
 				{
-					Logger.debug("No Sync ongoing -> Quit right away");
+				        Logger.debug("No Sync ongoing -> Quit right away");
 				}
 
 				FeedReaderApp.get_default().quit();
 			});
-			this.add_action(quit_action);
-		}
-	}
+	this.add_action(quit_action);
+}
+}
 
-	public static void show_about(string[] args)
-	{
-		Gtk.init(ref args);
-		Gtk.AboutDialog dialog = new Gtk.AboutDialog();
-		dialog.response.connect ((response_id) => {
+public static void show_about(string[] args)
+{
+	Gtk.init(ref args);
+	Gtk.AboutDialog dialog = new Gtk.AboutDialog();
+	dialog.response.connect ((response_id) => {
 			if(response_id == Gtk.ResponseType.CANCEL || response_id == Gtk.ResponseType.DELETE_EVENT)
 				Gtk.main_quit();
 		});
 
-		dialog.artists = AboutInfo.artists;
-		dialog.authors = AboutInfo.authors;
-		dialog.documenters = null;
-		dialog.translator_credits = AboutInfo.translators;
+	dialog.artists = AboutInfo.artists;
+	dialog.authors = AboutInfo.authors;
+	dialog.documenters = null;
+	dialog.translator_credits = AboutInfo.translators;
 
-		dialog.program_name = AboutInfo.programmName;
-		dialog.comments = AboutInfo.comments;
-		dialog.copyright = AboutInfo.copyright;
-		dialog.version = AboutInfo.version;
-		dialog.logo_icon_name = AboutInfo.iconName;
-		dialog.license_type = Gtk.License.GPL_3_0;
-		dialog.wrap_license = true;
+	dialog.program_name = AboutInfo.programmName;
+	dialog.comments = AboutInfo.comments;
+	dialog.copyright = AboutInfo.copyright;
+	dialog.version = AboutInfo.version;
+	dialog.logo_icon_name = AboutInfo.iconName;
+	dialog.license_type = Gtk.License.GPL_3_0;
+	dialog.wrap_license = true;
 
-		dialog.website = AboutInfo.website;
-		dialog.present();
+	dialog.website = AboutInfo.website;
+	dialog.present();
 
-		Gtk.main();
-	}
+	Gtk.main();
+}
 
 }

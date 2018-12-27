@@ -23,9 +23,9 @@ public Gee.List<string> toList(string[] input)
 
 public Gee.Predicate<Json.Node> stringEquals(string input)
 {
-    return json => {
-        return json.get_string() == input;
-    };
+	return json => {
+		       return json.get_string() == input;
+	};
 }
 
 public Json.Node boolToNode(bool input)

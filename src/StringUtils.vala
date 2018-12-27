@@ -14,49 +14,49 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.StringUtils {
-	public static Gee.List<string> split(string s, string sep, bool ignore_empty=false)
-	{
-		var items = s.split(sep);
-		if (!ignore_empty)
-			return new Gee.ArrayList<string>.wrap(items);
+public static Gee.List<string> split(string s, string sep, bool ignore_empty=false)
+{
+	var items = s.split(sep);
+	if (!ignore_empty)
+		return new Gee.ArrayList<string>.wrap(items);
 
-		var res = new Gee.ArrayList<string>();
-		foreach(string item in items)
+	var res = new Gee.ArrayList<string>();
+	foreach(string item in items)
+	{
+		if(!ignore_empty || item.strip() != "")
 		{
-			if(!ignore_empty || item.strip() != "")
-			{
-					res.add(item);
-			}
-
-		}
-		return res;
-	}
-
-	public static string join(Gee.Collection<string> l, string sep)
-	{
-		return string.joinv(sep, l.to_array());
-	}
-
-	public static void stringbuilder_append_join(StringBuilder out, Gee.Collection<string> l, string sep)
-	{
-		bool first = true;
-		foreach (var v in l)
-		{
-			if (!first)
-				out.append(sep);
-			out.append(v);
-			first = false;
-		}
-	}
-
-	public static Gee.List<string> sql_quote(Gee.List<string> l)
-	ensures (result.size == l.size)
-	{
-		for(int i = 0; i < l.size; i++)
-		{
-			l[i] = SQLite.quote_string(l[i]);
+			res.add(item);
 		}
 
-		return l;
 	}
+	return res;
+}
+
+public static string join(Gee.Collection<string> l, string sep)
+{
+	return string.joinv(sep, l.to_array());
+}
+
+public static void stringbuilder_append_join(StringBuilder out, Gee.Collection<string> l, string sep)
+{
+	bool first = true;
+	foreach (var v in l)
+	{
+		if (!first)
+			out.append(sep);
+		out.append(v);
+		first = false;
+	}
+}
+
+public static Gee.List<string> sql_quote(Gee.List<string> l)
+ensures (result.size == l.size)
+{
+	for(int i = 0; i < l.size; i++)
+	{
+		l[i] = SQLite.quote_string(l[i]);
+	}
+
+	return l;
+}
 }

@@ -15,131 +15,131 @@
 
 /* A wrapper around the low-level SQLite API */
 public class FeedReader.SQLite : GLib.Object {
-	private Sqlite.Database m_db;
+private Sqlite.Database m_db;
 
-	public SQLite(string db_path, int busy_timeout = 1000)
+public SQLite(string db_path, int busy_timeout = 1000)
+{
+	var path = GLib.File.new_for_path(db_path);
+	var parent = path.get_parent();
+	if(!parent.query_exists())
 	{
-		var path = GLib.File.new_for_path(db_path);
-		var parent = path.get_parent();
-		if(!parent.query_exists())
+		try
 		{
-			try
-			{
-				parent.make_directory_with_parents();
-			}
-			catch(IOError.EXISTS e)
-			{
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("SQLite: " + e.message);
-			}
+			parent.make_directory_with_parents();
 		}
-
-		int rc = Sqlite.Database.open_v2(db_path, out m_db);
-		if(rc != Sqlite.OK)
+		catch(IOError.EXISTS e)
 		{
-			error("Can't open database: %d: %s".printf(m_db.errcode(), m_db.errmsg()));
 		}
-
-		m_db.busy_timeout(busy_timeout);
-	}
-
-	// Backwards compatibility interface
-	public Sqlite.Statement prepare(string query)
-	requires (query != "")
-	{
-		Sqlite.Statement stmt;
-		int rc = m_db.prepare_v2(query, query.length, out stmt);
-		if(rc != Sqlite.OK)
-			error("Can't prepare statement: %d: %s\nSQL is %s".printf(m_db.errcode(), m_db.errmsg(), query));
-		return stmt;
-	}
-
-	public string errmsg()
-	{
-		return m_db.errmsg();
-	}
-
-	public void checkpoint()
-	{
-		m_db.wal_checkpoint("");
-	}
-
-	public void simple_query(string query)
-	requires (query != "")
-	{
-		string errmsg;
-		int ec = m_db.exec(query, null, out errmsg);
-		if (ec != Sqlite.OK)
+		catch(GLib.Error e)
 		{
-			error("Failed to execute simple query: %d: %s\nSQL is: %s".printf(ec, errmsg, query));
+			Logger.error("SQLite: " + e.message);
 		}
 	}
 
-	public Gee.List<Gee.List<Sqlite.Value?>> execute(string query, GLib.Value?[]? params = null)
-	requires (query != "")
+	int rc = Sqlite.Database.open_v2(db_path, out m_db);
+	if(rc != Sqlite.OK)
 	{
-		Sqlite.Statement stmt;
-		int rc = m_db.prepare_v2(query, query.length, out stmt);
-		if (rc != Sqlite.OK)
-		{
-			error("Can't prepare statement: %d: %s\nSQL is: %s".printf(m_db.errcode(), m_db.errmsg(), query));
-		}
+		error("Can't open database: %d: %s".printf(m_db.errcode(), m_db.errmsg()));
+	}
 
-		if(params != null)
+	m_db.busy_timeout(busy_timeout);
+}
+
+// Backwards compatibility interface
+public Sqlite.Statement prepare(string query)
+requires (query != "")
+{
+	Sqlite.Statement stmt;
+	int rc = m_db.prepare_v2(query, query.length, out stmt);
+	if(rc != Sqlite.OK)
+		error("Can't prepare statement: %d: %s\nSQL is %s".printf(m_db.errcode(), m_db.errmsg(), query));
+	return stmt;
+}
+
+public string errmsg()
+{
+	return m_db.errmsg();
+}
+
+public void checkpoint()
+{
+	m_db.wal_checkpoint("");
+}
+
+public void simple_query(string query)
+requires (query != "")
+{
+	string errmsg;
+	int ec = m_db.exec(query, null, out errmsg);
+	if (ec != Sqlite.OK)
+	{
+		error("Failed to execute simple query: %d: %s\nSQL is: %s".printf(ec, errmsg, query));
+	}
+}
+
+public Gee.List<Gee.List<Sqlite.Value?>> execute(string query, GLib.Value?[]? params = null)
+requires (query != "")
+{
+	Sqlite.Statement stmt;
+	int rc = m_db.prepare_v2(query, query.length, out stmt);
+	if (rc != Sqlite.OK)
+	{
+		error("Can't prepare statement: %d: %s\nSQL is: %s".printf(m_db.errcode(), m_db.errmsg(), query));
+	}
+
+	if(params != null)
+	{
+		int i = 1;
+		foreach(var param in params)
 		{
-			int i = 1;
-			foreach(var param in params)
+			if(param == null)
+				stmt.bind_null(i);
+			else
 			{
-				if(param == null)
-					stmt.bind_null(i);
+				// The order of operations matters here because floats and doubles
+				// are transformable to int, and anything is transformable to
+				// string
+				if(param.holds(typeof(float)) || param.holds(typeof(double)))
+				{
+					var as_double = GLib.Value(typeof(double));
+					param.transform(ref as_double);
+					stmt.bind_double(i, (double)as_double);
+				}
+				else if(GLib.Value.type_transformable(param.type(), typeof(int64)))
+				{
+					var as_int = GLib.Value(typeof(int64));
+					param.transform(ref as_int);
+					stmt.bind_int64(i, (int64)as_int);
+				}
 				else
 				{
-					// The order of operations matters here because floats and doubles
-					// are transformable to int, and anything is transformable to
-					// string
-					if(param.holds(typeof(float)) || param.holds(typeof(double)))
-					{
-						var as_double = GLib.Value(typeof(double));
-						param.transform(ref as_double);
-						stmt.bind_double(i, (double)as_double);
-					}
-					else if(GLib.Value.type_transformable(param.type(), typeof(int64)))
-					{
-						var as_int = GLib.Value(typeof(int64));
-						param.transform(ref as_int);
-						stmt.bind_int64(i, (int64)as_int);
-					}
-					else
-					{
-						var as_string = GLib.Value(typeof(string));
-						param.transform(ref as_string);
-						stmt.bind_text(i, (string)as_string);
-					}
+					var as_string = GLib.Value(typeof(string));
+					param.transform(ref as_string);
+					stmt.bind_text(i, (string)as_string);
 				}
-				++i;
 			}
+			++i;
 		}
-
-		var rows = new Gee.ArrayList<Gee.List<Sqlite.Value?>>();
-		while(stmt.step() == Sqlite.ROW)
-		{
-			var row = new Gee.ArrayList<Sqlite.Value?>();
-			for(int i = 0; i < stmt.column_count(); ++i)
-			{
-				row.add(stmt.column_value(i).copy());
-			}
-			rows.add(row);
-		}
-		stmt.reset ();
-
-		return rows;
 	}
 
-	public static string quote_string(string str)
+	var rows = new Gee.ArrayList<Gee.List<Sqlite.Value?>>();
+	while(stmt.step() == Sqlite.ROW)
 	{
-		var escaped = str.replace("'", "''");
-		return @"'$(escaped)'";
+		var row = new Gee.ArrayList<Sqlite.Value?>();
+		for(int i = 0; i < stmt.column_count(); ++i)
+		{
+			row.add(stmt.column_value(i).copy());
+		}
+		rows.add(row);
 	}
+	stmt.reset ();
+
+	return rows;
+}
+
+public static string quote_string(string str)
+{
+	var escaped = str.replace("'", "''");
+	return @"'$(escaped)'";
+}
 }

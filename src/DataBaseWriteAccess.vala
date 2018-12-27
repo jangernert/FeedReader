@@ -48,11 +48,14 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 	public bool resetDB()
 	{
 		Logger.warning("resetDB");
-		m_db.simple_query("DROP TABLE main.feeds");
-		m_db.simple_query("DROP TABLE main.categories");
-		m_db.simple_query("DROP TABLE main.articles");
-		m_db.simple_query("DROP TABLE main.tags");
 		m_db.simple_query("DROP TABLE main.fts_table");
+		m_db.simple_query("DROP TABLE main.taggings");
+		m_db.simple_query("DROP TABLE main.Enclosures");
+		m_db.simple_query("DROP TABLE main.CachedActions");
+		m_db.simple_query("DROP TABLE main.tags");
+		m_db.simple_query("DROP TABLE main.articles");
+		m_db.simple_query("DROP TABLE main.categories");
+		m_db.simple_query("DROP TABLE main.feeds");
 		m_db.simple_query("VACUUM");
 
 		string query = "PRAGMA INTEGRITY_CHECK";

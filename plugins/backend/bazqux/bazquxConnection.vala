@@ -14,129 +14,129 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.bazquxConnection {
-	private string m_username;
-	private string m_api_code;
-	private string m_passwd;
-	private bazquxUtils m_utils;
-	private Soup.Session m_session;
+private string m_username;
+private string m_api_code;
+private string m_passwd;
+private bazquxUtils m_utils;
+private Soup.Session m_session;
 
-	public bazquxConnection(bazquxUtils utils)
-	{
-		m_utils = utils;
-		m_username = m_utils.getUser();
-		m_api_code = m_utils.getAccessToken();
-		m_passwd = m_utils.getPasswd();
-		m_session = new Soup.Session();
-		m_session.user_agent = Constants.USER_AGENT;
-	}
+public bazquxConnection(bazquxUtils utils)
+{
+	m_utils = utils;
+	m_username = m_utils.getUser();
+	m_api_code = m_utils.getAccessToken();
+	m_passwd = m_utils.getPasswd();
+	m_session = new Soup.Session();
+	m_session.user_agent = Constants.USER_AGENT;
+}
 
-	public LoginResponse getToken()
-	{
-		Logger.debug("bazqux Connection: getToken()");
+public LoginResponse getToken()
+{
+	Logger.debug("bazqux Connection: getToken()");
 
-		if(m_username == "" && m_passwd == "")
-			return LoginResponse.ALL_EMPTY;
-		if(m_username == "")
-			return LoginResponse.MISSING_USER;
-		if(m_passwd == "")
-			return LoginResponse.MISSING_PASSWD;
+	if(m_username == "" && m_passwd == "")
+		return LoginResponse.ALL_EMPTY;
+	if(m_username == "")
+		return LoginResponse.MISSING_USER;
+	if(m_passwd == "")
+		return LoginResponse.MISSING_PASSWD;
 
-		var message = new Soup.Message("POST", "https://bazqux.com/accounts/ClientLogin/");
-		string message_string = "Email=" + m_username + "&Passwd=" + m_passwd;
-		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
-		m_session.send_message(message);
-		string response = (string)message.response_body.flatten().data;
-		try{
+	var message = new Soup.Message("POST", "https://bazqux.com/accounts/ClientLogin/");
+	string message_string = "Email=" + m_username + "&Passwd=" + m_passwd;
+	message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
+	m_session.send_message(message);
+	string response = (string)message.response_body.flatten().data;
+	try{
 
-			var regex = new Regex(".*\\w\\s.*\\w\\sAuth=");
-			if(regex.match(response))
-			{
-				Logger.error("Regex bazqux - %s".printf(response));
-				string split = regex.replace( response, -1,0,"");
-				Logger.error("authcode"+split);
-				m_utils.setAccessToken(split.strip());
-				return LoginResponse.SUCCESS;
-			}
-			else
-			{
-				Logger.debug(response);
-				return LoginResponse.WRONG_LOGIN;
-			}
-		}
-		catch(Error e)
+		var regex = new Regex(".*\\w\\s.*\\w\\sAuth=");
+		if(regex.match(response))
 		{
-			Logger.error("bazquxConnection - getToken: Could not load message response");
-			Logger.error(e.message);
-			return LoginResponse.UNKNOWN_ERROR;
+			Logger.error("Regex bazqux - %s".printf(response));
+			string split = regex.replace( response, -1,0,"");
+			Logger.error("authcode"+split);
+			m_utils.setAccessToken(split.strip());
+			return LoginResponse.SUCCESS;
+		}
+		else
+		{
+			Logger.debug(response);
+			return LoginResponse.WRONG_LOGIN;
 		}
 	}
-
-	public Response send_get_request(string path, string? message_string = null)
+	catch(Error e)
 	{
-		return send_request(path, "GET", message_string);
+		Logger.error("bazquxConnection - getToken: Could not load message response");
+		Logger.error(e.message);
+		return LoginResponse.UNKNOWN_ERROR;
 	}
+}
 
-	public Response send_post_request(string path, string? message_string = null)
-	{
-		return send_request(path, "POST", message_string);
-	}
+public Response send_get_request(string path, string? message_string = null)
+{
+	return send_request(path, "GET", message_string);
+}
 
-	private Response send_request(string path, string type, string? message_string = null)
-	{
+public Response send_post_request(string path, string? message_string = null)
+{
+	return send_request(path, "POST", message_string);
+}
 
-		var message = new Soup.Message(type, bazquxSecret.base_uri + path);
+private Response send_request(string path, string type, string? message_string = null)
+{
 
-		string oldauth = "GoogleLogin auth=" + m_utils.getAccessToken();
-		message.request_headers.append("Authorization", oldauth);
+	var message = new Soup.Message(type, bazquxSecret.base_uri + path);
 
-		if(message_string != null)
-			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
+	string oldauth = "GoogleLogin auth=" + m_utils.getAccessToken();
+	message.request_headers.append("Authorization", oldauth);
 
-		m_session.send_message(message);
+	if(message_string != null)
+		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 
-		return Response() {
-			status = message.status_code,
-			data = (string)message.response_body.flatten().data
-		};
-	}
+	m_session.send_message(message);
 
-	public bool ping()
-	{
-		var message = new Soup.Message("GET", "https://www.bazqux.com/reader/ping");
+	return Response() {
+		       status = message.status_code,
+		       data = (string)message.response_body.flatten().data
+	};
+}
 
-		string oldauth = "GoogleLogin auth=" + m_utils.getAccessToken();
-		message.request_headers.append("Authorization", oldauth);
-		m_session.send_message(message);
+public bool ping()
+{
+	var message = new Soup.Message("GET", "https://www.bazqux.com/reader/ping");
 
-		if((string)message.response_body.data == "OK")
-			return true;
+	string oldauth = "GoogleLogin auth=" + m_utils.getAccessToken();
+	message.request_headers.append("Authorization", oldauth);
+	m_session.send_message(message);
 
-		return false;
-	}
+	if((string)message.response_body.data == "OK")
+		return true;
+
+	return false;
+}
 
 }
 
 public class FeedReader.bazquxMessage {
 
-	string request = "";
+string request = "";
 
-	public bazquxMessage()
-	{
+public bazquxMessage()
+{
 
-	}
+}
 
-	public void add(string parameter, string val)
-	{
-		if(request != "")
-			request += "&";
+public void add(string parameter, string val)
+{
+	if(request != "")
+		request += "&";
 
-		request += parameter;
-		request += "=";
-		request += GLib.Uri.escape_string(val);
-	}
+	request += parameter;
+	request += "=";
+	request += GLib.Uri.escape_string(val);
+}
 
-	public string get()
-	{
-		return request;
-	}
+public string get()
+{
+	return request;
+}
 }

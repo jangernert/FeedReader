@@ -18,73 +18,73 @@
 
 public class DirectoryMonitor : GLib.Object {
 
-	private File mDir;
-	private string mPath;
-	private FileMonitor mMonitor;
-	private Gee.ArrayList<DirectoryMonitor> mChilds = new Gee.ArrayList<DirectoryMonitor>();
+private File mDir;
+private string mPath;
+private FileMonitor mMonitor;
+private Gee.ArrayList<DirectoryMonitor> mChilds = new Gee.ArrayList<DirectoryMonitor>();
 
-	public signal void changed(string path);
+public signal void changed(string path);
 
-	public DirectoryMonitor(File dir) throws GLib.Error
-	{
-		this.withPath(dir, "");
-	}
+public DirectoryMonitor(File dir) throws GLib.Error
+{
+	this.withPath(dir, "");
+}
 
-	private DirectoryMonitor.withPath(File dir, string path) throws GLib.Error
-	{
-		mDir = dir;
-		mPath = path;
-		var currentDir = File.new_for_path(dir.get_path() + path);
-		mMonitor = currentDir.monitor_directory(FileMonitorFlags.NONE);
-		mMonitor.changed.connect((file, otherFile, event) => {
+private DirectoryMonitor.withPath(File dir, string path) throws GLib.Error
+{
+	mDir = dir;
+	mPath = path;
+	var currentDir = File.new_for_path(dir.get_path() + path);
+	mMonitor = currentDir.monitor_directory(FileMonitorFlags.NONE);
+	mMonitor.changed.connect((file, otherFile, event) => {
 			if (file.get_path() != mDir.get_path() + path) {
-				onEvent(path + "/" + file.get_basename(), event);
+			        onEvent(path + "/" + file.get_basename(), event);
 			}
 		});
-		Log.d("Monitor created for " + currentDir.get_path() + " (folder " + dir.get_path() + ")");
+	Log.d("Monitor created for " + currentDir.get_path() + " (folder " + dir.get_path() + ")");
 
-		var enumerator = currentDir.enumerate_children("standard::*", FileQueryInfoFlags.NONE);
-		FileInfo info = null;
-		while (((info = enumerator.next_file(null)) != null)) {
-			if (info.get_file_type() == FileType.DIRECTORY) {
-				var childMonitor = new DirectoryMonitor.withPath(mDir, path + "/" + info.get_name());
-				childMonitor.changed.connect((path) => {
+	var enumerator = currentDir.enumerate_children("standard::*", FileQueryInfoFlags.NONE);
+	FileInfo info = null;
+	while (((info = enumerator.next_file(null)) != null)) {
+		if (info.get_file_type() == FileType.DIRECTORY) {
+			var childMonitor = new DirectoryMonitor.withPath(mDir, path + "/" + info.get_name());
+			childMonitor.changed.connect((path) => {
 					changed(path);
 				});
-				mChilds.add(childMonitor);
+			mChilds.add(childMonitor);
+		}
+	}
+}
+
+private void onEvent(string path, FileMonitorEvent event)
+{
+	Log.d("Received inotify event " + event.to_string() + " at " + mDir.get_path() + "/" + path);
+	switch (event) {
+	case FileMonitorEvent.DELETED:
+		foreach (var c in mChilds) {
+			if (c.mPath == path) {
+				mChilds.remove(c);
+				break;
 			}
 		}
-	}
-
-	private void onEvent(string path, FileMonitorEvent event)
-	{
-	    Log.d("Received inotify event " + event.to_string() + " at " + mDir.get_path() + "/" + path);
-		switch (event) {
-			case FileMonitorEvent.DELETED:
-				foreach (var c in mChilds) {
-					if (c.mPath == path) {
-						mChilds.remove(c);
-						break;
-					}
-				}
-				break;
-			case FileMonitorEvent.CREATED:
-			case FileMonitorEvent.CHANGED:
-				var file = File.new_for_path(mDir.get_path() + path);
-				if (file.query_file_type(FileQueryInfoFlags.NONE) == FileType.DIRECTORY) {
-					try {
-						var childMonitor = new DirectoryMonitor.withPath(mDir, path);
-						childMonitor.changed.connect((path) => {
-							changed(path);
-						});
-						mChilds.add(childMonitor);
-					} catch (GLib.Error e) {
-						Log.w(e.message);
-					}
-				} else {
-					changed(path);
-				}
-			break;
+		break;
+	case FileMonitorEvent.CREATED:
+	case FileMonitorEvent.CHANGED:
+		var file = File.new_for_path(mDir.get_path() + path);
+		if (file.query_file_type(FileQueryInfoFlags.NONE) == FileType.DIRECTORY) {
+			try {
+				var childMonitor = new DirectoryMonitor.withPath(mDir, path);
+				childMonitor.changed.connect((path) => {
+						changed(path);
+					});
+				mChilds.add(childMonitor);
+			} catch (GLib.Error e) {
+				Log.w(e.message);
+			}
+		} else {
+			changed(path);
 		}
+		break;
 	}
+}
 }

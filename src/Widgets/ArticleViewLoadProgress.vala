@@ -15,58 +15,58 @@
 
 public class FeedReader.ArticleViewLoadProgress : Gtk.Revealer {
 
-	private Gtk.ProgressBar m_progress;
-	private uint m_timeout_source_id = 0;
+private Gtk.ProgressBar m_progress;
+private uint m_timeout_source_id = 0;
 
-	public ArticleViewLoadProgress()
+public ArticleViewLoadProgress()
+{
+	m_progress = new Gtk.ProgressBar();
+	m_progress.set_show_text(false);
+	this.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
+	this.set_transition_duration(100);
+	this.valign = Gtk.Align.START;
+	this.no_show_all = true;
+	this.add(m_progress);
+}
+
+public void setPercentage(uint percentage)
+{
+	m_progress.set_fraction(percentage);
+}
+
+public void setPercentageF(double percentage)
+{
+	m_progress.set_fraction(percentage);
+}
+
+public void reveal(bool show)
+{
+	if(m_timeout_source_id > 0)
 	{
-		m_progress = new Gtk.ProgressBar();
-		m_progress.set_show_text(false);
-		this.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
-		this.set_transition_duration(100);
-		this.valign = Gtk.Align.START;
-		this.no_show_all = true;
-		this.add(m_progress);
+		GLib.Source.remove(m_timeout_source_id);
+		m_timeout_source_id = 0;
 	}
 
-	public void setPercentage(uint percentage)
+	if(show)
 	{
-		m_progress.set_fraction(percentage);
-	}
-
-	public void setPercentageF(double percentage)
-	{
-		m_progress.set_fraction(percentage);
-	}
-
-	public void reveal(bool show)
-	{
-		if(m_timeout_source_id > 0)
-		{
-			GLib.Source.remove(m_timeout_source_id);
-			m_timeout_source_id = 0;
-		}
-
-		if(show)
-		{
-			this.visible = true;
-			m_progress.show();
-			m_timeout_source_id = Timeout.add(300, () => {
-				  this.set_reveal_child(true);
-				  m_timeout_source_id = 0;
-				  return false;
+		this.visible = true;
+		m_progress.show();
+		m_timeout_source_id = Timeout.add(300, () => {
+				this.set_reveal_child(true);
+				m_timeout_source_id = 0;
+				return false;
 			});
-		}
-		else
-		{
-			this.set_reveal_child(false);
-		}
 	}
-
-	public void reset()
+	else
 	{
-		reveal(false);
+		this.set_reveal_child(false);
 	}
+}
+
+public void reset()
+{
+	reveal(false);
+}
 
 
 }

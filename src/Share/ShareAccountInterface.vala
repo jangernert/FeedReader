@@ -15,35 +15,35 @@
 
 public interface FeedReader.ShareAccountInterface : GLib.Object {
 
-	public signal void addAccount(string id, string type, string username, string iconName, string accountName);
+public signal void addAccount(string id, string type, string username, string iconName, string accountName);
 
-	public signal void deleteAccount(string id);
+public signal void deleteAccount(string id);
 
-	public abstract void setupSystemAccounts(Gee.List<ShareAccount> accounts);
+public abstract void setupSystemAccounts(Gee.List<ShareAccount> accounts);
 
-	public abstract bool useSystemAccounts();
+public abstract bool useSystemAccounts();
 
-	public abstract string pluginID();
+public abstract string pluginID();
 
-	public abstract string pluginName();
+public abstract string pluginName();
 
-	public abstract bool addBookmark(string id, string url, bool system);
+public abstract bool addBookmark(string id, string url, bool system);
 
-	public abstract bool logout(string id);
+public abstract bool logout(string id);
 
-	public abstract string getIconName();
+public abstract string getIconName();
 
-	public abstract string getUsername(string id);
+public abstract string getUsername(string id);
 
-	public abstract bool needSetup();
+public abstract bool needSetup();
 
-	public abstract bool singleInstance();
+public abstract bool singleInstance();
 
-	public abstract ServiceSetup? newSetup_withID(string id, string username);
+public abstract ServiceSetup? newSetup_withID(string id, string username);
 
-	public abstract ServiceSetup? newSetup();
+public abstract ServiceSetup? newSetup();
 
-	public abstract ServiceSetup? newSystemAccount(string id, string username);
+public abstract ServiceSetup? newSystemAccount(string id, string username);
 
-	public abstract ShareForm? shareWidget(string url);
+public abstract ShareForm? shareWidget(string url);
 }

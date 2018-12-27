@@ -16,7 +16,9 @@
  * along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
-public class Unit { public Unit() {} }
+public class Unit { public Unit() {
+		    }
+}
 
 /**
  * The `DecSync` class represents an interface to synchronized key-value mappings stored on the file
@@ -66,559 +68,559 @@ public class Unit { public Unit() {} }
  */
 public class Decsync<T> : GLib.Object {
 
-	string dir;
-	string ownAppId;
-	string ownAppIdEncoded;
-	Gee.Iterable<OnEntryUpdateListener<T>> listeners;
-	DirectoryMonitor? monitor = null;
+string dir;
+string ownAppId;
+string ownAppIdEncoded;
+Gee.Iterable<OnEntryUpdateListener<T>> listeners;
+DirectoryMonitor? monitor = null;
 
-	/**
-	 * Signal which is called when a sync is complete. For example, it can be used to update the UI.
-	 */
-	public signal void syncComplete(T extra);
+/**
+ * Signal which is called when a sync is complete. For example, it can be used to update the UI.
+ */
+public signal void syncComplete(T extra);
 
-	public Decsync(string dir, string ownAppId, Gee.Iterable<OnEntryUpdateListener<T>> listeners)
-	{
-		this.dir = dir;
-		this.ownAppId = ownAppId;
-		this.ownAppIdEncoded = FileUtils.urlencode(ownAppId);
-		this.listeners = listeners;
+public Decsync(string dir, string ownAppId, Gee.Iterable<OnEntryUpdateListener<T>> listeners)
+{
+	this.dir = dir;
+	this.ownAppId = ownAppId;
+	this.ownAppIdEncoded = FileUtils.urlencode(ownAppId);
+	this.listeners = listeners;
+}
+
+/**
+ * Represents an [Entry] with its path.
+ */
+public class EntryWithPath {
+public Gee.List<string> path;
+public Entry entry;
+
+public EntryWithPath(string[] path, Entry entry)
+{
+	this.path = toList(path);
+	this.entry = entry;
+}
+
+public EntryWithPath.now(string[] path, Json.Node key, Json.Node value)
+{
+	this.path = toList(path);
+	this.entry = new Entry.now(key, value);
+}
+}
+
+/**
+ * Represents a key/value pair stored by DecSync. Additionally, it has a datetime property
+ * indicating the most recent update. It does not store its path, see [EntryWithPath].
+ */
+public class Entry {
+internal string datetime;
+public Json.Node key;
+public Json.Node value;
+
+public Entry(string datetime, Json.Node key, Json.Node value)
+{
+	this.datetime = datetime;
+	this.key = key;
+	this.value = value;
+}
+
+public Entry.now(Json.Node key, Json.Node value)
+{
+	this.datetime = new GLib.DateTime.now_utc().format("%FT%T");
+	this.key = key;
+	this.value = value;
+}
+
+internal string toLine()
+{
+	var json = new Json.Node(Json.NodeType.ARRAY);
+	var array = new Json.Array();
+	array.add_string_element(this.datetime);
+	array.add_element(this.key);
+	array.add_element(this.value);
+	json.set_array(array);
+	return Json.to_string(json, false);
+}
+
+internal static Entry? fromLine(string line)
+{
+	try {
+		var json = Json.from_string(line);
+		var array = json.get_array();
+		if (array == null || array.get_length() != 3) {
+			Log.w("Invalid entry " + line);
+			return null;
+		}
+		var datetime = array.get_string_element(0);
+		if (datetime == null) {
+			Log.w("Invalid entry " + line);
+			return null;
+		}
+		var key = array.get_element(1);
+		var value = array.get_element(2);
+		return new Entry(datetime, key, value);
+	} catch (GLib.Error e) {
+		Log.w("Invalid JSON: " + line + "\n" + e.message);
+		return null;
 	}
+}
+}
 
-	/**
-	 * Represents an [Entry] with its path.
-	 */
-	public class EntryWithPath {
-		public Gee.List<string> path;
-		public Entry entry;
+private class EntriesLocation {
+public Gee.List<string> path;
+public File newEntriesFile;
+public File? storedEntriesFile;
+public File? readBytesFile;
 
-		public EntryWithPath(string[] path, Entry entry)
-		{
-			this.path = toList(path);
-			this.entry = entry;
-		}
+public EntriesLocation.getNewEntriesLocation(Decsync decsync, Gee.List<string> path, string appId)
+{
+	var pathString = FileUtils.pathToString(path);
+	var appIdEncoded = FileUtils.urlencode(appId);
+	this.path = path;
+	this.newEntriesFile = File.new_for_path(decsync.dir + "/new-entries/" + appIdEncoded + "/" + pathString);
+	this.storedEntriesFile = File.new_for_path(decsync.dir + "/stored-entries/" + decsync.ownAppIdEncoded + "/" + pathString);
+	this.readBytesFile = File.new_for_path(decsync.dir + "/read-bytes/" + decsync.ownAppIdEncoded + "/" + appIdEncoded + "/" + pathString);
+}
 
-		public EntryWithPath.now(string[] path, Json.Node key, Json.Node value)
-		{
-			this.path = toList(path);
-			this.entry = new Entry.now(key, value);
-		}
-	}
+public EntriesLocation.getStoredEntriesLocation(Decsync decsync, Gee.List<string> path)
+{
+	var pathString = FileUtils.pathToString(path);
+	this.path = path;
+	this.newEntriesFile = File.new_for_path(decsync.dir + "/stored-entries/" + decsync.ownAppIdEncoded + "/" + pathString);
+	this.storedEntriesFile = null;
+	this.readBytesFile = null;
+}
+}
 
-	/**
-	 * Represents a key/value pair stored by DecSync. Additionally, it has a datetime property
-	 * indicating the most recent update. It does not store its path, see [EntryWithPath].
-	 */
-	public class Entry {
-		internal string datetime;
-		public Json.Node key;
-		public Json.Node value;
+/**
+ * Associates the given [value] with the given [key] in the map corresponding to the given
+ * [path]. This update is sent to synchronized devices.
+ */
+public void setEntry(string[] pathArray, Json.Node key, Json.Node value)
+{
+	var entries = new Gee.ArrayList<Entry>();
+	entries.add(new Entry.now(key, value));
+	setEntriesForPath(toList(pathArray), entries);
+}
 
-		public Entry(string datetime, Json.Node key, Json.Node value)
-		{
-			this.datetime = datetime;
-			this.key = key;
-			this.value = value;
-		}
-
-		public Entry.now(Json.Node key, Json.Node value)
-		{
-			this.datetime = new GLib.DateTime.now_utc().format("%FT%T");
-			this.key = key;
-			this.value = value;
-		}
-
-		internal string toLine()
-		{
-			var json = new Json.Node(Json.NodeType.ARRAY);
-			var array = new Json.Array();
-			array.add_string_element(this.datetime);
-			array.add_element(this.key);
-			array.add_element(this.value);
-			json.set_array(array);
-			return Json.to_string(json, false);
-		}
-
-		internal static Entry? fromLine(string line)
-		{
-			try {
-				var json = Json.from_string(line);
-				var array = json.get_array();
-				if (array == null || array.get_length() != 3) {
-					Log.w("Invalid entry " + line);
-					return null;
-				}
-				var datetime = array.get_string_element(0);
-				if (datetime == null) {
-					Log.w("Invalid entry " + line);
-					return null;
-				}
-				var key = array.get_element(1);
-				var value = array.get_element(2);
-				return new Entry(datetime, key, value);
-			} catch (GLib.Error e) {
-				Log.w("Invalid JSON: " + line + "\n" + e.message);
-				return null;
-			}
-		}
-	}
-
-	private class EntriesLocation {
-		public Gee.List<string> path;
-		public File newEntriesFile;
-		public File? storedEntriesFile;
-		public File? readBytesFile;
-
-		public EntriesLocation.getNewEntriesLocation(Decsync decsync, Gee.List<string> path, string appId)
-		{
-			var pathString = FileUtils.pathToString(path);
-			var appIdEncoded = FileUtils.urlencode(appId);
-			this.path = path;
-			this.newEntriesFile = File.new_for_path(decsync.dir + "/new-entries/" + appIdEncoded + "/" + pathString);
-			this.storedEntriesFile = File.new_for_path(decsync.dir + "/stored-entries/" + decsync.ownAppIdEncoded + "/" + pathString);
-			this.readBytesFile = File.new_for_path(decsync.dir + "/read-bytes/" + decsync.ownAppIdEncoded + "/" + appIdEncoded + "/" + pathString);
-		}
-
-		public EntriesLocation.getStoredEntriesLocation(Decsync decsync, Gee.List<string> path)
-		{
-			var pathString = FileUtils.pathToString(path);
-			this.path = path;
-			this.newEntriesFile = File.new_for_path(decsync.dir + "/stored-entries/" + decsync.ownAppIdEncoded + "/" + pathString);
-			this.storedEntriesFile = null;
-			this.readBytesFile = null;
-		}
-	}
-
-	/**
-	 * Associates the given [value] with the given [key] in the map corresponding to the given
-	 * [path]. This update is sent to synchronized devices.
-	 */
-	public void setEntry(string[] pathArray, Json.Node key, Json.Node value)
-	{
-		var entries = new Gee.ArrayList<Entry>();
-		entries.add(new Entry.now(key, value));
-		setEntriesForPath(toList(pathArray), entries);
-	}
-
-	/**
-	 * Like [setEntry], but allows multiple entries to be set. This is more efficient if multiple
-	 * entries share the same path.
-	 *
-	 * @param entriesWithPath entries with path which are inserted.
-	 */
-	public void setEntries(Gee.Collection<EntryWithPath> entriesWithPath)
-	{
-		var multiMap = groupBy<EntryWithPath, Gee.List<string>, Entry>(
-			entriesWithPath,
-			entryWithPath => { return entryWithPath.path; },
-			entryWithPath => { return entryWithPath.entry; }
+/**
+ * Like [setEntry], but allows multiple entries to be set. This is more efficient if multiple
+ * entries share the same path.
+ *
+ * @param entriesWithPath entries with path which are inserted.
+ */
+public void setEntries(Gee.Collection<EntryWithPath> entriesWithPath)
+{
+	var multiMap = groupBy<EntryWithPath, Gee.List<string>, Entry>(
+		entriesWithPath,
+		entryWithPath => { return entryWithPath.path; },
+		entryWithPath => { return entryWithPath.entry; }
 		);
-		multiMap.get_keys().@foreach(path => {
+	multiMap.get_keys().@foreach(path => {
 			setEntriesForPath(path, multiMap.@get(path));
 			return true;
 		});
+}
+
+/**
+ * Like [setEntries], but only allows the entries to have the same path. Consequently, it can
+ * be slightly more convenient since the path has to be specified just once.
+ *
+ * @param path path to the map in which the entries are inserted.
+ * @param entries entries which are inserted.
+ */
+public void setEntriesForPath(Gee.List<string> path, Gee.Collection<Entry> entries)
+{
+	Log.d("Write to path " + FileUtils.pathToString(path));
+	var entriesLocation = new EntriesLocation.getNewEntriesLocation(this, path, ownAppId);
+
+	// Write new entries
+	var builder = new StringBuilder();
+	foreach (var entry in entries) {
+		builder.append(entry.toLine() + "\n");
+	}
+	try {
+		FileUtils.writeFile(entriesLocation.newEntriesFile, builder.str, true);
+	} catch (Error e) {
+		Log.w(e.message);
 	}
 
-	/**
-	 * Like [setEntries], but only allows the entries to have the same path. Consequently, it can
-	 * be slightly more convenient since the path has to be specified just once.
-	 *
-	 * @param path path to the map in which the entries are inserted.
-	 * @param entries entries which are inserted.
-	 */
-	public void setEntriesForPath(Gee.List<string> path, Gee.Collection<Entry> entries)
-	{
-		Log.d("Write to path " + FileUtils.pathToString(path));
-		var entriesLocation = new EntriesLocation.getNewEntriesLocation(this, path, ownAppId);
+	// Update .decsync-sequence files
+	while (!path.is_empty) {
+		path.remove_at(path.size - 1);
+		var dir = new EntriesLocation.getNewEntriesLocation(this, path, ownAppId).newEntriesFile;
+		var file = dir.get_child(".decsync-sequence");
 
-		// Write new entries
-		var builder = new StringBuilder();
-		foreach (var entry in entries) {
-			builder.append(entry.toLine() + "\n");
-		}
-		try {
-			FileUtils.writeFile(entriesLocation.newEntriesFile, builder.str, true);
-		} catch (Error e) {
-			Log.w(e.message);
-		}
-
-		// Update .decsync-sequence files
-		while (!path.is_empty) {
-			path.remove_at(path.size - 1);
-			var dir = new EntriesLocation.getNewEntriesLocation(this, path, ownAppId).newEntriesFile;
-			var file = dir.get_child(".decsync-sequence");
-
-			// Get the old version
-			int64 version = 0;
-			if (file.query_exists()) {
-				try {
-					var stream = new DataInputStream(file.read());
-					version = int64.parse(stream.read_line()); // Defaults to 0
-				} catch (GLib.Error e) {
-					Log.w(e.message);
-				}
-			}
-
-			// Write the new version
+		// Get the old version
+		int64 version = 0;
+		if (file.query_exists()) {
 			try {
-				FileUtils.writeFile(file, (version + 1).to_string());
-			} catch (Error e) {
+				var stream = new DataInputStream(file.read());
+				version = int64.parse(stream.read_line());         // Defaults to 0
+			} catch (GLib.Error e) {
 				Log.w(e.message);
 			}
 		}
 
-		// Update stored entries
-		updateStoredEntries(entriesLocation, entries);
+		// Write the new version
+		try {
+			FileUtils.writeFile(file, (version + 1).to_string());
+		} catch (Error e) {
+			Log.w(e.message);
+		}
 	}
 
-	/**
-	 * Initializes the monitor which watches the filesystem for updated entries and executes the
-	 * corresponding actions.
-	 *
-	 * @param extra extra data passed to the [listeners].
-	 */
-	public void initMonitor(T extra)
-	{
-		try {
-			var newEntriesDir = File.new_for_path(dir + "/new-entries");
-			var parent = newEntriesDir.get_parent();
-			if (!parent.query_exists()) {
-				parent.make_directory_with_parents();
-			}
-			monitor = new DirectoryMonitor(newEntriesDir);
-			monitor.changed.connect(pathString => {
+	// Update stored entries
+	updateStoredEntries(entriesLocation, entries);
+}
+
+/**
+ * Initializes the monitor which watches the filesystem for updated entries and executes the
+ * corresponding actions.
+ *
+ * @param extra extra data passed to the [listeners].
+ */
+public void initMonitor(T extra)
+{
+	try {
+		var newEntriesDir = File.new_for_path(dir + "/new-entries");
+		var parent = newEntriesDir.get_parent();
+		if (!parent.query_exists()) {
+			parent.make_directory_with_parents();
+		}
+		monitor = new DirectoryMonitor(newEntriesDir);
+		monitor.changed.connect(pathString => {
 				var pathEncoded = new Gee.ArrayList<string>.wrap(pathString.split("/"));
 				pathEncoded.remove("");
 				if (pathEncoded.is_empty || pathEncoded.last()[0] == '.') {
-					return;
+				        return;
 				}
 				var path = new Gee.ArrayList<string>();
 				path.add_all_iterator(pathEncoded.map<string>(part => { return FileUtils.urldecode(part); }));
 				if (path.any_match(part => { return part == null; })) {
-					Log.w("Cannot decode path " + pathString);
-					return;
+				        Log.w("Cannot decode path " + pathString);
+				        return;
 				}
 				var appId = path.first();
 				path.remove_at(0);
 				var entriesLocation = new EntriesLocation.getNewEntriesLocation(this, path, appId);
 				if (appId != ownAppId && entriesLocation.newEntriesFile.query_file_type(FileQueryInfoFlags.NONE) == FileType.REGULAR) {
-					executeEntriesLocation(entriesLocation, extra);
-					Log.d("Sync complete");
-					syncComplete(extra);
+				        executeEntriesLocation(entriesLocation, extra);
+				        Log.d("Sync complete");
+				        syncComplete(extra);
 				}
 			});
-			Log.d("Initialized folder monitor for " + dir + "/new-entries");
+		Log.d("Initialized folder monitor for " + dir + "/new-entries");
+	} catch (GLib.Error e) {
+		Log.w(e.message);
+	}
+}
+
+/**
+ * Gets all updated entries and executes the corresponding actions.
+ *
+ * @param extra extra data passed to the [listeners].
+ */
+public void executeAllNewEntries(T extra)
+{
+	Log.d("Execute all new entries in " + dir);
+	var newEntriesDir = File.new_for_path(dir + "/new-entries");
+	var readBytesDir = File.new_for_path(dir + "/read-bytes/" + ownAppIdEncoded);
+	Gee.Predicate<Gee.List<string>> pathPred = path => { return path.is_empty || path.first() != ownAppId; };
+	FileUtils.listFilesRecursiveRelative(newEntriesDir, readBytesDir, pathPred)
+	.map<EntriesLocation>(path => { return new EntriesLocation.getNewEntriesLocation(this, path.slice(1, path.size), path.first()); })
+	.@foreach (entriesLocation => {
+			executeEntriesLocation(entriesLocation, extra);
+			return true;
+		});
+	Log.d("Sync complete");
+	syncComplete(extra);
+}
+
+private void executeEntriesLocation(EntriesLocation entriesLocation, T extra, Gee.Predicate<Json.Node>? keyPred = null, Gee.Predicate<Json.Node>? valuePred = null)
+{
+	// Get the number of read bytes
+	int64 readBytes = 0;
+	if (entriesLocation.readBytesFile != null && entriesLocation.readBytesFile.query_exists()) {
+		try {
+			var stream = new DataInputStream(entriesLocation.readBytesFile.read());
+			readBytes = int64.parse(stream.read_line());         // Defaults to 0
 		} catch (GLib.Error e) {
 			Log.w(e.message);
 		}
 	}
 
-	/**
-	 * Gets all updated entries and executes the corresponding actions.
-	 *
-	 * @param extra extra data passed to the [listeners].
-	 */
-	public void executeAllNewEntries(T extra)
-	{
-		Log.d("Execute all new entries in " + dir);
-		var newEntriesDir = File.new_for_path(dir + "/new-entries");
-		var readBytesDir = File.new_for_path(dir + "/read-bytes/" + ownAppIdEncoded);
-		Gee.Predicate<Gee.List<string>> pathPred = path => { return path.is_empty || path.first() != ownAppId; };
-		FileUtils.listFilesRecursiveRelative(newEntriesDir, readBytesDir, pathPred)
-			.map<EntriesLocation>(path => { return new EntriesLocation.getNewEntriesLocation(this, path.slice(1, path.size), path.first()); })
-			.@foreach (entriesLocation => {
-				executeEntriesLocation(entriesLocation, extra);
-				return true;
-			});
-		Log.d("Sync complete");
-		syncComplete(extra);
+	// Write the new number of read bytes (= size of the entry file)
+	if (entriesLocation.readBytesFile != null) {
+		try {
+			var size = entriesLocation.newEntriesFile.query_info("standard::size", FileQueryInfoFlags.NONE).get_size();
+			if (readBytes >= size) return;
+			FileUtils.writeFile(entriesLocation.readBytesFile, size.to_string());
+		} catch (GLib.Error e) {
+			Log.w(e.message);
+		}
 	}
 
-	private void executeEntriesLocation(EntriesLocation entriesLocation, T extra, Gee.Predicate<Json.Node>? keyPred = null, Gee.Predicate<Json.Node>? valuePred = null)
-	{
-		// Get the number of read bytes
-		int64 readBytes = 0;
-		if (entriesLocation.readBytesFile != null && entriesLocation.readBytesFile.query_exists()) {
-			try {
-				var stream = new DataInputStream(entriesLocation.readBytesFile.read());
-				readBytes = int64.parse(stream.read_line()); // Defaults to 0
-			} catch (GLib.Error e) {
-				Log.w(e.message);
-			}
-		}
+	Log.d("Execute entries of " + entriesLocation.newEntriesFile.get_path());
 
-		// Write the new number of read bytes (= size of the entry file)
-		if (entriesLocation.readBytesFile != null) {
-			try {
-				var size = entriesLocation.newEntriesFile.query_info("standard::size", FileQueryInfoFlags.NONE).get_size();
-				if (readBytes >= size) return;
-				FileUtils.writeFile(entriesLocation.readBytesFile, size.to_string());
-			} catch (GLib.Error e) {
-				Log.w(e.message);
-			}
-		}
-
-		Log.d("Execute entries of " + entriesLocation.newEntriesFile.get_path());
-
-		// Execute the entries
-		var entriesMap = new Gee.HashMap<Json.Node, Entry>(
-			a => { return a.hash(); },
-			(a, b) => { return a.equal(b); }
+	// Execute the entries
+	var entriesMap = new Gee.HashMap<Json.Node, Entry>(
+		a => { return a.hash(); },
+		(a, b) => { return a.equal(b); }
 		);
-		try {
-			var stream = new DataInputStream(entriesLocation.newEntriesFile.read());
-			stream.seek(readBytes, SeekType.SET);
+	try {
+		var stream = new DataInputStream(entriesLocation.newEntriesFile.read());
+		stream.seek(readBytes, SeekType.SET);
+		string line;
+		while ((line = stream.read_line(null)) != null) {
+			var entryLine = Entry.fromLine(line);
+			if (entryLine == null) {
+				continue;
+			}
+			if ((keyPred == null || keyPred(entryLine.key)) &&
+			    (valuePred == null || valuePred(entryLine.value))) {
+				var key = entryLine.key;
+				var entry = entriesMap.@get(key);
+				if (entry == null || entryLine.datetime > entry.datetime) {
+					entriesMap.@set(key, entryLine);
+				}
+			}
+		}
+	} catch (GLib.Error e) {
+		Log.w(e.message);
+	}
+	var entries = new Gee.ArrayList<Entry>();
+	entries.add_all(entriesMap.values);
+	executeEntries(entriesLocation, entries, extra);
+}
+
+private void executeEntries(EntriesLocation entriesLocation, Gee.Collection<Entry> entries, T extra)
+{
+	updateStoredEntries(entriesLocation, entries);
+
+	var listener = getListener(entriesLocation.path);
+	if (listener == null) {
+		Log.e("Unknown action for path " + FileUtils.pathToString(entriesLocation.path));
+		return;
+	}
+
+	listener.onEntriesUpdate(entriesLocation.path, entries, extra);
+}
+
+private void updateStoredEntries(EntriesLocation entriesLocation, Gee.Collection<Entry> entries)
+{
+	if (entriesLocation.storedEntriesFile == null) {
+		return;
+	}
+
+	try {
+		var haveToFilterFile = false;
+		if (entriesLocation.storedEntriesFile.query_exists()) {
+			var stream = new DataInputStream(entriesLocation.storedEntriesFile.read());
 			string line;
 			while ((line = stream.read_line(null)) != null) {
 				var entryLine = Entry.fromLine(line);
 				if (entryLine == null) {
 					continue;
 				}
-				if ((keyPred == null || keyPred(entryLine.key)) &&
-						(valuePred == null || valuePred(entryLine.value))) {
-					var key = entryLine.key;
-					var entry = entriesMap.@get(key);
-					if (entry == null || entryLine.datetime > entry.datetime) {
-						entriesMap.@set(key, entryLine);
-					}
-				}
-			}
-		} catch (GLib.Error e) {
-			Log.w(e.message);
-		}
-		var entries = new Gee.ArrayList<Entry>();
-		entries.add_all(entriesMap.values);
-		executeEntries(entriesLocation, entries, extra);
-	}
-
-	private void executeEntries(EntriesLocation entriesLocation, Gee.Collection<Entry> entries, T extra)
-	{
-		updateStoredEntries(entriesLocation, entries);
-
-		var listener = getListener(entriesLocation.path);
-		if (listener == null) {
-			Log.e("Unknown action for path " + FileUtils.pathToString(entriesLocation.path));
-			return;
-		}
-
-		listener.onEntriesUpdate(entriesLocation.path, entries, extra);
-	}
-
-	private void updateStoredEntries(EntriesLocation entriesLocation, Gee.Collection<Entry> entries)
-	{
-		if (entriesLocation.storedEntriesFile == null) {
-			return;
-		}
-
-		try {
-			var haveToFilterFile = false;
-			if (entriesLocation.storedEntriesFile.query_exists()) {
-				var stream = new DataInputStream(entriesLocation.storedEntriesFile.read());
-				string line;
-				while ((line = stream.read_line(null)) != null) {
-					var entryLine = Entry.fromLine(line);
-					if (entryLine == null) {
-						continue;
-					}
-					var entriesIterator = entries.iterator();
-					while (entriesIterator.has_next()) {
-						entriesIterator.next();
-						var entry = entriesIterator.get();
-						if (entry.key.equal(entryLine.key)) {
-							if (entry.datetime > entryLine.datetime) {
-								haveToFilterFile = true;
-							} else {
-								entriesIterator.remove();
-							}
+				var entriesIterator = entries.iterator();
+				while (entriesIterator.has_next()) {
+					entriesIterator.next();
+					var entry = entriesIterator.get();
+					if (entry.key.equal(entryLine.key)) {
+						if (entry.datetime > entryLine.datetime) {
+							haveToFilterFile = true;
+						} else {
+							entriesIterator.remove();
 						}
 					}
 				}
 			}
+		}
 
-			if (haveToFilterFile) {
-				FileUtils.filterFile(entriesLocation.storedEntriesFile, line => {
+		if (haveToFilterFile) {
+			FileUtils.filterFile(entriesLocation.storedEntriesFile, line => {
 					var entryLine = Entry.fromLine(line);
 					if (entryLine == null) {
-						return false;
+					        return false;
 					}
 					return !entries.any_match(entry => { return entry.key.equal(entryLine.key); });
 				});
-			}
+		}
 
-			var builder = new StringBuilder();
-			entries.@foreach(entry => {
+		var builder = new StringBuilder();
+		entries.@foreach(entry => {
 				builder.append(entry.toLine() + "\n");
 				return true;
 			});
-			FileUtils.writeFile(entriesLocation.storedEntriesFile, builder.str, true);
-		}
-		catch (GLib.Error e)
-		{
-			Log.w(e.message);
-		}
+		FileUtils.writeFile(entriesLocation.storedEntriesFile, builder.str, true);
 	}
-
-	/**
-	 * Gets all stored entries satisfying the predicates and executes the corresponding actions.
-	 *
-	 * @param executePath path to the entries to executes. This can be either a file or a directory.
-	 * If it specifies a file, the entries in that file are executed. If it specifies a directory,
-	 * all entries in all subfiles are executed.
-	 * @param extra extra data passed to the [listeners].
-	 * @param keyPred optional predicate on the keys. The key has to satisfy this predicate to be
-	 * executed.
-	 * @param valuePred optional predicate on the values. The value has to satisfy this predicate to
-	 * be executed.
-	 * @param pathPred optional predicate on the subpaths. Each subpath has to satisfy this
-	 * predicate to be executed. This holds for directories as well. Furthermore, the path of
-	 * specified in [executePath] is not part of the argument.
-	 */
-	public void executeStoredEntries(string[] executePathArray, T extra,
-		Gee.Predicate<Json.Node>? keyPred = null,
-		Gee.Predicate<Json.Node>? valuePred = null,
-		Gee.Predicate<Gee.List<string>>? pathPred = null)
+	catch (GLib.Error e)
 	{
-		var executePath = toList(executePathArray);
-		var executePathString = FileUtils.pathToString(executePath);
-		var executeDir = File.new_for_path(dir + "/stored-entries/" + ownAppIdEncoded + "/" + executePathString);
-		FileUtils.listFilesRecursiveRelative(executeDir, null, pathPred)
-			.@foreach(path => {
-				path.insert_all(0, executePath);
-				var entriesLocation = new EntriesLocation.getStoredEntriesLocation(this, path);
-				executeEntriesLocation(entriesLocation, extra, keyPred, valuePred);
-				return true;
-			});
+		Log.w(e.message);
 	}
+}
 
-	/**
-	 * Initializes the stored entries. This method does not execute any actions. This is often
-	 * followed with a call to [executeStoredEntries].
-	 */
-	public void initStoredEntries()
-	{
-		// Get the most up-to-date appId
-		string? appId = null;
-		string? maxDatetime = null;
-		FileUtils.listFilesRecursiveRelative(File.new_for_path(dir + "/stored-entries"))
-			.filter(path => { return !path.is_empty; })
-			.@foreach(path => {
-				var pathString = FileUtils.pathToString(path);
-				try {
-					var file = File.new_for_path(dir + "/stored-entries/" + pathString);
-					var stream = new DataInputStream(file.read());
-					string line;
-					while ((line = stream.read_line(null)) != null) {
-						var entry = Entry.fromLine(line);
-						if (entry == null) {
-							continue;
-						}
-						if (maxDatetime == null || entry.datetime > maxDatetime ||
-								path.first() == ownAppId && entry.datetime == maxDatetime) { // Prefer own appId
-							maxDatetime = entry.datetime;
-							appId = path.first();
-						}
+/**
+ * Gets all stored entries satisfying the predicates and executes the corresponding actions.
+ *
+ * @param executePath path to the entries to executes. This can be either a file or a directory.
+ * If it specifies a file, the entries in that file are executed. If it specifies a directory,
+ * all entries in all subfiles are executed.
+ * @param extra extra data passed to the [listeners].
+ * @param keyPred optional predicate on the keys. The key has to satisfy this predicate to be
+ * executed.
+ * @param valuePred optional predicate on the values. The value has to satisfy this predicate to
+ * be executed.
+ * @param pathPred optional predicate on the subpaths. Each subpath has to satisfy this
+ * predicate to be executed. This holds for directories as well. Furthermore, the path of
+ * specified in [executePath] is not part of the argument.
+ */
+public void executeStoredEntries(string[] executePathArray, T extra,
+                                 Gee.Predicate<Json.Node>? keyPred = null,
+                                 Gee.Predicate<Json.Node>? valuePred = null,
+                                 Gee.Predicate<Gee.List<string>>? pathPred = null)
+{
+	var executePath = toList(executePathArray);
+	var executePathString = FileUtils.pathToString(executePath);
+	var executeDir = File.new_for_path(dir + "/stored-entries/" + ownAppIdEncoded + "/" + executePathString);
+	FileUtils.listFilesRecursiveRelative(executeDir, null, pathPred)
+	.@foreach(path => {
+			path.insert_all(0, executePath);
+			var entriesLocation = new EntriesLocation.getStoredEntriesLocation(this, path);
+			executeEntriesLocation(entriesLocation, extra, keyPred, valuePred);
+			return true;
+		});
+}
+
+/**
+ * Initializes the stored entries. This method does not execute any actions. This is often
+ * followed with a call to [executeStoredEntries].
+ */
+public void initStoredEntries()
+{
+	// Get the most up-to-date appId
+	string? appId = null;
+	string? maxDatetime = null;
+	FileUtils.listFilesRecursiveRelative(File.new_for_path(dir + "/stored-entries"))
+	.filter(path => { return !path.is_empty; })
+	.@foreach(path => {
+			var pathString = FileUtils.pathToString(path);
+			try {
+			        var file = File.new_for_path(dir + "/stored-entries/" + pathString);
+			        var stream = new DataInputStream(file.read());
+			        string line;
+			        while ((line = stream.read_line(null)) != null) {
+			                var entry = Entry.fromLine(line);
+			                if (entry == null) {
+			                        continue;
 					}
-				} catch (GLib.Error e) {
-					Log.w(e.message);
+			                if (maxDatetime == null || entry.datetime > maxDatetime ||
+			                    path.first() == ownAppId && entry.datetime == maxDatetime) {                     // Prefer own appId
+			                        maxDatetime = entry.datetime;
+			                        appId = path.first();
+					}
 				}
-				return true;
-			});
-		if (appId == null) {
-			Log.i("No appId found for initialization");
-			return;
-		}
-
-		// Copy the stored files and update the read bytes
-		if (appId != ownAppId) {
-			var appIdEncoded = FileUtils.urlencode(appId);
-
-			try {
-				FileUtils.@delete(File.new_for_path(dir + "/stored-entries/" + ownAppIdEncoded));
-				FileUtils.copy(File.new_for_path(dir + "/stored-entries/" + appIdEncoded), File.new_for_path(dir + "/stored-entries/" + ownAppIdEncoded));
 			} catch (GLib.Error e) {
-				Log.w(e.message);
+			        Log.w(e.message);
 			}
+			return true;
+		});
+	if (appId == null) {
+		Log.i("No appId found for initialization");
+		return;
+	}
 
-			try {
-				FileUtils.@delete(File.new_for_path(dir + "/read-bytes/" + ownAppIdEncoded));
-				FileUtils.copy(File.new_for_path(dir + "/read-bytes/" + appIdEncoded), File.new_for_path(dir + "/read-bytes/" + ownAppIdEncoded));
-			} catch (GLib.Error e) {
-				Log.w(e.message);
-			}
-			var newEntriesDir = File.new_for_path(dir + "/new-entries/" + appIdEncoded);
-			var ownReadBytesDir = File.new_for_path(dir + "/read-bytes/" + ownAppIdEncoded + "/" + appIdEncoded);
-			FileUtils.listFilesRecursiveRelative(newEntriesDir, ownReadBytesDir).@foreach(path => {
-				var pathString = FileUtils.pathToString(path);
-				try {
-					var newEntriesFile = File.new_for_path(dir + "/new-entries/" + appIdEncoded + "/" + pathString);
-					var size = newEntriesFile.query_info("standard::size", FileQueryInfoFlags.NONE).get_size();
-					var readBytesFile = File.new_for_path(dir + "/read-bytes/" + ownAppIdEncoded + "/" + appIdEncoded + "/" + pathString);
-					FileUtils.writeFile(readBytesFile, size.to_string());
-				} catch (GLib.Error e) {
-					Log.w(e.message);
-				}
-				return true;
-			});
-		}
-    }
+	// Copy the stored files and update the read bytes
+	if (appId != ownAppId) {
+		var appIdEncoded = FileUtils.urlencode(appId);
 
-	/**
-	 * Returns the value of the given [key] in the map of the given [path], and in the given
-	 * [DecSync directory][decsyncDir] without specifying an appId, or `null` if there is no
-	 * such value. The use of this method is discouraged. It is recommended to use the method
-	 * [executeStoredEntries] when possible.
-	 */
-	public static Json.Node? getStoredStaticValue(string decsyncDir, string[] pathArray, Json.Node key)
-	{
-		Log.d("Get value for key " + Json.to_string(key, false) + " for path " + string.joinv("/", pathArray) + " in " + decsyncDir);
-		var path = toList(pathArray);
-		var pathString = FileUtils.pathToString(path);
-		Json.Node? result = null;
-		string? maxDatetime = null;
-		var storedEntriesDir = File.new_for_path(decsyncDir + "/stored-entries");
 		try {
-			var enumerator = storedEntriesDir.enumerate_children("standard::*", FileQueryInfoFlags.NONE);
-			FileInfo info;
-			while ((info = enumerator.next_file(null)) != null) {
-				if (info.get_name()[0] == '.') {
-					continue;
-				}
-
-				var appIdEncoded = info.get_name();
-				var file = File.new_for_path(decsyncDir + "/stored-entries/" + appIdEncoded + "/" + pathString);
-				if (!file.query_exists() || file.query_file_type(FileQueryInfoFlags.NONE) != FileType.REGULAR) {
-					continue;
-				}
-
-				var stream = new DataInputStream(file.read());
-				string line;
-				while ((line = stream.read_line(null)) != null) {
-					var entry = Entry.fromLine(line);
-					if (entry == null) {
-						continue;
-					}
-					if (entry.key.equal(key) && (maxDatetime == null || entry.datetime > maxDatetime)) {
-						maxDatetime = entry.datetime;
-						result = entry.value;
-					}
-				}
-			}
+			FileUtils.@delete(File.new_for_path(dir + "/stored-entries/" + ownAppIdEncoded));
+			FileUtils.copy(File.new_for_path(dir + "/stored-entries/" + appIdEncoded), File.new_for_path(dir + "/stored-entries/" + ownAppIdEncoded));
 		} catch (GLib.Error e) {
 			Log.w(e.message);
 		}
 
-		return result;
+		try {
+			FileUtils.@delete(File.new_for_path(dir + "/read-bytes/" + ownAppIdEncoded));
+			FileUtils.copy(File.new_for_path(dir + "/read-bytes/" + appIdEncoded), File.new_for_path(dir + "/read-bytes/" + ownAppIdEncoded));
+		} catch (GLib.Error e) {
+			Log.w(e.message);
+		}
+		var newEntriesDir = File.new_for_path(dir + "/new-entries/" + appIdEncoded);
+		var ownReadBytesDir = File.new_for_path(dir + "/read-bytes/" + ownAppIdEncoded + "/" + appIdEncoded);
+		FileUtils.listFilesRecursiveRelative(newEntriesDir, ownReadBytesDir).@foreach(path => {
+				var pathString = FileUtils.pathToString(path);
+				try {
+				        var newEntriesFile = File.new_for_path(dir + "/new-entries/" + appIdEncoded + "/" + pathString);
+				        var size = newEntriesFile.query_info("standard::size", FileQueryInfoFlags.NONE).get_size();
+				        var readBytesFile = File.new_for_path(dir + "/read-bytes/" + ownAppIdEncoded + "/" + appIdEncoded + "/" + pathString);
+				        FileUtils.writeFile(readBytesFile, size.to_string());
+				} catch (GLib.Error e) {
+				        Log.w(e.message);
+				}
+				return true;
+			});
 	}
+}
 
-	private OnEntryUpdateListener<T>? getListener(Gee.List<string> path)
-	{
-		foreach (var listener in listeners) {
-			if (listener.matchesPath(path)) {
-				return listener;
+/**
+ * Returns the value of the given [key] in the map of the given [path], and in the given
+ * [DecSync directory][decsyncDir] without specifying an appId, or `null` if there is no
+ * such value. The use of this method is discouraged. It is recommended to use the method
+ * [executeStoredEntries] when possible.
+ */
+public static Json.Node? getStoredStaticValue(string decsyncDir, string[] pathArray, Json.Node key)
+{
+	Log.d("Get value for key " + Json.to_string(key, false) + " for path " + string.joinv("/", pathArray) + " in " + decsyncDir);
+	var path = toList(pathArray);
+	var pathString = FileUtils.pathToString(path);
+	Json.Node? result = null;
+	string? maxDatetime = null;
+	var storedEntriesDir = File.new_for_path(decsyncDir + "/stored-entries");
+	try {
+		var enumerator = storedEntriesDir.enumerate_children("standard::*", FileQueryInfoFlags.NONE);
+		FileInfo info;
+		while ((info = enumerator.next_file(null)) != null) {
+			if (info.get_name()[0] == '.') {
+				continue;
+			}
+
+			var appIdEncoded = info.get_name();
+			var file = File.new_for_path(decsyncDir + "/stored-entries/" + appIdEncoded + "/" + pathString);
+			if (!file.query_exists() || file.query_file_type(FileQueryInfoFlags.NONE) != FileType.REGULAR) {
+				continue;
+			}
+
+			var stream = new DataInputStream(file.read());
+			string line;
+			while ((line = stream.read_line(null)) != null) {
+				var entry = Entry.fromLine(line);
+				if (entry == null) {
+					continue;
+				}
+				if (entry.key.equal(key) && (maxDatetime == null || entry.datetime > maxDatetime)) {
+					maxDatetime = entry.datetime;
+					result = entry.value;
+				}
 			}
 		}
-		return null;
+	} catch (GLib.Error e) {
+		Log.w(e.message);
 	}
+
+	return result;
+}
+
+private OnEntryUpdateListener<T>? getListener(Gee.List<string> path)
+{
+	foreach (var listener in listeners) {
+		if (listener.matchesPath(path)) {
+			return listener;
+		}
+	}
+	return null;
+}
 }
 
 /**

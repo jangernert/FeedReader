@@ -59,5 +59,5 @@ void main(string[] args)
 		assert(output[2] == "''''''");
 	});
 
-    Test.run();
+	Test.run();
 }

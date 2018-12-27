@@ -15,47 +15,47 @@
 
 public class FeedReader.FullscreenHeader : Gtk.EventBox {
 
-	private Gtk.Revealer m_revealer;
-	private ArticleViewHeader m_header;
-	private bool m_hover = false;
-	private bool m_popover = false;
-	private uint m_timeout_source_id = 0;
+private Gtk.Revealer m_revealer;
+private ArticleViewHeader m_header;
+private bool m_hover = false;
+private bool m_popover = false;
+private uint m_timeout_source_id = 0;
 
-	public FullscreenHeader()
-	{
-		m_header = new ArticleViewHeader("view-restore-symbolic", _("Leave fullscreen mode"));
-		m_header.get_style_context().add_class("titlebar");
-		m_header.get_style_context().add_class("imageOverlay");
-		m_header.valign = Gtk.Align.START;
-		m_header.toggledMarked.connect(() => {
+public FullscreenHeader()
+{
+	m_header = new ArticleViewHeader("view-restore-symbolic", _("Leave fullscreen mode"));
+	m_header.get_style_context().add_class("titlebar");
+	m_header.get_style_context().add_class("imageOverlay");
+	m_header.valign = Gtk.Align.START;
+	m_header.toggledMarked.connect(() => {
 			ColumnView.get_default().toggleMarkedSelectedArticle();
 		});
-		m_header.toggledRead.connect(() => {
+	m_header.toggledRead.connect(() => {
 			ColumnView.get_default().toggleReadSelectedArticle();
 		});
-		m_header.fsClick.connect(() => {
+	m_header.fsClick.connect(() => {
 			ColumnView.get_default().showPane();
 			ColumnView.get_default().leaveFullscreenArticle();
 			MainWindow.get_default().unfullscreen();
 		});
-		m_header.popOpened.connect(() => {
+	m_header.popOpened.connect(() => {
 			m_popover = true;
 		});
-		m_header.popClosed.connect(() => {
+	m_header.popClosed.connect(() => {
 			m_popover = false;
 			if(!m_hover)
 				m_revealer.set_reveal_child(false);
 		});
-		m_header.showArticleButtons(true);
-		m_revealer = new Gtk.Revealer();
-		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
-		m_revealer.set_transition_duration(300);
-		m_revealer.valign = Gtk.Align.START;
-		m_revealer.add(m_header);
+	m_header.showArticleButtons(true);
+	m_revealer = new Gtk.Revealer();
+	m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
+	m_revealer.set_transition_duration(300);
+	m_revealer.valign = Gtk.Align.START;
+	m_revealer.add(m_header);
 
-		this.set_size_request(0, 80);
-		this.no_show_all = true;
-		this.enter_notify_event.connect((event) => {
+	this.set_size_request(0, 80);
+	this.no_show_all = true;
+	this.enter_notify_event.connect((event) => {
 			m_revealer.set_transition_duration(300);
 			m_revealer.show_all();
 			m_revealer.set_reveal_child(true);
@@ -63,7 +63,7 @@ public class FeedReader.FullscreenHeader : Gtk.EventBox {
 			removeTimeout();
 			return true;
 		});
-		this.leave_notify_event.connect((event) => {
+	this.leave_notify_event.connect((event) => {
 			if(event.detail == Gdk.NotifyType.INFERIOR)
 				return false;
 
@@ -86,36 +86,36 @@ public class FeedReader.FullscreenHeader : Gtk.EventBox {
 
 			return true;
 		});
-		this.add(m_revealer);
-		this.valign = Gtk.Align.START;
-	}
+	this.add(m_revealer);
+	this.valign = Gtk.Align.START;
+}
 
-	public void setTitle(string title)
-	{
-		m_header.set_title(title);
-	}
+public void setTitle(string title)
+{
+	m_header.set_title(title);
+}
 
-	public void setMarked(ArticleStatus marked)
-	{
-		m_header.setMarked(marked);
-	}
+public void setMarked(ArticleStatus marked)
+{
+	m_header.setMarked(marked);
+}
 
-	public void setRead(ArticleStatus read)
-	{
-		m_header.setRead(read);
-	}
+public void setRead(ArticleStatus read)
+{
+	m_header.setRead(read);
+}
 
-	private void removeTimeout()
+private void removeTimeout()
+{
+	if(m_timeout_source_id > 0)
 	{
-		if(m_timeout_source_id > 0)
-		{
-			GLib.Source.remove(m_timeout_source_id);
-			m_timeout_source_id = 0;
-		}
+		GLib.Source.remove(m_timeout_source_id);
+		m_timeout_source_id = 0;
 	}
+}
 
-	public void showMediaButton(bool show)
-	{
-		m_header.showMediaButton(show);
-	}
+public void showMediaButton(bool show)
+{
+	m_header.showMediaButton(show);
+}
 }

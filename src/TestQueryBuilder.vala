@@ -62,24 +62,24 @@ void main(string[] args)
 		query.where("this is custom");
 		query.where_in_strings(
 			"column5",
-			new Gee.ArrayList<string>.wrap(new string[]{
-				"asdf",
-				"something with a ' in it"
-			}));
+			new Gee.ArrayList<string>.wrap(new string[] {
+			"asdf",
+			"something with a ' in it"
+		}));
 		query.limit(100);
 		query.offset(5);
 
 		assert(query.to_string() == "SELECT column1, column2, column3 " +
-									"FROM test " +
-									"WHERE column3 = '\"something''' " +
-									"AND column2 = 5 " +
-									"AND this is custom " +
-									"AND column5 IN ('asdf', 'something with a '' in it') " +
-									"ORDER BY column2 " +
-									"COLLATE NOCASE DESC " +
-									"LIMIT 100 " +
-									"OFFSET 5");
+		       "FROM test " +
+		       "WHERE column3 = '\"something''' " +
+		       "AND column2 = 5 " +
+		       "AND this is custom " +
+		       "AND column5 IN ('asdf', 'something with a '' in it') " +
+		       "ORDER BY column2 " +
+		       "COLLATE NOCASE DESC " +
+		       "LIMIT 100 " +
+		       "OFFSET 5");
 	});
 
-    Test.run();
+	Test.run();
 }

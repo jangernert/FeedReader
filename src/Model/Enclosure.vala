@@ -15,24 +15,24 @@
 
 public class FeedReader.Enclosure : GLib.Object {
 
-	private string m_article_id;
-	private string m_url;
-	private EnclosureType m_type;
+private string m_article_id;
+private string m_url;
+private EnclosureType m_type;
 
-	public Enclosure(string article_id, string url, EnclosureType type)
-	{
-		m_article_id = article_id;
-		m_url = url;
-		m_type = type;
-	}
+public Enclosure(string article_id, string url, EnclosureType type)
+{
+	m_article_id = article_id;
+	m_url = url;
+	m_type = type;
+}
 
-	public string get_url()
-	{
-		return m_url;
-	}
+public string get_url()
+{
+	return m_url;
+}
 
-	public EnclosureType get_enclosure_type()
-	{
-		return m_type;
-	}
+public EnclosureType get_enclosure_type()
+{
+	return m_type;
+}
 }

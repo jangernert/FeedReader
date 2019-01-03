@@ -24,7 +24,7 @@ private ArticleListState m_state = ArticleListState.ALL;
 private string m_searchTerm = "";
 private bool m_syncing = false;
 private InAppNotification m_overlay;
-private GLib.Thread<void*> m_loadThread;
+private GLib.Thread<void*>? m_loadThread = null;
 private ArticleListScroll m_currentScroll;
 private ArticleListScroll m_scroll1;
 private ArticleListScroll m_scroll2;
@@ -123,8 +123,10 @@ public async void newList(Gtk.StackTransitionType transition = Gtk.StackTransiti
 	if(m_overlay != null)
 		m_overlay.dismiss();
 
-	if(m_loadThread != null)
+	if(m_loadThread != null) {
 		m_loadThread.join();
+		m_loadThread = null;
+	}
 
 	Logger.debug("ArticleList: disallow signals from scroll");
 	m_currentScroll.allowSignals(false);
@@ -236,8 +238,10 @@ private async void loadMore()
 
 	Logger.debug("ArticleList.loadmore()");
 
-	if(m_loadThread != null)
+	if(m_loadThread != null) {
 		m_loadThread.join();
+		m_loadThread = null;
+	}
 
 	Gee.List<Article> articles = new Gee.LinkedList<Article>();
 	SourceFunc callback = loadMore.callback;
@@ -286,8 +290,10 @@ private async void loadMore()
 private async void loadNewer(int newCount, int offset)
 {
 	Logger.debug(@"ArticleList: loadNewer($newCount)");
-	if(m_loadThread != null)
+	if(m_loadThread != null) {
 		m_loadThread.join();
+		m_loadThread = null;
+	}
 
 	Gee.List<Article> articles = new Gee.LinkedList<Article>();
 	SourceFunc callback = loadNewer.callback;
@@ -353,8 +359,10 @@ public async void updateArticleList()
 		return;
 	}
 
-	if(m_loadThread != null)
+	if(m_loadThread != null) {
 		m_loadThread.join();
+		m_loadThread = null;
+	}
 
 	m_currentList.setAllUpdated(false);
 	var articles = DataBase.readOnly().read_article_stats(m_currentList.getIDs());

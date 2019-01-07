@@ -16,6 +16,7 @@
 public class FeedReader.DataBase : DataBaseReadOnly {
 
 private static DataBase? m_dataBase = null;
+private static Mutex m_transactionLock;
 
 public static new DataBase writeAccess()
 ensures (m_dataBase != null)
@@ -134,6 +135,7 @@ public void dropTag(Tag tag)
 
 public void write_feeds(Gee.Collection<Feed> feeds)
 {
+	m_transactionLock.lock();
 	m_db.simple_query("BEGIN TRANSACTION");
 
 	var query = new QueryBuilder(QueryType.INSERT_OR_REPLACE, "main.feeds");
@@ -174,6 +176,7 @@ public void write_feeds(Gee.Collection<Feed> feeds)
 	}
 
 	m_db.simple_query("COMMIT TRANSACTION");
+	m_transactionLock.unlock();
 }
 
 public void write_tag(Tag tag)
@@ -185,6 +188,7 @@ public void write_tag(Tag tag)
 
 public void write_tags(Gee.Collection<Tag> tags)
 {
+	m_transactionLock.lock();
 	m_db.simple_query("BEGIN TRANSACTION");
 
 	var query = new QueryBuilder(QueryType.INSERT_OR_IGNORE, "main.tags");
@@ -213,6 +217,7 @@ public void write_tags(Gee.Collection<Tag> tags)
 	}
 
 	m_db.simple_query("COMMIT TRANSACTION");
+	m_transactionLock.unlock();
 }
 
 public void update_tag(Tag tag)
@@ -230,6 +235,7 @@ public void update_tag(Tag tag)
 
 public void update_tags(Gee.List<Tag> tags)
 {
+	m_transactionLock.lock();
 	m_db.simple_query("BEGIN TRANSACTION");
 
 	var query = new QueryBuilder(QueryType.UPDATE, "main.tags");
@@ -253,11 +259,13 @@ public void update_tags(Gee.List<Tag> tags)
 	}
 
 	m_db.simple_query("COMMIT TRANSACTION");
+	m_transactionLock.unlock();
 }
 
 
 public void write_categories(Gee.List<Category> categories)
 {
+	m_transactionLock.lock();
 	m_db.simple_query("BEGIN TRANSACTION");
 
 	var query = new QueryBuilder(QueryType.INSERT_OR_REPLACE, "main.categories");
@@ -294,6 +302,7 @@ public void write_categories(Gee.List<Category> categories)
 	}
 
 	m_db.simple_query("COMMIT TRANSACTION");
+	m_transactionLock.unlock();
 }
 
 public void updateArticlesByID(Gee.List<string> ids, string field)
@@ -307,6 +316,7 @@ public void updateArticlesByID(Gee.List<string> ids, string field)
 	m_db.simple_query(reset_query.to_string());
 
 
+	m_transactionLock.lock();
 	m_db.simple_query("BEGIN TRANSACTION");
 
 	// then reapply states of the synced articles
@@ -333,6 +343,7 @@ public void updateArticlesByID(Gee.List<string> ids, string field)
 	}
 
 	m_db.simple_query("COMMIT TRANSACTION");
+	m_transactionLock.unlock();
 }
 
 public void writeContent(Article article)
@@ -365,6 +376,7 @@ public void update_article(Article article)
 
 public void update_articles(Gee.List<Article> articles)
 {
+	m_transactionLock.lock();
 	m_db.simple_query("BEGIN TRANSACTION");
 
 	var update_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
@@ -408,6 +420,7 @@ public void update_articles(Gee.List<Article> articles)
 	}
 
 	m_db.simple_query("COMMIT TRANSACTION");
+	m_transactionLock.unlock();
 }
 
 
@@ -416,6 +429,7 @@ public void write_articles(Gee.List<Article> articles)
 	Utils.generatePreviews(articles);
 	Utils.checkHTML(articles);
 
+	m_transactionLock.lock();
 	m_db.simple_query("BEGIN TRANSACTION");
 
 	var query = new QueryBuilder(QueryType.INSERT_OR_IGNORE, "main.articles");
@@ -496,6 +510,7 @@ public void write_articles(Gee.List<Article> articles)
 	}
 
 	m_db.simple_query("COMMIT TRANSACTION");
+	m_transactionLock.unlock();
 }
 
 private void write_taggings(Article article)
@@ -691,6 +706,7 @@ public void delete_feed(string feedID)
 
 public void addCachedAction(CachedActions action, string id, string? argument = "")
 {
+	m_transactionLock.lock();
 	m_db.simple_query("BEGIN TRANSACTION");
 
 	var query = new QueryBuilder(QueryType.INSERT_OR_IGNORE, "main.CachedActions");
@@ -715,6 +731,7 @@ public void addCachedAction(CachedActions action, string id, string? argument = 
 	stmt.reset ();
 
 	m_db.simple_query("COMMIT TRANSACTION");
+	m_transactionLock.unlock();
 }
 
 

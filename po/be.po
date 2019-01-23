@@ -2,71 +2,80 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
+"PO-Revision-Date: 2019-01-24 07:04+0000\n"
+"Last-Translator: Viktar Vauchkevich <victorenator@gmail.com>\n"
+"Language-Team: Belarusian <https://hosted.weblate.org/projects/feedreader/"
+"translations/be/>\n"
+"Language: be\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 3.4\n"
 
 #: Constants.vala.in:26
 msgid "Desktop Client for various RSS Services"
-msgstr ""
+msgstr "Кліент для розных RSS-сэрвісаў"
 
 #: Constants.vala.in:31
 msgid "translator-credits"
-msgstr ""
+msgstr "падзякі перакладчыкам"
 
 #: Constants.vala.in:36
 msgid "About"
-msgstr ""
+msgstr "Аб праграме"
 
 #: Constants.vala.in:37 src/Widgets/ColumnViewHeader.vala:101
 msgid "Settings"
-msgstr ""
+msgstr "Налады"
 
 #: Constants.vala.in:38
 msgid "Change Account"
-msgstr ""
+msgstr "Змяніць конт"
 
 #: Constants.vala.in:39 src/Widgets/ShortcutsWindow.vala:29
 msgid "Quit"
-msgstr ""
+msgstr "Выйсці"
 
 #: Constants.vala.in:40
 msgid "Report a Bug"
-msgstr ""
+msgstr "Паведаміць пра памылку"
 
 #: Constants.vala.in:41
 msgid "Bounties"
-msgstr ""
+msgstr "Шчадроты"
 
 #: Constants.vala.in:42
 msgid "Shortcuts"
-msgstr ""
+msgstr "Скароты"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:3
 msgid "FeedReader Autostart"
-msgstr ""
+msgstr "Аўтазапуск FeedReader"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:4
 #: data/org.gnome.FeedReader.desktop.in:4
 msgid "RSS Client"
-msgstr ""
+msgstr "RSS-кліент"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:6
 msgid "Categories=Network;Feed;"
-msgstr ""
+msgstr "Categories=Network;Feed;"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:8
 #: data/org.gnome.FeedReader.desktop.in:8
 msgid "org.gnome.FeedReader"
-msgstr ""
+msgstr "org.gnome.FeedReader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:6
 #: data/org.gnome.FeedReader.desktop.in:3 src/Widgets/MainWindow.vala:44
 msgid "FeedReader"
-msgstr ""
+msgstr "FeedReader"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:7
 msgid "RSS client for various webservices"
-msgstr ""
+msgstr "RSS-кліент для розных вэб-сэрвісаў"
 
 #: data/org.gnome.FeedReader.appdata.xml.in:10
 msgid ""

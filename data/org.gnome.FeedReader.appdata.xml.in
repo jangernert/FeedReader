@@ -51,6 +51,22 @@
     <binary>feedreader</binary>
   </provides>
   <releases>
+    <release version="2.6.2" date="2018-12-03">
+      <description>
+        <ul>
+		  <li>Fix version number</li>
+		  <li>Fix crash in article list</li>
+		  <li>More translations</li>
+		</ul>
+      </description>
+    </release>
+    <release version="2.6.1" date="2018-12-03">
+      <description>
+        <ul>
+		  <li>Fix release tarballs to contain all necessary code</li>
+		</ul>
+      </description>
+    </release>
     <release version="2.6.0" date="2018-12-03">
       <description>
         <ul>

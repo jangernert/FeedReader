@@ -29,12 +29,13 @@ public TagPopover(Gtk.Widget widget)
 	m_availableTags = new Gee.ArrayList<Tag>();
 	m_tags = new Gee.ArrayList<Tag>();
 	Article? selectedArticle = ColumnView.get_default().getSelectedArticle();
+	var db = DataBase.readOnly();
 	if(selectedArticle != null)
 	{
 		Gee.List<string> tagIDs = selectedArticle.getTagIDs();
 		foreach(string tagID in tagIDs)
 		{
-			m_tags.add(DataBase.readOnly().read_tag(tagID));
+			m_tags.add(db.read_tag(tagID));
 		}
 	}
 

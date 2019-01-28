@@ -365,8 +365,9 @@ public string createTag(string caption)
 {
 	string tagID = "1";
 
-	if(!DataBase.readOnly().isTableEmpty("tags"))
-		tagID = (int.parse(DataBase.readOnly().getMaxID("tags", "tagID")) + 1).to_string();
+	var db = DataBase.readOnly();
+	if(!db.isTableEmpty("tags"))
+		tagID = (int.parse(db.getMaxID("tags", "tagID")) + 1).to_string();
 
 	Logger.info("createTag: ID = " + tagID);
 	return tagID;
@@ -385,11 +386,12 @@ public void renameTag(string tagID, string title)
 public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 {
 	var catIDs = new Gee.ArrayList<string>();
+	var db = DataBase.writeAccess();
 	if(catID == null && newCatName != null)
 	{
 		string cID = createCategory(newCatName, null);
 		var cat = new Category(cID, newCatName, 0, 99, CategoryID.MASTER.to_string(), 1);
-		DataBase.writeAccess().write_categories(ListUtils.single(cat));
+		db.write_categories(ListUtils.single(cat));
 		catIDs.add(cID);
 	}
 	else if(catID != null && newCatName == null)
@@ -408,8 +410,8 @@ public bool addFeed(string feedURL, string? catID, string? newCatName, out strin
 
 	if(feed != null)
 	{
-		if(!DataBase.readOnly().feed_exists(feed.getURL())) {
-			DataBase.writeAccess().write_feeds(ListUtils.single(feed));
+		if(!db.feed_exists(feed.getURL())) {
+			db.write_feeds(ListUtils.single(feed));
 			return true;
 		}
 	}
@@ -520,7 +522,8 @@ public int getUnreadCount()
 
 public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 {
-	var feeds = DataBase.readOnly().read_feeds();
+	var db = DataBase.writeAccess();
+	var feeds = db.read_feeds();
 	var articles = new Gee.ArrayList<Article>();
 	GLib.Mutex mutex = GLib.Mutex();
 
@@ -665,7 +668,7 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 
 	if(articles.size > 0)
 	{
-		DataBase.writeAccess().write_articles(articles);
+		db.write_articles(articles);
 		Logger.debug("localInterface: %i articles written".printf(articles.size));
 		refreshFeedListCounter();
 		updateArticleList();

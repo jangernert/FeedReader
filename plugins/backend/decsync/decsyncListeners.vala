@@ -50,7 +50,8 @@ public override void onSubdirEntryUpdate(Gee.List<string> path, Decsync.Entry en
 	{
 		Logger.debug((added ? "mark " : "unmark ") + articleID);
 	}
-	Article? article = DataBase.readOnly().read_article(articleID);
+	var db = DataBase.writeAccess();
+	Article? article = db.read_article(articleID);
 	if (article == null)
 	{
 		Logger.info("Unkown article " + articleID);
@@ -64,7 +65,7 @@ public override void onSubdirEntryUpdate(Gee.List<string> path, Decsync.Entry en
 	{
 		article.setMarked(added ? ArticleStatus.MARKED : ArticleStatus.UNMARKED);
 	}
-	DataBase.writeAccess().update_article(article);
+	db.update_article(article);
 }
 }
 
@@ -163,7 +164,8 @@ public override void onSubfileEntryUpdate(Decsync.Entry entry, Unit extra)
 		Logger.warning("Invalid feedID " + Json.to_string(entry.key, false));
 		return;
 	}
-	var feed = DataBase.readOnly().read_feed(feedID);
+	var db = DataBase.writeAccess();
+	var feed = db.read_feed(feedID);
 	if (feed == null) return;
 	var currentCatID = feed.getCatString();
 	string newCatID;
@@ -181,7 +183,7 @@ public override void onSubfileEntryUpdate(Decsync.Entry entry, Unit extra)
 		return;
 	}
 	addCategory(m_plugin, newCatID);
-	DataBase.writeAccess().move_feed(feedID, currentCatID, newCatID);
+	db.move_feed(feedID, currentCatID, newCatID);
 }
 }
 

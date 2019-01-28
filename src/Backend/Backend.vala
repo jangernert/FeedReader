@@ -437,15 +437,16 @@ public void tagArticle(Article article, Tag tag, bool add)
 		article.removeTag(tag.getTagID());
 	}
 
-	DataBase.writeAccess().update_article(article);
+	var db = DataBase.writeAccess();
+	db.update_article(article);
 
-	if(!add && !DataBase.readOnly().tag_still_used(tag))
+	if(!add && !db.tag_still_used(tag))
 	{
 		Logger.debug("backend: remove tag completely");
 		asyncPayload pl2 = () => { FeedServer.get_default().deleteTag(tag.getTagID()); };
 		callAsync.begin((owned)pl2, (obj, res) => { callAsync.end(res); });
 
-		asyncPayload pl3 = () => { DataBase.writeAccess().dropTag(tag); };
+		asyncPayload pl3 = () => { db.dropTag(tag); };
 		callAsync.begin((owned)pl3, (obj, res) => {
 					callAsync.end(res);
 					newFeedList();
@@ -494,8 +495,9 @@ public void updateTagColor(Tag tag)
 
 public void resetDB()
 {
-	DataBase.writeAccess().resetDB();
-	DataBase.writeAccess().init();
+	var db = DataBase.writeAccess();
+	db.resetDB();
+	db.init();
 }
 
 public void resetAccount()
@@ -642,7 +644,8 @@ public void markAllItemsRead()
 
 public void removeCategory(string catID)
 {
-	var feeds = DataBase.readOnly().read_feeds();
+	var db = DataBase.writeAccess();
+	var feeds = db.read_feeds();
 	foreach(Feed feed in feeds)
 	{
 		if(feed.hasCat(catID))
@@ -651,7 +654,7 @@ public void removeCategory(string catID)
 		}
 	}
 
-	var cats = DataBase.readOnly().read_categories(feeds);
+	var cats = db.read_categories(feeds);
 	foreach(var cat in cats)
 	{
 		if(cat.getParent() == catID)
@@ -663,7 +666,7 @@ public void removeCategory(string catID)
 	asyncPayload pl = () => { FeedServer.get_default().deleteCategory(catID); };
 	callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-	asyncPayload pl2 = () => { DataBase.writeAccess().delete_category(catID); };
+	asyncPayload pl2 = () => { db.delete_category(catID); };
 	callAsync.begin((owned)pl2, (obj, res) => {
 				callAsync.end(res);
 				newFeedList();
@@ -691,20 +694,21 @@ public string addCategory(string title, string? parentID = null, bool createLoca
 	{
 		string? parent = parentID;
 		int level = 1;
+		var db = DataBase.writeAccess();
 		if(parentID == null || parentID == "")
 		{
 			parent = CategoryID.MASTER.to_string();
 		}
 		else
 		{
-			var parentCat = DataBase.readOnly().read_category(parentID);
+			var parentCat = db.read_category(parentID);
 			level = parentCat.getLevel()+1;
 		}
 
 		var cat = new Category(catID, title, 0, 99, parent, level);
 		var list = new Gee.LinkedList<Category>();
 		list.add(cat);
-		DataBase.writeAccess().write_categories(list);
+		db.write_categories(list);
 	}
 
 	return catID;
@@ -712,10 +716,11 @@ public string addCategory(string title, string? parentID = null, bool createLoca
 
 public void removeCategoryWithChildren(string catID)
 {
-	var feeds = DataBase.readOnly().read_feeds();
+	var db = DataBase.readOnly();
+	var feeds = db.read_feeds();
 	deleteFeedsInCategory(catID, feeds);
 
-	var cats = DataBase.readOnly().read_categories(feeds);
+	var cats = db.read_categories(feeds);
 	foreach(var cat in cats)
 	{
 		if(cat.getParent() == catID)

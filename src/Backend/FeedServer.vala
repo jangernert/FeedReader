@@ -174,6 +174,7 @@ public void syncContent(GLib.Cancellable? cancellable = null)
 		return;
 	}
 
+	var db = DataBase.writeAccess();
 	if(syncFeedsAndCategories())
 	{
 		var categories = new Gee.LinkedList<Category>();
@@ -198,21 +199,21 @@ public void syncContent(GLib.Cancellable? cancellable = null)
 			return;
 
 		// write categories
-		DataBase.writeAccess().reset_exists_flag();
-		DataBase.writeAccess().write_categories(categories);
-		DataBase.writeAccess().delete_nonexisting_categories();
+		db.reset_exists_flag();
+		db.write_categories(categories);
+		db.delete_nonexisting_categories();
 
 		// write feeds
-		DataBase.writeAccess().reset_subscribed_flag();
-		DataBase.writeAccess().write_feeds(feeds);
-		DataBase.writeAccess().delete_articles_without_feed();
-		DataBase.writeAccess().delete_unsubscribed_feeds();
+		db.reset_subscribed_flag();
+		db.write_feeds(feeds);
+		db.delete_articles_without_feed();
+		db.delete_unsubscribed_feeds();
 
 		// write tags
-		DataBase.writeAccess().reset_exists_tag();
-		DataBase.writeAccess().write_tags(tags);
-		DataBase.writeAccess().update_tags(tags);
-		DataBase.writeAccess().delete_nonexisting_tags();
+		db.reset_exists_tag();
+		db.write_tags(tags);
+		db.update_tags(tags);
+		db.delete_nonexisting_tags();
 
 		FeedReaderBackend.get_default().newFeedList();
 	}
@@ -222,7 +223,7 @@ public void syncContent(GLib.Cancellable? cancellable = null)
 
 	var drop_articles = (DropArticles)Settings.general().get_enum("drop-articles-after");
 	DateTime? since = drop_articles.to_start_date();
-	if(!DataBase.readOnly().isTableEmpty("articles"))
+	if(!db.isTableEmpty("articles"))
 	{
 		var last_sync = new DateTime.from_unix_utc(Settings.state().get_int("last-sync"));
 		if(since == null || last_sync.to_unix() > since.to_unix())
@@ -236,7 +237,7 @@ public void syncContent(GLib.Cancellable? cancellable = null)
 
 
 	syncProgress(_("Getting articles"));
-	string row_id = DataBase.readOnly().getMaxID("articles", "rowid");
+	string row_id = db.getMaxID("articles", "rowid");
 	int before = row_id != null ? int.parse(row_id) : 0;
 
 	if(unread > max && useMaxArticles())
@@ -253,10 +254,10 @@ public void syncContent(GLib.Cancellable? cancellable = null)
 		return;
 
 	//update fulltext table
-	DataBase.writeAccess().updateFTS();
+	db.updateFTS();
 
-	int new_and_unread = DataBase.readOnly().get_new_unread_count(row_id != null ? int.parse(row_id) : 0);
-	row_id = DataBase.readOnly().getMaxID("articles", "rowid");
+	int new_and_unread = db.get_new_unread_count(row_id != null ? int.parse(row_id) : 0);
+	row_id = db.getMaxID("articles", "rowid");
 	int after = row_id != null ? int.parse(row_id) : 0;
 	int newArticles = after-before;
 	if(newArticles > 0)
@@ -266,12 +267,12 @@ public void syncContent(GLib.Cancellable? cancellable = null)
 
 	var drop_weeks = drop_articles.to_weeks();
 	if(drop_weeks != null)
-		DataBase.writeAccess().dropOldArticles(-(int)drop_weeks);
+		db.dropOldArticles(-(int)drop_weeks);
 
 	var now = new DateTime.now_local();
 	Settings.state().set_int("last-sync", (int)now.to_unix());
 
-	DataBase.writeAccess().checkpoint();
+	db.checkpoint();
 	FeedReaderBackend.get_default().newFeedList();
 	return;
 }
@@ -280,6 +281,7 @@ public void InitSyncContent(GLib.Cancellable? cancellable = null)
 {
 	Logger.debug("FeedServer: initial sync");
 
+	var db = DataBase.writeAccess();
 	if(syncFeedsAndCategories())
 	{
 		var categories = new Gee.LinkedList<Category>();
@@ -297,13 +299,13 @@ public void InitSyncContent(GLib.Cancellable? cancellable = null)
 			return;
 
 		// write categories
-		DataBase.writeAccess().write_categories(categories);
+		db.write_categories(categories);
 
 		// write feeds
-		DataBase.writeAccess().write_feeds(feeds);
+		db.write_feeds(feeds);
 
 		// write tags
-		DataBase.writeAccess().write_tags(tags);
+		db.write_tags(tags);
 
 		FeedReaderBackend.get_default().newFeedList();
 	}
@@ -323,7 +325,7 @@ public void InitSyncContent(GLib.Cancellable? cancellable = null)
 
 	// get articles for each tag
 	syncProgress(_("Getting tagged articles"));
-	foreach(var tag_item in DataBase.readOnly().read_tags())
+	foreach(var tag_item in db.read_tags())
 	{
 		getArticles((Settings.general().get_int("max-articles")/8), ArticleStatus.ALL, since, tag_item.getTagID(), true, cancellable);
 		if(cancellable != null && cancellable.is_cancelled())
@@ -347,7 +349,7 @@ public void InitSyncContent(GLib.Cancellable? cancellable = null)
 		return;
 
 	//update fulltext table
-	DataBase.writeAccess().updateFTS();
+	db.updateFTS();
 
 	Settings.general().reset("content-grabber");
 
@@ -361,7 +363,8 @@ private void writeArticles(Gee.List<Article> articles)
 {
 	if(articles.size > 0)
 	{
-		DataBase.writeAccess().update_articles(articles);
+		var db = DataBase.writeAccess();
+		db.update_articles(articles);
 
 		// Reverse the list
 		var new_articles = new Gee.ArrayList<Article>();
@@ -370,7 +373,7 @@ private void writeArticles(Gee.List<Article> articles)
 			new_articles.insert(0, article);
 		}
 
-		DataBase.writeAccess().write_articles(new_articles);
+		db.write_articles(new_articles);
 		FeedReaderBackend.get_default().refreshFeedListCounter();
 		FeedReaderBackend.get_default().updateArticleList();
 	}
@@ -383,7 +386,8 @@ public async void grabContent(GLib.Cancellable? cancellable = null)
 		return;
 
 	Logger.debug("FeedServer: grabContent");
-	var articles = DataBase.readOnly().readUnfetchedArticles();
+	var db = DataBase.writeAccess();
+	var articles = db.readUnfetchedArticles();
 	int size = articles.size;
 	int i = 0;
 	var new_article_content = new Gee.ArrayList<Article>();
@@ -466,14 +470,14 @@ public async void grabContent(GLib.Cancellable? cancellable = null)
 		{
 			if (cancellable != null && cancellable.is_cancelled())
 				return;
-			DataBase.writeAccess().writeContent(content);
+			db.writeContent(content);
 		}
 
 		if (cancellable != null && cancellable.is_cancelled())
 			return;
 
 		//update fulltext table
-		DataBase.writeAccess().updateFTS();
+		db.updateFTS();
 	}
 }
 

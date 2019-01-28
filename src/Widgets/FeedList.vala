@@ -465,7 +465,8 @@ private void addTagCategory(int length)
 
 private void createCategories(ref Gee.List<Feed> feeds, bool masterCat, ArticleListState state)
 {
-	int maxCatLevel = DataBase.readOnly().getMaxCatLevel();
+	var db = DataBase.readOnly();
+	int maxCatLevel = db.getMaxCatLevel();
 	int length = (int)m_list.get_children().length();
 	bool supportTags = false;
 	bool supportCategories = true;
@@ -478,7 +479,7 @@ private void createCategories(ref Gee.List<Feed> feeds, bool masterCat, ArticleL
 	supportMultiLevelCategories = FeedReaderBackend.get_default().supportMultiLevelCategories();
 
 	if((supportTags
-	    && !DataBase.readOnly().isTableEmpty("tags"))
+	    && !db.isTableEmpty("tags"))
 	   || masterCat)
 	{
 		addMasterCategory(length, _("Categories"));
@@ -497,16 +498,16 @@ private void createCategories(ref Gee.List<Feed> feeds, bool masterCat, ArticleL
 
 	for(int i = 1; i <= maxCatLevel; i++)
 	{
-		var categories = DataBase.readOnly().read_categories_level(i, feeds);
+		var categories = db.read_categories_level(i, feeds);
 
-		if(DataBase.readOnly().haveFeedsWithoutCat())
+		if(db.haveFeedsWithoutCat())
 		{
 			categories.insert(
 				0,
 				new Category(
 					uncategorizedID,
 					_("Uncategorized"),
-					(int)DataBase.readOnly().get_unread_uncategorized(),
+					(int)db.get_unread_uncategorized(),
 					(int)(categories.size + 10),
 					CategoryID.MASTER.to_string(),
 					1
@@ -592,9 +593,10 @@ private void createTags()
 
 public void refreshCounters(ArticleListState state)
 {
-	uint allCount = (state == ArticleListState.MARKED) ? DataBase.readOnly().get_marked_total() : DataBase.readOnly().get_unread_total();
-	var feeds = DataBase.readOnly().read_feeds((state == ArticleListState.MARKED) ? true : false);
-	var categories = DataBase.readOnly().read_categories(feeds);
+	var db = DataBase.readOnly();
+	uint allCount = (state == ArticleListState.MARKED) ? db.get_marked_total() : db.get_unread_total();
+	var feeds = db.read_feeds((state == ArticleListState.MARKED) ? true : false);
+	var categories = db.read_categories(feeds);
 
 	// double-check
 	uint feedCount = 0;
@@ -674,7 +676,7 @@ public void refreshCounters(ArticleListState state)
 		}
 	}
 
-	if(DataBase.readOnly().haveFeedsWithoutCat())
+	if(db.haveFeedsWithoutCat())
 	{
 		foreach(Gtk.Widget row in FeedChildList)
 		{
@@ -683,12 +685,12 @@ public void refreshCounters(ArticleListState state)
 			{
 				if(state == ArticleListState.MARKED)
 				{
-					tmpCatRow.set_unread_count(DataBase.readOnly().get_marked_uncategorized());
+					tmpCatRow.set_unread_count(db.get_marked_uncategorized());
 					tmpCatRow.activateUnreadEventbox(false);
 				}
 				else
 				{
-					tmpCatRow.set_unread_count(DataBase.readOnly().get_unread_uncategorized());
+					tmpCatRow.set_unread_count(db.get_unread_uncategorized());
 					tmpCatRow.activateUnreadEventbox(true);
 				}
 				if(Settings.general().get_boolean("feedlist-only-show-unread") && tmpCatRow.getUnreadCount() != 0)

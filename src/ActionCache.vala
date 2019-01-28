@@ -119,12 +119,15 @@ private void removeOpposite(CachedAction action)
 
 private void removeForFeed(string feedID)
 {
+	DataBaseReadOnly db = null;
 	foreach(CachedAction a in m_list)
 	{
 		if(a.getType() == CachedActions.MARK_READ
 		   || a.getType() == CachedActions.MARK_UNREAD)
 		{
-			if(feedID == DataBase.readOnly().getFeedIDofArticle(a.getID()))
+			if (db == null)
+				db = DataBase.readOnly();
+			if(feedID == db.getFeedIDofArticle(a.getID()))
 			{
 				m_list.remove(a);
 			}
@@ -204,6 +207,7 @@ public ArticleStatus checkRead(Article a)
 	}
 	else if(a.getUnread() == ArticleStatus.UNREAD)
 	{
+		DataBaseReadOnly db = null;
 		foreach(CachedAction action in m_list)
 		{
 			switch(action.getType())
@@ -217,7 +221,9 @@ public ArticleStatus checkRead(Article a)
 				break;
 
 			case CachedActions.MARK_READ_CATEGORY:
-				var feedIDs = DataBase.readOnly().getFeedIDofCategorie(a.getArticleID());
+				if (db == null)
+					db = DataBase.readOnly();
+				var feedIDs = db.getFeedIDofCategorie(a.getArticleID());
 				foreach(string feedID in feedIDs)
 				{
 					if(feedID == a.getFeedID())

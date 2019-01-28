@@ -476,14 +476,15 @@ private void markSelectedRead()
 	{
 		if(selectedRow[1] == FeedID.ALL.to_string())
 		{
-			var categories = DataBase.readOnly().read_categories();
+			var db = DataBase.readOnly();
+			var categories = db.read_categories();
 			foreach(Category cat in categories)
 			{
 				FeedReaderBackend.get_default().markFeedAsRead(cat.getCatID(), true);
 				Logger.debug("MainWindow: mark all articles as read cat: %s".printf(cat.getTitle()));
 			}
 
-			var feeds = DataBase.readOnly().read_feeds_without_cat();
+			var feeds = db.read_feeds_without_cat();
 			foreach(Feed feed in feeds)
 			{
 				FeedReaderBackend.get_default().markFeedAsRead(feed.getFeedID(), false);

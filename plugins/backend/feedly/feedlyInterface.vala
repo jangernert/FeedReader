@@ -218,8 +218,9 @@ public void markAllItemsRead()
 	string catArray = "";
 	string feedArray = "";
 
-	var categories = DataBase.readOnly().read_categories();
-	var feeds = DataBase.readOnly().read_feeds_without_cat();
+	var db = DataBase.readOnly();
+	var categories = db.read_categories();
+	var feeds = db.read_feeds_without_cat();
 
 	foreach(Category cat in categories)
 	{

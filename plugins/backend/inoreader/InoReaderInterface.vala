@@ -232,13 +232,14 @@ public void setCategoryRead(string catID)
 
 public void markAllItemsRead()
 {
-	var categories = DataBase.readOnly().read_categories();
+	var db = DataBase.readOnly();
+	var categories = db.read_categories();
 	foreach(Category cat in categories)
 	{
 		m_api.markAsRead(cat.getCatID());
 	}
 
-	var feeds = DataBase.readOnly().read_feeds_without_cat();
+	var feeds = db.read_feeds_without_cat();
 	foreach(Feed feed in feeds)
 	{
 		m_api.markAsRead(feed.getFeedID());

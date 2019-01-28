@@ -162,6 +162,7 @@ public bool getCategoriesAndTags(Gee.List<Feed> feeds, Gee.List<Category> catego
 	uint length = array.get_length();
 	int orderID = 0;
 
+	var db = DataBase.readOnly();
 	for (uint i = 0; i < length; i++)
 	{
 		Json.Object object = array.get_object_element(i);
@@ -191,7 +192,7 @@ public bool getCategoriesAndTags(Gee.List<Feed> feeds, Gee.List<Category> catego
 					new Tag(
 						id,
 						title,
-						DataBase.readOnly().getTagColor()
+						db.getTagColor()
 						)
 					);
 			}
@@ -323,6 +324,7 @@ public string? getArticles(Gee.List<Article> articles, int count, ArticleStatus 
 	var array = root.get_array_member("items");
 	uint length = array.get_length();
 
+	var db = DataBase.readOnly();
 	for (uint i = 0; i < length; i++)
 	{
 		Json.Object object = array.get_object_element(i);
@@ -341,7 +343,7 @@ public string? getArticles(Gee.List<Article> articles, int count, ArticleStatus 
 				marked = true;
 			else if(cat.has_suffix("com.google/read"))
 				read = true;
-			else if(cat.contains("/label/") && DataBase.readOnly().getTagName(cat) != null)
+			else if(cat.contains("/label/") && db.getTagName(cat) != null)
 				tags.add(cat);
 		}
 

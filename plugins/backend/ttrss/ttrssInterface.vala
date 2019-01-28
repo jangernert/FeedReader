@@ -468,12 +468,13 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 	if(cancellable != null && cancellable.is_cancelled())
 		return;
 
+	var db = DataBase.writeAccess();
 	if(unreadIDs != null && whatToGet == ArticleStatus.ALL)
 	{
 		Logger.debug("getArticles: newsplus plugin active");
 		var markedIDs = m_api.NewsPlus(ArticleStatus.MARKED, settings_general.get_int("max-articles"));
-		DataBase.writeAccess().updateArticlesByID(unreadIDs, "unread");
-		DataBase.writeAccess().updateArticlesByID(markedIDs, "marked");
+		db.updateArticlesByID(unreadIDs, "unread");
+		db.updateArticlesByID(markedIDs, "marked");
 		//updateArticleList();
 	}
 
@@ -505,14 +506,14 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 		// only update article states if they haven't been updated by the newsPlus-plugin
 		if(unreadIDs == null || whatToGet != ArticleStatus.ALL)
 		{
-			DataBase.writeAccess().update_articles(articles);
+			db.update_articles(articles);
 			updateArticleList();
 		}
 
 		foreach(Article article in articles)
 		{
 			var id = article.getArticleID();
-			if(!DataBase.readOnly().article_exists(id))
+			if(!db.article_exists(id))
 			{
 				articleIDs += id + ",";
 			}
@@ -536,7 +537,7 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 
 	if(articles.size > 0)
 	{
-		DataBase.writeAccess().write_articles(articles);
+		db.write_articles(articles);
 		refreshFeedListCounter();
 		updateArticleList();
 	}

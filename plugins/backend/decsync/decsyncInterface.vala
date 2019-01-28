@@ -302,9 +302,10 @@ public void setArticleIsRead(string articleIDs, ArticleStatus readStatus)
 	var read = readStatus == ArticleStatus.READ;
 	Logger.debug("Mark " + articleIDs + " as " + (read ? "read" : "unread"));
 	var entries = new Gee.ArrayList<Decsync.EntryWithPath>();
+	var db = DataBase.readOnly();
 	foreach (var articleID in articleIDs.split(","))
 	{
-		Article? article = DataBase.readOnly().read_article(articleID);
+		Article? article = db.read_article(articleID);
 		if (article != null)
 		{
 			var path = articleToPath(article, "read");
@@ -380,12 +381,13 @@ public bool addFeed(string feedURL, string? catID, string? newCatName, out strin
 
 public bool addFeedWithDecsync(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg, bool updateDecsync = true)
 {
+	var db = DataBase.writeAccess();
 	var catIDs = new Gee.ArrayList<string>();
 	if(catID == null && newCatName != null)
 	{
 		string cID = createCategory(newCatName, null);
 		var cat = new Category(cID, newCatName, 0, 99, CategoryID.MASTER.to_string(), 1);
-		DataBase.writeAccess().write_categories(ListUtils.single(cat));
+		db.write_categories(ListUtils.single(cat));
 		catIDs.add(cID);
 	}
 	else if(catID != null && newCatName == null)
@@ -404,8 +406,8 @@ public bool addFeedWithDecsync(string feedURL, string? catID, string? newCatName
 
 	if(feed != null)
 	{
-		if(!DataBase.readOnly().feed_exists(feed.getURL())) {
-			DataBase.writeAccess().write_feeds(ListUtils.single(feed));
+		if(!db.feed_exists(feed.getURL())) {
+			db.write_feeds(ListUtils.single(feed));
 
 			if (updateDecsync)
 			{
@@ -455,8 +457,9 @@ public void moveFeed(string feedID, string newCatID, string? currentCatID)
 
 public string createCategory(string title, string? parentID)
 {
-	string? catID = DataBase.readOnly().getCategoryID(title);
-	while (catID == null || DataBase.readOnly().read_category(catID) != null)
+	var db = DataBase.readOnly();
+	string? catID = db.getCategoryID(title);
+	while (catID == null || db.read_category(catID) != null)
 	{
 		catID = "catID%05d".printf(Random.int_range(0, 100000));
 	}
@@ -561,6 +564,7 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 
 				Logger.debug("Got %u articles".printf(doc.get_items().length()));
 				var newArticles = new Gee.ArrayList<Article>();
+				var db = DataBase.readOnly();
 				foreach(Rss.Item item in doc.get_items())
 				{
 				        string? articleID = item.guid;
@@ -576,9 +580,9 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 				                articleID = item.link;
 					}
 
-				        if (DataBase.readOnly().read_article(articleID) != null)
-				        {
-				                continue;
+					if (db.read_article(articleID) != null)
+					{
+						continue;
 					}
 
 				        var date = Rfc822.parseDate(item.pub_date);

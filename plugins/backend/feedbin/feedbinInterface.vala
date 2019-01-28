@@ -285,9 +285,10 @@ private void setRead(string id, FeedListType type)
 {
 	const int count = 1000;
 	int num_articles = 1;         // set to any value > 0
+	var db = DataBase.readOnly();
 	for(var offset = 0; num_articles > 0; offset += count)
 	{
-		var articles = DataBase.readOnly().read_articles(id, type, ArticleListState.ALL, "", count, offset);
+		var articles = db.read_articles(id, type, ArticleListState.ALL, "", count, offset);
 		var entry_ids = new Gee.ArrayList<int64?>();
 		foreach(var article in articles)
 		{
@@ -643,6 +644,7 @@ requires (count >= 0)
 {
 	try
 	{
+		var db = DataBase.readOnly();
 		int64? feed_id = null;
 		if(!is_tag_id && feed_id_str != null)
 			feed_id = int64.parse(feed_id_str);
@@ -683,7 +685,7 @@ requires (count >= 0)
 			for(var offset = 0, c = 1000; ; offset += c)
 			{
 				var articles = new Gee.ArrayList<Article>();
-				var existing_articles = DataBase.readOnly().read_articles(search_feed_id, search_type, ArticleListState.ALL, "", c, offset);
+				var existing_articles = db.read_articles(search_feed_id, search_type, ArticleListState.ALL, "", c, offset);
 				if(existing_articles.size == 0)
 					break;
 

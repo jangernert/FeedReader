@@ -33,15 +33,16 @@ public static Soup.Session getSession()
 public static void generatePreviews(Gee.List<Article> articles)
 {
 	string noPreview = _("No Preview Available");
+	var db = DataBase.readOnly();
 	foreach(var Article in articles)
 	{
-		if(!DataBase.readOnly().article_exists(Article.getArticleID()))
+		if(!db.article_exists(Article.getArticleID()))
 		{
 			if(Article.getPreview() != null && Article.getPreview() != "")
 			{
 				continue;
 			}
-			if(!DataBase.readOnly().preview_empty(Article.getArticleID()))
+			if(!db.preview_empty(Article.getArticleID()))
 			{
 				continue;
 			}
@@ -85,9 +86,10 @@ public static void generatePreviews(Gee.List<Article> articles)
 
 public static void checkHTML(Gee.List<Article> articles)
 {
+	var db = DataBase.readOnly();
 	foreach(var Article in articles)
 	{
-		if(!DataBase.readOnly().article_exists(Article.getArticleID()))
+		if(!db.article_exists(Article.getArticleID()))
 		{
 			string modified_html = _("No Text available for this article :(");
 			if(Article.getHTML() != "")
@@ -770,9 +772,10 @@ public static bool onlyShowFeeds()
 	if(Settings.general().get_boolean("only-feeds"))
 		return true;
 
-	if(!DataBase.readOnly().haveCategories()
+	var db = DataBase.readOnly();
+	if(!db.haveCategories()
 	   && !FeedReaderBackend.get_default().supportTags()
-	   && !DataBase.readOnly().haveFeedsWithoutCat())
+	   && !db.haveFeedsWithoutCat())
 		return true;
 
 	return false;

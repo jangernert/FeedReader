@@ -298,6 +298,7 @@ public bool getTags(Gee.List<Tag> tags)
 		var response = message.get_response_array();
 		var tag_count = response.get_length();
 
+		var db = DataBase.readOnly();
 		for(uint i = 0; i < tag_count; ++i)
 		{
 			var tag_node = response.get_object_element(i);
@@ -305,7 +306,7 @@ public bool getTags(Gee.List<Tag> tags)
 				new Tag(
 					tag_node.get_int_member("id").to_string(),
 					tag_node.get_string_member("caption"),
-					DataBase.readOnly().getTagColor()
+					db.getTagColor()
 					)
 				);
 		}

@@ -74,19 +74,21 @@ public void markAllRead()
 
 private void addAction(CachedAction action)
 {
-	if(DataBase.writeAccess().cachedActionNecessary(action))
+	var db = DataBase.writeAccess();
+	if(db.cachedActionNecessary(action))
 	{
-		DataBase.writeAccess().addCachedAction(action.getType(), action.getID());
+		db.addCachedAction(action.getType(), action.getID());
 	}
 	else
 	{
-		DataBase.writeAccess().deleteOppositeCachedAction(action);
+		db.deleteOppositeCachedAction(action);
 	}
 }
 
 public void executeActions()
 {
-	if(DataBase.readOnly().isTableEmpty("CachedActions"))
+	var db = DataBase.writeAccess();
+	if(db.isTableEmpty("CachedActions"))
 	{
 		Logger.debug("CachedActionManager - executeActions: no actions to perform");
 		return;
@@ -95,7 +97,7 @@ public void executeActions()
 
 	Logger.debug("CachedActionManager: executeActions");
 
-	var actions = DataBase.writeAccess().readCachedActions();
+	var actions = db.readCachedActions();
 
 	foreach(CachedAction action in actions)
 	{
@@ -141,7 +143,7 @@ public void executeActions()
 		execute(m_ids.substring(1), m_lastAction);
 	}
 
-	DataBase.writeAccess().resetCachedActions();
+	db.resetCachedActions();
 }
 
 private void execute(string ids, CachedActions action)

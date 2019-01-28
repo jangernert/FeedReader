@@ -161,9 +161,7 @@ private ColumnView()
 	m_headerbar.refresh.connect(() => {
 			syncStarted();
 			var app = FeedReaderApp.get_default();
-			app.sync.begin((obj, res) => {
-				app.sync.end(res);
-			});
+			app.sync();
 		});
 
 	m_headerbar.cancel.connect(() => {
@@ -240,18 +238,14 @@ public void newArticleList(Gtk.StackTransitionType transition = Gtk.StackTransit
 	{
 		ulong id = 0;
 		id = m_articleList.draw.connect_after(() => {
-				m_articleList.newList.begin(transition, (obj, res) => {
-					m_articleList.newList.end(res);
-				});
+				m_articleList.newList(transition);
 				m_articleList.disconnect(id);
 				return false;
 			});
 	}
 	else
 	{
-		m_articleList.newList.begin(transition, (obj, res) => {
-				m_articleList.newList.end(res);
-			});
+		m_articleList.newList(transition);
 	}
 }
 
@@ -272,9 +266,7 @@ public void reloadArticleView()
 
 public void updateArticleList()
 {
-	m_articleList.updateArticleList.begin((obj,res) => {
-			m_articleList.updateArticleList.end(res);
-		});
+	m_articleList.updateArticleList();
 }
 
 private void setArticleListState(ArticleListState state)

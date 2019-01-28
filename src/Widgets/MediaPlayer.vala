@@ -44,43 +44,32 @@ public MediaPlayer(string url)
 	m_type = MediaType.AUDIO;
 	m_URL = url;
 
-	inspectMedia.begin((obj, res) => {
-			buildUI();
-			loaded();
-			inspectMedia.end(res);
-		});
+	inspectMedia();
+	buildUI();
+	loaded();
 }
 
-private async void inspectMedia()
+private void inspectMedia()
 {
-	SourceFunc callback = inspectMedia.callback;
+	try
+	{
+		var discoverer = new Gst.PbUtils.Discoverer((Gst.ClockTime)(10*Gst.SECOND));
+		var info = discoverer.discover_uri(m_URL);
 
-	ThreadFunc<void*> run = () => {
-		try
+		foreach(Gst.PbUtils.DiscovererStreamInfo i in info.get_stream_list())
 		{
-			var discoverer = new Gst.PbUtils.Discoverer((Gst.ClockTime)(10*Gst.SECOND));
-			var info = discoverer.discover_uri(m_URL);
-
-			foreach(Gst.PbUtils.DiscovererStreamInfo i in info.get_stream_list())
+			if(i is Gst.PbUtils.DiscovererVideoInfo)
 			{
-				if(i is Gst.PbUtils.DiscovererVideoInfo)
-				{
-					var v = (Gst.PbUtils.DiscovererVideoInfo)i;
-					m_aspectRatio = ((double)v.get_width())/((double)v.get_height());
-					m_type = MediaType.VIDEO;
-				}
+				var v = (Gst.PbUtils.DiscovererVideoInfo)i;
+				m_aspectRatio = ((double)v.get_width())/((double)v.get_height());
+				m_type = MediaType.VIDEO;
 			}
 		}
-		catch (Error e)
-		{
-			Logger.error("Unable discover_uri: " + e.message);
-		}
-		Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
-		return null;
-	};
-
-	new GLib.Thread<void*>("inspectMedia", run);
-	yield;
+	}
+	catch (Error e)
+	{
+		Logger.error("Unable discover_uri: " + e.message);
+	}
 }
 
 private void buildUI()

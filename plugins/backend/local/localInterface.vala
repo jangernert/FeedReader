@@ -162,21 +162,15 @@ public void writeData()
 
 public async void postLoginAction()
 {
-	SourceFunc callback = postLoginAction.callback;
-	new GLib.Thread<void*>(null, () => {
-			var children = m_feedlist.get_children();
-			foreach(var r in children)
-			{
-			        var row = r as SuggestedFeedRow;
-			        if(row.checked())
-			        {
-			                FeedReaderBackend.get_default().addFeed(row.getURL(), row.getCategory(), false, false);
-				}
-			}
-			Idle.add((owned) callback);
-			return null;
-		});
-	yield;
+	var children = m_feedlist.get_children();
+	foreach(var r in children)
+	{
+		var row = r as SuggestedFeedRow;
+		if(row.checked())
+		{
+			FeedReaderBackend.get_default().addFeed(row.getURL(), row.getCategory(), false);
+		}
+	}
 }
 
 public string buildLoginURL()

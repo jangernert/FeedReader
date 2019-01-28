@@ -391,6 +391,8 @@ public async void grabContent(GLib.Cancellable? cancellable = null)
 	var articles = DataBase.readOnly().readUnfetchedArticles();
 	int size = articles.size;
 	int i = 0;
+	var new_article_content = new Gee.ArrayList<Article>();
+	GLib.Mutex mutex = GLib.Mutex();
 
 	if(size > 0)
 	{
@@ -441,7 +443,11 @@ public async void grabContent(GLib.Cancellable? cancellable = null)
 					}
 
 					if(cancellable == null || !cancellable.is_cancelled())
-						DataBase.writeAccess().writeContent(article);
+					{
+						mutex.lock();
+						new_article_content.add(article);
+						mutex.unlock();
+					}
 
 					++i;
 					syncProgress(_(@"Grabbing full content: $i / $size"));
@@ -460,6 +466,16 @@ public async void grabContent(GLib.Cancellable? cancellable = null)
 		{
 			Logger.error("FeedServer.grabContent: " + e.message);
 		}
+
+		foreach(var content in new_article_content)
+		{
+			if (cancellable != null && cancellable.is_cancelled())
+				return;
+			DataBase.writeAccess().writeContent(content);
+		}
+
+		if (cancellable != null && cancellable.is_cancelled())
+			return;
 
 		//update fulltext table
 		DataBase.writeAccess().updateFTS();

@@ -24,7 +24,6 @@ private ArticleListState m_state = ArticleListState.ALL;
 private string m_searchTerm = "";
 private bool m_syncing = false;
 private InAppNotification m_overlay;
-private GLib.Thread<void*>? m_loadThread = null;
 private ArticleListScroll m_currentScroll;
 private ArticleListScroll m_scroll1;
 private ArticleListScroll m_scroll2;
@@ -101,60 +100,42 @@ public ArticleList()
 	this.size_allocate.connect((allocation) => {
 			if(allocation.height != m_height)
 			{
-			        if(allocation.height > m_height
-			           && m_stack.get_visible_child_name() != "empty"
-			           && m_stack.get_visible_child_name() != "syncing")
-			        {
-			                Logger.debug("ArticleList: size changed");
-			                if(m_currentList.needLoadMore(allocation.height))
-						loadMore.begin((obj, res) =>{
-							loadMore.end(res);
-						});
+				if(allocation.height > m_height
+					&& m_stack.get_visible_child_name() != "empty"
+					&& m_stack.get_visible_child_name() != "syncing")
+				{
+						Logger.debug("ArticleList: size changed");
+						if(m_currentList.needLoadMore(allocation.height))
+					loadMore();
 				}
-			        m_height = allocation.height;
+				m_height = allocation.height;
 			}
 		});
 }
 
-public async void newList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
+public void newList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 {
 	Logger.debug("ArticleList: newList");
 
 	if(m_overlay != null)
 		m_overlay.dismiss();
 
-	if(m_loadThread != null) {
-		m_loadThread.join();
-		m_loadThread = null;
-	}
-
 	Logger.debug("ArticleList: disallow signals from scroll");
 	m_currentScroll.allowSignals(false);
 	Gee.List<Article> articles = new Gee.LinkedList<Article>();
 	uint offset = 0;
-	SourceFunc callback = newList.callback;
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------
-	ThreadFunc<void*> run = () => {
-		int height = this.get_allocated_height();
-		uint limit = height/100 + 5;
-		offset = getListOffset();
+	int height = this.get_allocated_height();
+	uint limit = height/100 + 5;
+	offset = getListOffset();
 
-		Logger.debug("load articles from db");
-		articles = DataBase.readOnly().read_articles(m_selectedFeedListID,
-		                                             m_selectedFeedListType,
-		                                             m_state,
-		                                             m_searchTerm,
-		                                             limit,
-		                                             offset);
-		Logger.debug("actual articles loaded: " + articles.size.to_string());
-
-		Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
-		return null;
-	};
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------
-
-	m_loadThread = new GLib.Thread<void*>("create", run);
-	yield;
+	Logger.debug("load articles from db");
+	articles = DataBase.readOnly().read_articles(m_selectedFeedListID,
+													m_selectedFeedListType,
+													m_state,
+													m_searchTerm,
+													limit,
+													offset);
+	Logger.debug("actual articles loaded: " + articles.size.to_string());
 
 	if(articles.size == 0)
 	{
@@ -168,9 +149,7 @@ public async void newList(Gtk.StackTransitionType transition = Gtk.StackTransiti
 		}
 		else
 		{
-			loadNewer.begin((int)offset, 0, (obj, res) =>{
-					loadNewer.end(res);
-				});
+			loadNewer((int)offset, 0);
 		}
 	}
 	else
@@ -225,46 +204,27 @@ private void checkForNewRows()
 	Logger.debug(@"new rowCount: $count");
 	if(count > 0)
 	{
-		loadNewer.begin(count, offset, (obj, res) =>{
-				loadNewer.end(res);
-			});
+		loadNewer(count, offset);
 	}
 }
 
-private async void loadMore()
+private void loadMore()
 {
 	if(m_currentList == null)
 		return;
 
 	Logger.debug("ArticleList.loadmore()");
 
-	if(m_loadThread != null) {
-		m_loadThread.join();
-		m_loadThread = null;
-	}
+	Logger.debug("load articles from db");
+	uint offset = m_currentList.getSizeForState() + determineNewRowCount(null, null);
 
-	Gee.List<Article> articles = new Gee.LinkedList<Article>();
-	SourceFunc callback = loadMore.callback;
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------
-	ThreadFunc<void*> run = () => {
-		Logger.debug("load articles from db");
-		uint offset = m_currentList.getSizeForState() + determineNewRowCount(null, null);
-
-		articles = DataBase.readOnly().read_articles(m_selectedFeedListID,
-		                                             m_selectedFeedListType,
-		                                             m_state,
-		                                             m_searchTerm,
-		                                             m_dynamicRowThreshold,
-		                                             offset);
-		Logger.debug("actual articles loaded: " + articles.size.to_string());
-
-		Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
-		return null;
-	};
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------
-
-	m_loadThread = new GLib.Thread<void*>("create", run);
-	yield;
+	var articles = DataBase.readOnly().read_articles(m_selectedFeedListID,
+													m_selectedFeedListType,
+													m_state,
+													m_searchTerm,
+													m_dynamicRowThreshold,
+													offset);
+	Logger.debug("actual articles loaded: " + articles.size.to_string());
 
 	if(articles.size > 0)
 	{
@@ -287,34 +247,18 @@ private async void loadMore()
 	}
 }
 
-private async void loadNewer(int newCount, int offset)
+private void loadNewer(int newCount, int offset)
 {
 	Logger.debug(@"ArticleList: loadNewer($newCount)");
-	if(m_loadThread != null) {
-		m_loadThread.join();
-		m_loadThread = null;
-	}
 
-	Gee.List<Article> articles = new Gee.LinkedList<Article>();
-	SourceFunc callback = loadNewer.callback;
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------
-	ThreadFunc<void*> run = () => {
-		Logger.debug("load articles from db");
-		articles = DataBase.readOnly().read_articles(m_selectedFeedListID,
-		                                             m_selectedFeedListType,
-		                                             m_state,
-		                                             m_searchTerm,
-		                                             newCount,
-		                                             offset);
-		Logger.debug("actual articles loaded: " + articles.size.to_string());
-
-		Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
-		return null;
-	};
-	//-----------------------------------------------------------------------------------------------------------------------------------------------------
-
-	m_loadThread = new GLib.Thread<void*>("create", run);
-	yield;
+	Logger.debug("load articles from db");
+	var articles = DataBase.readOnly().read_articles(m_selectedFeedListID,
+													m_selectedFeedListType,
+													m_state,
+													m_searchTerm,
+													newCount,
+													offset);
+	Logger.debug("actual articles loaded: " + articles.size.to_string());
 
 	if(articles.size > 0)
 	{
@@ -345,7 +289,7 @@ private async void loadNewer(int newCount, int offset)
 
 }
 
-public async void updateArticleList()
+public void updateArticleList()
 {
 	Logger.debug(@"ArticleList: updateArticleList()");
 
@@ -353,15 +297,8 @@ public async void updateArticleList()
 	   || m_stack.get_visible_child_name() == "syncing")
 	{
 		Logger.debug("ArticleList: updateArticleList(): emtpy list -> create newList()");
-		newList.begin(Gtk.StackTransitionType.CROSSFADE, (obj, res) => {
-				newList.end(res);
-			});
+		newList(Gtk.StackTransitionType.CROSSFADE);
 		return;
-	}
-
-	if(m_loadThread != null) {
-		m_loadThread.join();
-		m_loadThread = null;
 	}
 
 	m_currentList.setAllUpdated(false);

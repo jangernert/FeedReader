@@ -216,17 +216,9 @@ protected override void shutdown()
 	base.shutdown();
 }
 
-public async void sync()
+public void sync()
 {
-	SourceFunc callback = sync.callback;
-	ThreadFunc<void*> run = () => {
-		FeedReaderBackend.get_default().startSync();
-		Idle.add((owned) callback);
-		return null;
-	};
-
-	new GLib.Thread<void*>("sync", run);
-	yield;
+	FeedReaderBackend.get_default().startSync();
 }
 
 public void cancelSync()

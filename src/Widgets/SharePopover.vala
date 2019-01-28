@@ -122,25 +122,16 @@ private void clicked(Gtk.ListBoxRow row)
 
 }
 
-private async void shareAsync(string id, string url)
+private void shareInternal(string id, string url)
 {
-	SourceFunc callback = shareAsync.callback;
-	new GLib.Thread<void*>(null, () => {
-			Share.get_default().addBookmark(id, url);
-			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
-			return null;
-		});
-	yield;
+	Share.get_default().addBookmark(id, url);
 }
 
 private void shareURL(string id, string url)
 {
 	this.hide();
 	startShare();
-	shareAsync.begin(id, url, (obj, res) => {
-			shareAsync.end(res);
-			shareDone();
-		});
+	shareInternal(id, url);
 	string idString = (id == null || id == "") ? "" : @" to $id";
 	Logger.debug(@"bookmark: $url$idString");
 }

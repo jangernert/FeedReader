@@ -142,7 +142,7 @@ private void addFeed()
 	}
 
 	Logger.debug("addFeed: %s, %s".printf(m_urlEntry.text, (catID == "") ? "null" : catID));
-	FeedReaderBackend.get_default().addFeed(m_urlEntry.text, catID, isID, true);
+	FeedReaderBackend.get_default().addFeed(m_urlEntry.text, catID, isID);
 
 	setBusy();
 }

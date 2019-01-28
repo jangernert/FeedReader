@@ -19,10 +19,8 @@ private FeedlyConnection m_connection;
 private string m_userID;
 private Json.Array m_unreadcounts;
 private FeedlyUtils m_utils;
-private DataBaseReadOnly m_db;
 
-public FeedlyAPI(FeedlyUtils utils, DataBaseReadOnly db) {
-	m_db = db;
+public FeedlyAPI(FeedlyUtils utils) {
 	m_utils = utils;
 	m_connection = new FeedlyConnection(m_utils);
 }
@@ -280,7 +278,7 @@ public bool getTags(Gee.List<Tag> tags)
 			new Tag(
 				object.get_string_member("id"),
 				object.has_member("label") ? object.get_string_member("label") : "",
-				m_db.getTagColor()
+				DataBase.readOnly().getTagColor()
 				)
 			);
 	}
@@ -599,7 +597,7 @@ public bool addSubscription(string feedURL, string? title = null, string? catIDs
 
 		foreach(string catID in catArray)
 		{
-			string catName = m_db.getCategoryName(catID);
+			string catName = DataBase.readOnly().getCategoryName(catID);
 			Json.Object catObject = new Json.Object();
 			catObject.set_string_member("id", catID);
 			catObject.set_string_member("label", catName);
@@ -619,7 +617,7 @@ public bool addSubscription(string feedURL, string? title = null, string? catIDs
 
 public void moveSubscription(string feedID, string newCatID, string? oldCatID = null)
 {
-	var Feed = m_db.read_feed(feedID);
+	var Feed = DataBase.readOnly().read_feed(feedID);
 
 	Json.Object object = new Json.Object();
 	object.set_string_member("id", feedID);
@@ -633,7 +631,7 @@ public void moveSubscription(string feedID, string newCatID, string? oldCatID = 
 	{
 		if(catID != oldCatID)
 		{
-			string catName = m_db.getCategoryName(catID);
+			string catName = DataBase.readOnly().getCategoryName(catID);
 			Json.Object catObject = new Json.Object();
 			catObject.set_string_member("id", catID);
 			catObject.set_string_member("label", catName);
@@ -641,7 +639,7 @@ public void moveSubscription(string feedID, string newCatID, string? oldCatID = 
 		}
 	}
 
-	string newCatName = m_db.getCategoryName(newCatID);
+	string newCatName = DataBase.readOnly().getCategoryName(newCatID);
 	Json.Object catObject = new Json.Object();
 	catObject.set_string_member("id", newCatID);
 	catObject.set_string_member("label", newCatName);

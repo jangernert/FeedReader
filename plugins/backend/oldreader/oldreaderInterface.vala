@@ -19,15 +19,11 @@ private OldReaderAPI m_api;
 private OldReaderUtils m_utils;
 private Gtk.Entry m_userEntry;
 private Gtk.Entry m_passwordEntry;
-private DataBaseReadOnly m_db;
-private DataBase m_db_write;
 
-public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets, DataBaseReadOnly db, DataBase db_write)
+public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 {
-	m_db = db;
-	m_db_write = db_write;
 	m_utils = new OldReaderUtils(settings_backend, secrets);
-	m_api = new OldReaderAPI(m_utils, db);
+	m_api = new OldReaderAPI(m_utils);
 }
 
 public string getWebsite()
@@ -262,13 +258,13 @@ public void setCategoryRead(string catID)
 
 public void markAllItemsRead()
 {
-	var categories = m_db.read_categories();
+	var categories = DataBase.readOnly().read_categories();
 	foreach(Category cat in categories)
 	{
 		m_api.markAsRead(cat.getCatID());
 	}
 
-	var feeds = m_db.read_feeds_without_cat();
+	var feeds = DataBase.readOnly().read_feeds_without_cat();
 	foreach(Feed feed in feeds)
 	{
 		m_api.markAsRead(feed.getFeedID());
@@ -442,7 +438,7 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 				left = 0;
 			}
 		}
-		m_db_write.updateArticlesByID(unreadIDs, "unread");
+		DataBase.writeAccess().updateArticlesByID(unreadIDs, "unread");
 		updateArticleList();
 	}
 

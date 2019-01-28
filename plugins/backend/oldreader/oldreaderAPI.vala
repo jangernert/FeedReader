@@ -24,11 +24,9 @@ public enum OldreaderSubscriptionAction {
 private OldReaderConnection m_connection;
 private OldReaderUtils m_utils;
 private string m_userID;
-private DataBaseReadOnly m_db;
 
-public OldReaderAPI(OldReaderUtils utils, DataBaseReadOnly db)
+public OldReaderAPI(OldReaderUtils utils)
 {
-	m_db = db;
 	m_utils = utils;
 	m_connection = new OldReaderConnection(m_utils);
 }
@@ -320,7 +318,7 @@ public string? getArticles(Gee.List<Article> articles, int count, ArticleStatus 
 				marked = true;
 			else if(cat.has_suffix("com.google/read"))
 				read = true;
-			else if(cat.contains("/label/") && m_db.getTagName(cat) != null)
+			else if(cat.contains("/label/") && DataBase.readOnly().getTagName(cat) != null)
 				tags.add(cat);
 		}
 

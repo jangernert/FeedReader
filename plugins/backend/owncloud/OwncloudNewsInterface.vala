@@ -24,15 +24,11 @@ private Gtk.Entry m_AuthUserEntry;
 private Gtk.Entry m_AuthPasswordEntry;
 private Gtk.Revealer m_revealer;
 private bool m_need_htaccess = false;
-private DataBaseReadOnly m_db;
-private DataBase m_db_write;
 
-public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets, DataBaseReadOnly db, DataBase db_write)
+public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 {
-	m_db = db;
-	m_db_write = db_write;
 	m_utils = new OwncloudNewsUtils(settings_backend, secrets);
-	m_api = new OwncloudNewsAPI(m_utils, db);
+	m_api = new OwncloudNewsAPI(m_utils);
 }
 
 public string getWebsite()
@@ -438,7 +434,7 @@ public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories,
 
 public int getUnreadCount()
 {
-	return (int)m_db.get_unread_total();
+	return (int)DataBase.readOnly().get_unread_total();
 }
 
 public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
@@ -471,7 +467,7 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 	var articles = new Gee.LinkedList<Article>();
 
 	if(count == -1)
-		m_api.getNewArticles(articles, m_db.getLastModified(), type, id);
+		m_api.getNewArticles(articles, DataBase.readOnly().getLastModified(), type, id);
 	else
 		m_api.getArticles(articles, 0, -1, read, type, id);
 

@@ -19,9 +19,8 @@ private freshConnection m_connection;
 private freshUtils m_utils;
 private DataBaseReadOnly m_db;
 
-public freshAPI(freshUtils utils, DataBaseReadOnly db)
+public freshAPI(freshUtils utils)
 {
-	m_db = db;
 	m_utils = utils;
 	m_connection = new freshConnection(m_utils);
 }
@@ -311,7 +310,7 @@ public void markAllAsRead(string streamID)
 	var msg = new freshMessage();
 	msg.add("T", m_connection.getToken());
 	msg.add("s", streamID);
-	msg.add("ts", m_db.getNewestArticle());
+	msg.add("ts", DataBase.readOnly().getNewestArticle());
 
 	var response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
 

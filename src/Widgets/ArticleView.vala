@@ -98,13 +98,11 @@ public ArticleView()
 			if(allocation.width != m_width
 			   || allocation.height != m_height)
 			{
-			        m_width = allocation.width;
-			        m_height = allocation.height;
-			        Logger.debug("ArticleView: size changed");
-			        setBackgroundColor();
-			        recalculate.begin((obj, res) => {
-					recalculate.end(res);
-				});
+				m_width = allocation.width;
+				m_height = allocation.height;
+				Logger.debug("ArticleView: size changed");
+				setBackgroundColor();
+				recalculate();
 			}
 		});
 
@@ -199,7 +197,7 @@ private WebKit.WebView getNewView()
 	return view;
 }
 
-public async void fillContent(string articleID)
+public void fillContent(string articleID)
 {
 	Logger.debug(@"ArticleView: load article $articleID");
 
@@ -218,17 +216,7 @@ public async void fillContent(string articleID)
 		m_OngoingScrollID = 0;
 	}
 
-	Article article = null;
-	SourceFunc callback = fillContent.callback;
-
-	ThreadFunc<void*> run = () => {
-		article = DataBase.readOnly().read_article(articleID);
-		Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
-		return null;
-	};
-
-	new GLib.Thread<void*>("fillContent", run);
-	yield;
+	Article article = DataBase.readOnly().read_article(articleID);
 
 	GLib.Idle.add(() => {
 			Logger.debug("ArticleView: WebView load html");
@@ -403,9 +391,7 @@ public void open_link(WebKit.LoadEvent load_event)
 			m_currentView.grab_focus();
 			m_firstTime = false;
 		}
-		recalculate.begin((obj, res) => {
-				recalculate.end(res);
-			});
+		recalculate();
 		break;
 	default:
 		Logger.debug("ArticleView: load ??????");
@@ -538,9 +524,7 @@ private void on_extension_appeared(GLib.DBusConnection connection, string name, 
 		m_messenger.message.connect((message) => {
 				Logger.debug(@"ArticleView: webextension-message: $message");
 			});
-		recalculate.begin((obj, res) => {
-				recalculate.end(res);
-			});
+		recalculate();
 	}
 	catch(GLib.IOError e)
 	{
@@ -548,27 +532,20 @@ private void on_extension_appeared(GLib.DBusConnection connection, string name, 
 	}
 }
 
-private async void recalculate()
+private void recalculate()
 {
-	SourceFunc callback = recalculate.callback;
-	ThreadFunc<void*> run = () => {
-		try
-		{
-			if(m_connected
-			   && m_stack.get_visible_child_name() != "empty"
-			   && m_stack.get_visible_child_name() != "crash"
-			   && m_currentView != null)
-				m_messenger.recalculate();
-		}
-		catch(Error e)
-		{
-			Logger.warning("ArticleView: recalculate " + e.message);
-		}
-		Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
-		return null;
-	};
-	new GLib.Thread<void*>("recalculate", run);
-	yield;
+	try
+	{
+		if(m_connected
+			&& m_stack.get_visible_child_name() != "empty"
+			&& m_stack.get_visible_child_name() != "crash"
+			&& m_currentView != null)
+			m_messenger.recalculate();
+	}
+	catch(Error e)
+	{
+		Logger.warning("ArticleView: recalculate " + e.message);
+	}
 }
 
 private bool onClick(Gdk.EventButton event)
@@ -695,9 +672,7 @@ private bool updateScroll(Gdk.EventMotion event)
 public void load(string? id = null)
 {
 	string articleID = (id == null) ? m_currentArticle : id;
-	fillContent.begin(articleID, (obj, res) => {
-			fillContent.end(res);
-		});
+	fillContent(articleID);
 }
 
 private bool updateDragMomentum()

@@ -76,7 +76,7 @@ public static int main (string[] args)
 	{
 		Logger.init(verbose);
 		Logger.debug(@"Adding feed $feedURL");
-		FeedReaderBackend.get_default().addFeed(feedURL, "", false, true);
+		FeedReaderBackend.get_default().addFeed(feedURL, "", false);
 		return 0;
 	}
 

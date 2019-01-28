@@ -105,7 +105,7 @@ public async void setAPI(TwitterAPI api)
 {
 	SourceFunc callback = setAPI.callback;
 
-	new GLib.Thread<void*>(null, () => {
+	new Thread<void*>(null, () => {
 			m_urlLength = api.getUrlLength();
 			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;

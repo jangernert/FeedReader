@@ -305,7 +305,7 @@ public async bool checkOnlineAsync()
 		return null;
 	};
 
-	new GLib.Thread<void*>("checkOnlineAsync", run);
+	new Thread<void*>("checkOnlineAsync", run);
 	yield;
 	return online;
 }
@@ -774,13 +774,11 @@ public void moveFeed(string feedID, string currentCatID, string? newCatID = null
 			});
 }
 
-public void addFeed(string feedURL, string cat, bool isID, bool asynchron)
+public void addFeed(string feedURL, string cat, bool isID)
 {
 	string? catID = null;
 	string? newCatName = null;
 	string? feedID = null;
-	bool success = false;
-	string errmsg = "";
 
 	if(cat != "")
 	{
@@ -790,26 +788,13 @@ public void addFeed(string feedURL, string cat, bool isID, bool asynchron)
 			newCatName = cat;
 	}
 
-	if(asynchron)
+	string errmsg;
+	bool success = FeedServer.get_default().addFeed(feedURL, catID, newCatName, out feedID, out errmsg);
+	errmsg = success ? "" : errmsg;
+	feedAdded(!success, errmsg);
+	if(success)
 	{
-		new GLib.Thread<void*>(null, () => {
-					success = FeedServer.get_default().addFeed(feedURL, catID, newCatName, out feedID, out errmsg);
-					errmsg = (success) ? "" : errmsg; // just to be sure :P
-					feedAdded(!success, errmsg);
-
-					if(success)
-					{
-					        startSync();
-					}
-
-					return null;
-				});
-	}
-	else
-	{
-		success = FeedServer.get_default().addFeed(feedURL, catID, newCatName, out feedID, out errmsg);
-		errmsg = (success) ? "" : errmsg;
-		feedAdded(!success, errmsg);
+		startSync();
 	}
 }
 
@@ -869,7 +854,7 @@ public void updateBadge()
 private async void callAsync(owned asyncPayload func)
 {
 	SourceFunc callback = callAsync.callback;
-	new GLib.Thread<void*>(null, () => {
+	new Thread<void*>(null, () => {
 				func();
 				Idle.add((owned) callback);
 				return null;

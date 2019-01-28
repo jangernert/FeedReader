@@ -623,9 +623,7 @@ private bool shortcuts(Gdk.EventKey event)
 	{
 		Logger.debug("shortcut: sync");
 		var app = FeedReaderApp.get_default();
-		app.sync.begin((obj, res) => {
-				app.sync.end(res);
-			});
+		app.sync();
 		return true;
 	}
 

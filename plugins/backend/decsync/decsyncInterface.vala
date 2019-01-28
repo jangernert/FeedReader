@@ -185,7 +185,7 @@ public async void postLoginAction()
 	loginButton.get_style_context().remove_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
 	loginStack.set_visible_child_name("waiting");
 	SourceFunc callback = postLoginAction.callback;
-	new GLib.Thread<void*>(null, () => {
+	new Thread<void*>(null, () => {
 			m_sync.initStoredEntries();
 			m_sync.executeStoredEntries({"feeds", "subscriptions"}, new Unit());
 			Idle.add((owned) callback);

@@ -18,13 +18,9 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 private localUtils m_utils;
 private Soup.Session m_session;
 private Gtk.ListBox m_feedlist;
-private DataBaseReadOnly m_db;
-private DataBase m_db_write;
 
-public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets, DataBaseReadOnly db, DataBase db_write)
+public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 {
-	m_db = db;
-	m_db_write = db_write;
 	m_utils = new localUtils();
 	m_session = new Soup.Session();
 	m_session.user_agent = Constants.USER_AGENT;
@@ -363,8 +359,8 @@ public string createTag(string caption)
 {
 	string tagID = "1";
 
-	if(!m_db.isTableEmpty("tags"))
-		tagID = (int.parse(m_db.getMaxID("tags", "tagID")) + 1).to_string();
+	if(!DataBase.readOnly().isTableEmpty("tags"))
+		tagID = (int.parse(DataBase.readOnly().getMaxID("tags", "tagID")) + 1).to_string();
 
 	Logger.info("createTag: ID = " + tagID);
 	return tagID;
@@ -387,7 +383,7 @@ public bool addFeed(string feedURL, string? catID, string? newCatName, out strin
 	{
 		string cID = createCategory(newCatName, null);
 		var cat = new Category(cID, newCatName, 0, 99, CategoryID.MASTER.to_string(), 1);
-		m_db_write.write_categories(ListUtils.single(cat));
+		DataBase.writeAccess().write_categories(ListUtils.single(cat));
 		catIDs.add(cID);
 	}
 	else if(catID != null && newCatName == null)
@@ -406,8 +402,8 @@ public bool addFeed(string feedURL, string? catID, string? newCatName, out strin
 
 	if(feed != null)
 	{
-		if(!m_db.feed_exists(feed.getURL())) {
-			m_db_write.write_feeds(ListUtils.single(feed));
+		if(!DataBase.readOnly().feed_exists(feed.getURL())) {
+			DataBase.writeAccess().write_feeds(ListUtils.single(feed));
 			return true;
 		}
 	}
@@ -444,7 +440,7 @@ public void addFeeds(Gee.List<Feed> feeds)
 		Logger.debug("finishedFeed: " + feed.getTitle());
 	}
 
-	m_db_write.write_feeds(finishedFeeds);
+	DataBase.writeAccess().write_feeds(finishedFeeds);
 }
 
 public void removeFeed(string feedID)
@@ -466,7 +462,7 @@ public string createCategory(string title, string? parentID)
 {
 	string catID;
 
-	string? id = m_db.getCategoryID(title);
+	string? id = DataBase.readOnly().getCategoryID(title);
 	if(id == null)
 	{
 		catID = Uuid.string_random();
@@ -518,7 +514,7 @@ public int getUnreadCount()
 
 public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 {
-	var feeds = m_db.read_feeds();
+	var feeds = DataBase.readOnly().read_feeds();
 	var articles = new Gee.ArrayList<Article>();
 	GLib.Mutex mutex = GLib.Mutex();
 
@@ -663,7 +659,7 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 
 	if(articles.size > 0)
 	{
-		m_db_write.write_articles(articles);
+		DataBase.writeAccess().write_articles(articles);
 		Logger.debug("localInterface: %i articles written".printf(articles.size));
 		refreshFeedListCounter();
 		updateArticleList();

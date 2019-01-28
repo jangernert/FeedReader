@@ -22,13 +22,9 @@ private string m_loginDir;
 private Gtk.Button loginButton;
 private Gtk.Spinner waitingSpinner;
 private Gtk.Stack loginStack;
-internal DataBaseReadOnly m_db;
-internal DataBase m_db_write;
 
-public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets, DataBaseReadOnly db, DataBase db_write)
+public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 {
-	m_db = db;
-	m_db_write = db_write;
 	m_utils = new DecsyncUtils(settings_backend);
 	m_session = new Soup.Session();
 	m_session.user_agent = Constants.USER_AGENT;
@@ -308,7 +304,7 @@ public void setArticleIsRead(string articleIDs, ArticleStatus readStatus)
 	var entries = new Gee.ArrayList<Decsync.EntryWithPath>();
 	foreach (var articleID in articleIDs.split(","))
 	{
-		Article? article = m_db.read_article(articleID);
+		Article? article = DataBase.readOnly().read_article(articleID);
 		if (article != null)
 		{
 			var path = articleToPath(article, "read");
@@ -323,7 +319,7 @@ public void setArticleIsMarked(string articleID, ArticleStatus markedStatus)
 {
 	var marked = markedStatus == ArticleStatus.MARKED;
 	Logger.debug("Mark " + articleID + " as " + (marked ? "marked" : "unmarked"));
-	Article? article = m_db.read_article(articleID);
+	Article? article = DataBase.readOnly().read_article(articleID);
 	if (article != null)
 	{
 		var path = articleToPath(article, "marked");
@@ -389,7 +385,7 @@ public bool addFeedWithDecsync(string feedURL, string? catID, string? newCatName
 	{
 		string cID = createCategory(newCatName, null);
 		var cat = new Category(cID, newCatName, 0, 99, CategoryID.MASTER.to_string(), 1);
-		m_db_write.write_categories(ListUtils.single(cat));
+		DataBase.writeAccess().write_categories(ListUtils.single(cat));
 		catIDs.add(cID);
 	}
 	else if(catID != null && newCatName == null)
@@ -408,8 +404,8 @@ public bool addFeedWithDecsync(string feedURL, string? catID, string? newCatName
 
 	if(feed != null)
 	{
-		if(!m_db.feed_exists(feed.getURL())) {
-			m_db_write.write_feeds(ListUtils.single(feed));
+		if(!DataBase.readOnly().feed_exists(feed.getURL())) {
+			DataBase.writeAccess().write_feeds(ListUtils.single(feed));
 
 			if (updateDecsync)
 			{
@@ -459,8 +455,8 @@ public void moveFeed(string feedID, string newCatID, string? currentCatID)
 
 public string createCategory(string title, string? parentID)
 {
-	string? catID = m_db.getCategoryID(title);
-	while (catID == null || m_db.read_category(catID) != null)
+	string? catID = DataBase.readOnly().getCategoryID(title);
+	while (catID == null || DataBase.readOnly().read_category(catID) != null)
 	{
 		catID = "catID%05d".printf(Random.int_range(0, 100000));
 	}
@@ -484,7 +480,7 @@ public void moveCategory(string catID, string newParentID)
 public void deleteCategory(string catID)
 {
 	Logger.info("Delete category " + catID);
-	var feedIDs = m_db.getFeedIDofCategorie(catID);
+	var feedIDs = DataBase.readOnly().getFeedIDofCategorie(catID);
 	foreach (var feedID in feedIDs)
 	{
 		moveFeed(feedID, uncategorizedID(), catID);
@@ -514,7 +510,7 @@ public int getUnreadCount()
 
 public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 {
-	var feeds = m_db.read_feeds();
+	var feeds = DataBase.readOnly().read_feeds();
 	var articles = new Gee.ArrayList<Article>();
 	GLib.Mutex mutex = GLib.Mutex();
 	var now = new GLib.DateTime.now_local();
@@ -580,7 +576,7 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 				                articleID = item.link;
 					}
 
-				        if (m_db.read_article(articleID) != null)
+				        if (DataBase.readOnly().read_article(articleID) != null)
 				        {
 				                continue;
 					}
@@ -672,7 +668,7 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 
 	if(articles.size > 0)
 	{
-		m_db_write.write_articles(articles);
+		DataBase.writeAccess().write_articles(articles);
 		Logger.debug("decsyncInterface: %i articles written".printf(articles.size));
 
 		var multiMap = groupBy<Article, Gee.List<string>, Article>(

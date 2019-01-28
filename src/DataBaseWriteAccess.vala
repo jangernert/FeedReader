@@ -15,19 +15,13 @@
 
 public class FeedReader.DataBase : DataBaseReadOnly {
 
-private static DataBase? m_dataBase = null;
-
 public static new DataBase writeAccess()
-ensures (m_dataBase != null)
 {
-	if(m_dataBase == null)
-	{
-		m_dataBase = new DataBase();
-		if(m_dataBase.uninitialized())
-			m_dataBase.init();
-	}
+	var database = new DataBase();
+	if(database.uninitialized())
+		database.init();
 
-	return m_dataBase;
+	return database;
 }
 
 public static new DataBaseReadOnly readOnly()

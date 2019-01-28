@@ -24,15 +24,11 @@ private Gtk.Entry m_authPasswordEntry;
 private Gtk.Entry m_authUserEntry;
 private Gtk.Revealer m_revealer;
 private bool m_need_htaccess = false;
-private DataBaseReadOnly m_db;
-private DataBase m_db_write;
 
-public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets, DataBaseReadOnly db, DataBase db_write)
+public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 {
-	m_db = db;
-	m_db_write = db_write;
 	m_utils = new ttrssUtils(settings_backend, secrets);
-	m_api = new ttrssAPI(m_utils, db);
+	m_api = new ttrssAPI(m_utils);
 }
 
 public string getWebsite()
@@ -319,7 +315,7 @@ public void setCategoryRead(string catID)
 
 public void markAllItemsRead()
 {
-	var categories = m_db.read_categories();
+	var categories = DataBase.readOnly().read_categories();
 	foreach(Category cat in categories)
 	{
 		m_api.catchupFeed(cat.getCatID(), true);
@@ -365,7 +361,7 @@ public bool addFeed(string feedURL, string? catID, string? newCatName, out strin
 	}
 
 	if(success)
-		feedID = (int.parse(m_db.getMaxID("feeds", "feed_id")) + 1).to_string();
+		feedID = (int.parse(DataBase.readOnly().getMaxID("feeds", "feed_id")) + 1).to_string();
 	else
 		feedID = "-98";
 
@@ -476,8 +472,8 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 	{
 		Logger.debug("getArticles: newsplus plugin active");
 		var markedIDs = m_api.NewsPlus(ArticleStatus.MARKED, settings_general.get_int("max-articles"));
-		m_db_write.updateArticlesByID(unreadIDs, "unread");
-		m_db_write.updateArticlesByID(markedIDs, "marked");
+		DataBase.writeAccess().updateArticlesByID(unreadIDs, "unread");
+		DataBase.writeAccess().updateArticlesByID(markedIDs, "marked");
 		//updateArticleList();
 	}
 
@@ -509,14 +505,14 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 		// only update article states if they haven't been updated by the newsPlus-plugin
 		if(unreadIDs == null || whatToGet != ArticleStatus.ALL)
 		{
-			m_db_write.update_articles(articles);
+			DataBase.writeAccess().update_articles(articles);
 			updateArticleList();
 		}
 
 		foreach(Article article in articles)
 		{
 			var id = article.getArticleID();
-			if(!m_db.article_exists(id))
+			if(!DataBase.readOnly().article_exists(id))
 			{
 				articleIDs += id + ",";
 			}
@@ -540,7 +536,7 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 
 	if(articles.size > 0)
 	{
-		m_db_write.write_articles(articles);
+		DataBase.writeAccess().write_articles(articles);
 		refreshFeedListCounter();
 		updateArticleList();
 	}

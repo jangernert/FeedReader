@@ -50,7 +50,7 @@ public override void onSubdirEntryUpdate(Gee.List<string> path, Decsync.Entry en
 	{
 		Logger.debug((added ? "mark " : "unmark ") + articleID);
 	}
-	Article? article = m_plugin.m_db.read_article(articleID);
+	Article? article = DataBase.readOnly().read_article(articleID);
 	if (article == null)
 	{
 		Logger.info("Unkown article " + articleID);
@@ -64,7 +64,7 @@ public override void onSubdirEntryUpdate(Gee.List<string> path, Decsync.Entry en
 	{
 		article.setMarked(added ? ArticleStatus.MARKED : ArticleStatus.UNMARKED);
 	}
-	m_plugin.m_db_write.update_article(article);
+	DataBase.writeAccess().update_article(article);
 }
 }
 
@@ -100,7 +100,7 @@ public override void onSubfileEntryUpdate(Decsync.Entry entry, Unit extra)
 	}
 	else
 	{
-		m_plugin.m_db_write.delete_feed(feedID);
+		DataBase.writeAccess().delete_feed(feedID);
 	}
 }
 }
@@ -135,7 +135,7 @@ public override void onSubfileEntryUpdate(Decsync.Entry entry, Unit extra)
 		Logger.warning("Invalid name " + Json.to_string(entry.value, false));
 		return;
 	}
-	m_plugin.m_db_write.rename_feed(feedID, name);
+	DataBase.writeAccess().rename_feed(feedID, name);
 }
 }
 
@@ -163,7 +163,7 @@ public override void onSubfileEntryUpdate(Decsync.Entry entry, Unit extra)
 		Logger.warning("Invalid feedID " + Json.to_string(entry.key, false));
 		return;
 	}
-	var feed = m_plugin.m_db.read_feed(feedID);
+	var feed = DataBase.readOnly().read_feed(feedID);
 	if (feed == null) return;
 	var currentCatID = feed.getCatString();
 	string newCatID;
@@ -181,7 +181,7 @@ public override void onSubfileEntryUpdate(Decsync.Entry entry, Unit extra)
 		return;
 	}
 	addCategory(m_plugin, newCatID);
-	m_plugin.m_db_write.move_feed(feedID, currentCatID, newCatID);
+	DataBase.writeAccess().move_feed(feedID, currentCatID, newCatID);
 }
 }
 
@@ -215,7 +215,7 @@ public override void onSubfileEntryUpdate(Decsync.Entry entry, Unit extra)
 		Logger.warning("Invalid name " + Json.to_string(entry.value, false));
 		return;
 	}
-	m_plugin.m_db_write.rename_category(catID, name);
+	DataBase.writeAccess().rename_category(catID, name);
 	Logger.debug("Renamed category " + catID + " to " + name);
 }
 }
@@ -259,19 +259,19 @@ public override void onSubfileEntryUpdate(Decsync.Entry entry, Unit extra)
 		return;
 	}
 	addCategory(m_plugin, parentID);
-	m_plugin.m_db_write.move_category(catID, parentID);
+	DataBase.writeAccess().move_category(catID, parentID);
 	Logger.debug("Moved category " + catID + " to " + parentID);
 }
 }
 
 private static void addCategory(decsyncInterface plugin, string catID)
 {
-	if (catID == plugin.uncategorizedID() || catID == CategoryID.MASTER.to_string() || plugin.m_db.read_category(catID) != null)
+	if (catID == plugin.uncategorizedID() || catID == CategoryID.MASTER.to_string() || DataBase.readOnly().read_category(catID) != null)
 	{
 		return;
 	}
 	var cat = new Category(catID, catID, 0, 99, CategoryID.MASTER.to_string(), 1);
-	plugin.m_db_write.write_categories(ListUtils.single(cat));
+	DataBase.writeAccess().write_categories(ListUtils.single(cat));
 	plugin.m_sync.executeStoredEntries({"categories", "names"}, new Unit(),
 	                                   stringEquals(catID)
 	                                   );

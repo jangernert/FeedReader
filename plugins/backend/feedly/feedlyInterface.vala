@@ -17,15 +17,11 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 private FeedlyAPI m_api;
 private FeedlyUtils m_utils;
-private DataBaseReadOnly m_db;
-private DataBase m_db_write;
 
-public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets, DataBaseReadOnly db, DataBase db_write)
+public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 {
-	m_db = db;
-	m_db_write = db_write;
 	m_utils = new FeedlyUtils(settings_backend);
-	m_api = new FeedlyAPI(m_utils, db);
+	m_api = new FeedlyAPI(m_utils);
 }
 
 public string getWebsite()
@@ -222,8 +218,8 @@ public void markAllItemsRead()
 	string catArray = "";
 	string feedArray = "";
 
-	var categories = m_db.read_categories();
-	var feeds = m_db.read_feeds_without_cat();
+	var categories = DataBase.readOnly().read_categories();
+	var feeds = DataBase.readOnly().read_feeds_without_cat();
 
 	foreach(Category cat in categories)
 	{
@@ -306,7 +302,7 @@ public void removeFeed(string feedID)
 
 public void renameFeed(string feedID, string title)
 {
-	var feed = m_db.read_feed(feedID);
+	var feed = DataBase.readOnly().read_feed(feedID);
 	m_api.addSubscription(feed.getFeedID(), title, feed.getCatString());
 }
 
@@ -337,7 +333,7 @@ public void deleteCategory(string catID)
 
 public void removeCatFromFeed(string feedID, string catID)
 {
-	var feed = m_db.read_feed(feedID);
+	var feed = DataBase.readOnly().read_feed(feedID);
 	m_api.addSubscription(feed.getFeedID(), feed.getTitle(), feed.getCatString().replace(catID + ",", ""));
 }
 

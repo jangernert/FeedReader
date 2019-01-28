@@ -29,11 +29,9 @@ private string m_username;
 private string m_password;
 private OwncloudNewsUtils m_utils;
 private Soup.Session m_session;
-private DataBaseReadOnly m_db;
 
-public OwncloudNewsAPI(OwncloudNewsUtils utils, DataBaseReadOnly db)
+public OwncloudNewsAPI(OwncloudNewsUtils utils)
 {
-	m_db = db;
 	m_parser = new Json.Parser ();
 	m_utils = utils;
 	m_session = new Soup.Session();
@@ -356,7 +354,7 @@ public bool markFeedRead(string feedID, bool isCatID)
 {
 	string url = "%s/%s/read".printf((isCatID) ? "folders" : "feeds", feedID);
 	var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
-	message.add_int("newestItemId", int.parse(m_db.getNewestArticle()));
+	message.add_int("newestItemId", int.parse(DataBase.readOnly().getNewestArticle()));
 	int error = message.send();
 
 	if(error == ConnectionError.SUCCESS)
@@ -370,7 +368,7 @@ public bool markAllItemsRead()
 {
 	string url = "items/read";
 	var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
-	message.add_int("newestItemId", int.parse(m_db.getNewestArticle()));
+	message.add_int("newestItemId", int.parse(DataBase.readOnly().getNewestArticle()));
 	int error = message.send();
 
 	if(error == ConnectionError.SUCCESS)
@@ -404,7 +402,7 @@ public bool updateArticleUnread(string articleIDs, ArticleStatus unread)
 
 public bool updateArticleMarked(string articleID, ArticleStatus marked)
 {
-	var article = m_db.read_article(articleID);
+	var article = DataBase.readOnly().read_article(articleID);
 	string url = "items/%s/%s/".printf(article.getFeedID(), article.getHash());
 
 	if(marked == ArticleStatus.MARKED)

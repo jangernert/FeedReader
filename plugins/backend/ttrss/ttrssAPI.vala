@@ -22,11 +22,9 @@ private uint64 m_ttrss_apilevel;
 private Json.Parser m_parser;
 private string? m_iconDir = null;
 private Soup.Session m_session;
-private DataBaseReadOnly m_db;
 
-public ttrssAPI (ttrssUtils utils, DataBaseReadOnly db)
+public ttrssAPI (ttrssUtils utils)
 {
-	m_db = db;
 	m_parser = new Json.Parser();
 	m_utils = utils;
 	m_session = new Soup.Session();
@@ -307,7 +305,7 @@ public bool getTags(Gee.List<Tag> tags)
 				new Tag(
 					tag_node.get_int_member("id").to_string(),
 					tag_node.get_string_member("caption"),
-					m_db.getTagColor()
+					DataBase.readOnly().getTagColor()
 					)
 				);
 		}

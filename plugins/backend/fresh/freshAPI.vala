@@ -17,7 +17,6 @@ public class FeedReader.freshAPI : Object {
 
 private freshConnection m_connection;
 private freshUtils m_utils;
-private DataBaseReadOnly m_db;
 
 public freshAPI(freshUtils utils)
 {

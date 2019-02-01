@@ -112,18 +112,7 @@ private void delete_article(string articleID, string feedID)
 public void dropTag(Tag tag)
 {
 	m_db.execute("DELETE FROM main.tags WHERE tagID = ?", { tag.getTagID() });
-
-	var rows = m_db.execute("SELECT tags, articleID FROM main.articles WHERE instr(tags, ?) > 0", { tag.getTagID() });
-	foreach(var row in rows)
-	{
-		string articleID = row[1].to_string();
-		Gee.List<string> tags = StringUtils.split(row[0].to_string(), ",", true);
-		if(tags.contains(tag.getTagID()))
-			tags.remove(tag.getTagID());
-
-		m_db.execute("UPDATE main.articles SET tags = ? WHERE articleID = ?",
-		             { StringUtils.join(tags, ","), articleID });
-	}
+	m_db.execute("DELETE FROM main.taggings WHERE tagID = ?",  { tag.getTagID() });
 }
 
 public void write_feeds(Gee.Collection<Feed> feeds)
@@ -217,8 +206,6 @@ public void update_tag(Tag tag)
 	{
 		string newID = tag.getTagID().replace(tag.getTitle(), tag.getTitle());
 		m_db.execute("UPDATE tags SET tagID = ? WHERE tagID = ?", { newID, tag.getTagID() });
-		m_db.execute("UPDATE articles SET tags = replace(tags, ?, ?) WHERE instr(tags,  ?)",
-		             { tag.getTagID(), newID, tag.getTagID() });
 	}
 }
 

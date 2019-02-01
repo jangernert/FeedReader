@@ -810,16 +810,9 @@ public Tag? read_tag(string tagID)
 		row[3].to_int());
 }
 
-// FIXME: Inline this as a subquery
 protected string getAllTagsCondition()
 {
-	var tags = read_tags();
-	var conditions = new Gee.ArrayList<string>();
-	foreach(Tag tag in tags)
-	{
-		conditions.add("instr(\"tags\", %s) > 0".printf(SQLite.quote_string(tag.getTagID())));
-	}
-	return "(%s)".printf(StringUtils.join(conditions, " OR "));
+	return "articleID IN (SELECT articleID FROM taggings WHERE instr(tagID, 'global.') = 0)";
 }
 
 public Gee.List<Category> read_categories_level(int level, Gee.List<Feed>? feeds = null)

@@ -51,6 +51,13 @@
     <binary>feedreader</binary>
   </provides>
   <releases>
+    <release version="2.7.1" date="2019-02-01">
+      <description>
+        <ul>
+		  <li>Fix bugs when adding, deleting and renaming article tags</li>
+		</ul>
+      </description>
+    </release>
     <release version="2.7.0" date="2019-01-28">
       <description>
         <ul>

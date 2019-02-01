@@ -35,7 +35,12 @@ public TagPopover(Gtk.Widget widget)
 		Gee.List<string> tagIDs = selectedArticle.getTagIDs();
 		foreach(string tagID in tagIDs)
 		{
-			m_tags.add(db.read_tag(tagID));
+			var tag = db.read_tag(tagID);
+			// FIXME: Sometimes articles claim to have tags that don't exist
+			// in the DB. This works around that but we should fix the
+			// underlying problem at some point
+			if (tag != null)
+				m_tags.add(tag);
 		}
 	}
 

@@ -82,7 +82,9 @@ private void removeTag()
 	var notification = MainWindow.get_default().showNotification(text);
 
 	ulong eventID = notification.dismissed.connect(() => {
-			FeedReaderBackend.get_default().deleteTag(DataBase.readOnly().read_tag(m_id));
+			var tag = DataBase.readOnly().read_tag(m_id);
+			if(tag != null)
+				FeedReaderBackend.get_default().deleteTag(tag);
 		});
 	notification.action.connect(() => {
 			notification.disconnect(eventID);

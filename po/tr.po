@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-06 21:59+0200\n"
-"PO-Revision-Date: 2018-05-18 16:01+0000\n"
-"Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
+"PO-Revision-Date: 2019-02-05 12:09+0000\n"
+"Last-Translator: Ali Demirtas <alidemirtas94@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/feedreader/"
 "translations/tr/>\n"
 "Language: tr\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.0-dev\n"
+"X-Generator: Weblate 3.5-dev\n"
 
 #: Constants.vala.in:26
 msgid "Desktop Client for various RSS Services"
@@ -711,7 +711,7 @@ msgstr "Geçerli CA sertifikası yok!"
 
 #: src/Widgets/MainWindow.vala:453
 msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
-msgstr "Lütfen \"api_feedreader\" yan uygulamasını TT-RSS oluşumunuza kurun."
+msgstr "Lütfen \"api_feedreader\" yan uygulamasını TT-RSS oluşumunuza yükleyin!"
 
 #: src/Widgets/MediaButton.vala:85
 msgid "Attachments"

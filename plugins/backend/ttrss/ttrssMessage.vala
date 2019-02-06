@@ -198,7 +198,9 @@ public uint getStatusCode()
 
 public void printMessage()
 {
-	Logger.debug(m_message_string.str);
+	var msg = m_message_string.str;
+	if (!msg.contains("password"))
+		Logger.debug(msg);
 }
 
 public void printResponse()

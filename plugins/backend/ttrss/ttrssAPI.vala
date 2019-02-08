@@ -65,11 +65,11 @@ public LoginResponse login()
 	if(username != "")
 		message.add_string("user", username);
 	message.add_string("password", passwd);
-	int error = message.send();
-	if(error != ConnectionError.NO_RESPONSE)
+	int status = message.send();
+	if(status != ConnectionError.NO_RESPONSE)
 		message.printResponse();
 
-	if(error == ConnectionError.SUCCESS)
+	if(status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_object();
 		m_ttrss_sessionid = response.get_string_member("session_id");
@@ -90,23 +90,23 @@ public LoginResponse login()
 		message.printResponse();
 	}
 
-	if(error == ConnectionError.API_ERROR)
+	if(status == ConnectionError.API_ERROR)
 	{
 		return LoginResponse.API_ERROR;
 	}
-	else if(error == ConnectionError.NO_RESPONSE)
+	else if(status == ConnectionError.NO_RESPONSE)
 	{
 		return LoginResponse.NO_CONNECTION;
 	}
-	else if(error == ConnectionError.API_DISABLED)
+	else if(status == ConnectionError.API_DISABLED)
 	{
 		return LoginResponse.NO_API_ACCESS;
 	}
-	else if(error == ConnectionError.CA_ERROR)
+	else if(status == ConnectionError.CA_ERROR)
 	{
 		return LoginResponse.CA_ERROR;
 	}
-	else if(error == ConnectionError.UNAUTHORIZED)
+	else if(status == ConnectionError.UNAUTHORIZED)
 	{
 		return LoginResponse.UNAUTHORIZED;
 	}
@@ -119,11 +119,11 @@ public bool logout()
 	var message = new ttrssMessage(m_session, m_ttrss_url);
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "logout");
-	int error = message.send();
+	int status = message.send();
 	Logger.warning("TTRSS: logout");
 	message.printResponse();
 
-	if(error == ConnectionError.SUCCESS)
+	if(status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_object();
 		m_ttrss_sessionid = "";
@@ -139,11 +139,11 @@ public bool isloggedin()
 	var message = new ttrssMessage(m_session, m_ttrss_url);
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "isLoggedIn");
-	int error = message.send();
+	int status = message.send();
 	Logger.debug("TTRSS: isloggedin?");
 	message.printResponse();
 
-	if(error == ConnectionError.SUCCESS)
+	if(status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_object();
 		return response.get_boolean_member("status");
@@ -157,9 +157,9 @@ private bool haveAPIplugin()
 	var message = new ttrssMessage(m_session, m_ttrss_url);
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "removeLabel");
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.API_ERROR)
+	if(status == ConnectionError.API_ERROR)
 	{
 		var response = message.get_response_object();
 		if(response.has_member("error"))
@@ -181,9 +181,9 @@ public int getUnreadCount()
 	var message = new ttrssMessage(m_session, m_ttrss_url);
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "getUnread");
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
+	if(status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_object();
 		int64 parsed = 0;
@@ -212,9 +212,9 @@ public bool getFeeds(Gee.List<Feed> feeds, Gee.List<Category> categories)
 			message.add_string("sid", m_ttrss_sessionid);
 			message.add_string("op", "getFeeds");
 			message.add_int("cat_id", int.parse(item.getCatID()));
-			int error = message.send();
+			int status = message.send();
 
-			if(error == ConnectionError.SUCCESS)
+			if(status == ConnectionError.SUCCESS)
 			{
 				var response = message.get_response_array();
 				var feed_count = response.get_length();
@@ -253,9 +253,9 @@ public bool getUncategorizedFeeds(Gee.List<Feed> feeds)
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "getFeeds");
 	message.add_int("cat_id", 0);
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
+	if(status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_array();
 		var feed_count = response.get_length();
@@ -288,9 +288,9 @@ public bool getTags(Gee.List<Tag> tags)
 	var message = new ttrssMessage(m_session, m_ttrss_url);
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "getLabels");
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
+	if(status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_array();
 		var tag_count = response.get_length();
@@ -320,9 +320,9 @@ public string? getIconDir()
 	var message = new ttrssMessage(m_session, m_ttrss_url);
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "getConfig");
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
+	if(status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_object();
 		return response.get_string_member("icons_url") + "/";
@@ -338,9 +338,9 @@ public bool getCategories(Gee.List<Category> categories)
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "getFeedTree");
 	message.add_bool("include_empty", true);
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
+	if(status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_object();
 		if(response.has_member("categories"))
@@ -404,9 +404,9 @@ private int getUncategorizedUnread()
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "getCounters");
 	message.add_string("output_mode", "c");
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
+	if(status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_array();
 		var categorie_count = response.get_length();
@@ -455,10 +455,10 @@ public void getHeadlines(Gee.List<Article> articles, int skip, int limit, Articl
 		break;
 	}
 
-	int error = message.send();
+	int status = message.send();
 	message.printMessage();
 
-	if(error == ConnectionError.SUCCESS)
+	if(status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_array();
 		var headline_count = response.get_length();
@@ -539,10 +539,10 @@ public Gee.List<string>? NewsPlus(ArticleStatus type, int limit)
 		message.add_string("view_mode", "marked");
 	else
 		return null;
-	int error = message.send();
+	int status = message.send();
 	message.printMessage();
 
-	if(error == ConnectionError.SUCCESS)
+	if(status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_array();
 		var headline_count = response.get_length();
@@ -570,9 +570,9 @@ public Gee.List<Article> getArticles(Gee.List<string> articleIDs)
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "getArticle");
 	message.add_string("article_id", StringUtils.join(articleIDs, ","));
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
+	if(status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_array();
 		var article_count = response.get_length();
@@ -642,28 +642,25 @@ public Gee.List<Article> getArticles(Gee.List<string> articleIDs)
 
 public bool catchupFeed(string feedID, bool isCatID)
 {
-	bool return_value = false;
 	var message = new ttrssMessage(m_session, m_ttrss_url);
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "catchupFeed");
 	message.add_int_array("feed_id", feedID);
 	message.add_bool("is_cat", isCatID);
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
+	if(status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_object();
 		if(response.get_string_member("status") == "OK")
-			return_value = true;
+			return true;
 	}
 
-
-	return return_value;
+	return false;
 }
 
 public bool updateArticleUnread(string articleIDs, ArticleStatus unread)
 {
-	bool return_value = false;
 	var message = new ttrssMessage(m_session, m_ttrss_url);
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "updateArticle");
@@ -673,22 +670,21 @@ public bool updateArticleUnread(string articleIDs, ArticleStatus unread)
 	else if(unread == ArticleStatus.READ)
 		message.add_int("mode", 0);
 	message.add_int("field", 2);
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
+	if(status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_object();
 		if(response.get_string_member("status") == "OK")
-			return_value = true;
+			return true;
 	}
 
-	return return_value;
+	return false;
 }
 
 
 public bool updateArticleMarked(int articleID, ArticleStatus marked)
 {
-	bool return_value = false;
 	var message = new ttrssMessage(m_session, m_ttrss_url);
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "updateArticle");
@@ -698,16 +694,16 @@ public bool updateArticleMarked(int articleID, ArticleStatus marked)
 	else if(marked == ArticleStatus.UNMARKED)
 		message.add_int("mode", 0);
 	message.add_int("field", 0);
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
+	if(status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_object();
 		if(response.get_string_member("status") == "OK")
-			return_value = true;
+			return true;
 	}
 
-	return return_value;
+	return false;
 }
 
 public bool setArticleLabel(int articleID, int tagID, bool add)
@@ -718,9 +714,9 @@ public bool setArticleLabel(int articleID, int tagID, bool add)
 	message.add_int("article_ids", articleID);
 	message.add_int("label_id", tagID);
 	message.add_bool("assign", add);
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
+	if(status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_object();
 		if(response.get_string_member("status") == "OK")
@@ -736,9 +732,9 @@ public int64 addLabel(string caption)
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "addLabel");
 	message.add_string("caption", caption);
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
+	if(status == ConnectionError.SUCCESS)
 	{
 		return message.get_response_int();
 	}
@@ -752,14 +748,9 @@ public bool removeLabel(int tagID)
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "removeLabel");
 	message.add_int("label_id", tagID);
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
-	{
-		return true;
-	}
-
-	return false;
+	return status == ConnectionError.SUCCESS;
 }
 
 public bool renameLabel(int tagID, string newName)
@@ -769,14 +760,9 @@ public bool renameLabel(int tagID, string newName)
 	message.add_string("op", "renameLabel");
 	message.add_int("label_id", tagID);
 	message.add_string("caption", newName);
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
-	{
-		return true;
-	}
-
-	return false;
+	return status == ConnectionError.SUCCESS;
 }
 
 
@@ -796,12 +782,12 @@ public bool subscribeToFeed(string feedURL, string? catID, string? username, str
 		message.add_string("password", password);
 	}
 
-	int error = message.send();
+	int msg_status = message.send();
 	message.printMessage();
 	message.printResponse();
 	Logger.debug(message.getStatusCode().to_string());
 
-	if(error == ConnectionError.SUCCESS)
+	if(msg_status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_object();
 		if(response.has_member("status"))
@@ -850,14 +836,9 @@ public bool unsubscribeFeed(int feedID)
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "unsubscribeFeed");
 	message.add_int("feed_id", feedID);
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
-	{
-		return true;
-	}
-
-	return false;
+	return status == ConnectionError.SUCCESS;
 }
 
 public string? createCategory(string title, int? parentID = null)
@@ -868,11 +849,11 @@ public string? createCategory(string title, int? parentID = null)
 	message.add_string("caption", title);
 	if(parentID != null)
 		message.add_int("parent_id", parentID);
-	int error = message.send();
+	int status = message.send();
 	message.printMessage();
 
 
-	if(error == ConnectionError.SUCCESS)
+	if(status == ConnectionError.SUCCESS)
 	{
 		return message.get_response_string();
 	}
@@ -886,14 +867,9 @@ public bool removeCategory(int catID)
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "removeCategory");
 	message.add_int("category_id", catID);
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
-	{
-		return true;
-	}
-
-	return false;
+	return status == ConnectionError.SUCCESS;
 }
 
 public bool moveCategory(int catID, int parentID)
@@ -904,14 +880,9 @@ public bool moveCategory(int catID, int parentID)
 	message.add_int("category_id", catID);
 	if(parentID != int.parse(CategoryID.MASTER.to_string()))
 		message.add_int("parent_id", parentID);
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
-	{
-		return true;
-	}
-
-	return false;
+	return status == ConnectionError.SUCCESS;
 }
 
 public bool renameCategory(int catID, string title)
@@ -921,14 +892,9 @@ public bool renameCategory(int catID, string title)
 	message.add_string("op", "renameCategory");
 	message.add_int("category_id", catID);
 	message.add_string("caption", title);
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
-	{
-		return true;
-	}
-
-	return false;
+	return status == ConnectionError.SUCCESS;
 }
 
 public bool renameFeed(int feedID, string title)
@@ -938,14 +904,9 @@ public bool renameFeed(int feedID, string title)
 	message.add_string("op", "renameFeed");
 	message.add_int("feed_id", feedID);
 	message.add_string("caption", title);
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
-	{
-		return true;
-	}
-
-	return false;
+	return status == ConnectionError.SUCCESS;
 }
 
 public bool moveFeed(int feedID, int catID)
@@ -955,27 +916,17 @@ public bool moveFeed(int feedID, int catID)
 	message.add_string("op", "moveFeed");
 	message.add_int("feed_id", feedID);
 	message.add_int("category_id", catID);
-	int error = message.send();
+	int status = message.send();
 
-	if(error == ConnectionError.SUCCESS)
-	{
-		return true;
-	}
-
-	return false;
+	return status == ConnectionError.SUCCESS;
 }
 
 public bool ping()
 {
 	Logger.debug("TTRSS: ping");
 	var message = new ttrssMessage(m_session, m_ttrss_url);
-	int error = message.send(true);
+	int status = message.send(true);
 
-	if(error == ConnectionError.SUCCESS)
-	{
-		return true;
-	}
-
-	return false;
+	return status == ConnectionError.SUCCESS;
 }
 }

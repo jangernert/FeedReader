@@ -659,12 +659,12 @@ public bool catchupFeed(string feedID, bool isCatID)
 	return false;
 }
 
-public bool updateArticleUnread(string articleIDs, ArticleStatus unread)
+public bool updateArticleUnread(Gee.List<string> articleIDs, ArticleStatus unread)
 {
 	var message = new ttrssMessage(m_session, m_ttrss_url);
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "updateArticle");
-	message.add_int_array("article_ids", articleIDs);
+	message.add_int_array("article_ids", StringUtils.join(articleIDs, ","));
 	if(unread == ArticleStatus.UNREAD)
 		message.add_int("mode", 1);
 	else if(unread == ArticleStatus.READ)

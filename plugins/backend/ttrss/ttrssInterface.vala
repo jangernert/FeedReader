@@ -284,7 +284,7 @@ public bool serverAvailable()
 
 public void setArticleIsRead(string articleIDs, ArticleStatus read)
 {
-	m_api.updateArticleUnread(articleIDs, read);
+	m_api.updateArticleUnread(StringUtils.split(articleIDs, ","), read);
 }
 
 public void setArticleIsMarked(string articleID, ArticleStatus marked)

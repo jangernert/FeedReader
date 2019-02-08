@@ -18,14 +18,11 @@ public class FeedReader.ttrssAPI : GLib.Object {
 public string m_ttrss_url { get; private set; }
 private ttrssUtils m_utils;
 private string m_ttrss_sessionid;
-private uint64 m_ttrss_apilevel;
-private Json.Parser m_parser;
 private string? m_iconDir = null;
 private Soup.Session m_session;
 
 public ttrssAPI (ttrssUtils utils)
 {
-	m_parser = new Json.Parser();
 	m_utils = utils;
 	m_session = new Soup.Session();
 	m_session.user_agent = Constants.USER_AGENT;
@@ -76,9 +73,9 @@ public LoginResponse login()
 	{
 		var response = message.get_response_object();
 		m_ttrss_sessionid = response.get_string_member("session_id");
-		m_ttrss_apilevel = response.get_int_member("api_level");
+		var api_level = response.get_int_member("api_level");
 		Logger.info("TTRSS Session ID: %s".printf(m_ttrss_sessionid));
-		Logger.info("TTRSS API Level: %lld".printf(m_ttrss_apilevel));
+		Logger.info("TTRSS API Level: %lld".printf(api_level));
 
 		m_iconDir = m_ttrss_url.replace("api/", getIconDir());
 

@@ -23,7 +23,6 @@ private Gtk.Entry m_passwordEntry;
 private Gtk.Entry m_authPasswordEntry;
 private Gtk.Entry m_authUserEntry;
 private Gtk.Revealer m_revealer;
-private bool m_need_htaccess = false;
 
 public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 {
@@ -176,11 +175,6 @@ public void writeData()
 	m_utils.setURL(m_urlEntry.get_text());
 	m_utils.setUser(m_userEntry.get_text().strip());
 	m_utils.setPassword(m_passwordEntry.get_text().strip());
-	if(m_need_htaccess)
-	{
-		m_utils.setHtaccessUser(m_authUserEntry.get_text().strip());
-		m_utils.setHtAccessPassword(m_authPasswordEntry.get_text().strip());
-	}
 }
 
 public async void postLoginAction()

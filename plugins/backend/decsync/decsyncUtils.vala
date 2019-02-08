@@ -43,23 +43,34 @@ public void setDecsyncDir(string decsyncDir)
 	Utils.gsettingWriteString(m_settings, "decsync-dir", decsyncDir);
 }
 
-public Feed? downloadFeed(Soup.Session session, string xmlURL, string feedID, Gee.List<string> catIDs, out string errmsg)
+public Feed? downloadFeed(Soup.Session session, string feed_url, string feedID, Gee.List<string> catIDs, out string errmsg)
 {
-	errmsg = "";
+	var error = new StringBuilder(_("Failed to add feed"));
+	error.append_printf(" %s\n", feed_url);
 
-	// download
-	//Logger.debug(@"Requesting: $xmlURL");
-	var msg = new Soup.Message("GET", xmlURL);
+	var msg = new Soup.Message("GET", feed_url);
 	if (msg == null)
 	{
-		errmsg = @"Couldn't parse feed URL: $xmlURL";
+		error.append(_("Failed to parse URL."));
+		errmsg = error.str;
 		Logger.warning(errmsg);
 		return null;
 	}
+
 	uint status = session.send_message(msg);
-	if(status != 200)
+	if(status < 100 || status >= 400)
 	{
-		errmsg = "Could not download feed";
+		if(status < 100)
+		{
+			error.append(_("Network error connecting to the server."));
+		}
+		else
+		{
+			error.append(_("Got HTTP error code"));
+			error.append_printf(" %u %s", status, Soup.Status.get_phrase(status));
+		}
+
+		errmsg = error.str;
 		Logger.warning(errmsg);
 		return null;
 	}
@@ -68,14 +79,14 @@ public Feed? downloadFeed(Soup.Session session, string xmlURL, string feedID, Ge
 
 	// parse
 	Rss.Parser parser = new Rss.Parser();
-
 	try
 	{
 		parser.load_from_data(xml, xml.length);
 	}
 	catch(Error e)
 	{
-		errmsg = "Could not parse feed";
+		error.append(_("Could not parse feed as RSS or ATOM."));
+		errmsg = error.str;
 		Logger.warning(errmsg);
 		return null;
 	}
@@ -86,16 +97,15 @@ public Feed? downloadFeed(Soup.Session session, string xmlURL, string feedID, Ge
 	   && doc.link != "")
 		url = doc.link;
 
-	var Feed = new Feed(
+	errmsg = "";
+	return new Feed(
 		feedID,
 		doc.title,
 		url,
 		0,
 		catIDs,
 		doc.image_url,
-		xmlURL);
-
-	return Feed;
+		feed_url);
 }
 
 public string? convert(string? text, string? locale)

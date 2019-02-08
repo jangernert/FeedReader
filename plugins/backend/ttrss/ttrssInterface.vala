@@ -475,7 +475,7 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 	if(cancellable != null && cancellable.is_cancelled())
 		return;
 
-	string articleIDs = "";
+	var articleIDs = new Gee.ArrayList<string>();
 	int skip = count;
 	int amount = 200;
 
@@ -509,18 +509,11 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 			var id = article.getArticleID();
 			if(!db.article_exists(id))
 			{
-				articleIDs += id + ",";
+				articleIDs.add(id);
 			}
 		}
 	}
-
-	if(articleIDs.length > 0)
-		articleIDs = articleIDs.substring(0, articleIDs.length -1);
-
-	var articles = new Gee.LinkedList<Article>();
-
-	if(articleIDs != "")
-		m_api.getArticles(articleIDs, articles);
+	var articles = m_api.getArticles(articleIDs);
 
 	articles.sort((a, b) => {
 			return strcmp(a.getArticleID(), b.getArticleID());

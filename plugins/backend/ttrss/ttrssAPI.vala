@@ -560,12 +560,16 @@ public Gee.List<string>? NewsPlus(ArticleStatus type, int limit)
 }
 
 
-public void getArticles(string articleIDs, Gee.List<Article> articles)
+public Gee.List<Article> getArticles(Gee.List<string> articleIDs)
 {
+	var articles = new Gee.ArrayList<Article>();
+	if(articleIDs.is_empty)
+		return articles;
+
 	var message = new ttrssMessage(m_session, m_ttrss_url);
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "getArticle");
-	message.add_string("article_id", articleIDs);
+	message.add_string("article_id", StringUtils.join(articleIDs, ","));
 	int error = message.send();
 
 	if(error == ConnectionError.SUCCESS)
@@ -633,6 +637,7 @@ public void getArticles(string articleIDs, Gee.List<Article> articles)
 			articles.add(Article);
 		}
 	}
+	return articles;
 }
 
 public bool catchupFeed(string feedID, bool isCatID)

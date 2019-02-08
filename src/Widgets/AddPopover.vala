@@ -125,8 +125,8 @@ public AddPopover(Gtk.Widget parent)
 
 private void addFeed()
 {
-	if(m_urlEntry.text == ""
-	   || GLib.Uri.parse_scheme(m_urlEntry.text) == null)
+	string url = m_urlEntry.text;
+	if(url == "")
 	{
 		m_urlEntry.grab_focus();
 		return;
@@ -141,8 +141,14 @@ private void addFeed()
 		isID = false;
 	}
 
-	Logger.debug("addFeed: %s, %s".printf(m_urlEntry.text, (catID == "") ? "null" : catID));
-	FeedReaderBackend.get_default().addFeed(m_urlEntry.text, catID, isID);
+
+	if (GLib.Uri.parse_scheme(url) == null)
+	{
+		url = "http://" + url;
+	}
+
+	Logger.debug("addFeed: %s, %s".printf(url, (catID == "") ? "null" : catID));
+	FeedReaderBackend.get_default().addFeed(url, catID, isID);
 
 	setBusy();
 }

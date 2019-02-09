@@ -114,31 +114,10 @@ public override Gtk.Box? getWidget()
 	return box;
 }
 
-public override void showHtAccess()
-{
-
-}
-
 public override void writeData()
 {
 	m_utils.setUser(m_userEntry.get_text());
 	m_utils.setPassword(m_passwordEntry.get_text());
-}
-
-
-public override async void postLoginAction()
-{
-	return;
-}
-
-public override bool extractCode(string redirectURL)
-{
-	return false;
-}
-
-public override string buildLoginURL()
-{
-	return "";
 }
 
 public override bool supportTags()
@@ -219,11 +198,6 @@ public override bool useMaxArticles()
 public override LoginResponse login()
 {
 	return m_api.login();
-}
-
-public override bool logout()
-{
-	return true;
 }
 
 public override void setArticleIsRead(string articleIDs, ArticleStatus read)

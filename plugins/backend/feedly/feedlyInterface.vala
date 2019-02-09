@@ -54,26 +54,6 @@ public override bool needWebLogin()
 	return true;
 }
 
-public override Gtk.Box? getWidget()
-{
-	return null;
-}
-
-public override void showHtAccess()
-{
-	return;
-}
-
-public override void writeData()
-{
-	return;
-}
-
-public override async void postLoginAction()
-{
-	return;
-}
-
 public override bool extractCode(string redirectURL)
 {
 	if(redirectURL.has_prefix(FeedlySecret.apiRedirectUri))
@@ -174,11 +154,6 @@ public override bool useMaxArticles()
 public override LoginResponse login()
 {
 	return m_api.login();
-}
-
-public override bool logout()
-{
-	return true;
 }
 
 public override void setArticleIsRead(string articleIDs, ArticleStatus read)

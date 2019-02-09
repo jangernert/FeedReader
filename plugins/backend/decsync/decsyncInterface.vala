@@ -164,11 +164,6 @@ public override Gtk.Box? getWidget()
 	return box;
 }
 
-public override void showHtAccess()
-{
-	return;
-}
-
 public override void writeData()
 {
 	m_utils.setDecsyncDir(m_loginDir);
@@ -188,16 +183,6 @@ public override async void postLoginAction()
 			return null;
 		});
 	yield;
-}
-
-public override string buildLoginURL()
-{
-	return "";
-}
-
-public override bool extractCode(string redirectURL)
-{
-	return false;
 }
 
 public override bool supportTags()
@@ -285,11 +270,6 @@ public override LoginResponse login()
 	{
 		return LoginResponse.ALL_EMPTY;
 	}
-}
-
-public override bool logout()
-{
-	return true;
 }
 
 public override bool serverAvailable()
@@ -483,12 +463,6 @@ public override void deleteCategory(string catID)
 public override void removeCatFromFeed(string feedID, string catID)
 {
 	moveFeed(feedID, uncategorizedID(), catID);
-}
-
-public override void importOPML(string opml)
-{
-	var parser = new OPMLparser(opml);
-	parser.parse();
 }
 
 public override bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)

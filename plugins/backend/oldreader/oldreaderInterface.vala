@@ -114,20 +114,10 @@ public override Gtk.Box? getWidget()
 	return box;
 }
 
-public override void showHtAccess()
-{
-	return;
-}
-
 public override void writeData()
 {
 	m_utils.setUser(m_userEntry.get_text().strip());
 	m_utils.setPassword(m_passwordEntry.get_text().strip());
-}
-
-public override async void postLoginAction()
-{
-	return;
 }
 
 public override string buildLoginURL()
@@ -218,11 +208,6 @@ public override bool useMaxArticles()
 public override LoginResponse login()
 {
 	return m_api.login();
-}
-
-public override bool logout()
-{
-	return true;
 }
 
 public override void setArticleIsRead(string articleIDs, ArticleStatus read)
@@ -383,12 +368,6 @@ public override void deleteCategory(string catID)
 public override void removeCatFromFeed(string feedID, string catID)
 {
 	return;
-}
-
-public override void importOPML(string opml)
-{
-	var parser = new OPMLparser(opml);
-	parser.parse();
 }
 
 public override bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)

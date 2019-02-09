@@ -146,16 +146,6 @@ public override Gtk.Box? getWidget()
 	return box;
 }
 
-public override void showHtAccess()
-{
-	return;
-}
-
-public override void writeData()
-{
-	return;
-}
-
 public override async void postLoginAction()
 {
 	SourceFunc callback = postLoginAction.callback;
@@ -173,16 +163,6 @@ public override async void postLoginAction()
 		return null;
 	});
 	yield;
-}
-
-public override string buildLoginURL()
-{
-	return "";
-}
-
-public override bool extractCode(string redirectURL)
-{
-	return false;
 }
 
 private int sortFunc(Gtk.ListBoxRow row1, Gtk.ListBoxRow row2)
@@ -309,11 +289,6 @@ public override bool useMaxArticles()
 public override LoginResponse login()
 {
 	return LoginResponse.SUCCESS;
-}
-
-public override bool logout()
-{
-	return true;
 }
 
 public override bool serverAvailable()
@@ -502,12 +477,6 @@ public override void deleteCategory(string catID)
 public override void removeCatFromFeed(string feedID, string catID)
 {
 	return;
-}
-
-public override void importOPML(string opml)
-{
-	var parser = new OPMLparser(opml);
-	parser.parse();
 }
 
 public override bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)

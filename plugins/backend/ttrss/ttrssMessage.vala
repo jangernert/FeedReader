@@ -56,10 +56,10 @@ public void add_string(string type, string val)
 	m_request_object.set_string_member(type, val);
 }
 
-private string request_object_to_string()
+private static string object_to_string(Json.Object obj)
 {
 	var root = new Json.Node(Json.NodeType.OBJECT);
-	root.set_object(m_request_object);
+	root.set_object(obj);
 
 	var gen = new Json.Generator();
 	gen.set_root(root);
@@ -87,7 +87,7 @@ public ConnectionError send_impl(bool ping)
 
 	var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 
-	var data = request_object_to_string();
+	var data = object_to_string(m_request_object);
 	m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, data.data);
 
 	if(settingsTweaks.get_boolean("do-not-track"))
@@ -193,7 +193,19 @@ public uint getStatusCode()
 private void logError(string prefix)
 {
 	var url = m_message_soup.get_uri().to_string(false);
-	var request = request_object_to_string();
+	var obj = m_request_object;
+	if(obj.has_member("password"))
+	{
+		obj = new Json.Object();
+		m_request_object.foreach_member((_, name, member) =>
+		{
+			if(name == "password")
+				obj.set_string_member("password", "[redacted]");
+			else
+				obj.set_member(name, member);
+		});
+	}
+	var request = object_to_string(obj);
 	var response = (string)m_message_soup.response_body.flatten().data;
 	Logger.error(@"$prefix\nURL: $url\nRequest object: $request\nResponse: $response");
 }

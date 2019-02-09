@@ -51,6 +51,19 @@
     <binary>feedreader</binary>
   </provides>
   <releases>
+    <release version="2.8.0" date="2019-02-09">
+      <description>
+        <ul>
+		  <li>Improve error messages when failing to add a feed in the local and DecSync plugins</li>
+		  <li>Auto-fill missing URI scheme when adding feeds and in the TT-RSS setup</li>
+		  <li>Use dc:creator tag for authors in local and DecSync RSS feeds</li>
+		  <li>TT-RSS: Handle the API sending us ints as strings and strings as ints</li>
+		  <li>TT-RSS: Make the api_feedreader plugin use PDO prepared statements instead of doing string escaping</li>
+		  <li>TT-RSS: Redact passwords in API logging</li>
+		  <li>TT-RSS: Various other improvements to make the plugin more maintainable</li>
+		</ul>
+      </description>
+    </release>
     <release version="2.7.1" date="2019-02-01">
       <description>
         <ul>

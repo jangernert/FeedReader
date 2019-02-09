@@ -13,50 +13,50 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterface {
+public class FeedReader.FeedbinInterface : FeedServerInterface {
 
 private FeedbinAPI m_api;
 private FeedbinUtils m_utils;
 private Gtk.Entry m_userEntry;
 private Gtk.Entry m_passwordEntry;
 
-public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
+public override void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 {
 	m_utils = new FeedbinUtils(settings_backend, secrets);
 	m_api = new FeedbinAPI(m_utils.getUser(), m_utils.getPassword(), Constants.USER_AGENT);
 }
 
-public string getWebsite()
+public override string getWebsite()
 {
 	return "https://feedbin.com/";
 }
 
-public BackendFlags getFlags()
+public override BackendFlags getFlags()
 {
 	return (BackendFlags.HOSTED | BackendFlags.FREE_SOFTWARE | BackendFlags.PAID);
 }
 
-public string getID()
+public override string getID()
 {
 	return "feedbin";
 }
 
-public string iconName()
+public override string iconName()
 {
 	return "feed-service-feedbin";
 }
 
-public string serviceName()
+public override string serviceName()
 {
 	return "Feedbin";
 }
 
-public bool needWebLogin()
+public override bool needWebLogin()
 {
 	return false;
 }
 
-public Gtk.Box? getWidget()
+public override Gtk.Box? getWidget()
 ensures (result != null)
 {
 	var user_label = new Gtk.Label(_("Username:"));
@@ -121,11 +121,11 @@ ensures (result != null)
 	return box;
 }
 
-public void showHtAccess()
+public override void showHtAccess()
 {
 }
 
-public void writeData()
+public override void writeData()
 {
 	m_api.username = m_userEntry.get_text().strip();
 	m_utils.setUser(m_api.username);
@@ -134,96 +134,96 @@ public void writeData()
 	m_utils.setPassword(m_api.password);
 }
 
-public async void postLoginAction()
+public override async void postLoginAction()
 {
 }
 
-public bool extractCode(string redirectURL)
+public override bool extractCode(string redirectURL)
 {
 	return false;
 }
 
-public string buildLoginURL()
+public override string buildLoginURL()
 {
 	return "";
 }
 
-public bool supportTags()
+public override bool supportTags()
 {
 	return false;
 }
 
-public bool doInitSync()
+public override bool doInitSync()
 {
 	return true;
 }
 
-public string symbolicIcon()
+public override string symbolicIcon()
 {
 	return "feed-service-feedbin-symbolic";
 }
 
-public string accountName()
+public override string accountName()
 {
 	return m_utils.getUser();
 }
 
-public string getServerURL()
+public override string getServerURL()
 {
 	return "https://feedbin.com/";
 }
 
-public string uncategorizedID()
+public override string uncategorizedID()
 {
 	return "0";
 }
 
-public bool supportCategories()
+public override bool supportCategories()
 {
 	return true;
 }
 
-public bool supportFeedManipulation()
+public override bool supportFeedManipulation()
 {
 	return true;
 }
 
-public bool hideCategoryWhenEmpty(string catID)
+public override bool hideCategoryWhenEmpty(string catID)
 {
 	return false;
 }
 
-public bool supportMultiLevelCategories()
+public override bool supportMultiLevelCategories()
 {
 	return false;
 }
 
-public bool supportMultiCategoriesPerFeed()
+public override bool supportMultiCategoriesPerFeed()
 {
 	return false;
 }
 
-public bool syncFeedsAndCategories()
+public override bool syncFeedsAndCategories()
 {
 	return true;
 }
 
-public bool tagIDaffectedByNameChange()
+public override bool tagIDaffectedByNameChange()
 {
 	return true;
 }
 
-public void resetAccount()
+public override void resetAccount()
 {
 	m_utils.resetAccount();
 }
 
-public bool useMaxArticles()
+public override bool useMaxArticles()
 {
 	return true;
 }
 
-public LoginResponse login()
+public override LoginResponse login()
 {
 	try
 	{
@@ -243,17 +243,17 @@ public LoginResponse login()
 	}
 }
 
-public bool logout()
+public override bool logout()
 {
 	return true;
 }
 
-public bool serverAvailable()
+public override bool serverAvailable()
 {
 	return login() != LoginResponse.NO_CONNECTION;
 }
 
-public void setArticleIsRead(string article_id, ArticleStatus status)
+public override void setArticleIsRead(string article_id, ArticleStatus status)
 {
 	var entry_id = int64.parse(article_id);
 	var entry_ids = ListUtils.single<int64?>(entry_id);
@@ -267,7 +267,7 @@ public void setArticleIsRead(string article_id, ArticleStatus status)
 	}
 }
 
-public void setArticleIsMarked(string article_id, ArticleStatus status)
+public override void setArticleIsMarked(string article_id, ArticleStatus status)
 {
 	var entry_id = int64.parse(article_id);
 	var entry_ids = ListUtils.single<int64?>(entry_id);
@@ -306,52 +306,52 @@ private void setRead(string id, FeedListType type)
 	}
 }
 
-public bool alwaysSetReadByID()
+public override bool alwaysSetReadByID()
 {
 	return false;
 }
 
-public void setFeedRead(string feed_id)
+public override void setFeedRead(string feed_id)
 {
 	setRead(feed_id, FeedListType.FEED);
 }
 
-public void setCategoryRead(string category_id)
+public override void setCategoryRead(string category_id)
 {
 	setRead(category_id, FeedListType.CATEGORY);
 }
 
-public void markAllItemsRead()
+public override void markAllItemsRead()
 {
 	setRead(FeedID.ALL.to_string(), FeedListType.FEED);
 }
 
-public void tagArticle(string article_id, string tag_id)
+public override void tagArticle(string article_id, string tag_id)
 {
 	return;
 }
 
-public void removeArticleTag(string article_id, string tag_id)
+public override void removeArticleTag(string article_id, string tag_id)
 {
 	return;
 }
 
-public string createTag(string caption)
+public override string createTag(string caption)
 {
 	return "";
 }
 
-public void deleteTag(string tag_id)
+public override void deleteTag(string tag_id)
 {
 	return;
 }
 
-public void renameTag(string tagID, string title)
+public override void renameTag(string tagID, string title)
 {
 	return;
 }
 
-public bool addFeed(string feed_url, string? cat_id, string? category_name, out string feed_id, out string errmsg)
+public override bool addFeed(string feed_url, string? cat_id, string? category_name, out string feed_id, out string errmsg)
 {
 	feed_id = "";
 	try
@@ -378,7 +378,7 @@ public bool addFeed(string feed_url, string? cat_id, string? category_name, out 
 	}
 }
 
-public void addFeeds(Gee.List<Feed> feeds)
+public override void addFeeds(Gee.List<Feed> feeds)
 {
 	return;
 }
@@ -395,7 +395,7 @@ private FeedbinAPI.Subscription subscription_for_feed(string feed_id_str) throws
 	throw new FeedbinError.NOT_FOUND("No subscription found for feed $feed_id");
 }
 
-public void removeFeed(string feed_id_str)
+public override void removeFeed(string feed_id_str)
 {
 	try
 	{
@@ -408,7 +408,7 @@ public void removeFeed(string feed_id_str)
 	}
 }
 
-public void renameFeed(string feed_id_str, string title)
+public override void renameFeed(string feed_id_str, string title)
 {
 	try
 	{
@@ -421,7 +421,7 @@ public void renameFeed(string feed_id_str, string title)
 	}
 }
 
-public void moveFeed(string feed_id_str, string new_category, string? old_category)
+public override void moveFeed(string feed_id_str, string new_category, string? old_category)
 {
 	Logger.debug(@"moveFeed: $feed_id_str from $old_category to $new_category");
 	try
@@ -449,7 +449,7 @@ public void moveFeed(string feed_id_str, string new_category, string? old_catego
 	}
 }
 
-public void renameCategory(string old_category, string new_category)
+public override void renameCategory(string old_category, string new_category)
 {
 	Logger.debug(@"renameCategory: From $old_category to $new_category");
 	try
@@ -471,12 +471,12 @@ public void renameCategory(string old_category, string new_category)
 	}
 }
 
-public void moveCategory(string category_id, string new_parent_id)
+public override void moveCategory(string category_id, string new_parent_id)
 {
 	// Feedbin doesn't have multi-level categories
 }
 
-public string createCategory(string title, string? parent_id)
+public override string createCategory(string title, string? parent_id)
 ensures (result == title)
 {
 	// Categories are created and destroyed based on feeds having them.
@@ -484,7 +484,7 @@ ensures (result == title)
 	return title;
 }
 
-public void deleteCategory(string category)
+public override void deleteCategory(string category)
 {
 	Logger.debug(@"deleteCategory: $category");
 	try
@@ -505,7 +505,7 @@ public void deleteCategory(string category)
 	}
 }
 
-public void removeCatFromFeed(string feed_id_str, string category)
+public override void removeCatFromFeed(string feed_id_str, string category)
 {
 	Logger.debug(@"removeCatFromFeed: Feed $feed_id_str, category $category");
 	try
@@ -528,11 +528,11 @@ public void removeCatFromFeed(string feed_id_str, string category)
 	}
 }
 
-public void importOPML(string opml)
+public override void importOPML(string opml)
 {
 }
 
-public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
+public override bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
 {
 	try
 	{
@@ -625,7 +625,7 @@ public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories,
 	return true;
 }
 
-public int getUnreadCount()
+public override int getUnreadCount()
 ensures (result >= 0)
 {
 	try
@@ -639,7 +639,7 @@ ensures (result >= 0)
 	}
 }
 
-public void getArticles(int count, ArticleStatus what_to_get, DateTime? since, string? feed_id_str, bool is_tag_id, GLib.Cancellable? cancellable = null)
+public override void getArticles(int count, ArticleStatus what_to_get, DateTime? since, string? feed_id_str, bool is_tag_id, GLib.Cancellable? cancellable = null)
 requires (count >= 0)
 {
 	try

@@ -13,68 +13,68 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterface {
+public class FeedReader.feedlyInterface : FeedServerInterface {
 
 private FeedlyAPI m_api;
 private FeedlyUtils m_utils;
 
-public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
+public override void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 {
 	m_utils = new FeedlyUtils(settings_backend);
 	m_api = new FeedlyAPI(m_utils);
 }
 
-public string getWebsite()
+public override string getWebsite()
 {
 	return "http://feedly.com/";
 }
 
-public BackendFlags getFlags()
+public override BackendFlags getFlags()
 {
 	return (BackendFlags.HOSTED | BackendFlags.PROPRIETARY | BackendFlags.PAID_PREMIUM);
 }
 
-public string getID()
+public override string getID()
 {
 	return "feedly";
 }
 
-public string iconName()
+public override string iconName()
 {
 	return "feed-service-feedly";
 }
 
-public string serviceName()
+public override string serviceName()
 {
 	return "feedly";
 }
 
-public bool needWebLogin()
+public override bool needWebLogin()
 {
 	return true;
 }
 
-public Gtk.Box? getWidget()
+public override Gtk.Box? getWidget()
 {
 	return null;
 }
 
-public void showHtAccess()
+public override void showHtAccess()
 {
 	return;
 }
 
-public void writeData()
+public override void writeData()
 {
 	return;
 }
 
-public async void postLoginAction()
+public override async void postLoginAction()
 {
 	return;
 }
 
-public bool extractCode(string redirectURL)
+public override bool extractCode(string redirectURL)
 {
 	if(redirectURL.has_prefix(FeedlySecret.apiRedirectUri))
 	{
@@ -90,103 +90,103 @@ public bool extractCode(string redirectURL)
 	return false;
 }
 
-public string buildLoginURL()
+public override string buildLoginURL()
 {
 	return FeedlySecret.base_uri + "/v3/auth/auth" + "?client_secret=" + FeedlySecret.apiClientSecret + "&client_id=" + FeedlySecret.apiClientId
 	       + "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&scope=" + FeedlySecret.apiAuthScope + "&response_type=code&state=getting_code";
 }
 
-public bool supportTags()
+public override bool supportTags()
 {
 	return true;
 }
 
-public bool doInitSync()
+public override bool doInitSync()
 {
 	return true;
 }
 
-public string symbolicIcon()
+public override string symbolicIcon()
 {
 	return "feed-service-feedly-symbolic";
 }
 
-public string accountName()
+public override string accountName()
 {
 	return m_utils.getEmail();
 }
 
-public string getServerURL()
+public override string getServerURL()
 {
 	return "http://feedly.com/";
 }
 
-public string uncategorizedID()
+public override string uncategorizedID()
 {
 	return "";
 }
 
-public bool hideCategoryWhenEmpty(string catID)
+public override bool hideCategoryWhenEmpty(string catID)
 {
 	return catID.has_suffix("global.must");
 }
 
-public bool supportCategories()
+public override bool supportCategories()
 {
 	return true;
 }
 
-public bool supportFeedManipulation()
+public override bool supportFeedManipulation()
 {
 	return true;
 }
 
-public bool supportMultiLevelCategories()
+public override bool supportMultiLevelCategories()
 {
 	return false;
 }
 
-public bool supportMultiCategoriesPerFeed()
+public override bool supportMultiCategoriesPerFeed()
 {
 	return true;
 }
 
-public bool syncFeedsAndCategories()
+public override bool syncFeedsAndCategories()
 {
 	return true;
 }
 
-public bool tagIDaffectedByNameChange()
+public override bool tagIDaffectedByNameChange()
 {
 	return false;
 }
 
-public void resetAccount()
+public override void resetAccount()
 {
 	m_utils.resetAccount();
 }
 
-public bool useMaxArticles()
+public override bool useMaxArticles()
 {
 	return true;
 }
 
-public LoginResponse login()
+public override LoginResponse login()
 {
 	return m_api.login();
 }
 
-public bool logout()
+public override bool logout()
 {
 	return true;
 }
 
-public void setArticleIsRead(string articleIDs, ArticleStatus read)
+public override void setArticleIsRead(string articleIDs, ArticleStatus read)
 {
 	m_api.mark_as_read(articleIDs, "entries", read);
 }
 
-public void setArticleIsMarked(string articleID, ArticleStatus marked)
+public override void setArticleIsMarked(string articleID, ArticleStatus marked)
 {
 	if(marked == ArticleStatus.MARKED)
 	{
@@ -198,22 +198,22 @@ public void setArticleIsMarked(string articleID, ArticleStatus marked)
 	}
 }
 
-public bool alwaysSetReadByID()
+public override bool alwaysSetReadByID()
 {
 	return false;
 }
 
-public void setFeedRead(string feedID)
+public override void setFeedRead(string feedID)
 {
 	m_api.mark_as_read(feedID, "feeds", ArticleStatus.READ);
 }
 
-public void setCategoryRead(string catID)
+public override void setCategoryRead(string catID)
 {
 	m_api.mark_as_read(catID, "categories", ArticleStatus.READ);
 }
 
-public void markAllItemsRead()
+public override void markAllItemsRead()
 {
 	string catArray = "";
 	string feedArray = "";
@@ -236,37 +236,37 @@ public void markAllItemsRead()
 	m_api.mark_as_read(feedArray.substring(0, feedArray.length-1), "feeds", ArticleStatus.READ);
 }
 
-public void tagArticle(string articleID, string tagID)
+public override void tagArticle(string articleID, string tagID)
 {
 	m_api.addArticleTag(articleID, tagID);
 }
 
-public void removeArticleTag(string articleID, string tagID)
+public override void removeArticleTag(string articleID, string tagID)
 {
 	m_api.deleteArticleTag(articleID, tagID);
 }
 
-public string createTag(string caption)
+public override string createTag(string caption)
 {
 	return m_api.createTag(caption);
 }
 
-public void deleteTag(string tagID)
+public override void deleteTag(string tagID)
 {
 	m_api.deleteTag(tagID);
 }
 
-public void renameTag(string tagID, string title)
+public override void renameTag(string tagID, string title)
 {
 	m_api.renameTag(tagID, title);
 }
 
-public bool serverAvailable()
+public override bool serverAvailable()
 {
 	return Utils.ping("http://feedly.com/");
 }
 
-public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
+public override bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 {
 	feedID = "feed/" + feedURL;
 	bool success = false;
@@ -288,7 +288,7 @@ public bool addFeed(string feedURL, string? catID, string? newCatName, out strin
 	return success;
 }
 
-public void addFeeds(Gee.List<Feed> feeds)
+public override void addFeeds(Gee.List<Feed> feeds)
 {
 	foreach(Feed f in feeds)
 	{
@@ -296,54 +296,54 @@ public void addFeeds(Gee.List<Feed> feeds)
 	}
 }
 
-public void removeFeed(string feedID)
+public override void removeFeed(string feedID)
 {
 	m_api.removeSubscription(feedID);
 }
 
-public void renameFeed(string feedID, string title)
+public override void renameFeed(string feedID, string title)
 {
 	var feed = DataBase.readOnly().read_feed(feedID);
 	m_api.addSubscription(feed.getFeedID(), title, feed.getCatString());
 }
 
-public void moveFeed(string feedID, string newCatID, string? currentCatID )
+public override void moveFeed(string feedID, string newCatID, string? currentCatID )
 {
 	m_api.moveSubscription(feedID, newCatID, currentCatID);
 }
 
-public string createCategory(string title, string? parentID)
+public override string createCategory(string title, string? parentID)
 {
 	return m_api.createCatID(title);
 }
 
-public void renameCategory(string catID, string title)
+public override void renameCategory(string catID, string title)
 {
 	m_api.renameCategory(catID, title);
 }
 
-public void moveCategory(string catID, string newParentID)
+public override void moveCategory(string catID, string newParentID)
 {
 	return;
 }
 
-public void deleteCategory(string catID)
+public override void deleteCategory(string catID)
 {
 	m_api.removeCategory(catID);
 }
 
-public void removeCatFromFeed(string feedID, string catID)
+public override void removeCatFromFeed(string feedID, string catID)
 {
 	var feed = DataBase.readOnly().read_feed(feedID);
 	m_api.addSubscription(feed.getFeedID(), feed.getTitle(), feed.getCatString().replace(catID + ",", ""));
 }
 
-public void importOPML(string opml)
+public override void importOPML(string opml)
 {
 	m_api.importOPML(opml);
 }
 
-public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
+public override bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
 {
 	m_api.getUnreadCounts();
 
@@ -365,12 +365,12 @@ public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories,
 	return false;
 }
 
-public int getUnreadCount()
+public override int getUnreadCount()
 {
 	return m_api.getTotalUnread();
 }
 
-public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
+public override void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 {
 	string continuation = null;
 	string feedly_tagID = "";

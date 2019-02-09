@@ -13,7 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.decsyncInterface : Peas.ExtensionBase, FeedServerInterface {
+public class FeedReader.decsyncInterface : FeedServerInterface {
 
 internal DecsyncUtils m_utils;
 private Soup.Session m_session;
@@ -23,7 +23,7 @@ private Gtk.Button loginButton;
 private Gtk.Spinner waitingSpinner;
 private Gtk.Stack loginStack;
 
-public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
+public override void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 {
 	m_utils = new DecsyncUtils(settings_backend);
 	m_session = new Soup.Session();
@@ -59,37 +59,37 @@ private bool initDecsync()
 	return true;
 }
 
-public string getWebsite()
+public override string getWebsite()
 {
 	return "https://github.com/39aldo39/DecSync";
 }
 
-public BackendFlags getFlags()
+public override BackendFlags getFlags()
 {
 	return (BackendFlags.LOCAL | BackendFlags.FREE_SOFTWARE | BackendFlags.FREE);
 }
 
-public string getID()
+public override string getID()
 {
 	return "decsync";
 }
 
-public string iconName()
+public override string iconName()
 {
 	return "feed-service-decsync";
 }
 
-public string serviceName()
+public override string serviceName()
 {
 	return "DecSync";
 }
 
-public bool needWebLogin()
+public override bool needWebLogin()
 {
 	return false;
 }
 
-public Gtk.Box? getWidget()
+public override Gtk.Box? getWidget()
 {
 	var doneLabel = new Gtk.Label(_("Done"));
 	var waitingLabel = new Gtk.Label(_("Adding Feeds"));
@@ -164,17 +164,17 @@ public Gtk.Box? getWidget()
 	return box;
 }
 
-public void showHtAccess()
+public override void showHtAccess()
 {
 	return;
 }
 
-public void writeData()
+public override void writeData()
 {
 	m_utils.setDecsyncDir(m_loginDir);
 }
 
-public async void postLoginAction()
+public override async void postLoginAction()
 {
 	loginButton.set_sensitive(false);
 	waitingSpinner.start();
@@ -190,92 +190,92 @@ public async void postLoginAction()
 	yield;
 }
 
-public string buildLoginURL()
+public override string buildLoginURL()
 {
 	return "";
 }
 
-public bool extractCode(string redirectURL)
+public override bool extractCode(string redirectURL)
 {
 	return false;
 }
 
-public bool supportTags()
+public override bool supportTags()
 {
 	return false;
 }
 
-public bool doInitSync()
+public override bool doInitSync()
 {
 	return false;
 }
 
-public string symbolicIcon()
+public override string symbolicIcon()
 {
 	return "feed-service-decsync-symbolic";
 }
 
-public string accountName()
+public override string accountName()
 {
 	return "DecSync";
 }
 
-public string getServerURL()
+public override string getServerURL()
 {
 	return "http://localhost/";
 }
 
-public string uncategorizedID()
+public override string uncategorizedID()
 {
 	return "0";
 }
 
-public bool hideCategoryWhenEmpty(string catID)
+public override bool hideCategoryWhenEmpty(string catID)
 {
 	return false;
 }
 
-public bool supportCategories()
+public override bool supportCategories()
 {
 	return true;
 }
 
-public bool supportFeedManipulation()
+public override bool supportFeedManipulation()
 {
 	return true;
 }
 
-public bool supportMultiLevelCategories()
+public override bool supportMultiLevelCategories()
 {
 	return true;
 }
 
-public bool supportMultiCategoriesPerFeed()
+public override bool supportMultiCategoriesPerFeed()
 {
 	return false;
 }
 
-public bool syncFeedsAndCategories()
+public override bool syncFeedsAndCategories()
 {
 	return false;
 }
 
-public bool tagIDaffectedByNameChange()
+public override bool tagIDaffectedByNameChange()
 {
 	return false;
 }
 
-public void resetAccount()
+public override void resetAccount()
 {
 	return;
 }
 
-public bool useMaxArticles()
+public override bool useMaxArticles()
 {
 	return true;
 }
 
-public LoginResponse login()
+public override LoginResponse login()
 {
 	if (initDecsync())
 	{
@@ -287,17 +287,17 @@ public LoginResponse login()
 	}
 }
 
-public bool logout()
+public override bool logout()
 {
 	return true;
 }
 
-public bool serverAvailable()
+public override bool serverAvailable()
 {
 	return Utils.ping("https://duckduckgo.com/");
 }
 
-public void setArticleIsRead(string articleIDs, ArticleStatus readStatus)
+public override void setArticleIsRead(string articleIDs, ArticleStatus readStatus)
 {
 	var read = readStatus == ArticleStatus.READ;
 	Logger.debug("Mark " + articleIDs + " as " + (read ? "read" : "unread"));
@@ -316,7 +316,7 @@ public void setArticleIsRead(string articleIDs, ArticleStatus readStatus)
 	m_sync.setEntries(entries);
 }
 
-public void setArticleIsMarked(string articleID, ArticleStatus markedStatus)
+public override void setArticleIsMarked(string articleID, ArticleStatus markedStatus)
 {
 	var marked = markedStatus == ArticleStatus.MARKED;
 	Logger.debug("Mark " + articleID + " as " + (marked ? "marked" : "unmarked"));
@@ -329,52 +329,52 @@ public void setArticleIsMarked(string articleID, ArticleStatus markedStatus)
 	}
 }
 
-public bool alwaysSetReadByID()
+public override bool alwaysSetReadByID()
 {
 	return true;
 }
 
-public void setFeedRead(string feedID)
+public override void setFeedRead(string feedID)
 {
 	return;
 }
 
-public void setCategoryRead(string catID)
+public override void setCategoryRead(string catID)
 {
 	return;
 }
 
-public void markAllItemsRead()
+public override void markAllItemsRead()
 {
 	return;
 }
 
-public void tagArticle(string articleID, string tagID)
+public override void tagArticle(string articleID, string tagID)
 {
 	return;
 }
 
-public void removeArticleTag(string articleID, string tagID)
+public override void removeArticleTag(string articleID, string tagID)
 {
 	return;
 }
 
-public string createTag(string caption)
+public override string createTag(string caption)
 {
 	return "";
 }
 
-public void deleteTag(string tagID)
+public override void deleteTag(string tagID)
 {
 	return;
 }
 
-public void renameTag(string tagID, string title)
+public override void renameTag(string tagID, string title)
 {
 	return;
 }
 
-public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
+public override bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 {
 	return addFeedWithDecsync(feedURL, catID, newCatName, out feedID, out errmsg);
 }
@@ -429,7 +429,7 @@ public bool addFeedWithDecsync(string feedURL, string? catID, string? newCatName
 	return false;
 }
 
-public void addFeeds(Gee.List<Feed> feeds)
+public override void addFeeds(Gee.List<Feed> feeds)
 {
 	string feedID, errmsg;
 	foreach(Feed feed in feeds)
@@ -439,23 +439,23 @@ public void addFeeds(Gee.List<Feed> feeds)
 	}
 }
 
-public void removeFeed(string feedID)
+public override void removeFeed(string feedID)
 {
 	m_sync.setEntry({"feeds", "subscriptions"}, stringToNode(feedID), boolToNode(false));
 }
 
-public void renameFeed(string feedID, string title)
+public override void renameFeed(string feedID, string title)
 {
 	m_sync.setEntry({"feeds", "names"}, stringToNode(feedID), stringToNode(title));
 }
 
-public void moveFeed(string feedID, string newCatID, string? currentCatID)
+public override void moveFeed(string feedID, string newCatID, string? currentCatID)
 {
 	string? value = newCatID == uncategorizedID() ? null : newCatID;
 	m_sync.setEntry({"feeds", "categories"}, stringToNode(feedID), stringToNode(value));
 }
 
-public string createCategory(string title, string? parentID)
+public override string createCategory(string title, string? parentID)
 {
 	var db = DataBase.readOnly();
 	string? catID = db.getCategoryID(title);
@@ -469,18 +469,18 @@ public string createCategory(string title, string? parentID)
 	return catID;
 }
 
-public void renameCategory(string catID, string title)
+public override void renameCategory(string catID, string title)
 {
 	m_sync.setEntry({"categories", "names"}, stringToNode(catID), stringToNode(title));
 }
 
-public void moveCategory(string catID, string newParentID)
+public override void moveCategory(string catID, string newParentID)
 {
 	string? value = newParentID == CategoryID.MASTER.to_string() ? null : newParentID;
 	m_sync.setEntry({"categories", "parents"}, stringToNode(catID), stringToNode(value));
 }
 
-public void deleteCategory(string catID)
+public override void deleteCategory(string catID)
 {
 	Logger.info("Delete category " + catID);
 	var feedIDs = DataBase.readOnly().getFeedIDofCategorie(catID);
@@ -490,28 +490,28 @@ public void deleteCategory(string catID)
 	}
 }
 
-public void removeCatFromFeed(string feedID, string catID)
+public override void removeCatFromFeed(string feedID, string catID)
 {
 	moveFeed(feedID, uncategorizedID(), catID);
 }
 
-public void importOPML(string opml)
+public override void importOPML(string opml)
 {
 	var parser = new OPMLparser(opml);
 	parser.parse();
 }
 
-public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
+public override bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
 {
 	return true;
 }
 
-public int getUnreadCount()
+public override int getUnreadCount()
 {
 	return 0;
 }
 
-public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
+public override void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 {
 	var feeds = DataBase.readOnly().read_feeds();
 	var articles = new Gee.ArrayList<Article>();
@@ -696,12 +696,12 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 	m_sync.executeAllNewEntries(new Unit());
 }
 
-public string[] articleToPath(Article article, string type)
+private string[] articleToPath(Article article, string type)
 {
 	return basePathToPath(articleToBasePath(article), type);
 }
 
-public string[] basePathToPath(Gee.List<string> basePath, string type)
+private string[] basePathToPath(Gee.List<string> basePath, string type)
 {
 	var path = new Gee.ArrayList<string>();
 	path.add("articles");
@@ -710,7 +710,7 @@ public string[] basePathToPath(Gee.List<string> basePath, string type)
 	return path.to_array();
 }
 
-public Gee.List<string> articleToBasePath(Article article)
+private Gee.List<string> articleToBasePath(Article article)
 {
 	var datetime = article.getDate().to_utc();
 	var year = datetime.format("%Y");

@@ -13,13 +13,13 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface {
+public class FeedReader.localInterface : FeedServerInterface {
 
 private localUtils m_utils;
 private Soup.Session m_session;
 private Gtk.ListBox m_feedlist;
 
-public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
+public override void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 {
 	m_utils = new localUtils();
 	m_session = new Soup.Session();
@@ -27,37 +27,37 @@ public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secre
 	m_session.timeout = 5;
 }
 
-public string getWebsite()
+public override string getWebsite()
 {
 	return "http://jangernert.github.io/FeedReader/";
 }
 
-public BackendFlags getFlags()
+public override BackendFlags getFlags()
 {
 	return (BackendFlags.LOCAL | BackendFlags.FREE_SOFTWARE | BackendFlags.FREE);
 }
 
-public string getID()
+public override string getID()
 {
 	return "local";
 }
 
-public string iconName()
+public override string iconName()
 {
 	return "feed-service-local";
 }
 
-public string serviceName()
+public override string serviceName()
 {
 	return "Local RSS";
 }
 
-public bool needWebLogin()
+public override bool needWebLogin()
 {
 	return false;
 }
 
-public Gtk.Box? getWidget()
+public override Gtk.Box? getWidget()
 {
 	var doneLabel = new Gtk.Label(_("Done"));
 	var waitingLabel = new Gtk.Label(_("Adding Feeds"));
@@ -146,17 +146,17 @@ public Gtk.Box? getWidget()
 	return box;
 }
 
-public void showHtAccess()
+public override void showHtAccess()
 {
 	return;
 }
 
-public void writeData()
+public override void writeData()
 {
 	return;
 }
 
-public async void postLoginAction()
+public override async void postLoginAction()
 {
 	SourceFunc callback = postLoginAction.callback;
 	new GLib.Thread<void*>(null, () => {
@@ -175,12 +175,12 @@ public async void postLoginAction()
 	yield;
 }
 
-public string buildLoginURL()
+public override string buildLoginURL()
 {
 	return "";
 }
 
-public bool extractCode(string redirectURL)
+public override bool extractCode(string redirectURL)
 {
 	return false;
 }
@@ -231,137 +231,137 @@ private void headerFunc(Gtk.ListBoxRow row, Gtk.ListBoxRow? before)
 }
 
 
-public bool supportTags()
+public override bool supportTags()
 {
 	return true;
 }
 
-public bool doInitSync()
+public override bool doInitSync()
 {
 	return false;
 }
 
-public string symbolicIcon()
+public override string symbolicIcon()
 {
 	return "feed-service-local-symbolic";
 }
 
-public string accountName()
+public override string accountName()
 {
 	return "Local RSS";
 }
 
-public string getServerURL()
+public override string getServerURL()
 {
 	return "http://localhost/";
 }
 
-public string uncategorizedID()
+public override string uncategorizedID()
 {
 	return "0";
 }
 
-public bool hideCategoryWhenEmpty(string catID)
+public override bool hideCategoryWhenEmpty(string catID)
 {
 	return false;
 }
 
-public bool supportCategories()
+public override bool supportCategories()
 {
 	return true;
 }
 
-public bool supportFeedManipulation()
+public override bool supportFeedManipulation()
 {
 	return true;
 }
 
-public bool supportMultiLevelCategories()
+public override bool supportMultiLevelCategories()
 {
 	return true;
 }
 
-public bool supportMultiCategoriesPerFeed()
+public override bool supportMultiCategoriesPerFeed()
 {
 	return false;
 }
 
-public bool syncFeedsAndCategories()
+public override bool syncFeedsAndCategories()
 {
 	return false;
 }
 
-public bool tagIDaffectedByNameChange()
+public override bool tagIDaffectedByNameChange()
 {
 	return false;
 }
 
-public void resetAccount()
+public override void resetAccount()
 {
 	return;
 }
 
-public bool useMaxArticles()
+public override bool useMaxArticles()
 {
 	return true;
 }
 
-public LoginResponse login()
+public override LoginResponse login()
 {
 	return LoginResponse.SUCCESS;
 }
 
-public bool logout()
+public override bool logout()
 {
 	return true;
 }
 
-public bool serverAvailable()
+public override bool serverAvailable()
 {
 	return Utils.ping("https://duckduckgo.com/");
 }
 
-public void setArticleIsRead(string articleIDs, ArticleStatus read)
+public override void setArticleIsRead(string articleIDs, ArticleStatus read)
 {
 	return;
 }
 
-public void setArticleIsMarked(string articleID, ArticleStatus marked)
+public override void setArticleIsMarked(string articleID, ArticleStatus marked)
 {
 	return;
 }
 
-public bool alwaysSetReadByID()
+public override bool alwaysSetReadByID()
 {
 	return false;
 }
 
-public void setFeedRead(string feedID)
+public override void setFeedRead(string feedID)
 {
 	return;
 }
 
-public void setCategoryRead(string catID)
+public override void setCategoryRead(string catID)
 {
 	return;
 }
 
-public void markAllItemsRead()
+public override void markAllItemsRead()
 {
 	return;
 }
 
-public void tagArticle(string articleID, string tagID)
+public override void tagArticle(string articleID, string tagID)
 {
 	return;
 }
 
-public void removeArticleTag(string articleID, string tagID)
+public override void removeArticleTag(string articleID, string tagID)
 {
 	return;
 }
 
-public string createTag(string caption)
+public override string createTag(string caption)
 {
 	string tagID = "1";
 
@@ -373,17 +373,17 @@ public string createTag(string caption)
 	return tagID;
 }
 
-public void deleteTag(string tagID)
+public override void deleteTag(string tagID)
 {
 	return;
 }
 
-public void renameTag(string tagID, string title)
+public override void renameTag(string tagID, string title)
 {
 	return;
 }
 
-public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
+public override bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 {
 	var catIDs = new Gee.ArrayList<string>();
 	var db = DataBase.writeAccess();
@@ -419,7 +419,7 @@ public bool addFeed(string feedURL, string? catID, string? newCatName, out strin
 	return false;
 }
 
-public void addFeeds(Gee.List<Feed> feeds)
+public override void addFeeds(Gee.List<Feed> feeds)
 {
 	var finishedFeeds = new Gee.ArrayList<Feed>();
 
@@ -451,22 +451,22 @@ public void addFeeds(Gee.List<Feed> feeds)
 	DataBase.writeAccess().write_feeds(finishedFeeds);
 }
 
-public void removeFeed(string feedID)
+public override void removeFeed(string feedID)
 {
 	return;
 }
 
-public void renameFeed(string feedID, string title)
+public override void renameFeed(string feedID, string title)
 {
 	return;
 }
 
-public void moveFeed(string feedID, string newCatID, string? currentCatID)
+public override void moveFeed(string feedID, string newCatID, string? currentCatID)
 {
 	return;
 }
 
-public string createCategory(string title, string? parentID)
+public override string createCategory(string title, string? parentID)
 {
 	string catID;
 
@@ -484,43 +484,43 @@ public string createCategory(string title, string? parentID)
 	return catID;
 }
 
-public void renameCategory(string catID, string title)
+public override void renameCategory(string catID, string title)
 {
 	return;
 }
 
-public void moveCategory(string catID, string newParentID)
+public override void moveCategory(string catID, string newParentID)
 {
 	return;
 }
 
-public void deleteCategory(string catID)
+public override void deleteCategory(string catID)
 {
 	return;
 }
 
-public void removeCatFromFeed(string feedID, string catID)
+public override void removeCatFromFeed(string feedID, string catID)
 {
 	return;
 }
 
-public void importOPML(string opml)
+public override void importOPML(string opml)
 {
 	var parser = new OPMLparser(opml);
 	parser.parse();
 }
 
-public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
+public override bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
 {
 	return true;
 }
 
-public int getUnreadCount()
+public override int getUnreadCount()
 {
 	return 0;
 }
 
-public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
+public override void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 {
 	var db = DataBase.writeAccess();
 	var feeds = db.read_feeds();

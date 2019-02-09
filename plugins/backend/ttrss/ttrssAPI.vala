@@ -70,8 +70,8 @@ public LoginResponse login()
 	if(status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_object();
-		m_ttrss_sessionid = response.get_string_member("session_id");
-		var api_level = response.get_int_member("api_level");
+		m_ttrss_sessionid = UntypedJson.Object.get_string_member(response, "session_id");
+		var api_level = UntypedJson.Object.get_int_member(response, "api_level");
 		Logger.info("TTRSS Session ID: %s".printf(m_ttrss_sessionid));
 		Logger.info("TTRSS API Level: %lld".printf(api_level));
 
@@ -177,9 +177,10 @@ public int getUnreadCount()
 	if(status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_object();
-		if(response.has_member("unread"))
+		int? maybe_unread = UntypedJson.Object.get_int_member(response, "unread");
+		if(maybe_unread != null)
 		{
-			return (int)response.get_int_member("unread");
+			unread = maybe_unread;
 		}
 		else
 		{
@@ -212,7 +213,7 @@ public bool getFeeds(Gee.List<Feed> feeds, Gee.List<Category> categories)
 				for(uint i = 0; i < feed_count; i++)
 				{
 					var feed_node = response.get_object_element(i);
-					string feed_id = feed_node.get_int_member("id").to_string();
+					string feed_id = UntypedJson.Object.get_string_member(feed_node, "id");
 					string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir + feed_id + ".ico" : null;
 
 					feeds.add(
@@ -220,8 +221,8 @@ public bool getFeeds(Gee.List<Feed> feeds, Gee.List<Category> categories)
 							feed_id,
 							feed_node.get_string_member("title"),
 							feed_node.get_string_member("feed_url"),
-							(int)feed_node.get_int_member("unread"),
-							ListUtils.single(feed_node.get_int_member("cat_id").to_string()),
+							UntypedJson.Object.get_int_member(feed_node, "unread"),
+							ListUtils.single(UntypedJson.Object.get_string_member(feed_node, "cat_id")),
 							icon_url
 							)
 						);
@@ -253,7 +254,7 @@ public bool getUncategorizedFeeds(Gee.List<Feed> feeds)
 		for(uint i = 0; i < feed_count; i++)
 		{
 			var feed_node = response.get_object_element(i);
-			string feed_id = feed_node.get_int_member("id").to_string();
+			string feed_id = UntypedJson.Object.get_string_member(feed_node, "id");
 			string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir + feed_id + ".ico" : null;
 
 			feeds.add(
@@ -261,8 +262,8 @@ public bool getUncategorizedFeeds(Gee.List<Feed> feeds)
 					feed_id,
 					feed_node.get_string_member("title"),
 					feed_node.get_string_member("feed_url"),
-					(int)feed_node.get_int_member("unread"),
-					ListUtils.single(feed_node.get_int_member("cat_id").to_string()),
+					UntypedJson.Object.get_int_member(feed_node, "unread"),
+					ListUtils.single(UntypedJson.Object.get_string_member(feed_node, "cat_id")),
 					icon_url
 					)
 				);
@@ -291,7 +292,7 @@ public bool getTags(Gee.List<Tag> tags)
 			var tag_node = response.get_object_element(i);
 			tags.add(
 				new Tag(
-					tag_node.get_int_member("id").to_string(),
+					UntypedJson.Object.get_string_member(tag_node, "id"),
 					tag_node.get_string_member("caption"),
 					db.getTagColor()
 					)
@@ -363,7 +364,7 @@ private void getSubCategories(Gee.List<Category> categories, Json.Object categor
 			if(int.parse(categorieID) > 0)
 			{
 				string title = categorie_node.get_string_member("name");
-				int unread_count = (int)categorie_node.get_int_member("unread");
+				int unread_count = UntypedJson.Object.get_int_member(categorie_node, "unread");
 
 				if(title == "Uncategorized")
 				{
@@ -404,13 +405,13 @@ private int getUncategorizedUnread()
 		for(int i = 0; i < categorie_count; i++)
 		{
 			var categorie_node = response.get_object_element(i);
-			if(categorie_node.get_int_member("id") == 0)
+			if(UntypedJson.Object.get_int_member(categorie_node, "id") == 0)
 			{
 				if(categorie_node.has_member("kind"))
 				{
 					if(categorie_node.get_string_member("kind") == "cat")
 					{
-						return (int)categorie_node.get_int_member("counter");
+						return UntypedJson.Object.get_int_member(categorie_node, "counter");
 					}
 				}
 			}
@@ -494,16 +495,16 @@ public void getHeadlines(Gee.List<Article> articles, int skip, int limit, Articl
 			}
 
 			var Article = new Article(
-				headline_node.get_int_member("id").to_string(),
+				UntypedJson.Object.get_string_member(headline_node, "id"),
 				headline_node.get_string_member("title"),
 				headline_node.get_string_member("link"),
-				headline_node.get_int_member("feed_id").to_string(),
+				UntypedJson.Object.get_string_member(headline_node, "feed_id"),
 				headline_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ,
 				headline_node.get_boolean_member("marked") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 				null,
 				null,
 				headline_node.get_string_member("author"),
-				new DateTime.from_unix_local(headline_node.get_int_member("updated")),
+				new DateTime.from_unix_local(UntypedJson.Object.get_int_member(headline_node, "updated")),
 				-1,
 				tags,
 				enclosures
@@ -540,7 +541,7 @@ public Gee.List<string>? NewsPlus(ArticleStatus type, int limit)
 		for(uint i = 0; i < headline_count; i++)
 		{
 			var headline_node = response.get_object_element(i);
-			ids.add(headline_node.get_int_member("id").to_string());
+			ids.add(UntypedJson.Object.get_string_member(headline_node, "id"));
 		}
 		return ids;
 	}
@@ -608,16 +609,16 @@ public Gee.List<Article> getArticles(Gee.List<string> articleIDs)
 			}
 
 			var Article = new Article(
-				article_node.get_int_member("id").to_string(),
+				UntypedJson.Object.get_string_member(article_node, "id"),
 				article_node.get_string_member("title"),
 				article_node.get_string_member("link"),
-				article_node.get_int_member("feed_id").to_string(),
+				UntypedJson.Object.get_string_member(article_node, "feed_id"),
 				article_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ,
 				article_node.get_boolean_member("marked") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 				article_node.get_string_member("content"),
 				null,
 				article_node.get_string_member("author"),
-				new DateTime.from_unix_local(article_node.get_int_member("updated")),
+				new DateTime.from_unix_local(UntypedJson.Object.get_int_member(article_node, "updated")),
 				-1,
 				tags,
 				enclosures
@@ -781,7 +782,7 @@ public bool subscribeToFeed(string feedURL, string? catID, string? username, str
 			var status = response.get_object_member("status");
 			if(status.has_member("code"))
 			{
-				switch(status.get_int_member("code"))
+				switch(UntypedJson.Object.get_int_member(status, "code"))
 				{
 				case 0:
 				case 1:

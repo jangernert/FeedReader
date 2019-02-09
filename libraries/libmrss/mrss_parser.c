@@ -720,8 +720,13 @@ __mrss_parser_rss_item (nxml_t * doc, nxml_data_t * cur, mrss_t * data)
 		}
 	    }
 
+	  /* author email */
+	  else if (!strcmp (cur->value, "author") && !item->author_email
+		   && (c = nxmle_get_string (cur, NULL)))
+	    item->author_email = c;
+
 	  /* author */
-	  else if (!strcmp (cur->value, "author") && !item->author
+	  else if (!strcmp (cur->value, "creator") && !item->author
 		   && (c = nxmle_get_string (cur, NULL)))
 	    item->author = c;
 

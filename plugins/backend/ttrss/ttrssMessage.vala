@@ -71,8 +71,7 @@ public ConnectionError send(bool ping = false)
 	var error = send_impl(ping);
 	if(error != ConnectionError.SUCCESS)
 	{
-		printMessage();
-		printResponse();
+		logError("Error response from TT-RSS API");
 	}
 
 	return error;
@@ -148,7 +147,7 @@ public ConnectionError send_impl(bool ping)
 					parseError(content);
 			}
 
-			return ApiError();
+			return apiError();
 		}
 		else if(m_response_object.get_int_member("status") == 0)
 		{
@@ -202,16 +201,12 @@ public uint getStatusCode()
 	return m_message_soup.status_code;
 }
 
-public void printMessage()
+private void logError(string prefix)
 {
-	var msg = request_object_to_string();
-	if (!msg.contains("password"))
-		Logger.debug(msg);
-}
-
-public void printResponse()
-{
-	Logger.debug((string)m_message_soup.response_body.flatten().data);
+	var url = m_message_soup.get_uri().to_string(false);
+	var request = request_object_to_string();
+	var response = (string)m_message_soup.response_body.flatten().data;
+	Logger.error(@"$prefix\nURL: $url\nRequest object: $request\nResponse: $response");
 }
 
 private ConnectionError parseError(Json.Object err)
@@ -228,14 +223,12 @@ private ConnectionError parseError(Json.Object err)
 		return ConnectionError.API_DISABLED;
 	}
 
-	return ApiError();
+	return apiError();
 }
 
-private ConnectionError ApiError()
+private ConnectionError apiError()
 {
-	Logger.error("ttrss api error");
-	printMessage();
-	printResponse();
+	logError("TT-RSS API error");
 	return ConnectionError.API_ERROR;
 }
 }

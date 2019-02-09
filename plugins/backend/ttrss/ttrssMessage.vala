@@ -155,7 +155,7 @@ public ConnectionError send_impl(bool ping)
 		}
 	}
 
-	Logger.error("unknown error while sending ttrss message");
+	logError("unknown error while sending ttrss message");
 	return ConnectionError.UNKNOWN;
 }
 

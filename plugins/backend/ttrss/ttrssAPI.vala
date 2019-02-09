@@ -223,7 +223,8 @@ public bool getFeeds(Gee.List<Feed> feeds, Gee.List<Category> categories)
 							feed_node.get_string_member("feed_url"),
 							UntypedJson.Object.get_int_member(feed_node, "unread"),
 							ListUtils.single(UntypedJson.Object.get_string_member(feed_node, "cat_id")),
-							icon_url
+							icon_url,
+							feed_node.get_string_member("feed_url")
 							)
 						);
 				}
@@ -264,7 +265,8 @@ public bool getUncategorizedFeeds(Gee.List<Feed> feeds)
 					feed_node.get_string_member("feed_url"),
 					UntypedJson.Object.get_int_member(feed_node, "unread"),
 					ListUtils.single(UntypedJson.Object.get_string_member(feed_node, "cat_id")),
-					icon_url
+					icon_url,
+					feed_node.get_string_member("feed_url")
 					)
 				);
 		}

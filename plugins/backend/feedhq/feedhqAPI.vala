@@ -133,7 +133,8 @@ public bool getFeeds(Gee.List<Feed> feeds)
 				url,
 				0,
 				categories,
-				icon_url
+				icon_url,
+				object.get_string_member("url")
 				)
 			);
 	}

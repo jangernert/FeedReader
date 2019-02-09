@@ -34,7 +34,7 @@ class Api_feedreader extends Plugin {
 
 	function removeLabel()
 	{
-		$label_id = (int)db_escape_string($_REQUEST["label_id"]);
+		$label_id = (int)$_REQUEST["label_id"];
 		if($label_id != "")
 		{
 			Labels::remove(Labels::feed_to_label_id($label_id), $_SESSION["uid"]);
@@ -48,7 +48,7 @@ class Api_feedreader extends Plugin {
 
 	function addLabel()
 	{
-		$caption = db_escape_string($_REQUEST["caption"]);
+		$caption = $_REQUEST["caption"];
 		if($caption != "")
 		{
 			Labels::create($caption);
@@ -63,12 +63,13 @@ class Api_feedreader extends Plugin {
 
 	function renameLabel()
 	{
-		$caption = db_escape_string($_REQUEST["caption"]);
-		$label_id = Labels::feed_to_label_id((int)db_escape_string($_REQUEST["label_id"]));
+		$caption = $_REQUEST["caption"];
+		$label_id = Labels::feed_to_label_id((int)$_REQUEST["label_id"]);
 
 		if($label_id != "" && $caption != "")
 		{
-			$this->dbh->query("UPDATE ttrss_labels2 SET caption = '$caption' WHERE id = '$label_id' AND owner_uid = " . $_SESSION["uid"]);
+			$sth = $this->dbh->prepare("UPDATE ttrss_labels2 SET caption = ? WHERE id = ? AND owner_uid = ?");
+			$sth->execute([$caption, $label_id, $_SESSION["uid"]]);
 			return array(API::STATUS_OK);
 		}
 		else
@@ -79,10 +80,11 @@ class Api_feedreader extends Plugin {
 
 	function removeCategory()
 	{
-		$category_id = (int)db_escape_string($_REQUEST["category_id"]);
+		$category_id = (int)$_REQUEST["category_id"];
 		if($category_id != "")
 		{
-			$this->dbh->query("DELETE FROM ttrss_feed_categories WHERE id = '$category_id' AND owner_uid = ".$_SESSION["uid"]);
+			$sth = $this->dbh->prepare("DELETE FROM ttrss_feed_categories WHERE id = ? AND owner_uid = ?");
+			$sth->execute([$category_id, $_SESSION["uid"]]);
 			ccache_remove($category_id, $_SESSION["uid"], true);
 			return array(API::STATUS_OK);
 		}
@@ -101,12 +103,11 @@ class Api_feedreader extends Plugin {
 		{
 			if($parent_id == "")
 			{
-				$this->dbh->query("UPDATE ttrss_feed_categories SET parent_cat = NULL WHERE id = '$category_id' AND owner_uid = ".$_SESSION["uid"]);
+				$parent_id = null;
 			}
-			else
-			{
-				$this->dbh->query("UPDATE ttrss_feed_categories SET parent_cat = '$parent_id' WHERE id = '$category_id' AND owner_uid = ".$_SESSION["uid"]);
-			}
+
+			$sth = $this->dbh->prepare("UPDATE ttrss_feed_categories SET parent_cat = ? WHERE id = ? AND owner_uid = ?");
+			$sth->execute([$parent_id, $category_id, $_SESSION["uid"]]);
 			return array(API::STATUS_OK);
 		}
 		else
@@ -117,22 +118,26 @@ class Api_feedreader extends Plugin {
 
 	function addCategory()
 	{
-		$caption = db_escape_string($_REQUEST["caption"]);
-		$parent_id = (int)db_escape_string($_REQUEST["parent_id"]);
+		$caption = $_REQUEST["caption"];
+		$parent_id = (int)$_REQUEST["parent_id"];
 		if($caption != "")
 		{
+			$query = "SELECT id FROM ttrss_feed_categories WHERE title = ? AND owner_uid = ?";
+			$params = [$caption, $_SESSION["uid"]];
 			if($parent_id != "")
 			{
 				add_feed_category($caption, $parent_id);
-				$parent_qpart = "parent_cat = '$parent_id'";
+				$query = $query . " AND parent_cat = ?";
+				array_push($params, $parent_id);
 			}
 			else
 			{
 				add_feed_category($caption);
-				$parent_qpart = "parent_cat IS NULL";
+				$query = $query . "AND parent_cat IS NULL";
 			}
-			$result = $this->dbh->query("SELECT id FROM ttrss_feed_categories WHERE $parent_qpart AND title = '$caption' AND owner_uid = ".$_SESSION["uid"]);
-			$id = $this->dbh->fetch_result($result, 0, "id");
+			$sth = $this->dbh->prepare($query);
+			$sth->execute($params);
+			$id = $sth->fetchColumn();
 			return array(API::STATUS_OK, $id);
 		}
 		else
@@ -142,12 +147,13 @@ class Api_feedreader extends Plugin {
 	}
 
 	function renameCategory() {
-		$cat_id = (int)db_escape_string($_REQUEST["category_id"]);
-		$caption = db_escape_string($_REQUEST["caption"]);
+		$cat_id = (int)$_REQUEST["category_id"];
+		$caption = $_REQUEST["caption"];
 
 		if($caption != "")
 		{
-			$this->dbh->query("UPDATE ttrss_feed_categories SET title = '$caption' WHERE id = '$cat_id' AND owner_uid = " . $_SESSION["uid"]);
+			$sth = $this->dbh->prepare("UPDATE ttrss_feed_categories SET title = ? WHERE id = ? AND owner_uid = ?");
+			$sth->execute([$caption, $cat_id, $_SESSION["uid"]]);
 			return array(API::STATUS_OK);
 		}
 		else
@@ -157,12 +163,13 @@ class Api_feedreader extends Plugin {
 	}
 
 	function renameFeed() {
-		$feed_id = (int)db_escape_string($_REQUEST["feed_id"]);
-		$caption = db_escape_string($_REQUEST["caption"]);
+		$feed_id = (int)$_REQUEST["feed_id"];
+		$caption = $_REQUEST["caption"];
 
 		if($caption != "")
 		{
-			$this->dbh->query("UPDATE ttrss_feeds SET title = '$caption' WHERE id = '$feed_id' AND owner_uid = " . $_SESSION["uid"]);
+			$sth = $this->dbh->prepare("UPDATE ttrss_feeds SET title = ? WHERE id = ? AND owner_uid = ?");
+			$sth->execute([$caption, $feed_id, $_SESSION["uid"]]);
 			return array(API::STATUS_OK);
 		}
 		else
@@ -172,12 +179,13 @@ class Api_feedreader extends Plugin {
 	}
 
 	function moveFeed() {
-		$feed_id = (int)db_escape_string($_REQUEST["feed_id"]);
-		$cat_id = (int)db_escape_string($_REQUEST["category_id"]);
+		$feed_id = (int)$_REQUEST["feed_id"];
+		$cat_id = (int)$_REQUEST["category_id"];
 
 		if($feed_id != "" && $cat_id != "")
 		{
-			$this->dbh->query("UPDATE ttrss_feeds SET cat_id = '$cat_id' WHERE id = '$feed_id' AND owner_uid = " . $_SESSION["uid"]);
+			$sth = $this->dbh->prepare("UPDATE ttrss_feeds SET cat_id = ? WHERE id = ? AND owner_uid = ?");
+			$sth->execute([$cat_id, $feed_id, $_SESSION["uid"]]);
 			return array(API::STATUS_OK);
 		}
 		else

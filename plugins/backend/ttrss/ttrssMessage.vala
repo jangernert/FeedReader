@@ -36,14 +36,14 @@ public void add_int(string type, int val)
 	m_request_object.set_int_member(type, val);
 }
 
-public void add_int_array(string type, Gee.List<int> values)
+public void add_comma_separated_int_array(string type, Gee.List<int> values)
 {
-	var array = new Json.Array.sized(values.size);
-	foreach(var value in values)
+	var strings = new Gee.ArrayList<string>();
+	foreach(int value in values)
 	{
-		array.add_int_element(value);
+		strings.add(value.to_string());
 	}
-	m_request_object.set_array_member(type, array);
+	m_request_object.set_string_member(type, StringUtils.join(strings, ","));
 }
 
 public void add_bool(string type, bool val)

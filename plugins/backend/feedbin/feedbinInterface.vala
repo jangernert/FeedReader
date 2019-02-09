@@ -121,10 +121,6 @@ ensures (result != null)
 	return box;
 }
 
-public override void showHtAccess()
-{
-}
-
 public override void writeData()
 {
 	m_api.username = m_userEntry.get_text().strip();
@@ -132,20 +128,6 @@ public override void writeData()
 
 	m_api.password = m_passwordEntry.get_text().strip();
 	m_utils.setPassword(m_api.password);
-}
-
-public override async void postLoginAction()
-{
-}
-
-public override bool extractCode(string redirectURL)
-{
-	return false;
-}
-
-public override string buildLoginURL()
-{
-	return "";
 }
 
 public override bool supportTags()
@@ -241,11 +223,6 @@ public override LoginResponse login()
 		Logger.error("Feedbin login: " + e.message);
 		return LoginResponse.UNKNOWN_ERROR;
 	}
-}
-
-public override bool logout()
-{
-	return true;
 }
 
 public override bool serverAvailable()
@@ -521,10 +498,6 @@ public override void removeCatFromFeed(string feed_id_str, string category)
 	{
 		Logger.error(@"FeedbinInterface.removeCatFromFeed: " + e.message);
 	}
-}
-
-public override void importOPML(string opml)
-{
 }
 
 public override bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)

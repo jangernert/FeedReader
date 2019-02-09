@@ -183,21 +183,6 @@ public override void writeData()
 	}
 }
 
-public override async void postLoginAction()
-{
-	return;
-}
-
-public override bool extractCode(string redirectURL)
-{
-	return false;
-}
-
-public override string buildLoginURL()
-{
-	return "";
-}
-
 public override bool supportTags()
 {
 	return false;
@@ -276,11 +261,6 @@ public override bool useMaxArticles()
 public override LoginResponse login()
 {
 	return m_api.login();
-}
-
-public override bool logout()
-{
-	return true;
 }
 
 public override bool serverAvailable()
@@ -430,12 +410,6 @@ public override void deleteCategory(string catID)
 public override void removeCatFromFeed(string feedID, string catID)
 {
 	return;
-}
-
-public override void importOPML(string opml)
-{
-	var parser = new OPMLparser(opml);
-	parser.parse();
 }
 
 public override bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)

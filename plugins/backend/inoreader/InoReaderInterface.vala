@@ -49,16 +49,6 @@ public override string serviceName()
 	return "InoReader";
 }
 
-public override void writeData()
-{
-	return;
-}
-
-public override async void postLoginAction()
-{
-	return;
-}
-
 public override bool extractCode(string redirectURL)
 {
 	if(redirectURL.has_prefix(InoReaderSecret.apiRedirectUri))
@@ -102,16 +92,6 @@ public override string buildLoginURL()
 public override bool needWebLogin()
 {
 	return true;
-}
-
-public override Gtk.Box? getWidget()
-{
-	return null;
-}
-
-public override void showHtAccess()
-{
-	return;
 }
 
 public override bool supportTags()
@@ -192,11 +172,6 @@ public override bool useMaxArticles()
 public override LoginResponse login()
 {
 	return m_api.login();
-}
-
-public override bool logout()
-{
-	return true;
 }
 
 public override void setArticleIsRead(string articleIDs, ArticleStatus read)
@@ -357,12 +332,6 @@ public override void deleteCategory(string catID)
 public override void removeCatFromFeed(string feedID, string catID)
 {
 	return;
-}
-
-public override void importOPML(string opml)
-{
-	var parser = new OPMLparser(opml);
-	parser.parse();
 }
 
 public override bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)

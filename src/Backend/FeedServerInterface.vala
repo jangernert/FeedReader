@@ -58,7 +58,10 @@ public abstract bool useMaxArticles();
 
 public abstract LoginResponse login();
 
-public abstract bool logout();
+public virtual bool logout()
+{
+	return true;
+}
 
 public abstract bool alwaysSetReadByID();
 
@@ -112,7 +115,11 @@ public abstract void deleteCategory(string catID);
 
 public abstract void removeCatFromFeed(string feedID, string catID);
 
-public abstract void importOPML(string opml);
+public virtual void importOPML(string opml)
+{
+	var parser = new OPMLparser(opml);
+	parser.parse();
+}
 
 public abstract bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null);
 
@@ -129,7 +136,10 @@ public abstract BackendFlags getFlags();
 
 public abstract string getID();
 
-public abstract Gtk.Box? getWidget();
+public virtual Gtk.Box? getWidget()
+{
+	return null;
+}
 
 public abstract string iconName();
 
@@ -137,14 +147,26 @@ public abstract string serviceName();
 
 public abstract bool needWebLogin();
 
-public abstract void showHtAccess();
+public virtual void showHtAccess()
+{
+}
 
-public abstract void writeData();
+public virtual void writeData()
+{
+}
 
-public abstract async void postLoginAction();
+public virtual async void postLoginAction()
+{
+}
 
-public abstract bool extractCode(string redirectURL);
+public virtual bool extractCode(string redirectURL)
+{
+	return false;
+}
 
-public abstract string buildLoginURL();
+public virtual string buildLoginURL()
+{
+	return "";
+}
 
 }

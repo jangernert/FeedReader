@@ -172,7 +172,13 @@ public void showHtAccess()
 
 public void writeData()
 {
-	m_utils.setURL(m_urlEntry.get_text());
+	string url = m_urlEntry.get_text();
+	if (GLib.Uri.parse_scheme(url) == null)
+	{
+		url = "https://" + url;
+		m_urlEntry.set_text(url);
+	}
+	m_utils.setURL(url);
 	m_utils.setUser(m_userEntry.get_text().strip());
 	m_utils.setPassword(m_passwordEntry.get_text().strip());
 }

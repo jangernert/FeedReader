@@ -525,6 +525,7 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 		}
 	}
 	var articles = m_api.getArticles(articleIDs);
+	Logger.info("Getting articles: " + StringUtils.join(articleIDs, ","));
 
 	articles.sort((a, b) => {
 			return strcmp(a.getArticleID(), b.getArticleID());

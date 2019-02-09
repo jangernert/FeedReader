@@ -177,10 +177,9 @@ public int getUnreadCount()
 	if(status == ConnectionError.SUCCESS)
 	{
 		var response = message.get_response_object();
-		int64 parsed = 0;
-		bool res = int64.try_parse(response.get_string_member("unread"), out parsed);
-		if(res) {
-			unread = (int) parsed;
+		if(response.has_member("unread"))
+		{
+			return (int)response.get_int_member("unread");
 		}
 		else
 		{
@@ -498,7 +497,7 @@ public void getHeadlines(Gee.List<Article> articles, int skip, int limit, Articl
 				headline_node.get_int_member("id").to_string(),
 				headline_node.get_string_member("title"),
 				headline_node.get_string_member("link"),
-				headline_node.get_string_member("feed_id"),
+				headline_node.get_int_member("feed_id").to_string(),
 				headline_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ,
 				headline_node.get_boolean_member("marked") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 				null,
@@ -565,6 +564,7 @@ public Gee.List<Article> getArticles(Gee.List<string> articleIDs)
 	{
 		var response = message.get_response_array();
 		var article_count = response.get_length();
+		Logger.debug(@"Got $article_count new articles");
 
 		for(uint i = 0; i < article_count; i++)
 		{
@@ -608,10 +608,10 @@ public Gee.List<Article> getArticles(Gee.List<string> articleIDs)
 			}
 
 			var Article = new Article(
-				article_node.get_string_member("id"),
+				article_node.get_int_member("id").to_string(),
 				article_node.get_string_member("title"),
 				article_node.get_string_member("link"),
-				article_node.get_string_member("feed_id"),
+				article_node.get_int_member("feed_id").to_string(),
 				article_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ,
 				article_node.get_boolean_member("marked") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 				article_node.get_string_member("content"),

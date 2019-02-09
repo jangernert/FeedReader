@@ -640,12 +640,12 @@ public Gee.List<Article> getArticles(Gee.List<string> articleIDs)
 	return articles;
 }
 
-public bool catchupFeed(string feedID, bool isCatID)
+public bool catchupFeed(int feedID, bool isCatID)
 {
 	var message = new ttrssMessage(m_session, m_ttrss_url);
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "catchupFeed");
-	message.add_int_array("feed_id", feedID);
+	message.add_int_array("feed_id", ListUtils.single(feedID));
 	message.add_bool("is_cat", isCatID);
 	int status = message.send();
 
@@ -659,12 +659,12 @@ public bool catchupFeed(string feedID, bool isCatID)
 	return false;
 }
 
-public bool updateArticleUnread(Gee.List<string> articleIDs, ArticleStatus unread)
+public bool updateArticleUnread(Gee.List<int> articleIDs, ArticleStatus unread)
 {
 	var message = new ttrssMessage(m_session, m_ttrss_url);
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "updateArticle");
-	message.add_int_array("article_ids", StringUtils.join(articleIDs, ","));
+	message.add_int_array("article_ids", articleIDs);
 	if(unread == ArticleStatus.UNREAD)
 		message.add_int("mode", 1);
 	else if(unread == ArticleStatus.READ)

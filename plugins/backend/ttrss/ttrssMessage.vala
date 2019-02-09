@@ -17,47 +17,53 @@ public class FeedReader.ttrssMessage : GLib.Object {
 
 private Soup.Session m_session;
 private Soup.Message m_message_soup;
-private GLib.StringBuilder m_message_string;
-private string m_contenttype;
-private Json.Parser m_parser;
-private Json.Object m_root_object;
+private Json.Object m_request_object = new Json.Object();
+private const string m_contenttype = "application/x-www-form-urlencoded";
+private Json.Object m_response_object;
 
 public ttrssMessage(Soup.Session session, string destination)
 {
-	m_message_string = new GLib.StringBuilder();
 	m_session = session;
-	m_contenttype = "application/x-www-form-urlencoded";
-	m_parser = new Json.Parser();
 
 	m_message_soup = new Soup.Message("POST", destination);
 
 	if(m_message_soup == null)
-		Logger.error(@"ttrssMessage: can't send message to $destination");
+		Logger.error(@"ttrssMessage: can't parse URL $destination");
 }
-
 
 public void add_int(string type, int val)
 {
-	m_message_string.append(",\"" + type + "\":" + val.to_string());
+	m_request_object.set_int_member(type, val);
 }
 
-public void add_int_array(string type, string values)
+public void add_int_array(string type, Gee.List<int> values)
 {
-	m_message_string.append(",\"" + type + "\":\"" + values + "\"");
+	var array = new Json.Array.sized(values.size);
+	foreach(var value in values)
+	{
+		array.add_int_element(value);
+	}
+	m_request_object.set_array_member(type, array);
 }
 
 public void add_bool(string type, bool val)
 {
-	m_message_string.append(",\"" + type + "\":");
-	if(val)
-		m_message_string.append("true");
-	else
-		m_message_string.append("false");
+	m_request_object.set_boolean_member(type, val);
 }
 
 public void add_string(string type, string val)
 {
-	m_message_string.append(",\"" + type + "\":\"" + val.replace("\"", "\\\"").replace("\\", "\\\\") + "\"");
+	m_request_object.set_string_member(type, val);
+}
+
+private string request_object_to_string()
+{
+	var root = new Json.Node(Json.NodeType.OBJECT);
+	root.set_object(m_request_object);
+
+	var gen = new Json.Generator();
+	gen.set_root(root);
+	return gen.to_data(null);
 }
 
 public ConnectionError send(bool ping = false)
@@ -81,8 +87,9 @@ public ConnectionError send_impl(bool ping)
 	}
 
 	var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
-	m_message_string.overwrite(0, "{").append("}");
-	m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, m_message_string.str.data);
+
+	var data = request_object_to_string();
+	m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, data.data);
 
 	if(settingsTweaks.get_boolean("do-not-track"))
 		m_message_soup.request_headers.append("DNT", "1");
@@ -100,7 +107,6 @@ public ConnectionError send_impl(bool ping)
 		return ConnectionError.CA_ERROR;
 	}
 
-
 	if(m_message_soup.status_code != 200)
 	{
 		Logger.error("TTRSS Message: No response - status code: %s".printf(Soup.Status.get_phrase(m_message_soup.status_code)));
@@ -113,9 +119,10 @@ public ConnectionError send_impl(bool ping)
 		return ConnectionError.SUCCESS;
 	}
 
+	var parser = new Json.Parser();
 	try
 	{
-		m_parser.load_from_data((string)m_message_soup.response_body.flatten().data);
+		parser.load_from_data((string)m_message_soup.response_body.flatten().data);
 	}
 	catch(Error e)
 	{
@@ -124,27 +131,26 @@ public ConnectionError send_impl(bool ping)
 		return ConnectionError.NO_RESPONSE;
 	}
 
-	m_root_object = m_parser.get_root().get_object();
+	m_response_object = parser.get_root().get_object();
+
+	if(m_response_object.has_member("error"))
+		parseError(m_response_object);
 
 
-	if(m_root_object.has_member("error"))
-		parseError(m_root_object);
-
-
-	if(m_root_object.has_member("status"))
+	if(m_response_object.has_member("status"))
 	{
-		if(m_root_object.get_int_member("status") == 1)
+		if(m_response_object.get_int_member("status") == 1)
 		{
-			if(m_root_object.has_member("content"))
+			if(m_response_object.has_member("content"))
 			{
-				var content = m_root_object.get_object_member("content");
+				var content = m_response_object.get_object_member("content");
 				if(content.has_member("error"))
 					parseError(content);
 			}
 
 			return ApiError();
 		}
-		else if(m_root_object.get_int_member("status") == 0)
+		else if(m_response_object.get_int_member("status") == 0)
 		{
 			return ConnectionError.SUCCESS;
 		}
@@ -156,27 +162,27 @@ public ConnectionError send_impl(bool ping)
 
 public Json.Object? get_response_object()
 {
-	if(m_root_object.has_member("content"))
+	if(m_response_object.has_member("content"))
 	{
-		return m_root_object.get_object_member("content");
+		return m_response_object.get_object_member("content");
 	}
 	return null;
 }
 
 public int64? get_response_int()
 {
-	if(m_root_object.has_member("content"))
+	if(m_response_object.has_member("content"))
 	{
-		return m_root_object.get_int_member("content");
+		return m_response_object.get_int_member("content");
 	}
 	return null;
 }
 
 public string? get_response_string()
 {
-	if(m_root_object.has_member("content"))
+	if(m_response_object.has_member("content"))
 	{
-		return m_root_object.get_string_member("content");
+		return m_response_object.get_string_member("content");
 	}
 	return null;
 }
@@ -184,9 +190,9 @@ public string? get_response_string()
 
 public Json.Array? get_response_array()
 {
-	if(m_root_object.has_member("content"))
+	if(m_response_object.has_member("content"))
 	{
-		return m_root_object.get_array_member("content");
+		return m_response_object.get_array_member("content");
 	}
 	return null;
 }
@@ -198,7 +204,7 @@ public uint getStatusCode()
 
 public void printMessage()
 {
-	var msg = m_message_string.str;
+	var msg = request_object_to_string();
 	if (!msg.contains("password"))
 		Logger.debug(msg);
 }

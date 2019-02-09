@@ -284,7 +284,12 @@ public bool serverAvailable()
 
 public void setArticleIsRead(string articleIDs, ArticleStatus read)
 {
-	m_api.updateArticleUnread(StringUtils.split(articleIDs, ","), read);
+	var ids = new Gee.ArrayList<int>();
+	foreach(var id in StringUtils.split(articleIDs, ","))
+	{
+		ids.add(int.parse(id));
+	}
+	m_api.updateArticleUnread(ids, read);
 }
 
 public void setArticleIsMarked(string articleID, ArticleStatus marked)
@@ -299,12 +304,12 @@ public bool alwaysSetReadByID()
 
 public void setFeedRead(string feedID)
 {
-	m_api.catchupFeed(feedID, false);
+	m_api.catchupFeed(int.parse(feedID), false);
 }
 
 public void setCategoryRead(string catID)
 {
-	m_api.catchupFeed(catID, true);
+	m_api.catchupFeed(int.parse(catID), true);
 }
 
 public void markAllItemsRead()
@@ -312,7 +317,7 @@ public void markAllItemsRead()
 	var categories = DataBase.readOnly().read_categories();
 	foreach(Category cat in categories)
 	{
-		m_api.catchupFeed(cat.getCatID(), true);
+		m_api.catchupFeed(int.parse(cat.getCatID()), true);
 	}
 }
 

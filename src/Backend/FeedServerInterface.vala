@@ -13,7 +13,7 @@
 //	You should have received a copy of the GNU General public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public interface FeedReader.FeedServerInterface : GLib.Object {
+public abstract class FeedReader.FeedServerInterface : Peas.ExtensionBase {
 
 public signal void newFeedList();
 public signal void refreshFeedListCounter();

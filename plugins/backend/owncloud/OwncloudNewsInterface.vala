@@ -13,7 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerInterface {
+public class FeedReader.OwncloudNewsInterface : FeedServerInterface {
 
 private OwncloudNewsAPI m_api;
 private OwncloudNewsUtils m_utils;
@@ -25,38 +25,38 @@ private Gtk.Entry m_AuthPasswordEntry;
 private Gtk.Revealer m_revealer;
 private bool m_need_htaccess = false;
 
-public void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
+public override void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 {
 	m_utils = new OwncloudNewsUtils(settings_backend, secrets);
 	m_api = new OwncloudNewsAPI(m_utils);
 }
 
-public string getWebsite()
+public override string getWebsite()
 {
 	return "https://github.com/nextcloud/news";
 }
 
-public BackendFlags getFlags()
+public override BackendFlags getFlags()
 {
 	return (BackendFlags.SELF_HOSTED | BackendFlags.FREE_SOFTWARE | BackendFlags.FREE);
 }
 
-public string getID()
+public override string getID()
 {
 	return "owncloud";
 }
 
-public string iconName()
+public override string iconName()
 {
 	return "feed-service-nextcloud";
 }
 
-public string serviceName()
+public override string serviceName()
 {
 	return "Nextcloud News";
 }
 
-public void writeData()
+public override void writeData()
 {
 	m_utils.setURL(m_urlEntry.get_text());
 	m_utils.setUser(m_userEntry.get_text().strip());
@@ -68,22 +68,22 @@ public void writeData()
 	}
 }
 
-public async void postLoginAction()
+public override async void postLoginAction()
 {
 	return;
 }
 
-public void showHtAccess()
+public override void showHtAccess()
 {
 	m_revealer.set_reveal_child(true);
 }
 
-public bool needWebLogin()
+public override bool needWebLogin()
 {
 	return false;
 }
 
-public Gtk.Box? getWidget()
+public override Gtk.Box? getWidget()
 {
 	var urlLabel = new Gtk.Label(_("Nextcloud URL:"));
 	var userLabel = new Gtk.Label(_("Username:"));
@@ -188,162 +188,162 @@ public Gtk.Box? getWidget()
 	return box;
 }
 
-public bool extractCode(string redirectURL)
+public override bool extractCode(string redirectURL)
 {
 	return false;
 }
 
-public string buildLoginURL()
+public override string buildLoginURL()
 {
 	return "";
 }
 
-public bool supportTags()
+public override bool supportTags()
 {
 	return false;
 }
 
-public bool doInitSync()
+public override bool doInitSync()
 {
 	return true;
 }
 
-public string symbolicIcon()
+public override string symbolicIcon()
 {
 	return "feed-service-nextcloud-symbolic";
 }
 
-public string accountName()
+public override string accountName()
 {
 	return m_utils.getUser();
 }
 
-public string getServerURL()
+public override string getServerURL()
 {
 	return m_utils.getURL();
 }
 
-public string uncategorizedID()
+public override string uncategorizedID()
 {
 	return "0";
 }
 
-public bool hideCategoryWhenEmpty(string cadID)
+public override bool hideCategoryWhenEmpty(string cadID)
 {
 	return false;
 }
 
-public bool supportCategories()
+public override bool supportCategories()
 {
 	return true;
 }
 
-public bool supportFeedManipulation()
+public override bool supportFeedManipulation()
 {
 	return true;
 }
 
-public bool supportMultiLevelCategories()
+public override bool supportMultiLevelCategories()
 {
 	return false;
 }
 
-public bool supportMultiCategoriesPerFeed()
+public override bool supportMultiCategoriesPerFeed()
 {
 	return false;
 }
 
-public bool syncFeedsAndCategories()
+public override bool syncFeedsAndCategories()
 {
 	return true;
 }
 
-public bool tagIDaffectedByNameChange()
+public override bool tagIDaffectedByNameChange()
 {
 	return false;
 }
 
-public void resetAccount()
+public override void resetAccount()
 {
 	m_utils.resetAccount();
 }
 
-public bool useMaxArticles()
+public override bool useMaxArticles()
 {
 	return false;
 }
 
-public LoginResponse login()
+public override LoginResponse login()
 {
 	return m_api.login();
 }
 
-public bool logout()
+public override bool logout()
 {
 	return true;
 }
 
-public void setArticleIsRead(string articleIDs, ArticleStatus read)
+public override void setArticleIsRead(string articleIDs, ArticleStatus read)
 {
 	m_api.updateArticleUnread(articleIDs, read);
 }
 
-public void setArticleIsMarked(string articleID, ArticleStatus marked)
+public override void setArticleIsMarked(string articleID, ArticleStatus marked)
 {
 	m_api.updateArticleMarked(articleID, marked);
 }
 
-public bool alwaysSetReadByID()
+public override bool alwaysSetReadByID()
 {
 	return false;
 }
 
-public void setFeedRead(string feedID)
+public override void setFeedRead(string feedID)
 {
 	m_api.markFeedRead(feedID, false);
 }
 
-public void setCategoryRead(string catID)
+public override void setCategoryRead(string catID)
 {
 	m_api.markFeedRead(catID, true);
 }
 
-public void markAllItemsRead()
+public override void markAllItemsRead()
 {
 	m_api.markAllItemsRead();
 }
 
-public void tagArticle(string articleID, string tagID)
+public override void tagArticle(string articleID, string tagID)
 {
 	return;
 }
 
-public void removeArticleTag(string articleID, string tagID)
+public override void removeArticleTag(string articleID, string tagID)
 {
 	return;
 }
 
-public string createTag(string caption)
+public override string createTag(string caption)
 {
 	return ":(";
 }
 
-public void deleteTag(string tagID)
+public override void deleteTag(string tagID)
 {
 	return;
 }
 
-public void renameTag(string tagID, string title)
+public override void renameTag(string tagID, string title)
 {
 	return;
 }
 
-public bool serverAvailable()
+public override bool serverAvailable()
 {
 	return m_api.ping();
 }
 
-public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
+public override bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 {
 	bool success = false;
 	int64 id = 0;
@@ -362,7 +362,7 @@ public bool addFeed(string feedURL, string? catID, string? newCatName, out strin
 	return success;
 }
 
-public void addFeeds(Gee.List<Feed> feeds)
+public override void addFeeds(Gee.List<Feed> feeds)
 {
 	int64 id = 0;
 	string errmsg = "";
@@ -372,53 +372,53 @@ public void addFeeds(Gee.List<Feed> feeds)
 	}
 }
 
-public void removeFeed(string feedID)
+public override void removeFeed(string feedID)
 {
 	m_api.removeFeed(feedID);
 }
 
-public void renameFeed(string feedID, string title)
+public override void renameFeed(string feedID, string title)
 {
 	m_api.renameFeed(feedID, title);
 }
 
-public void moveFeed(string feedID, string newCatID, string? currentCatID)
+public override void moveFeed(string feedID, string newCatID, string? currentCatID)
 {
 	m_api.moveFeed(feedID, newCatID);
 }
 
-public string createCategory(string title, string? parentID)
+public override string createCategory(string title, string? parentID)
 {
 	return m_api.addFolder(title).to_string();
 }
 
-public void renameCategory(string catID, string title)
+public override void renameCategory(string catID, string title)
 {
 	m_api.renameCategory(catID, title);
 }
 
-public void moveCategory(string catID, string newParentID)
+public override void moveCategory(string catID, string newParentID)
 {
 	return;
 }
 
-public void deleteCategory(string catID)
+public override void deleteCategory(string catID)
 {
 	m_api.removeFolder(catID);
 }
 
-public void removeCatFromFeed(string feedID, string catID)
+public override void removeCatFromFeed(string feedID, string catID)
 {
 	return;
 }
 
-public void importOPML(string opml)
+public override void importOPML(string opml)
 {
 	var parser = new OPMLparser(opml);
 	parser.parse();
 }
 
-public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
+public override bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
 {
 	if(m_api.getFeeds(feeds))
 	{
@@ -432,12 +432,12 @@ public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories,
 	return false;
 }
 
-public int getUnreadCount()
+public override int getUnreadCount()
 {
 	return (int)DataBase.readOnly().get_unread_total();
 }
 
-public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
+public override void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 {
 	var type = OwncloudNewsAPI.OwnCloudType.ALL;
 	bool read = true;

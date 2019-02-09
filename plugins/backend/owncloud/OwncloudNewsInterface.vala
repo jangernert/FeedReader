@@ -362,16 +362,6 @@ public override bool addFeed(string feedURL, string? catID, string? newCatName, 
 	return success;
 }
 
-public override void addFeeds(Gee.List<Feed> feeds)
-{
-	int64 id = 0;
-	string errmsg = "";
-	foreach(Feed f in feeds)
-	{
-		m_api.addFeed(f.getXmlUrl(), f.getCatIDs()[0], out id, out errmsg);
-	}
-}
-
 public override void removeFeed(string feedID)
 {
 	m_api.removeFeed(feedID);

@@ -345,7 +345,6 @@ public override void addFeeds(Gee.List<Feed> feeds)
 	m_api.editSubscription(OldReaderAPI.OldreaderSubscriptionAction.SUBSCRIBE, urls, null, cat);
 }
 
-
 public override void removeFeed(string feedID)
 {
 	m_api.editSubscription(OldReaderAPI.OldreaderSubscriptionAction.UNSUBSCRIBE, {feedID});

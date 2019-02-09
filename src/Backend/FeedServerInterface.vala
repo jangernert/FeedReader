@@ -86,7 +86,15 @@ public abstract bool serverAvailable();
 
 public abstract bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg);
 
-public abstract void addFeeds(Gee.List<Feed> feeds);
+public virtual void addFeeds(Gee.List<Feed> feeds)
+{
+	string feedID, errmsg;
+	foreach(Feed feed in feeds)
+	{
+		var catString = feed.getCatString();
+		addFeed(feed.getXmlUrl(), catString != "" ? catString : null, null, out feedID, out errmsg);
+	}
+}
 
 public abstract void removeFeed(string feedID);
 

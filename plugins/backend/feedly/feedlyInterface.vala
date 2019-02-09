@@ -288,14 +288,6 @@ public override bool addFeed(string feedURL, string? catID, string? newCatName, 
 	return success;
 }
 
-public override void addFeeds(Gee.List<Feed> feeds)
-{
-	foreach(Feed f in feeds)
-	{
-		m_api.addSubscription(f.getXmlUrl(), null, f.getCatIDs()[0]);
-	}
-}
-
 public override void removeFeed(string feedID)
 {
 	m_api.removeSubscription(feedID);

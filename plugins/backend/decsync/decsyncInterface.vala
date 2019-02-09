@@ -429,16 +429,6 @@ public bool addFeedWithDecsync(string feedURL, string? catID, string? newCatName
 	return false;
 }
 
-public override void addFeeds(Gee.List<Feed> feeds)
-{
-	string feedID, errmsg;
-	foreach(Feed feed in feeds)
-	{
-		var catString = feed.getCatString();
-		addFeed(feed.getXmlUrl(), catString != "" ? catString : null, null, out feedID, out errmsg);
-	}
-}
-
 public override void removeFeed(string feedID)
 {
 	m_sync.setEntry({"feeds", "subscriptions"}, stringToNode(feedID), boolToNode(false));

@@ -378,11 +378,6 @@ public override bool addFeed(string feed_url, string? cat_id, string? category_n
 	}
 }
 
-public override void addFeeds(Gee.List<Feed> feeds)
-{
-	return;
-}
-
 private FeedbinAPI.Subscription subscription_for_feed(string feed_id_str) throws FeedbinError
 {
 	var feed_id = int64.parse(feed_id_str);

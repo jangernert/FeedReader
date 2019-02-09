@@ -324,11 +324,6 @@ public override bool addFeed(string feedURL, string? catID, string? newCatName, 
 	return success;
 }
 
-public override void addFeeds(Gee.List<Feed> feeds)
-{
-	//FIXME
-}
-
 public override void removeFeed(string feedID)
 {
 	m_api.editSubscription(bazquxAPI.bazquxSubscriptionAction.UNSUBSCRIBE, feedID);

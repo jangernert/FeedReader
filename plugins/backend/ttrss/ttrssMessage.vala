@@ -93,9 +93,9 @@ public ConnectionError send_impl(bool ping)
 	if(settingsTweaks.get_boolean("do-not-track"))
 		m_message_soup.request_headers.append("DNT", "1");
 
-	var status = m_session.send_message(m_message_soup);
+	var status_code = m_session.send_message(m_message_soup);
 
-	if(status == 401)         // unauthorized
+	if(status_code == 401)         // unauthorized
 	{
 		return ConnectionError.UNAUTHORIZED;
 	}
@@ -136,23 +136,21 @@ public ConnectionError send_impl(bool ping)
 		parseError(m_response_object);
 
 
-	if(m_response_object.has_member("status"))
+	var status = UntypedJson.Object.get_int_member(m_response_object, "status");
+	if (status == 0)
 	{
-		if(m_response_object.get_int_member("status") == 1)
+		return ConnectionError.SUCCESS;
+	}
+	else if (status == 1)
+	{
+		if(m_response_object.has_member("content"))
 		{
-			if(m_response_object.has_member("content"))
-			{
-				var content = m_response_object.get_object_member("content");
-				if(content.has_member("error"))
-					parseError(content);
-			}
+			var content = m_response_object.get_object_member("content");
+			if(content.has_member("error"))
+				parseError(content);
+		}
 
-			return apiError();
-		}
-		else if(m_response_object.get_int_member("status") == 0)
-		{
-			return ConnectionError.SUCCESS;
-		}
+		return apiError();
 	}
 
 	logError("unknown error while sending ttrss message");
@@ -170,22 +168,13 @@ public Json.Object? get_response_object()
 
 public int64? get_response_int()
 {
-	if(m_response_object.has_member("content"))
-	{
-		return m_response_object.get_int_member("content");
-	}
-	return null;
+	return UntypedJson.Object.get_int_member(m_response_object, "content");
 }
 
 public string? get_response_string()
 {
-	if(m_response_object.has_member("content"))
-	{
-		return m_response_object.get_string_member("content");
-	}
-	return null;
+	return UntypedJson.Object.get_string_member(m_response_object, "content");
 }
-
 
 public Json.Array? get_response_array()
 {

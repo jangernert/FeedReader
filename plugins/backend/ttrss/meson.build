@@ -9,7 +9,8 @@ shared_library(
     'ttrssAPI.vala',
     'ttrssInterface.vala',
     'ttrssUtils.vala',
-    'ttrssMessage.vala'
+    'ttrssMessage.vala',
+    'UntypedJson.vala'
   ],
   ttrss_resources,
   c_args: c_args,

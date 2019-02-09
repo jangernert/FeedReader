@@ -486,7 +486,7 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 	if(cancellable != null && cancellable.is_cancelled())
 		return;
 
-	var articleIDs = new Gee.ArrayList<string>();
+	var articleIDs = new Gee.ArrayList<int>();
 	int skip = count;
 	int amount = 200;
 
@@ -520,12 +520,17 @@ public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, str
 			var id = article.getArticleID();
 			if(!db.article_exists(id))
 			{
-				articleIDs.add(id);
+				articleIDs.add(int.parse(id));
 			}
 		}
 	}
 	var articles = m_api.getArticles(articleIDs);
-	Logger.info("Getting articles: " + StringUtils.join(articleIDs, ","));
+	var article_id_strings = new Gee.ArrayList<string>();
+	foreach(int id in articleIDs)
+	{
+		article_id_strings.add(id.to_string());
+	}
+	Logger.info("Getting articles: " + StringUtils.join(article_id_strings, ","));
 
 	articles.sort((a, b) => {
 			return strcmp(a.getArticleID(), b.getArticleID());

@@ -549,7 +549,7 @@ public Gee.List<string>? NewsPlus(ArticleStatus type, int limit)
 }
 
 
-public Gee.List<Article> getArticles(Gee.List<string> articleIDs)
+public Gee.List<Article> getArticles(Gee.List<int> articleIDs)
 {
 	var articles = new Gee.ArrayList<Article>();
 	if(articleIDs.is_empty)
@@ -558,7 +558,7 @@ public Gee.List<Article> getArticles(Gee.List<string> articleIDs)
 	var message = new ttrssMessage(m_session, m_ttrss_url);
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "getArticle");
-	message.add_string("article_id", StringUtils.join(articleIDs, ","));
+	message.add_comma_separated_int_array("article_id", articleIDs);
 	int status = message.send();
 
 	if(status == ConnectionError.SUCCESS)
@@ -635,7 +635,7 @@ public bool catchupFeed(int feedID, bool isCatID)
 	var message = new ttrssMessage(m_session, m_ttrss_url);
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "catchupFeed");
-	message.add_int_array("feed_id", ListUtils.single(feedID));
+	message.add_int("feed_id", feedID);
 	message.add_bool("is_cat", isCatID);
 	int status = message.send();
 
@@ -654,7 +654,7 @@ public bool updateArticleUnread(Gee.List<int> articleIDs, ArticleStatus unread)
 	var message = new ttrssMessage(m_session, m_ttrss_url);
 	message.add_string("sid", m_ttrss_sessionid);
 	message.add_string("op", "updateArticle");
-	message.add_int_array("article_ids", articleIDs);
+	message.add_comma_separated_int_array("article_ids", articleIDs);
 	if(unread == ArticleStatus.UNREAD)
 		message.add_int("mode", 1);
 	else if(unread == ArticleStatus.READ)

@@ -66,8 +66,6 @@ public LoginResponse login()
 		message.add_string("user", username);
 	message.add_string("password", passwd);
 	int status = message.send();
-	if(status != ConnectionError.NO_RESPONSE)
-		message.printResponse();
 
 	if(status == ConnectionError.SUCCESS)
 	{
@@ -83,11 +81,6 @@ public LoginResponse login()
 			return LoginResponse.SUCCESS;
 
 		return LoginResponse.PLUGIN_NEEDED;
-	}
-	else
-	{
-		message.printMessage();
-		message.printResponse();
 	}
 
 	if(status == ConnectionError.API_ERROR)
@@ -121,7 +114,6 @@ public bool logout()
 	message.add_string("op", "logout");
 	int status = message.send();
 	Logger.warning("TTRSS: logout");
-	message.printResponse();
 
 	if(status == ConnectionError.SUCCESS)
 	{
@@ -141,7 +133,6 @@ public bool isloggedin()
 	message.add_string("op", "isLoggedIn");
 	int status = message.send();
 	Logger.debug("TTRSS: isloggedin?");
-	message.printResponse();
 
 	if(status == ConnectionError.SUCCESS)
 	{
@@ -456,7 +447,6 @@ public void getHeadlines(Gee.List<Article> articles, int skip, int limit, Articl
 	}
 
 	int status = message.send();
-	message.printMessage();
 
 	if(status == ConnectionError.SUCCESS)
 	{
@@ -540,7 +530,6 @@ public Gee.List<string>? NewsPlus(ArticleStatus type, int limit)
 	else
 		return null;
 	int status = message.send();
-	message.printMessage();
 
 	if(status == ConnectionError.SUCCESS)
 	{
@@ -783,9 +772,6 @@ public bool subscribeToFeed(string feedURL, string? catID, string? username, str
 	}
 
 	int msg_status = message.send();
-	message.printMessage();
-	message.printResponse();
-	Logger.debug(message.getStatusCode().to_string());
 
 	if(msg_status == ConnectionError.SUCCESS)
 	{
@@ -850,8 +836,6 @@ public string? createCategory(string title, int? parentID = null)
 	if(parentID != null)
 		message.add_int("parent_id", parentID);
 	int status = message.send();
-	message.printMessage();
-
 
 	if(status == ConnectionError.SUCCESS)
 	{

@@ -75,9 +75,8 @@ Parameters:
 
 ## Installation
 
-To install this plugin download the zip file, then extract it in your own tt-rss/plugin/ directory.
+To install this plugin download the [ZIP file for the latest release](https://github.com/jangernert/FeedReader/releases), then extract the `data/tt-rss-feedreader-plugin/api_feedreader` directory in your own `tt-rss/plugin/` directory. You should have a new `api_feedreader` directory under plugins.
 
-You should have a new "api_feedreader" directory under plugins.
 Edit your config.php and add "api_feedreader" to the list of system plugins. It will be automatically enabled for every user.
 
 ## License

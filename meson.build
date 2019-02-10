@@ -62,7 +62,7 @@ libunity            = dependency('unity', required: false)
 
 # Configuration
 conf = configuration_data()
-conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
+conf.set('GETTEXT_PACKAGE', meson.project_name())
 conf.set('PREFIX', get_option('prefix'))
 conf.set('VERSION', meson.project_version())
 conf.set('LOCALE_DIR', LOCALE_DIR)

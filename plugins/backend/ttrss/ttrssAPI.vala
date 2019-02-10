@@ -357,10 +357,10 @@ private void getSubCategories(Gee.List<Category> categories, Json.Object categor
 	for(uint i = 0; i < items_count; i++)
 	{
 		var categorie_node = subcategorie.get_object_element(i);
-		if(categorie_node.get_string_member("id").has_prefix("CAT:"))
+		string catID = UntypedJson.Object.get_string_member(categorie_node, "id");
+		if(catID.has_prefix("CAT:"))
 		{
 			orderID++;
-			string catID = categorie_node.get_string_member("id");
 			string categorieID = catID.slice(4, catID.length);
 
 			if(int.parse(categorieID) > 0)
@@ -490,7 +490,7 @@ public void getHeadlines(Gee.List<Article> articles, int skip, int limit, Articl
 				{
 					var attachment = attachments.get_object_element(j);
 					enclosures.add(new Enclosure(
-							       headline_node.get_string_member("id"),
+					               UntypedJson.Object.get_string_member(headline_node, "id"),
 							       attachment.get_string_member("content_url"),
 							       EnclosureType.from_string(attachment.get_string_member("content_type"))));
 				}
@@ -604,7 +604,7 @@ public Gee.List<Article> getArticles(Gee.List<int> articleIDs)
 				{
 					var attachment = attachments.get_object_element(j);
 					enclosures.add(new Enclosure(
-							       article_node.get_string_member("id"),
+							       UntypedJson.Object.get_string_member(article_node, "id"),
 							       attachment.get_string_member("content_url"),
 							       EnclosureType.from_string(attachment.get_string_member("content_type"))));
 				}

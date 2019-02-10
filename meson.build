@@ -72,6 +72,7 @@ conf.set('PKGLIBDIR', PKGLIBDIR)
 constants = vcs_tag(
 	input : configure_file(
 			input: 'src/Constants.vala.in',
+			output: '@basename@',
 			configuration: conf),
 	output : 'Constants.vala',
 	command : ['git', 'show-ref', '-s', 'refs/heads/master'],

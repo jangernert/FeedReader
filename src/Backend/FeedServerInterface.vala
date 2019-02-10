@@ -118,7 +118,8 @@ public abstract void removeCatFromFeed(string feedID, string catID);
 public virtual void importOPML(string opml)
 {
 	var parser = new OPMLparser(opml);
-	parser.parse();
+	var feeds = parser.parse();
+	addFeeds(feeds);
 }
 
 public abstract bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null);

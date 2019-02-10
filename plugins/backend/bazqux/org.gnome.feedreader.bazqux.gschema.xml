@@ -1,5 +1,5 @@
 <schemalist>
-	<schema id="org.gnome.feedreader.bazqux" path="/org/gnome/feedreader/bazqux/" gettext-domain="bazqux">
+	<schema id="org.gnome.feedreader.bazqux" path="/org/gnome/feedreader/bazqux/" gettext-domain="feedreader">
 
 	<key name="username" type="s">
 		<default>""</default>

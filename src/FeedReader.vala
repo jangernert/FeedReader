@@ -61,6 +61,10 @@ public override void activate()
 {
 	base.activate();
 	WebKit.WebContext.get_default().set_web_extensions_directory(Constants.INSTALL_PREFIX + "/" + Constants.INSTALL_LIBDIR);
+	Intl.setlocale (LocaleCategory.ALL, "");
+	Intl.bindtextdomain (Constants.GETTEXT_PACKAGE, Constants.LOCALE_DIR);
+	Intl.bind_textdomain_codeset (Constants.GETTEXT_PACKAGE, "UTF-8");
+	Intl.textdomain (Constants.GETTEXT_PACKAGE);
 
 	if(m_window == null)
 	{

@@ -62,20 +62,18 @@ libunity            = dependency('unity', required: false)
 
 # Configuration
 conf = configuration_data()
-conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
+conf.set('GETTEXT_PACKAGE', meson.project_name())
 conf.set('PREFIX', get_option('prefix'))
 conf.set('VERSION', meson.project_version())
 conf.set('LOCALE_DIR', LOCALE_DIR)
 conf.set('PKGDATADIR', DATA_DIR)
 conf.set('PKGLIBDIR', PKGLIBDIR)
 
-intermediate = configure_file(
-	input: 'Constants.vala.in',
-	output: 'Constants.intermediate.vala',
-	configuration: conf)
-
 constants = vcs_tag(
-	input : intermediate,
+	input : configure_file(
+			input: 'src/Constants.vala.in',
+			output: '@basename@',
+			configuration: conf),
 	output : 'Constants.vala',
 	command : ['git', 'show-ref', '-s', 'refs/heads/master'],
 	replace_string: '#GIT_SHA1#')
@@ -308,7 +306,7 @@ executable(
 )
 
 # Post install script
-meson.add_install_script('meson_post_install.py')
+meson.add_install_script('build-aux/meson_post_install.py')
 
 # tests
 tests = [

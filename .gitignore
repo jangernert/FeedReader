@@ -1,13 +1,6 @@
 build/
 builddir/
-feedreader.service
-feedreader.desktop
-feedreader-autostart.desktop
-feedreader.appdata.xml
-Constants.vala
-data/org.gnome.FeedReader-autostart.desktop
-data/org.gnome.FeedReader.desktop
-data/org.gnome.FeedReader.Daemon.service
-data/org.gnome.FeedReader.appdata.xml
-*.po~
+_build/
+.vscode/
+*.~
 .DS_Store

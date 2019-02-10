@@ -1,256 +1,278 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component type="desktop">
-  <id>org.gnome.FeedReader.desktop</id>
-  <metadata_license>CC0</metadata_license>
-  <project_license>GPL-3.0+</project_license>
-  <name>FeedReader</name>
-  <summary>RSS client for various webservices</summary>
-  <translation type="gettext">FeedReader</translation>
-  <description>
-    <p>
-      FeedReader is a program designed to complement an already existing web-based RSS reader account.
-    </p>
-    <p>Currently supported services:</p>
-    <ul>
-      <li>Tiny Tiny RSS</li>
-      <li>Feedly</li>
-      <li>Nextcloud/ownCloud</li>
-      <li>Inoreader</li>
-    </ul>
-    <p>
-      It combines all the advantages of web based services like syncing across all your devices with everything you expect from
-      a modern desktop program: Desktop notifications, fast search and filtering, tagging, sharing to "read-it-later" services
-      like Pocket and Instapaper, handy keyboard shortcuts and a database that keeps all your old articles as long as you
-      like.
-    </p>
-  </description>
-  <screenshots>
-    <screenshot type="default">
-      <image>http://jangernert.github.io/FeedReader/images/gallery/Screenshot1.png</image>
-    </screenshot>
-    <screenshot>
-      <image>https://jangernert.github.io/FeedReader/images/gallery/Screenshot2.png</image>
-    </screenshot>
-    <screenshot>
-      <image>https://jangernert.github.io/FeedReader/images/gallery/Screenshot3.png</image>
-    </screenshot>
-    <screenshot>
-      <image>https://jangernert.github.io/FeedReader/images/gallery/Screenshot4.png</image>
-    </screenshot>
-    <screenshot>
-      <image>https://jangernert.github.io/FeedReader/images/gallery/Screenshot5.png</image>
-    </screenshot>
-  </screenshots>
-  <content_rating type="oars-1.0" />
-  <url type="homepage">https://jangernert.github.io/FeedReader/</url>
-  <url type="bugtracker">https://github.com/jangernert/FeedReader</url>
-  <url type="translate">https://hosted.weblate.org/projects/feedreader/</url>
-  <url type="donation">https://www.bountysource.com/teams/jangernert-feedreader/issues</url>
-  <project_group>GNOME</project_group>
-  <provides>
-    <binary>feedreader</binary>
-  </provides>
-  <releases>
-    <release version="2.8.1" date="2019-02-09">
-      <description>
-        <ul>
-		  <li>Fix "copy feed" right click menu in Bazqux, FeedHQ, InoReader and TT-RSS</li>
+<component type="desktop-application">
+	<id>org.gnome.FeedReader</id>
+	<metadata_license>CC0</metadata_license>
+	<project_license>GPL-3.0+</project_license>
+	<name>FeedReader</name>
+	<summary>RSS client for various webservices</summary>
+	<translation type="gettext">feedreader</translation>
+	<description>
+		<p>
+			FeedReader is a program designed to complement an already existing web-based RSS reader account.
+		</p>
+		<p>Currently supported services:</p>
+		<ul>
+			<li>Feedbin</li>
+
+			<li>Feedly</li>
+
+			<li>FreshRSS</li>
+
+			<li>InoReader</li>
+
+			<li>Local RSS</li>
+			<li>Nextcloud/ownCloud</li>
+
+			<li>The Old Reader</li>
+			<li>Tiny Tiny RSS</li>
 		</ul>
-      </description>
-    </release>
-    <release version="2.8.0" date="2019-02-09">
-      <description>
-        <ul>
-		  <li>Improve error messages when failing to add a feed in the local and DecSync plugins</li>
-		  <li>Auto-fill missing URI scheme when adding feeds and in the TT-RSS setup</li>
-		  <li>Use dc:creator tag for authors in local and DecSync RSS feeds</li>
-		  <li>TT-RSS: Handle the API sending us ints as strings and strings as ints</li>
-		  <li>TT-RSS: Make the api_feedreader plugin use PDO prepared statements instead of doing string escaping</li>
-		  <li>TT-RSS: Redact passwords in API logging</li>
-		  <li>TT-RSS: Various other improvements to make the plugin more maintainable</li>
+		<p>
+			It combines all the advantages of web based services like syncing across all your devices with everything you expect
+			from
+			a modern desktop program: Desktop notifications, fast search and filtering, tagging, sharing to "read-it-later"
+			services
+			like Pocket and Instapaper, handy keyboard shortcuts and a database that keeps all your old articles as long as you
+			like.
+		</p>
+		<p>FeedReader also allows you to save articles to read-it-later with the supported services for now:</p>
+		<ul>
+			<li>Instapaper</li>
+			<li>Pocket</li>
+			<li>Wallabag</li>
 		</ul>
-      </description>
-    </release>
-    <release version="2.7.1" date="2019-02-01">
-      <description>
-        <ul>
-		  <li>Fix bugs when adding, deleting and renaming article tags</li>
+		<p>It also let you share any article with your friends using:</p>
+		<ul>
+			<li>Email</li>
+			<li>Twitter</li>
+			<li>Telegram</li>
 		</ul>
-      </description>
-    </release>
-    <release version="2.7.0" date="2019-01-28">
-      <description>
-        <ul>
-		  <li>Fix thread safety issues, hopefully fix a lot of crashes</li>
-		</ul>
-      </description>
-    </release>
-    <release version="2.6.2" date="2019-01-24">
-      <description>
-        <ul>
-		  <li>Fix version number</li>
-		  <li>Fix crash in article list</li>
-		  <li>More translations</li>
-		</ul>
-      </description>
-    </release>
-    <release version="2.6.1" date="2018-12-03">
-      <description>
-        <ul>
-		  <li>Fix release tarballs to contain all necessary code</li>
-		</ul>
-      </description>
-    </release>
-    <release version="2.6.0" date="2018-12-03">
-      <description>
-        <ul>
-		  <li>Add DecSync plugin</li>
-		</ul>
-      </description>
-    </release>
-    <release version="2.5.1" date="2018-11-29">
-      <description>
-        <ul>
-		  <li>Add right-click menu on article rows to copy URL</li>
-		  <li>Try to unlock the keyring when we use it instead of at startup</li>
-		  <li>Change how we delete categories so feeds and subcategories are recategorized correctly</li>
-          <li>Feedbin Plugin: Mark Feedbin as free software</li>
-		</ul>
-      </description>
-    </release>
-    <release version="2.5.0" date="2018-11-23">
-      <description>
-        <ul>
-		  <li>Attempt to unlock the keyring on startup if necessary</li>
-          <li>Improvements to the database internals to make crashes less likely</li>
-		</ul>
-      </description>
-    </release>
-    <release version="2.4.1" date="2018-11-08">
-      <description>
-        <ul>
-          <li>Fix a bug where database "spring cleaning" would get stuck forever if interrupted</li>
-        </ul>
-      </description>
-    </release>
-    <release version="2.4.0" date="2018-10-28">
-      <description>
-        <ul>
-          <li>Replace GNOME application menu with a menu button in the header</li>
-          <li>Scale large images in articles to fit in the window</li>
-          <li>Local plugin: Fix a bug where a new feed could use a deleted feed's favicon</li>
-          <li>More translations</li>
-        </ul>
-      </description>
-    </release>
-    <release version="2.3.0" date="2018-08-29">
-      <description>
-        <ul>
-          <li>Replace libvilistextum with Gumbo parser and GLib's UTF-8 fixing</li>
-        </ul>
-      </description>
-    </release>
-    <release version="2.2.1" date="2018-08-26">
-      <description>
-        <ul>
-          <li>Fix few crashes and encoding issues related to Libvilistextum</li>
-          <li>FreshAPI: Fix broken editTag function</li>
-        </ul>
-      </description>
-    </release>
-    <release version="2.2" date="2018-05-06">
-      <description>
-        <ul>
-          <li>Removed the daemon process</li>
-          <li>Switched to Meson build system</li>
-          <li>Faster initial sync and favicon loading</li>
-          <li>Improved Feedbin plugin</li>
-          <li>A lot of bug fixes</li>
-        </ul>
-      </description>
-    </release>
-    <release version="2.0.2" date="2017-02-24" />
-    <release version="2.0.1" date="2017-02-18" />
-    <release version="2.0" date="2017-02-12" />
-    <release version="1.6.2" date="2016-08-29">
-      <description>
-        <p>Small emergency release to fix rendering issues that happened since the webkitgtk+ update to 2.12.4</p>
-      </description>
-    </release>
-    <release version="1.6.1" date="2016-08-03">
-      <description>
-        <p>New features:</p>
-        <ul>
-          <li>Saving of Images</li>
-        </ul>
-        <p>bugfixes:</p>
-        <ul>
-          <li>FileChooser sidebar inherits theme from feedList #174</li>
-          <li>FeedList: left/right-key does not collapse/expand categories anymore #173</li>
-          <li>FeedList: collapse does not select parent anymore when cild is being collapsed #172</li>
-          <li>ArticleView: only images of second WebView clickable #171</li>
-          <li>FeedReader displays article recieved date/time rather than article published date/time ( owncloud ) #169</li>
-          <li>add appdata to po files #166</li>
-          <li>Can't login to Tiny Tiny RSS: "Please install the "api_feedreader"-plugin #165</li>
-        </ul>
-      </description>
-    </release>
-    <release version="1.6" timestamp="1463182002">
-      <description>
-        <ul>
-          <li>Inoreader support</li>
-          <li>Offline Mode</li>
-          <li>Imageviewer</li>
-          <li>Manipulate feeds and categories</li>
-          <li>Sidebar themes</li>
-          <li>Support http-basic-auth</li>
-          <li>Article List: Time stamp</li>
-          <li>Article List: Double click to open in browser</li>
-          <li>Article View: Show URL on mouseover</li>
-          <li>Article View: Right click menu</li>
-          <li>Article View: Configure font size</li>
-          <li>Commit version in "--about"</li>
-          <li>Support GTK+ 3.20</li>
-          <li>HiDPI support</li>
-          <li>Full-screen-mode</li>
-          <li>Lots of bugfixes</li>
-        </ul>
-      </description>
-    </release>
-    <release version="1.4" timestamp="1441065600">
-      <description>
-        <ul>
-          <li>ownCloud News support</li>
-          <li>Sync more responsive</li>
-          <li>App fully operational during initial sync</li>
-          <li>Overlay to indicate new articles</li>
-          <li>Better GNOME integration</li>
-          <li>Proper fullscreen mode for videos</li>
-          <li>Support multiple share accounts of the same kind</li>
-          <li>Option to ignore unknown CA’s</li>
-          <li>Tons of fixes</li>
-        </ul>
-      </description>
-    </release>
-    <release version="1.2" timestamp="1441065600">
-      <description>
-        <ul>
-          <li>Improved article-view</li>
-          <li>Drag article with middle mouse click</li>
-          <li>Updated UI and animations</li>
-          <li>Global short-cuts</li>
-          <li>Tag articles</li>
-          <li>Share articles to Readability/Instapaper/Pocket</li>
-          <li>Article grabber (grabs full articles without ads from website for known sites)</li>
-          <li>Basic full text search</li>
-          <li>Tons of fixes</li>
-        </ul>
-      </description>
-    </release>
-    <release version="1.0" timestamp="1365768000">
-      <description>
-        <p>First release</p>
-      </description>
-    </release>
-  </releases>
+	</description>
+	<screenshots>
+		<screenshot type="default">
+			<image>http://jangernert.github.io/FeedReader/images/gallery/Screenshot1.png</image>
+		</screenshot>
+		<screenshot>
+			<image>https://jangernert.github.io/FeedReader/images/gallery/Screenshot2.png</image>
+		</screenshot>
+		<screenshot>
+			<image>https://jangernert.github.io/FeedReader/images/gallery/Screenshot3.png</image>
+		</screenshot>
+		<screenshot>
+			<image>https://jangernert.github.io/FeedReader/images/gallery/Screenshot4.png</image>
+		</screenshot>
+		<screenshot>
+			<image>https://jangernert.github.io/FeedReader/images/gallery/Screenshot5.png</image>
+		</screenshot>
+	</screenshots>
+	<content_rating type="oars-1.0" />
+	<launchable type="desktop-id">org.gnome.FeedReader.desktop</launchable>
+	<url type="homepage">https://jangernert.github.io/FeedReader/</url>
+	<url type="bugtracker">https://github.com/jangernert/FeedReader/isssues/</url>
+	<url type="translate">https://hosted.weblate.org/projects/feedreader/</url>
+	<url type="donation">https://www.bountysource.com/teams/jangernert-feedreader/issues</url>
+	<developer_name>Jan Lukas Gernert</developer_name>
+	<project_group>GNOME</project_group>
+	<releases>
+		<release version="2.8.1" date="2019-02-09">
+			<description>
+				<ul>
+					<li>Fix "copy feed" right click menu in Bazqux, FeedHQ, InoReader and TT-RSS</li>
+				</ul>
+			</description>
+		</release>
+		<release version="2.8.0" date="2019-02-09">
+			<description>
+				<ul>
+					<li>Improve error messages when failing to add a feed in the local and DecSync plugins</li>
+					<li>Auto-fill missing URI scheme when adding feeds and in the TT-RSS setup</li>
+					<li>Use dc:creator tag for authors in local and DecSync RSS feeds</li>
+					<li>TT-RSS: Handle the API sending us ints as strings and strings as ints</li>
+					<li>TT-RSS: Make the api_feedreader plugin use PDO prepared statements instead of doing string escaping</li>
+					<li>TT-RSS: Redact passwords in API logging</li>
+					<li>TT-RSS: Various other improvements to make the plugin more maintainable</li>
+				</ul>
+			</description>
+		</release>
+		<release version="2.7.1" date="2019-02-01">
+			<description>
+				<ul>
+					<li>Fix bugs when adding, deleting and renaming article tags</li>
+				</ul>
+			</description>
+		</release>
+		<release version="2.7.0" date="2019-01-28">
+			<description>
+				<ul>
+					<li>Fix thread safety issues, hopefully fix a lot of crashes</li>
+				</ul>
+			</description>
+		</release>
+		<release version="2.6.2" date="2019-01-24">
+			<description>
+				<ul>
+					<li>Fix version number</li>
+					<li>Fix crash in article list</li>
+					<li>More translations</li>
+				</ul>
+			</description>
+		</release>
+		<release version="2.6.1" date="2018-12-03">
+			<description>
+				<ul>
+					<li>Fix release tarballs to contain all necessary code</li>
+				</ul>
+			</description>
+		</release>
+		<release version="2.6.0" date="2018-12-03">
+			<description>
+				<ul>
+					<li>Add DecSync plugin</li>
+				</ul>
+			</description>
+		</release>
+		<release version="2.5.1" date="2018-11-29">
+			<description>
+				<ul>
+					<li>Add right-click menu on article rows to copy URL</li>
+					<li>Try to unlock the keyring when we use it instead of at startup</li>
+					<li>Change how we delete categories so feeds and subcategories are recategorized correctly</li>
+					<li>Feedbin Plugin: Mark Feedbin as free software</li>
+				</ul>
+			</description>
+		</release>
+		<release version="2.5.0" date="2018-11-23">
+			<description>
+				<ul>
+					<li>Attempt to unlock the keyring on startup if necessary</li>
+					<li>Improvements to the database internals to make crashes less likely</li>
+				</ul>
+			</description>
+		</release>
+		<release version="2.4.1" date="2018-11-08">
+			<description>
+				<ul>
+					<li>Fix a bug where database "spring cleaning" would get stuck forever if interrupted</li>
+				</ul>
+			</description>
+		</release>
+		<release version="2.4.0" date="2018-10-28">
+			<description>
+				<ul>
+					<li>Replace GNOME application menu with a menu button in the header</li>
+					<li>Scale large images in articles to fit in the window</li>
+					<li>Local plugin: Fix a bug where a new feed could use a deleted feed's favicon</li>
+					<li>More translations</li>
+				</ul>
+			</description>
+		</release>
+		<release version="2.3.0" date="2018-08-29">
+			<description>
+				<ul>
+					<li>Replace libvilistextum with Gumbo parser and GLib's UTF-8 fixing</li>
+				</ul>
+			</description>
+		</release>
+		<release version="2.2.1" date="2018-08-26">
+			<description>
+				<ul>
+					<li>Fix few crashes and encoding issues related to Libvilistextum</li>
+					<li>FreshAPI: Fix broken editTag function</li>
+				</ul>
+			</description>
+		</release>
+		<release version="2.2" date="2018-05-06">
+			<description>
+				<ul>
+					<li>Removed the daemon process</li>
+					<li>Switched to Meson build system</li>
+					<li>Faster initial sync and favicon loading</li>
+					<li>Improved Feedbin plugin</li>
+					<li>A lot of bug fixes</li>
+				</ul>
+			</description>
+		</release>
+		<release version="2.0.2" date="2017-02-24" />
+		<release version="2.0.1" date="2017-02-18" />
+		<release version="2.0" date="2017-02-12" />
+		<release version="1.6.2" date="2016-08-29">
+			<description>
+				<p>Small emergency release to fix rendering issues that happened since the webkitgtk+ update to 2.12.4</p>
+			</description>
+		</release>
+		<release version="1.6.1" date="2016-08-03">
+			<description>
+				<p>New features:</p>
+				<ul>
+					<li>Saving of Images</li>
+				</ul>
+				<p>bugfixes:</p>
+				<ul>
+					<li>FileChooser sidebar inherits theme from feedList #174</li>
+					<li>FeedList: left/right-key does not collapse/expand categories anymore #173</li>
+					<li>FeedList: collapse does not select parent anymore when cild is being collapsed #172</li>
+					<li>ArticleView: only images of second WebView clickable #171</li>
+					<li>FeedReader displays article recieved date/time rather than article published date/time ( owncloud ) #169</li>
+					<li>add appdata to po files #166</li>
+					<li>Can't login to Tiny Tiny RSS: "Please install the "api_feedreader"-plugin #165</li>
+				</ul>
+			</description>
+		</release>
+		<release version="1.6" timestamp="1463182002">
+			<description>
+				<ul>
+					<li>Inoreader support</li>
+					<li>Offline Mode</li>
+					<li>Imageviewer</li>
+					<li>Manipulate feeds and categories</li>
+					<li>Sidebar themes</li>
+					<li>Support http-basic-auth</li>
+					<li>Article List: Time stamp</li>
+					<li>Article List: Double click to open in browser</li>
+					<li>Article View: Show URL on mouseover</li>
+					<li>Article View: Right click menu</li>
+					<li>Article View: Configure font size</li>
+					<li>Commit version in "--about"</li>
+					<li>Support GTK+ 3.20</li>
+					<li>HiDPI support</li>
+					<li>Full-screen-mode</li>
+					<li>Lots of bugfixes</li>
+				</ul>
+			</description>
+		</release>
+		<release version="1.4" timestamp="1441065600">
+			<description>
+				<ul>
+					<li>ownCloud News support</li>
+					<li>Sync more responsive</li>
+					<li>App fully operational during initial sync</li>
+					<li>Overlay to indicate new articles</li>
+					<li>Better GNOME integration</li>
+					<li>Proper fullscreen mode for videos</li>
+					<li>Support multiple share accounts of the same kind</li>
+					<li>Option to ignore unknown CA’s</li>
+					<li>Tons of fixes</li>
+				</ul>
+			</description>
+		</release>
+		<release version="1.2" timestamp="1441065600">
+			<description>
+				<ul>
+					<li>Improved article-view</li>
+					<li>Drag article with middle mouse click</li>
+					<li>Updated UI and animations</li>
+					<li>Global short-cuts</li>
+					<li>Tag articles</li>
+					<li>Share articles to Readability/Instapaper/Pocket</li>
+					<li>Article grabber (grabs full articles without ads from website for known sites)</li>
+					<li>Basic full text search</li>
+					<li>Tons of fixes</li>
+				</ul>
+			</description>
+		</release>
+		<release version="1.0" timestamp="1365768000">
+			<description>
+				<p>First release</p>
+			</description>
+		</release>
+	</releases>
 </component>

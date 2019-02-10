@@ -305,7 +305,7 @@ executable(
 )
 
 # Post install script
-meson.add_install_script('meson_post_install.py')
+meson.add_install_script('build-aux/meson_post_install.py')
 
 # tests
 tests = [

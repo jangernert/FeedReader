@@ -33,13 +33,12 @@ namespace FeedReader {
 	}
 
 	public class Menu : GLib.Object {
-		public const string about = _("About");
+		public const string about = _("About FeedReader");
 		public const string settings = _("Settings");
 		public const string reset = _("Change Account");
-		public const string quit = _("Quit");
 		public const string bugs = _("Report a Bug");
 		public const string bounty = _("Bounties");
-		public const string shortcuts = _("Shortcuts");
+		public const string shortcuts = _("Keyboard Shortcuts");
 	}
 
 	public class MediaButton : GLib.Object {

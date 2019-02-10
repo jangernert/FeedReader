@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-06 21:59+0200\n"
+"POT-Creation-Date: 2019-02-10 14:18+0100\n"
 "PO-Revision-Date: 2018-10-19 21:30+0000\n"
 "Last-Translator: rafasaal88 <rafasaal88@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/feedreader/"
@@ -24,42 +24,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.2.1\n"
-
-#: Constants.vala.in:26
-msgid "Desktop Client for various RSS Services"
-msgstr "Cliente de Escritorio para varios servicios RSS"
-
-#: Constants.vala.in:31
-msgid "translator-credits"
-msgstr "Créditos-tradución"
-
-#: Constants.vala.in:36
-msgid "About"
-msgstr "Acerca de"
-
-#: Constants.vala.in:37 src/Widgets/ColumnViewHeader.vala:101
-msgid "Settings"
-msgstr "Configuración"
-
-#: Constants.vala.in:38
-msgid "Change Account"
-msgstr "Cambiar de cuenta"
-
-#: Constants.vala.in:39 src/Widgets/ShortcutsWindow.vala:29
-msgid "Quit"
-msgstr "Salir"
-
-#: Constants.vala.in:40
-msgid "Report a Bug"
-msgstr "Reporta un error"
-
-#: Constants.vala.in:41
-msgid "Bounties"
-msgstr "Recompensas"
-
-#: Constants.vala.in:42
-msgid "Shortcuts"
-msgstr "Atajos"
 
 #: data/org.gnome.FeedReader-autostart.desktop.in:3
 msgid "FeedReader Autostart"
@@ -98,36 +62,56 @@ msgstr ""
 "FeedReader es un programa diseñado para complementar una cuenta de lector "
 "RSS basado en web."
 
-#: data/org.gnome.FeedReader.appdata.xml.in:14
+#: data/org.gnome.FeedReader.appdata.xml.in:13
 msgid "Currently supported services:"
 msgstr "Servicios soportados actualmente:"
 
-#: data/org.gnome.FeedReader.appdata.xml.in:16
+#: data/org.gnome.FeedReader.appdata.xml.in:15
+#, fuzzy
+msgid "Feedbin"
+msgstr "Canales"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:17
+#, fuzzy
+msgid "Feedly"
+msgstr "feedly"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:19
+#, fuzzy
+msgid "FreshRSS"
+msgstr "URL de freshRSS:"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:21
+#, fuzzy
+msgid "InoReader"
+msgstr "No leídos"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:23
+msgid "Local RSS"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:24
+msgid "Nextcloud/ownCloud"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:26
+#, fuzzy
+msgid "The Old Reader"
+msgstr "FeedReader"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:27
 #, fuzzy
 msgid "Tiny Tiny RSS"
 msgstr "URL de Tiny Tiny RSS:"
 
-#: data/org.gnome.FeedReader.appdata.xml.in:17
-msgid "feedly"
-msgstr "feedly"
-
-#: data/org.gnome.FeedReader.appdata.xml.in:18
-msgid "ownCloud"
-msgstr ""
-
-#: data/org.gnome.FeedReader.appdata.xml.in:19
+#: data/org.gnome.FeedReader.appdata.xml.in:29
 #, fuzzy
-msgid "Inoreader"
-msgstr "No leídos"
-
-#: data/org.gnome.FeedReader.appdata.xml.in:21
 msgid ""
-"It combines all the advantages of web based services like synchronisation "
-"across all your devices with everything you expect from a modern desktop "
-"application: Desktop notifications, fast search and filters, tagging, "
-"sharing to \"read-it-later\" services like pocket and instapaper, handy "
-"keyboard shortcuts and a database that keeps all your old articles as long "
-"as you like."
+"It combines all the advantages of web based services like syncing across all "
+"your devices with everything you expect from a modern desktop program: "
+"Desktop notifications, fast search and filtering, tagging, sharing to \"read-"
+"it-later\" services like Pocket and Instapaper, handy keyboard shortcuts and "
+"a database that keeps all your old articles as long as you like."
 msgstr ""
 "Combina todas las ventajas de los servicios basados en web, como la "
 "sincronización en todos tus dispositivos, con todo lo que esperas de una "
@@ -135,6 +119,391 @@ msgstr ""
 "rápida y filtros, etiquetas, envío de los artículos a servicios para leer "
 "después como Pocket e Instapaper, útiles atajos de teclado y una base de "
 "datos que guarda tus artículos viejos por tanto tiempo como quieras."
+
+#: data/org.gnome.FeedReader.appdata.xml.in:37
+msgid ""
+"FeedReader also allows you to save articles to read-it-later with the "
+"supported services for now:"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:39
+msgid "Instapaper"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:40
+msgid "Pocket"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:41
+msgid "Wallabag"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:43
+msgid "It also let you share any article with your friends using:"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:45
+#, fuzzy
+msgid "Email"
+msgstr "Enviar Email"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:46
+msgid "Twitter"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:47
+#: plugins/share/Telegram/Telegram.vala:81
+msgid "Telegram"
+msgstr "Telegram"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:73
+msgid "Jan Lukas Gernert"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:79
+msgid ""
+"Fix \"copy feed\" right click menu in Bazqux, FeedHQ, InoReader and TT-RSS"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:86
+msgid ""
+"Improve error messages when failing to add a feed in the local and DecSync "
+"plugins"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:87
+msgid "Auto-fill missing URI scheme when adding feeds and in the TT-RSS setup"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:88
+msgid "Use dc:creator tag for authors in local and DecSync RSS feeds"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:89
+msgid "TT-RSS: Handle the API sending us ints as strings and strings as ints"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:90
+msgid ""
+"TT-RSS: Make the api_feedreader plugin use PDO prepared statements instead "
+"of doing string escaping"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:91
+msgid "TT-RSS: Redact passwords in API logging"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:92
+msgid "TT-RSS: Various other improvements to make the plugin more maintainable"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:99
+msgid "Fix bugs when adding, deleting and renaming article tags"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:106
+msgid "Fix thread safety issues, hopefully fix a lot of crashes"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:113
+msgid "Fix version number"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:114
+msgid "Fix crash in article list"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:115
+#: data/org.gnome.FeedReader.appdata.xml.in:164
+msgid "More translations"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:122
+msgid "Fix release tarballs to contain all necessary code"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:129
+msgid "Add DecSync plugin"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:136
+msgid "Add right-click menu on article rows to copy URL"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:137
+msgid "Try to unlock the keyring when we use it instead of at startup"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:138
+msgid ""
+"Change how we delete categories so feeds and subcategories are recategorized "
+"correctly"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:139
+msgid "Feedbin Plugin: Mark Feedbin as free software"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:146
+msgid "Attempt to unlock the keyring on startup if necessary"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:147
+msgid "Improvements to the database internals to make crashes less likely"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:154
+msgid ""
+"Fix a bug where database \"spring cleaning\" would get stuck forever if "
+"interrupted"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:161
+msgid "Replace GNOME application menu with a menu button in the header"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:162
+msgid "Scale large images in articles to fit in the window"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:163
+msgid ""
+"Local plugin: Fix a bug where a new feed could use a deleted feed's favicon"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:171
+msgid "Replace libvilistextum with Gumbo parser and GLib's UTF-8 fixing"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:178
+msgid "Fix few crashes and encoding issues related to Libvilistextum"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:179
+msgid "FreshAPI: Fix broken editTag function"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:186
+msgid "Removed the daemon process"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:187
+msgid "Switched to Meson build system"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:188
+msgid "Faster initial sync and favicon loading"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:189
+msgid "Improved Feedbin plugin"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:190
+msgid "A lot of bug fixes"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:199
+msgid ""
+"Small emergency release to fix rendering issues that happened since the "
+"webkitgtk+ update to 2.12.4"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:204
+#, fuzzy
+msgid "New features:"
+msgstr "Artículos nuevos"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:206
+#, fuzzy
+msgid "Saving of Images"
+msgstr "Guardar imagen como"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:208
+msgid "bugfixes:"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:210
+msgid "FileChooser sidebar inherits theme from feedList #174"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:211
+msgid ""
+"FeedList: left/right-key does not collapse/expand categories anymore #173"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:212
+msgid ""
+"FeedList: collapse does not select parent anymore when cild is being "
+"collapsed #172"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:213
+msgid "ArticleView: only images of second WebView clickable #171"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:214
+msgid ""
+"FeedReader displays article recieved date/time rather than article published "
+"date/time ( owncloud ) #169"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:215
+msgid "add appdata to po files #166"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:216
+msgid ""
+"Can't login to Tiny Tiny RSS: \"Please install the \"api_feedreader\"-plugin "
+"#165"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:223
+#, fuzzy
+msgid "Inoreader support"
+msgstr "No leídos"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:224
+msgid "Offline Mode"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:225
+msgid "Imageviewer"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:226
+#, fuzzy
+msgid "Manipulate feeds and categories"
+msgstr "Obteniendo canales y categorías"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:227
+msgid "Sidebar themes"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:228
+msgid "Support http-basic-auth"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:229
+#, fuzzy
+msgid "Article List: Time stamp"
+msgstr "Lista de Artículos:"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:230
+msgid "Article List: Double click to open in browser"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:231
+msgid "Article View: Show URL on mouseover"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:232
+#, fuzzy
+msgid "Article View: Right click menu"
+msgstr "Vista de artículo"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:233
+msgid "Article View: Configure font size"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:234
+msgid "Commit version in \"--about\""
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:235
+msgid "Support GTK+ 3.20"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:236
+msgid "HiDPI support"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:237
+#, fuzzy
+msgid "Full-screen-mode"
+msgstr "Abandonar el modo de pantalla completa"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:238
+msgid "Lots of bugfixes"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:245
+msgid "ownCloud News support"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:246
+msgid "Sync more responsive"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:247
+msgid "App fully operational during initial sync"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:248
+msgid "Overlay to indicate new articles"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:249
+msgid "Better GNOME integration"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:250
+#, fuzzy
+msgid "Proper fullscreen mode for videos"
+msgstr "Abandonar el modo de pantalla completa"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:251
+msgid "Support multiple share accounts of the same kind"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:252
+msgid "Option to ignore unknown CA’s"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:253
+#: data/org.gnome.FeedReader.appdata.xml.in:268
+msgid "Tons of fixes"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:260
+msgid "Improved article-view"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:261
+msgid "Drag article with middle mouse click"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:262
+msgid "Updated UI and animations"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:263
+#, fuzzy
+msgid "Global short-cuts"
+msgstr "Atajos"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:264
+#, fuzzy
+msgid "Tag articles"
+msgstr "Etiquetar artículo"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:265
+msgid "Share articles to Readability/Instapaper/Pocket"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:266
+msgid ""
+"Article grabber (grabs full articles without ads from website for known "
+"sites)"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:267
+msgid "Basic full text search"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:274
+msgid "First release"
+msgstr ""
 
 #: data/org.gnome.FeedReader.desktop.in:5
 msgid "Read feeds from web services"
@@ -145,96 +514,116 @@ msgid "About FeedReader"
 msgstr "Acerca de FeedReader"
 
 #. http auth stuff ----------------------------------------------------
-#: plugins/backend/bazqux/bazquxInterface.vala:65
-#: plugins/backend/feedbin/feedbinInterface.vala:65
-#: plugins/backend/feedhq/feedhqInterface.vala:65
-#: plugins/backend/fresh/freshInterface.vala:71
-#: plugins/backend/fresh/freshInterface.vala:108
-#: plugins/backend/oldreader/oldreaderInterface.vala:65
-#: plugins/backend/owncloud/OwncloudNewsInterface.vala:93
-#: plugins/backend/owncloud/OwncloudNewsInterface.vala:131
-#: plugins/backend/ttrss/ttrssInterface.vala:71
-#: plugins/backend/ttrss/ttrssInterface.vala:108
+#: plugins/backend/bazqux/bazquxInterface.vala:61
+#: plugins/backend/feedbin/feedbinInterface.vala:62
+#: plugins/backend/feedhq/feedhqInterface.vala:61
+#: plugins/backend/fresh/freshInterface.vala:67
+#: plugins/backend/fresh/freshInterface.vala:104
+#: plugins/backend/oldreader/oldreaderInterface.vala:61
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:89
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:127
+#: plugins/backend/ttrss/ttrssInterface.vala:66
+#: plugins/backend/ttrss/ttrssInterface.vala:103
 #: plugins/share/Instapaper/InstapaperSetup.vala:55
 #: plugins/share/Wallabag/WallabagSetup.vala:76
 msgid "Username:"
 msgstr "Nombre de usuario:"
 
-#: plugins/backend/bazqux/bazquxInterface.vala:66
-#: plugins/backend/feedbin/feedbinInterface.vala:66
-#: plugins/backend/feedhq/feedhqInterface.vala:66
-#: plugins/backend/fresh/freshInterface.vala:72
-#: plugins/backend/fresh/freshInterface.vala:109
-#: plugins/backend/oldreader/oldreaderInterface.vala:66
-#: plugins/backend/owncloud/OwncloudNewsInterface.vala:94
-#: plugins/backend/owncloud/OwncloudNewsInterface.vala:132
-#: plugins/backend/ttrss/ttrssInterface.vala:72
-#: plugins/backend/ttrss/ttrssInterface.vala:109
+#: plugins/backend/bazqux/bazquxInterface.vala:62
+#: plugins/backend/feedbin/feedbinInterface.vala:63
+#: plugins/backend/feedhq/feedhqInterface.vala:62
+#: plugins/backend/fresh/freshInterface.vala:68
+#: plugins/backend/fresh/freshInterface.vala:105
+#: plugins/backend/oldreader/oldreaderInterface.vala:62
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:90
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:128
+#: plugins/backend/ttrss/ttrssInterface.vala:67
+#: plugins/backend/ttrss/ttrssInterface.vala:104
 #: plugins/share/Instapaper/InstapaperSetup.vala:56
 #: plugins/share/Wallabag/WallabagSetup.vala:77
 msgid "Password:"
 msgstr "Contraseña:"
 
-#: plugins/backend/bazqux/bazquxInterface.vala:96
-#: plugins/backend/feedhq/feedhqInterface.vala:96
+#: plugins/backend/bazqux/bazquxInterface.vala:92
+#: plugins/backend/feedhq/feedhqInterface.vala:92
 msgid "Please log in to FeedHQ and enjoy using FeedReader"
 msgstr "Por favor inicia sesión en FeedHQ y disfruta usando FeedReader"
 
-#: plugins/backend/bazqux/bazquxInterface.vala:101
-#: plugins/backend/feedbin/feedbinInterface.vala:76
-#: plugins/backend/feedhq/feedhqInterface.vala:101
-#: plugins/backend/fresh/freshInterface.vala:151
-#: plugins/backend/oldreader/oldreaderInterface.vala:101
-#: plugins/backend/owncloud/OwncloudNewsInterface.vala:172
-#: plugins/backend/ttrss/ttrssInterface.vala:151 src/Share/ServiceSetup.vala:56
+#: plugins/backend/bazqux/bazquxInterface.vala:97
+#: plugins/backend/feedbin/feedbinInterface.vala:73
+#: plugins/backend/feedhq/feedhqInterface.vala:97
+#: plugins/backend/fresh/freshInterface.vala:147
+#: plugins/backend/oldreader/oldreaderInterface.vala:97
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:168
+#: plugins/backend/ttrss/ttrssInterface.vala:146 src/Share/ServiceSetup.vala:56
 msgid "Login"
 msgstr "Iniciar sesión"
 
-#: plugins/backend/feedbin/feedbinInterface.vala:101
+#: plugins/backend/feedbin/feedbinInterface.vala:98
 msgid "Please log in to Feedbin to enjoy using FeedReader"
 msgstr "Por favor inicie sesión en Feedbin para disfrutar de FeedReader"
 
-#: plugins/backend/fresh/freshInterface.vala:70
+#: plugins/backend/fresh/freshInterface.vala:66
 msgid "freshRSS URL:"
 msgstr "URL de freshRSS:"
 
-#: plugins/backend/fresh/freshInterface.vala:137
-#: plugins/backend/owncloud/OwncloudNewsInterface.vala:160
-#: plugins/backend/ttrss/ttrssInterface.vala:137
+#: plugins/backend/fresh/freshInterface.vala:133
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:156
+#: plugins/backend/ttrss/ttrssInterface.vala:132
 msgid "HTTP Authorization"
 msgstr "Autorización HTTP"
 
-#: plugins/backend/fresh/freshInterface.vala:146
+#: plugins/backend/fresh/freshInterface.vala:142
 msgid "Please log in to your freshRSS server and enjoy using FeedReader"
 msgstr ""
 "Por favor inicie sesión en su servidor freshRSS y disfrute usando Feed Reader"
 
-#: plugins/backend/local/localInterface.vala:66
+#: plugins/backend/local/localInterface.vala:62
 msgid "Done"
 msgstr "Listo"
 
-#: plugins/backend/local/localInterface.vala:67
+#: plugins/backend/local/localInterface.vala:63
 msgid "Adding Feeds"
 msgstr "Agregando canales"
 
 #. Logger.info("Got content: " + item.description);
 #. Logger.info("Converted to: " + item.description);
-#: plugins/backend/local/localInterface.vala:619
+#: plugins/backend/local/localInterface.vala:605
 msgid "Nothing to read here."
 msgstr "Nada que leer aquí"
 
-#: plugins/backend/oldreader/oldreaderInterface.vala:96
+#: plugins/backend/local/localUtils.vala:25
+msgid "Failed to add feed"
+msgstr ""
+
+#: plugins/backend/local/localUtils.vala:31
+msgid "Failed to parse URL."
+msgstr ""
+
+#: plugins/backend/local/localUtils.vala:42
+msgid "Network error connecting to the server."
+msgstr ""
+
+#: plugins/backend/local/localUtils.vala:46
+msgid "Got HTTP error code"
+msgstr ""
+
+#: plugins/backend/local/localUtils.vala:65
+msgid "Could not parse feed as RSS or ATOM."
+msgstr ""
+
+#: plugins/backend/oldreader/oldreaderInterface.vala:92
 msgid "Please log in to the Old Reader and enjoy using FeedReader"
 msgstr ""
 "Por favor inicie sesión en the Old Reader y disfrute usando Feed Reader"
 
-#: plugins/backend/owncloud/OwncloudNewsInterface.vala:92
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:88
 #, fuzzy
 msgid "Nextcloud URL:"
 msgstr "URL de OwnCloud:"
 
 #. ---------------------------------------------------------------------
-#: plugins/backend/owncloud/OwncloudNewsInterface.vala:167
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:163
 #, fuzzy
 msgid ""
 "Please log in to your Nextcloud News instance and enjoy using FeedReader"
@@ -242,35 +631,35 @@ msgstr ""
 "Por favor inicie sesión a tu instancia de ownCloud News y disfrute de "
 "FeedReader"
 
-#: plugins/backend/ttrss/ttrssAPI.vala:809
+#: plugins/backend/ttrss/ttrssAPI.vala:793
 msgid "Invalid URL"
 msgstr "URL inválida"
 
-#: plugins/backend/ttrss/ttrssAPI.vala:812
+#: plugins/backend/ttrss/ttrssAPI.vala:796
 msgid "URL content is HTML, no feeds available"
 msgstr "El contenido de la URL es HTML, no hay feeds disponibles"
 
-#: plugins/backend/ttrss/ttrssAPI.vala:815
+#: plugins/backend/ttrss/ttrssAPI.vala:799
 msgid "URL content is HTML which contains multiple feeds."
 msgstr "El contenido de la URL es HTML que tiene varios feeds."
 
-#: plugins/backend/ttrss/ttrssAPI.vala:818
+#: plugins/backend/ttrss/ttrssAPI.vala:802
 msgid "Couldn't download the URL content."
 msgstr "No se puede descargar el contenido de la URL."
 
-#: plugins/backend/ttrss/ttrssAPI.vala:821
+#: plugins/backend/ttrss/ttrssAPI.vala:805
 msgid "The content is invalid XML."
 msgstr "El contenido es un código XML inválido."
 
-#: plugins/backend/ttrss/ttrssAPI.vala:834
+#: plugins/backend/ttrss/ttrssAPI.vala:818
 msgid "Error reaching tt-rss"
 msgstr "Hubo un error al conectar con tt-rss"
 
-#: plugins/backend/ttrss/ttrssInterface.vala:70
+#: plugins/backend/ttrss/ttrssInterface.vala:65
 msgid "Tiny Tiny RSS URL:"
 msgstr "URL de Tiny Tiny RSS:"
 
-#: plugins/backend/ttrss/ttrssInterface.vala:146
+#: plugins/backend/ttrss/ttrssInterface.vala:141
 msgid "Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"
 msgstr ""
 "Por favor inicie sesión en su servidor Tiny Tiny RSS y disfrute usando Feed "
@@ -312,10 +701,6 @@ msgstr "Nombre de usuario o Contraseña incorrecto"
 #: plugins/share/Twitter/TwitterSetup.vala:51
 msgid "waiting"
 msgstr "esperando"
-
-#: plugins/share/Telegram/Telegram.vala:81
-msgid "Telegram"
-msgstr "Telegram"
 
 #: plugins/share/Telegram/TelegramForm.vala:23
 #, fuzzy
@@ -406,36 +791,72 @@ msgstr "Por favor complete el nombre de usuario."
 msgid "Something went wrong."
 msgstr "Algo salió mal."
 
-#: src/Backend/FeedServer.vala:191 src/Backend/FeedServer.vala:294
+#: src/Backend/FeedServer.vala:187 src/Backend/FeedServer.vala:291
 msgid "Getting feeds and categories"
 msgstr "Obteniendo canales y categorías"
 
-#: src/Backend/FeedServer.vala:243
+#: src/Backend/FeedServer.vala:239
 msgid "Getting articles"
 msgstr "Obteniendo artículos"
 
 #. get marked articles
-#: src/Backend/FeedServer.vala:323
+#: src/Backend/FeedServer.vala:320
 msgid "Getting starred articles"
 msgstr "Obteniendo artículos favoritos"
 
 #. get articles for each tag
-#: src/Backend/FeedServer.vala:330
+#: src/Backend/FeedServer.vala:327
 msgid "Getting tagged articles"
 msgstr "Obteniendo artículos etiquetados"
 
 #. get unread articles
-#: src/Backend/FeedServer.vala:348
+#: src/Backend/FeedServer.vala:345
 msgid "Getting unread articles"
 msgstr "Obteniendo artículos no leídos"
 
-#: src/DataBaseReadOnly.vala:243
+#: src/Constants.vala.in:26
+msgid "Desktop Client for various RSS Services"
+msgstr "Cliente de Escritorio para varios servicios RSS"
+
+#: src/Constants.vala.in:31
+msgid "translator-credits"
+msgstr "Créditos-tradución"
+
+#: src/Constants.vala.in:36
+msgid "About"
+msgstr "Acerca de"
+
+#: src/Constants.vala.in:37
+msgid "Settings"
+msgstr "Configuración"
+
+#: src/Constants.vala.in:38
+msgid "Change Account"
+msgstr "Cambiar de cuenta"
+
+#: src/Constants.vala.in:39 src/Widgets/ShortcutsWindow.vala:29
+msgid "Quit"
+msgstr "Salir"
+
+#: src/Constants.vala.in:40
+msgid "Report a Bug"
+msgstr "Reporta un error"
+
+#: src/Constants.vala.in:41
+msgid "Bounties"
+msgstr "Recompensas"
+
+#: src/Constants.vala.in:42
+msgid "Shortcuts"
+msgstr "Atajos"
+
+#: src/DataBaseReadOnly.vala:251
 #, fuzzy
 msgid "Unknown tag"
 msgstr "Canal desconocido"
 
-#: src/DataBaseReadOnly.vala:271 src/Widgets/AddPopover.vala:38
-#: src/Widgets/FeedList.vala:506
+#: src/DataBaseReadOnly.vala:278 src/Widgets/AddPopover.vala:38
+#: src/Widgets/FeedList.vala:509
 msgid "Uncategorized"
 msgstr "Sin categorizar"
 
@@ -443,7 +864,7 @@ msgstr "Sin categorizar"
 msgid "Yesterday"
 msgstr "Ayer"
 
-#: src/Notification.vala:21 src/Widgets/ArticleList/ArticleList.vala:551
+#: src/Notification.vala:21 src/Widgets/ArticleList/ArticleList.vala:496
 msgid "New articles"
 msgstr "Artículos nuevos"
 
@@ -465,20 +886,20 @@ msgstr "Salir"
 msgid "No Preview Available"
 msgstr "No hay vista previa disponible"
 
-#: src/Utils.vala:93
+#: src/Utils.vala:94
 msgid "No Text available for this article :("
 msgstr "No hay texto disponible en este artículo :("
 
-#: src/Utils.vala:601
+#: src/Utils.vala:594
 #, c-format
 msgid "posted by: %s, "
 msgstr "publicado por: %s, "
 
-#: src/Utils.vala:814 src/Widgets/UpdateButton.vala:80
+#: src/Utils.vala:808 src/Widgets/UpdateButton.vala:80
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/Utils.vala:816
+#: src/Utils.vala:810
 msgid "Save"
 msgstr "Guardar"
 
@@ -506,12 +927,12 @@ msgstr "Agregar canal"
 msgid "Import OPML"
 msgstr "Importar OPML"
 
-#: src/Widgets/ArticleList/ArticleList.vala:48
+#: src/Widgets/ArticleList/ArticleList.vala:47
 msgid "Sync is in progress. Articles should appear any second."
 msgstr ""
 "Sincronización en marcha. Los articulos aparecerán en cualquier momento."
 
-#: src/Widgets/ArticleList/ArticleList.vala:553
+#: src/Widgets/ArticleList/ArticleList.vala:498
 msgid "scroll up"
 msgstr "deslizar hacia arriba"
 
@@ -539,7 +960,7 @@ msgstr "Ningún artículo seleccionado."
 msgid "WebKit has crashed"
 msgstr "WebKit falló"
 
-#: src/Widgets/ArticleView.vala:790
+#: src/Widgets/ArticleView.vala:765
 msgid "Save image as"
 msgstr "Guardar imagen como"
 
@@ -555,7 +976,7 @@ msgstr "Imprimir artículo"
 msgid "Share article"
 msgstr "Compartir artículo"
 
-#: src/Widgets/CategorieRow.vala:393 src/Widgets/RemovePopover.vala:112
+#: src/Widgets/CategorieRow.vala:393 src/Widgets/RemovePopover.vala:114
 #, c-format
 msgid "Category \"%s\" removed"
 msgstr "Categoría \"%s\" eliminada"
@@ -614,7 +1035,7 @@ msgstr "Actualizar canales"
 msgid "Search Articles"
 msgstr "Buscar artículos"
 
-#: src/Widgets/ColumnViewHeader.vala:114
+#: src/Widgets/ColumnViewHeader.vala:104
 msgid "Read article fullscreen"
 msgstr "Leer artículo a pantalla completa"
 
@@ -622,23 +1043,23 @@ msgstr "Leer artículo a pantalla completa"
 msgid "All Articles"
 msgstr "Todos los Artículos"
 
-#: src/Widgets/FeedList.vala:441
+#: src/Widgets/FeedList.vala:443
 msgid "Tags"
 msgstr "Etiquetas"
 
-#: src/Widgets/FeedList.vala:482
+#: src/Widgets/FeedList.vala:485
 msgid "Categories"
 msgstr "Categorías"
 
-#: src/Widgets/FeedList.vala:487
+#: src/Widgets/FeedList.vala:490
 msgid "Feeds"
 msgstr "Canales"
 
-#: src/Widgets/FeedList.vala:1012
+#: src/Widgets/FeedList.vala:1018
 msgid "New Tag"
 msgstr "Nueva Etiqueta"
 
-#: src/Widgets/FeedList.vala:1139
+#: src/Widgets/FeedList.vala:1145
 msgid "New Category"
 msgstr "Nueva Categoría"
 
@@ -672,43 +1093,43 @@ msgstr "¿Dónde se ubican sus canales?"
 msgid "Please select the RSS service you are using and log in to get going."
 msgstr "Seleccione el servicio RSS que utilice y acceda a éste para comenzar."
 
-#: src/Widgets/MainWindow.vala:347
+#: src/Widgets/MainWindow.vala:340
 msgid "Ignore all TLS errors from now on"
 msgstr "Ignorar todos los errores TLS de ahora en adelante"
 
-#: src/Widgets/MainWindow.vala:414
+#: src/Widgets/MainWindow.vala:407
 msgid "Please select a service first"
 msgstr "Seleccione primero un servicio"
 
-#: src/Widgets/MainWindow.vala:417
+#: src/Widgets/MainWindow.vala:410
 msgid "Please enter a valid username"
 msgstr "Por favor, indique un nombre de usuario válido"
 
-#: src/Widgets/MainWindow.vala:420
+#: src/Widgets/MainWindow.vala:413
 msgid "Please enter a valid password"
 msgstr "Por favor, indique una contraseña válida"
 
-#: src/Widgets/MainWindow.vala:424
+#: src/Widgets/MainWindow.vala:417
 msgid "Please enter a valid URL"
 msgstr "Por favor, indique un URL válido"
 
-#: src/Widgets/MainWindow.vala:427
+#: src/Widgets/MainWindow.vala:420
 msgid "Please enter your Login details"
 msgstr "Por favor, indique sus detalles de acceso"
 
-#: src/Widgets/MainWindow.vala:430
+#: src/Widgets/MainWindow.vala:423
 msgid "Sorry, something went wrong."
 msgstr "Lo siento, ha ocurrido un error."
 
-#: src/Widgets/MainWindow.vala:433
+#: src/Widgets/MainWindow.vala:426
 msgid "The server reported an API-error."
 msgstr "El servidor reportó un error de API."
 
-#: src/Widgets/MainWindow.vala:436
+#: src/Widgets/MainWindow.vala:429
 msgid "Either your username or the password are not correct."
 msgstr "Su usuario o su contraseña no son correctos."
 
-#: src/Widgets/MainWindow.vala:439
+#: src/Widgets/MainWindow.vala:432
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
@@ -716,21 +1137,21 @@ msgstr ""
 "No hay conexión con el servidor. Revise su conexión a internet y la URL del "
 "servidor."
 
-#: src/Widgets/MainWindow.vala:442
+#: src/Widgets/MainWindow.vala:435
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr ""
 "El acceso a la API está desactivado en el servidor. Por favor, pimero "
 "actívelo."
 
-#: src/Widgets/MainWindow.vala:445
+#: src/Widgets/MainWindow.vala:438
 msgid "Not authorized to access URL"
 msgstr "No está autorizado para acceder la URL"
 
-#: src/Widgets/MainWindow.vala:449
+#: src/Widgets/MainWindow.vala:442
 msgid "No valid CA certificate available!"
 msgstr "¡No hay disponible un Certificado de Autorización válido!"
 
-#: src/Widgets/MainWindow.vala:453
+#: src/Widgets/MainWindow.vala:446
 msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
 msgstr "Por favor instale el plugin \"api_feedreader\" en su instancia tt-rss"
 
@@ -748,7 +1169,7 @@ msgstr "Eliminar \"%s\""
 msgid "Tag \"%s\" removed"
 msgstr "Etiqueta \"%s\" eliminada"
 
-#: src/Widgets/RemovePopover.vala:96
+#: src/Widgets/RemovePopover.vala:98
 #, c-format
 msgid "Feed \"%s\" removed"
 msgstr "Canal \"%s\" eliminado"
@@ -1026,15 +1447,15 @@ msgstr ""
 "FeedReader está limpiando la base de datos.\n"
 "Esto no llevará mucho tiempo."
 
-#: src/Widgets/TagPopover.vala:45
+#: src/Widgets/TagPopover.vala:51
 msgid "Add Tag:"
 msgstr "Añadir Etiqueta:"
 
-#: src/Widgets/TagPopover.vala:57
+#: src/Widgets/TagPopover.vala:63
 msgid "Tags:"
 msgstr "Etiquetas:"
 
-#: src/Widgets/TagPopover.vala:134
+#: src/Widgets/TagPopover.vala:140
 msgid "add Tag"
 msgstr "agregar Etiqueta"
 

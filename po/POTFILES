@@ -1,4 +1,3 @@
-Constants.vala.in
 data/org.gnome.FeedReader-autostart.desktop.in
 data/org.gnome.FeedReader.appdata.xml.in
 data/org.gnome.FeedReader.desktop.in
@@ -23,6 +22,7 @@ plugins/share/Twitter/TwitterForm.vala
 plugins/share/Twitter/TwitterSetup.vala
 plugins/share/Wallabag/WallabagSetup.vala
 src/Backend/FeedServer.vala
+src/Constants.vala.in
 src/DataBaseReadOnly.vala
 src/FeedReader.vala
 src/Model/Article.vala

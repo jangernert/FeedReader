@@ -73,6 +73,24 @@
 	<developer_name>Jan Lukas Gernert</developer_name>
 	<project_group>GNOME</project_group>
 	<releases>
+		<release version="2.9.0" date="2019-02-10">
+			<description>
+				<ul>
+					<li>Support new GNOME guidelines for the primary menu</li>
+					<li>Sort articles by date by default</li>
+					<li>Make backend plugins share some code and make OPML import work for all backend plugins</li>
+					<li>Various improvements to how translations work</li>
+					<li>Make "Oldest First" article sorting work in both Unread and All tabs</li>
+					<li>Improve error message when trying to add a feed that already exists</li>
+					<li>Don't close the currently open article when changing tabs if the new article is on the new tab</li>
+					<li>Use the system default "document" font as the default article font</li>
+					<li>Local and DecSync: Assume RSS feeds are UTF-8 unless they explicitly list a different locale</li>
+					<li>Local and DecSync: Use the RSS feed link to deduplicate feeds, not the link element in the feed</li>
+					<li>TT-RSS: Fix another crash when TT-RSS sends us data with an unexpected types</li>
+					<li>Feedly: Minor improvements to CLi logs</li>
+				</ul>
+			</description>
+		</release>
 		<release version="2.8.2" date="2019-02-10">
 			<description>
 				<ul>

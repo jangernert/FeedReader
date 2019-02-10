@@ -17,27 +17,31 @@ public class FeedReader.OPMLparser : GLib.Object {
 
 private string m_opmlString;
 private uint m_level = 0;
-private Gee.List<Feed> m_feeds;
+private Gee.List<Feed> m_feeds = new Gee.ArrayList<Feed>();
 
 public OPMLparser(string opml)
 {
 	m_opmlString = opml;
-	m_feeds = new Gee.LinkedList<Feed>();
 }
 
-public bool parse()
+public Gee.List<Feed> parse()
 {
+	if(!m_feeds.is_empty)
+	{
+		Logger.error("OPMLParser is not meant to be re-used!");
+		m_feeds = new Gee.ArrayList<Feed>();
+	}
+
 	Xml.Doc* doc = Xml.Parser.read_doc(m_opmlString, null, null, 0);
 	if(doc == null)
 	{
 		Logger.error("OPML: parsing xml failed");
-		return false;
+		return m_feeds;
 	}
-
 
 	Xml.Node* root = doc->get_root_element();
 	if(root->name != "opml")
-		return false;
+		return m_feeds;
 
 	Logger.debug("OPML version: " + root->get_prop("version"));
 
@@ -58,10 +62,7 @@ public bool parse()
 		}
 	}
 
-	Logger.debug("Subscribe to feeds");
-	FeedServer.get_default().addFeeds(m_feeds);
-
-	return true;
+	return m_feeds;
 }
 
 private void parseHead(Xml.Node* root)

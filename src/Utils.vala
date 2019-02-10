@@ -752,17 +752,13 @@ public static GLib.Menu getMenu()
 	var aboutMenu = new GLib.Menu();
 	aboutMenu.append(Menu.shortcuts, "win.shortcuts");
 	aboutMenu.append(Menu.about, "win.about");
-	aboutMenu.append(Menu.quit, "app.quit");
 
 	var menu = new GLib.Menu();
 	menu.append(Menu.settings, "win.settings");
 	menu.append(Menu.reset, "win.reset");
-	menu.append_section("", urlMenu);
 
-	if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() != "pantheon")
-	{
-		menu.append_section("", aboutMenu);
-	}
+	menu.append_section("", urlMenu);
+	menu.append_section("", aboutMenu);
 
 	return menu;
 }

@@ -28,7 +28,7 @@ recommend that you use the Flatpak build whenever possible though.
 
 Install dependencies:
 
-```
+```bash
 sudo apt-get install \
 	build-essential \
 	meson \
@@ -59,8 +59,8 @@ sudo apt-get install \
 
 Install dependencies:
 
-```
-RUN dnf install \
+```bash
+sudo dnf install \
 	gcc \
 	gettext \
 	git \
@@ -89,7 +89,7 @@ RUN dnf install \
 
 ### Build
 
-```
+```bash
 git clone --recursive https://github.com/jangernert/FeedReader
 cd ./FeedReader
 meson builddir --prefix=/usr

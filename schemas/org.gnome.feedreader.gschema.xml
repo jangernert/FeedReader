@@ -35,10 +35,6 @@
 		<value nick="SYSTEM" value="1"/>
 	</enum>
 
-
-
-
-
 	<schema id="org.gnome.feedreader" path="/org/gnome/feedreader/" gettext-domain="feedreader">
 		<key name="sync" type="i">
 			<default>30</default>
@@ -68,8 +64,8 @@
 			<default>'DARK'</default>
 		</key>
 
-		<key name='font' type="s">
-			<default>'Droid Sans 12'</default>
+		<key name='font' type="ms">
+			<default>nothing</default>
 		</key>
 
 		<key name='drop-articles-after' enum='org.gnome.feedreader.drop-articles-duration'>

@@ -40,13 +40,19 @@ public class FeedReader.SettingFont : FeedReader.Setting {
 
 public SettingFont(string name, GLib.Settings settings, string key){
 	base(name, null);
-	var font_button = new Gtk.FontButton.with_font(settings.get_string(key));
+	var current_font = settings.get_value(key).get_maybe();
+	var font_button = new Gtk.FontButton();
+	if (current_font != null)
+	{
+		font_button.font = current_font.get_string();
+	}
+
 	font_button.set_use_size(false);
 	font_button.set_show_size(true);
 	font_button.font_set.connect(() => {
-			settings.set_string(key, font_button.get_font_name());
-			changed();
-		});
+		var new_font = new Variant.string(font_button.get_font_name());
+		settings.set_value(key, new Variant.maybe(VariantType.STRING, new_font));
+	});
 
 	this.pack_end(font_button, false, false, 0);
 }

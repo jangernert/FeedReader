@@ -672,7 +672,17 @@ public static string buildArticle(string html, string title, string url, string?
 		article.insert(select_pos, "unselectable");
 	}
 
-	string font = Settings.general().get_string("font");
+	var font_setting = Settings.general().get_value("font").get_maybe();
+	string font;
+	if (font_setting == null)
+	{
+		// Default to using the system font
+		font = new GLib.Settings("org.gnome.desktop.interface").get_string("document-font-name");
+	}
+	else
+	{
+		font = font_setting.get_string();
+	}
 	var desc = Pango.FontDescription.from_string(font);
 	string fontfamilly = desc.get_family();
 	uint fontsize = (uint)GLib.Math.roundf(desc.get_size()/Pango.SCALE);

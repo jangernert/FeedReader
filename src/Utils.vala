@@ -672,28 +672,49 @@ public static string buildArticle(string html, string title, string url, string?
 		article.insert(select_pos, "unselectable");
 	}
 
+	// A list of fonts we should try to use in order of preference
+	// We will pass all of these to CSS in order
+	var font_options = new Gee.ArrayList<string>();
+
+	// Try to use the configured font if it exists
 	var font_setting = Settings.general().get_value("font").get_maybe();
-	string font;
-	if (font_setting == null)
+	if (font_setting != null)
+		font_options.add(font_setting.get_string());
+
+	// If there is no configured font, or it's broken, use the system default font
+	var system_font = new GLib.Settings("org.gnome.desktop.interface").get_string("document-font-name");
+	if (system_font != null)
+		font_options.add(system_font);
+
+	// Backup if the system font is broken too
+	font_options.add("sans");
+
+	var font_families = new Gee.ArrayList<string>();
+	uint? font_size = null;
+
+	// Find the first non-broken font from our options
+	foreach (var font in font_options)
 	{
-		// Default to using the system font
-		font = new GLib.Settings("org.gnome.desktop.interface").get_string("document-font-name");
+		var desc = Pango.FontDescription.from_string(font);
+		font_families.add(desc.get_family());
+		if (font_size == null && desc.get_size() > 0)
+			font_size = (uint)GLib.Math.roundf(desc.get_size());
 	}
-	else
-	{
-		font = font_setting.get_string();
-	}
-	var desc = Pango.FontDescription.from_string(font);
-	string fontfamilly = desc.get_family();
-	uint fontsize = (uint)GLib.Math.roundf(desc.get_size()/Pango.SCALE);
-	string small_size = (fontsize - 2).to_string();
-	string large_size = (fontsize * 2).to_string();
-	string normal_size = fontsize.to_string();
+
+	if (font_size == null)
+		font_size = 12;
+	font_size = font_size / Pango.SCALE;
+	string font_family = StringUtils.join(font_families, ", ");
+
+	Logger.info(@"Font: $font_family @ $font_size");
+	string small_size = (font_size - 2).to_string();
+	string large_size = (font_size * 2).to_string();
+	string normal_size = font_size.to_string();
 
 	string fontfamily_id = "$FONTFAMILY";
 	int fontfamilly_pos = article.str.index_of(fontfamily_id);
 	article.erase(fontfamilly_pos, fontfamily_id.length);
-	article.insert(fontfamilly_pos, fontfamilly);
+	article.insert(fontfamilly_pos, font_family + ", sans");
 
 	string fontsize_id = "$FONTSIZE";
 	string sourcefontsize_id = "$SMALLSIZE";

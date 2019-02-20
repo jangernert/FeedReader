@@ -41,7 +41,9 @@ public LoginResponse getToken()
 	m_session.send_message(message);
 
 	if(message.status_code != 200)
+	{
 		return LoginResponse.NO_CONNECTION;
+	}
 
 	try
 	{
@@ -86,7 +88,9 @@ public LoginResponse refreshToken()
 	var message = new Soup.Message("POST", FeedlySecret.base_uri+"/v3/auth/token");
 
 	if(m_settingsTweaks.get_boolean("do-not-track"))
+	{
 		message.request_headers.append("DNT", "1");
+	}
 
 	string message_string = "refresh_token=" + m_utils.getRefreshToken()
 	                        + "&client_id=" + FeedlySecret.apiClientId
@@ -97,7 +101,9 @@ public LoginResponse refreshToken()
 	m_session.send_message(message);
 
 	if(message.status_code != 200)
+	{
 		return LoginResponse.NO_CONNECTION;
+	}
 
 	try
 	{
@@ -145,12 +151,16 @@ public Response send_get_request_to_feedly(string path)
 public Response send_put_request_to_feedly(string path, Json.Node root)
 {
 	if(!m_utils.accessTokenValid())
+	{
 		refreshToken();
+	}
 
 	var message = new Soup.Message("PUT", FeedlySecret.base_uri+path);
 
 	if(m_settingsTweaks.get_boolean("do-not-track"))
+	{
 		message.request_headers.append("DNT", "1");
+	}
 
 	var gen = new Json.Generator();
 	gen.set_root(root);
@@ -176,12 +186,16 @@ public Response send_put_request_to_feedly(string path, Json.Node root)
 public Response send_post_request_to_feedly(string path, Json.Node root)
 {
 	if(!m_utils.accessTokenValid())
+	{
 		refreshToken();
+	}
 
 	var message = new Soup.Message("POST", FeedlySecret.base_uri+path);
 
 	if(m_settingsTweaks.get_boolean("do-not-track"))
+	{
 		message.request_headers.append("DNT", "1");
+	}
 
 	var gen = new Json.Generator();
 	gen.set_root(root);
@@ -209,12 +223,16 @@ public Response send_post_request_to_feedly(string path, Json.Node root)
 public Response send_post_string_request_to_feedly(string path, string input, string type)
 {
 	if(!m_utils.accessTokenValid())
+	{
 		refreshToken();
+	}
 
 	var message = new Soup.Message("POST", FeedlySecret.base_uri+path);
 
 	if(m_settingsTweaks.get_boolean("do-not-track"))
+	{
 		message.request_headers.append("DNT", "1");
+	}
 
 	message.request_headers.append("Authorization","OAuth %s".printf(m_utils.getAccessToken()));
 	message.request_headers.append("Content-Type", type);
@@ -241,13 +259,17 @@ public Response send_delete_request_to_feedly(string path)
 private Response send_request(string path, string type)
 {
 	if(!m_utils.accessTokenValid())
+	{
 		refreshToken();
+	}
 
 	var message = new Soup.Message(type, FeedlySecret.base_uri+path);
 	message.request_headers.append("Authorization", @"OAuth $(m_utils.getAccessToken())");
 
 	if(m_settingsTweaks.get_boolean("do-not-track"))
+	{
 		message.request_headers.append("DNT", "1");
+	}
 
 	m_session.send_message(message);
 

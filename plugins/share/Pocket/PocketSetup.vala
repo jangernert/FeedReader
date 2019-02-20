@@ -21,14 +21,18 @@ public PocketSetup(string? id, PocketAPI api, string username = "", bool system 
 {
 	bool loggedIN = false;
 	if(username != "")
+	{
 		loggedIN = true;
+	}
 
 	base("Pocket", "feed-share-pocket", loggedIN, username, system);
 
 	m_api = api;
 
 	if(id != null)
+	{
 		m_id = id;
+	}
 }
 
 

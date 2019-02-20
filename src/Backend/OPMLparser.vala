@@ -41,7 +41,9 @@ public Gee.List<Feed> parse()
 
 	Xml.Node* root = doc->get_root_element();
 	if(root->name != "opml")
+	{
 		return m_feeds;
+	}
 
 	Logger.debug("OPML version: " + root->get_prop("version"));
 
@@ -101,7 +103,9 @@ private void parseTree(Xml.Node* root, string? catID = null)
 			if(!hasProp(node, "xmlUrl"))
 			{
 				if(hasProp(node, "title") || !hasProp(node, "schema-version"))
+				{
 					parseCat(node, catID);
+				}
 			}
 			else
 			{
@@ -116,9 +120,13 @@ private void parseCat(Xml.Node* node, string? parentCatID = null)
 {
 	string title = "No Title";
 	if(hasProp(node, "text"))
+	{
 		title = node->get_prop("text");
+	}
 	else if(hasProp(node, "title"))
+	{
 		title = node->get_prop("title");
+	}
 
 	Logger.debug(space() + "Category: " + title);
 	string catID = FeedReaderBackend.get_default().addCategory(title, parentCatID, true);
@@ -131,9 +139,13 @@ private void parseFeed(Xml.Node* node, string? catID = null)
 	{
 		string title = "No Title";
 		if(hasProp(node, "text"))
+		{
 			title = node->get_prop("text");
+		}
 		else if(hasProp(node, "title"))
+		{
 			title = node->get_prop("title");
+		}
 		string feedURL = node->get_prop("xmlUrl");
 
 		string website = "";
@@ -150,9 +162,13 @@ private void parseFeed(Xml.Node* node, string? catID = null)
 
 		var categories = new Gee.ArrayList<string>();
 		if(catID == null)
+		{
 			categories.add(FeedServer.get_default().uncategorizedID());
+		}
 		else
+		{
 			categories.add(catID);
+		}
 
 		m_feeds.add(new Feed("", title, website, 0, categories, null, feedURL));
 	}
@@ -161,7 +177,9 @@ private void parseFeed(Xml.Node* node, string? catID = null)
 private bool hasProp(Xml.Node* node, string prop)
 {
 	if(node->get_prop(prop) != null)
+	{
 		return true;
+	}
 
 	return false;
 }

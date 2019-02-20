@@ -60,8 +60,10 @@ public void redirection(WebKit.LoadEvent load_event)
 private void check()
 {
 	if(m_success)
+	{
 		// code already successfully extracted
 		return;
+	}
 
 	string url = m_view.get_uri();
 

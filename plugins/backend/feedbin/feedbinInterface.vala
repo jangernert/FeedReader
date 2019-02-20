@@ -210,9 +210,13 @@ public override LoginResponse login()
 	try
 	{
 		if(m_api.login())
+		{
 			return LoginResponse.SUCCESS;
+		}
 		else
+		{
 			return LoginResponse.WRONG_LOGIN;
+		}
 	}
 	catch(FeedbinError.NO_CONNECTION e)
 	{
@@ -342,7 +346,9 @@ public override bool addFeed(string feed_url, string? cat_id, string? category_n
 		feed_id = subscription.feed_id.to_string();
 
 		if(category_name != null)
+		{
 			m_api.add_tagging(subscription.feed_id, category_name);
+		}
 
 		errmsg = "";
 		return true;
@@ -362,7 +368,9 @@ private FeedbinAPI.Subscription subscription_for_feed(string feed_id_str) throws
 	foreach(var subscription in subscriptions)
 	{
 		if(subscription.feed_id == feed_id)
+		{
 			return subscription;
+		}
 	}
 	throw new FeedbinError.NOT_FOUND("No subscription found for feed $feed_id");
 }
@@ -406,7 +414,9 @@ public override void moveFeed(string feed_id_str, string new_category, string? o
 			foreach(var tagging in taggings)
 			{
 				if(tagging.name != old_category || tagging.feed_id != feed_id)
+				{
 					continue;
+				}
 				Logger.debug(@"moveFeed: Deleting tag $old_category from $feed_id");
 				m_api.delete_tagging(tagging.id);
 				break;
@@ -430,7 +440,9 @@ public override void renameCategory(string old_category, string new_category)
 		foreach(var tagging in taggings)
 		{
 			if(tagging.name != old_category)
+			{
 				continue;
+			}
 			var feed_id = tagging.feed_id;
 			Logger.debug(@"renameCategory: Tagging $feed_id with $new_category");
 			m_api.delete_tagging(tagging.id);
@@ -465,7 +477,9 @@ public override void deleteCategory(string category)
 		foreach(var tagging in taggings)
 		{
 			if(tagging.name != category)
+			{
 				continue;
+			}
 			var feed_id = tagging.feed_id;
 			Logger.debug(@"deleteCategory: Deleting category $category from feed $feed_id");
 			m_api.delete_tagging(tagging.id);
@@ -487,7 +501,9 @@ public override void removeCatFromFeed(string feed_id_str, string category)
 		foreach(var tagging in taggings)
 		{
 			if(tagging.feed_id != feed_id || tagging.name != category)
+			{
 				continue;
+			}
 
 			Logger.debug(@"removeCatFromFeed: Deleting category $category from feed $feed_id");
 			m_api.delete_tagging(tagging.id);
@@ -506,11 +522,15 @@ public override bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> ca
 	{
 		var taggings = m_api.get_taggings();
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return false;
+		}
 
 		var favicons = m_api.get_favicons();
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return false;
+		}
 
 		// It's easier to rebuild the category list than to update it
 		var category_names = new Gee.HashSet<string>();
@@ -554,9 +574,13 @@ public override bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> ca
 			Gee.List<string> feed_categories = new Gee.ArrayList<string>();
 
 			if(tag_map.contains(feed_id))
+			{
 				feed_categories.add_all(tag_map.get(feed_id));
+			}
 			else
+			{
 				feed_categories.add(uncategorizedID());
+			}
 
 			string? favicon_uri = null;
 			if(subscription.site_url != null)
@@ -615,17 +639,23 @@ requires (count >= 0)
 		var db = DataBase.readOnly();
 		int64? feed_id = null;
 		if(!is_tag_id && feed_id_str != null)
+		{
 			feed_id = int64.parse(feed_id_str);
+		}
 		bool only_starred = what_to_get == ArticleStatus.MARKED;
 
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return;
+		}
 
 		// The Feedbin API doesn't include read/unread/starred status in the entries.json
 		// so look them up.
 		var unread_ids = m_api.get_unread_entries();
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return;
+		}
 
 		var starred_ids = m_api.get_starred_entries();
 
@@ -655,7 +685,9 @@ requires (count >= 0)
 				var articles = new Gee.ArrayList<Article>();
 				var existing_articles = db.read_articles(search_feed_id, search_type, ArticleListState.ALL, "", c, offset);
 				if(existing_articles.size == 0)
+				{
 					break;
+				}
 
 				foreach(var article in existing_articles)
 				{
@@ -683,11 +715,15 @@ requires (count >= 0)
 		for(int page = 1; ; ++page)
 		{
 			if(cancellable != null && cancellable.is_cancelled())
+			{
 				return;
+			}
 
 			var entries = m_api.get_entries(page, only_starred, since, feed_id);
 			if(entries.size == 0)
+			{
 				break;
+			}
 
 			var articles = new Gee.ArrayList<Article>();
 			foreach(var entry in entries)

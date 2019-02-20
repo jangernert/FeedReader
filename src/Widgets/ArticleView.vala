@@ -98,11 +98,11 @@ public ArticleView()
 			if(allocation.width != m_width
 			   || allocation.height != m_height)
 			{
-				m_width = allocation.width;
-				m_height = allocation.height;
-				Logger.debug("ArticleView: size changed");
-				setBackgroundColor();
-				recalculate();
+			        m_width = allocation.width;
+			        m_height = allocation.height;
+			        Logger.debug("ArticleView: size changed");
+			        setBackgroundColor();
+			        recalculate();
 			}
 		});
 
@@ -191,7 +191,9 @@ private WebKit.WebView getNewView()
 	//view.load_failed.connect(loadFailed);
 	view.decide_policy.connect(decidePolicy);
 	if(m_color != null)
+	{
 		view.set_background_color(m_color);
+	}
 
 	view.show();
 	return view;
@@ -223,9 +225,13 @@ public void fillContent(string articleID)
 			switchViews();
 
 			if(m_FullscreenArticle)
-				m_currentView.zoom_level = m_FullscreenZoomLevel;
+			{
+			        m_currentView.zoom_level = m_FullscreenZoomLevel;
+			}
 			else
-				m_currentView.zoom_level = 1.0;
+			{
+			        m_currentView.zoom_level = 1.0;
+			}
 
 			m_fsHead.setTitle(article.getTitle());
 			m_fsHead.setMarked(article.getMarked());
@@ -303,14 +309,22 @@ private void switchViews()
 	if(m_FullscreenArticle)
 	{
 		if(ColumnView.get_default().ArticleListSelectedIsLast())
+		{
 			m_prevButton.reveal(false);
+		}
 		else
+		{
 			m_prevButton.reveal(true);
+		}
 
 		if(ColumnView.get_default().ArticleListSelectedIsFirst())
+		{
 			m_nextButton.reveal(false);
+		}
 		else
+		{
 			m_nextButton.reveal(true);
+		}
 	}
 }
 
@@ -318,7 +332,9 @@ private void removeFromStack(string childName)
 {
 	Gtk.Widget? widget = m_stack.get_child_by_name(childName);
 	if(widget != null)
+	{
 		m_stack.remove(widget);
+	}
 }
 
 private void checkQueue()
@@ -339,12 +355,16 @@ public void clearContent()
 	Gtk.Widget? oldView = null;
 	if(m_stack.get_visible_child_name() != "empty"
 	   && m_stack.get_visible_child_name() != "crash")
+	{
 		oldView = m_stack.get_visible_child();
+	}
 	m_progress.reveal(false);
 	m_stack.set_visible_child_name("empty");
 	GLib.Timeout.add((uint)(1.2*m_animationDuration), () => {
 			if(oldView != null)
-				m_stack.remove(oldView);
+			{
+			        m_stack.remove(oldView);
+			}
 			checkQueue();
 			return false;
 		}, GLib.Priority.HIGH);
@@ -380,7 +400,9 @@ public void open_link(WebKit.LoadEvent load_event)
 	case WebKit.LoadEvent.COMMITTED:
 		Logger.debug("ArticleView: load COMMITTED");
 		if(m_searchTerm != "")
+		{
 			m_currentView.get_find_controller().search(m_searchTerm, WebKit.FindOptions.CASE_INSENSITIVE, 99);
+		}
 		break;
 	case WebKit.LoadEvent.FINISHED:
 		Logger.debug("ArticleView: load FINISHED");
@@ -417,7 +439,9 @@ public void setScrollPos(int pos)
 	if(m_stack.get_visible_child_name() == "empty"
 	   || m_stack.get_visible_child_name() == "crash"
 	   || m_currentView == null)
+	{
 		return;
+	}
 
 	m_busy = true;
 	m_currentView.run_javascript.begin("window.scrollTo(0,%i);".printf(pos), null, (obj, res) => {
@@ -438,7 +462,9 @@ private int getScollUpper()
 	if(m_stack.get_visible_child_name() == "empty"
 	   || m_stack.get_visible_child_name() == "crash"
 	   || m_currentView == null)
+	{
 		return 0;
+	}
 
 	string javascript = """
 								document.title = Math.max	(
@@ -476,7 +502,9 @@ public int getScrollPos()
 	if(m_stack.get_visible_child_name() == "empty"
 	   || m_stack.get_visible_child_name() == "crash"
 	   || m_currentView == null)
+	{
 		return 0;
+	}
 
 	// use mainloop to prevent app from shutting down before the result can be fetched
 	// ugly but works =/
@@ -537,10 +565,12 @@ private void recalculate()
 	try
 	{
 		if(m_connected
-			&& m_stack.get_visible_child_name() != "empty"
-			&& m_stack.get_visible_child_name() != "crash"
-			&& m_currentView != null)
+		   && m_stack.get_visible_child_name() != "empty"
+		   && m_stack.get_visible_child_name() != "crash"
+		   && m_currentView != null)
+		{
 			m_messenger.recalculate();
+		}
 	}
 	catch(Error e)
 	{
@@ -642,9 +672,13 @@ private bool onKeyPress(Gdk.EventKey event)
 		{
 		case Gdk.Key.KP_0:
 			if(m_FullscreenArticle)
+			{
 				m_currentView.zoom_level = m_FullscreenZoomLevel;
+			}
 			else
+			{
 				m_currentView.zoom_level = 1.0;
+			}
 			return true;
 
 		case Gdk.Key.KP_Add:
@@ -678,7 +712,9 @@ public void load(string? id = null)
 private bool updateDragMomentum()
 {
 	if(!m_inDrag)
+	{
 		return false;
+	}
 
 	for(int i = 9; i > 0; --i)
 	{
@@ -694,7 +730,9 @@ private bool updateDragMomentum()
 private bool ScrollDragRelease()
 {
 	if(m_inDrag)
+	{
 		return true;
+	}
 
 	m_momentum /= 1.2;
 
@@ -721,7 +759,9 @@ private bool ScrollDragRelease()
 		return false;
 	}
 	else
+	{
 		return true;
+	}
 }
 
 private void setBackgroundColor()
@@ -750,6 +790,7 @@ private bool onContextMenu(WebKit.ContextMenu menu, Gdk.Event event, WebKit.HitT
 		   && (menuItem.get_gaction().name != "context-menu-action-9")       // copy text
 		   && (menuItem.get_gaction().name != "context-menu-action-6")       // copy image
 		   && (menuItem.get_gaction().name != "context-menu-action-7"))      // copy image address
+
 		{
 			menu.remove(menuItem);
 		}
@@ -766,7 +807,9 @@ private bool onContextMenu(WebKit.ContextMenu menu, Gdk.Event event, WebKit.HitT
 	}
 
 	if(menu.first() == null)
+	{
 		return true;
+	}
 
 	return false;
 }
@@ -780,7 +823,9 @@ private void onMouseOver(WebKit.HitTestResult hitTest, uint modifiers)
 		double relY = m_posY2/this.get_allocated_width();
 
 		if(relY >= 0.85 && relX <= 0.5)
+		{
 			align = Gtk.Align.END;
+		}
 
 		m_UrlOverlay.setURL(hitTest.get_link_uri(), align);
 		m_UrlOverlay.reveal(true);
@@ -818,7 +863,9 @@ private bool enterFullscreenVideo()
 public void exitFullscreenVideo()
 {
 	if(m_currentView != null)
+	{
 		m_currentView.leave_fullscreen();
+	}
 }
 
 public bool fullscreenVideo()
@@ -839,10 +886,14 @@ public void enterFullscreenArticle()
 	m_currentView.zoom_level = m_FullscreenZoomLevel;
 
 	if(!ColumnView.get_default().ArticleListSelectedIsFirst())
+	{
 		m_nextButton.reveal(true);
+	}
 
 	if(!ColumnView.get_default().ArticleListSelectedIsLast())
+	{
 		m_prevButton.reveal(true);
+	}
 }
 
 public void leaveFullscreenArticle()
@@ -871,7 +922,9 @@ private void printProgress()
 	m_progress.setPercentageF(progress);
 
 	if(progress == 1.0)
+	{
 		m_progress.reveal(false);
+	}
 }
 
 public void setMarked(ArticleStatus marked)
@@ -901,11 +954,15 @@ private void onCrash(WebKit.WebProcessTerminationReason reason)
 	m_progress.reveal(false);
 	Gtk.Widget? oldView = null;
 	if(m_stack.get_visible_child_name() != "crash")
+	{
 		oldView = m_stack.get_visible_child();
+	}
 	m_stack.set_visible_child_name("crash");
 	GLib.Timeout.add((uint)(1.2*m_animationDuration), () => {
 			if(oldView != null)
-				m_stack.remove(oldView);
+			{
+			        m_stack.remove(oldView);
+			}
 			checkQueue();
 			return false;
 		}, GLib.Priority.HIGH);
@@ -934,7 +991,9 @@ public void killMedia()
 public bool playingMedia()
 {
 	if(m_currentMedia == null)
+	{
 		return false;
+	}
 
 	return true;
 }
@@ -942,7 +1001,9 @@ public bool playingMedia()
 public void print()
 {
 	if(m_currentView == null)
+	{
 		return;
+	}
 
 	string articleName = DataBase.readOnly().read_article(m_currentArticle).getTitle() + ".pdf";
 

@@ -34,7 +34,9 @@ private static MainWindow? m_window = null;
 public static MainWindow get_default()
 {
 	if(m_window == null)
+	{
 		m_window = new MainWindow();
+	}
 
 	return m_window;
 }
@@ -177,12 +179,16 @@ private bool onStateEvent(Gdk.EventWindowState event)
 		{
 			Logger.debug("MainWindow: fullscreen event");
 			if(ColumnView.get_default().getSelectedArticle() == null)
+			{
 				return true;
+			}
 
 			if(ColumnView.get_default().isFullscreenVideo())
 			{
 				if((event.new_window_state & Gdk.WindowState.FULLSCREEN) != Gdk.WindowState.FULLSCREEN)
+				{
 					ColumnView.get_default().exitFullscreenVideo();
+				}
 
 				base.window_state_event(event);
 				return true;
@@ -217,7 +223,9 @@ public void showContent(Gtk.StackTransitionType transition = Gtk.StackTransition
 {
 	Logger.debug("MainWindow: show content");
 	if(!noNewFeedList)
+	{
 		ColumnView.get_default().newFeedList();
+	}
 	m_stack.set_visible_child_full("content", transition);
 	ColumnView.get_default().getHeader().setButtonsSensitive(true);
 
@@ -516,7 +524,9 @@ private bool checkShortcut(Gdk.EventKey event, string gsettingKey)
 		{
 			if(event.state == 16
 			   || event.state == 0)
+			{
 				return true;
+			}
 		}
 		else if(mod in event.state)
 		{
@@ -530,10 +540,14 @@ private bool checkShortcut(Gdk.EventKey event, string gsettingKey)
 private bool shortcuts(Gdk.EventKey event)
 {
 	if(m_stack.get_visible_child_name() != "content")
+	{
 		return false;
+	}
 
 	if(ColumnView.get_default().searchFocused())
+	{
 		return false;
+	}
 
 	if(checkShortcut(event, "articlelist-prev"))
 	{
@@ -568,14 +582,20 @@ private bool shortcuts(Gdk.EventKey event)
 		if(ColumnView.get_default().isFullscreen())
 		{
 			if(event.keyval == Gdk.Key.Left)
+			{
 				ColumnView.get_default().ArticleListPREV();
+			}
 			else
+			{
 				ColumnView.get_default().ArticleListNEXT();
+			}
 
 			return true;
 		}
 		else
+		{
 			return false;
+		}
 	}
 
 	if(checkShortcut(event, "articleview-up"))

@@ -351,9 +351,13 @@ public override bool addFeed(string feedURL, string? catID, string? newCatName, 
 	}
 
 	if(success)
+	{
 		feedID = (int.parse(DataBase.readOnly().getMaxID("feeds", "feed_id")) + 1).to_string();
+	}
 	else
+	{
 		feedID = "-98";
+	}
 
 
 	return success;
@@ -377,7 +381,9 @@ public override void moveFeed(string feedID, string newCatID, string? currentCat
 public override string createCategory(string title, string? parentID)
 {
 	if(parentID != null)
+	{
 		return m_api.createCategory(title, int.parse(parentID));
+	}
 
 	return m_api.createCategory(title);
 }
@@ -407,20 +413,28 @@ public override bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> ca
 	if(m_api.getCategories(categories))
 	{
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return false;
+		}
 
 		if(m_api.getFeeds(feeds, categories))
 		{
 			if(cancellable != null && cancellable.is_cancelled())
+			{
 				return false;
+			}
 
 			if(m_api.getUncategorizedFeeds(feeds))
 			{
 				if(cancellable != null && cancellable.is_cancelled())
+				{
 					return false;
+				}
 
 				if(m_api.getTags(tags))
+				{
 					return true;
+				}
 			}
 		}
 	}
@@ -441,7 +455,9 @@ public override void getArticles(int count, ArticleStatus whatToGet, DateTime? s
 	var unreadIDs = m_api.NewsPlus(ArticleStatus.UNREAD, 10*settings_general.get_int("max-articles"));
 
 	if(cancellable != null && cancellable.is_cancelled())
+	{
 		return;
+	}
 
 	var db = DataBase.writeAccess();
 	if(unreadIDs != null && whatToGet == ArticleStatus.ALL)
@@ -454,7 +470,9 @@ public override void getArticles(int count, ArticleStatus whatToGet, DateTime? s
 	}
 
 	if(cancellable != null && cancellable.is_cancelled())
+	{
 		return;
+	}
 
 	var articleIDs = new Gee.ArrayList<int>();
 	int skip = count;
@@ -463,7 +481,9 @@ public override void getArticles(int count, ArticleStatus whatToGet, DateTime? s
 	while(skip > 0)
 	{
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return;
+		}
 
 		if(skip >= amount)
 		{
@@ -507,7 +527,9 @@ public override void getArticles(int count, ArticleStatus whatToGet, DateTime? s
 		});
 
 	if(cancellable != null && cancellable.is_cancelled())
+	{
 		return;
+	}
 
 	if(articles.size > 0)
 	{

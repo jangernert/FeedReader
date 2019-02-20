@@ -28,7 +28,9 @@ public ttrssMessage(Soup.Session session, string destination)
 	m_message_soup = new Soup.Message("POST", destination);
 
 	if(m_message_soup == null)
+	{
 		Logger.error(@"ttrssMessage: can't parse URL $destination");
+	}
 }
 
 public void add_int(string type, int val)
@@ -91,11 +93,14 @@ public ConnectionError send_impl(bool ping)
 	m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, data.data);
 
 	if(settingsTweaks.get_boolean("do-not-track"))
+	{
 		m_message_soup.request_headers.append("DNT", "1");
+	}
 
 	var status_code = m_session.send_message(m_message_soup);
 
 	if(status_code == 401)         // unauthorized
+
 	{
 		return ConnectionError.UNAUTHORIZED;
 	}
@@ -133,7 +138,9 @@ public ConnectionError send_impl(bool ping)
 	m_response_object = parser.get_root().get_object();
 
 	if(m_response_object.has_member("error"))
+	{
 		parseError(m_response_object);
+	}
 
 
 	var status = UntypedJson.Object.get_int_member(m_response_object, "status");
@@ -147,7 +154,9 @@ public ConnectionError send_impl(bool ping)
 		{
 			var content = m_response_object.get_object_member("content");
 			if(content.has_member("error"))
+			{
 				parseError(content);
+			}
 		}
 
 		return apiError();
@@ -198,12 +207,16 @@ private void logError(string prefix)
 	{
 		obj = new Json.Object();
 		m_request_object.foreach_member((_, name, member) =>
-		{
-			if(name == "password")
-				obj.set_string_member("password", "[redacted]");
-			else
-				obj.set_member(name, member);
-		});
+			{
+				if(name == "password")
+				{
+				        obj.set_string_member("password", "[redacted]");
+				}
+				else
+				{
+				        obj.set_member(name, member);
+				}
+			});
 	}
 	var request = object_to_string(obj);
 	var response = (string)m_message_soup.response_body.flatten().data;

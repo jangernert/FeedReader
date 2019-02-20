@@ -37,7 +37,9 @@ public LoginResponse login()
 	{
 		var response = m_connection.getToken();
 		if(response != LoginResponse.SUCCESS)
+		{
 			return response;
+		}
 	}
 	if(getUserID())
 	{
@@ -57,7 +59,9 @@ private bool getUserID()
 	var response = m_connection.send_get_request("user-info?output=json");
 
 	if(response.status != 200)
+	{
 		return false;
+	}
 
 	var parser = new Json.Parser();
 	try
@@ -89,7 +93,9 @@ public bool getFeeds(Gee.List<Feed> feeds)
 	var response = m_connection.send_get_request("subscription/list?output=json");
 
 	if(response.status != 200)
+	{
 		return false;
+	}
 
 	var parser = new Json.Parser();
 	try
@@ -139,7 +145,9 @@ public bool getCategoriesAndTags(Gee.List<Feed> feeds, Gee.List<Category> catego
 	var response = m_connection.send_get_request("tag/list?output=json");
 
 	if(response.status != 200)
+	{
 		return false;
+	}
 
 	var parser = new Json.Parser();
 	try
@@ -188,7 +196,9 @@ public int getTotalUnread()
 	var response = m_connection.send_get_request("unread-count?output=json");
 
 	if(response.status != 200)
+	{
 		return 0;
+	}
 
 	var parser = new Json.Parser();
 	try
@@ -226,12 +236,16 @@ public string? updateArticles(Gee.List<string> ids, int count, string? continuat
 	var message_string = "n=" + count.to_string();
 	message_string += "&xt=user/-/state/com.google/read";
 	if(continuation != null)
+	{
 		message_string += "&c=" + continuation;
+	}
 
 	var response = m_connection.send_get_request("stream/items/ids?output=json&"+message_string);
 
 	if(response.status != 200)
+	{
 		return null;
+	}
 
 	var parser = new Json.Parser();
 	try
@@ -256,7 +270,9 @@ public string? updateArticles(Gee.List<string> ids, int count, string? continuat
 	}
 
 	if(root.has_member("continuation") && root.get_string_member("continuation") != "")
+	{
 		return root.get_string_member("continuation");
+	}
 
 	return null;
 }
@@ -266,24 +282,36 @@ public string? getArticles(Gee.List<Article> articles, int count, ArticleStatus 
 	var message_string = "n=" + count.to_string();
 
 	if(whatToGet == ArticleStatus.UNREAD)
+	{
 		message_string += "&xt=user/-/state/com.google/read";
+	}
 	if(whatToGet == ArticleStatus.READ)
+	{
 		message_string += "&s=user/-/state/com.google/read";
+	}
 	else if(whatToGet == ArticleStatus.MARKED)
+	{
 		message_string += "&s=user/-/state/com.google/starred";
+	}
 
 	message_string += "&c=" + continuation;
 
 
 	string api_endpoint = "stream/contents";
 	if(feed_id != null)
+	{
 		api_endpoint += "/" + GLib.Uri.escape_string(feed_id);
+	}
 	else if(tagID != null)
+	{
 		api_endpoint += "/" + GLib.Uri.escape_string(tagID);
+	}
 	var response = m_connection.send_get_request(api_endpoint+"?output=json&"+message_string);
 
 	if(response.status != 200)
+	{
 		return null;
+	}
 
 	var parser = new Json.Parser();
 	try
@@ -316,11 +344,17 @@ public string? getArticles(Gee.List<Article> articles, int count, ArticleStatus 
 		{
 			string cat = cats.get_string_element(j);
 			if(cat.has_suffix("com.google/starred"))
+			{
 				marked = true;
+			}
 			else if(cat.has_suffix("com.google/read"))
+			{
 				read = true;
+			}
 			else if(cat.contains("/label/") && db.getTagName(cat) != null)
+			{
 				tags.add(cat);
+			}
 		}
 
 		var enclosures = new Gee.ArrayList<Enclosure>();
@@ -330,7 +364,9 @@ public string? getArticles(Gee.List<Article> articles, int count, ArticleStatus 
 
 			uint mediaCount = 0;
 			if(attachments != null)
+			{
 				mediaCount = attachments.get_length();
+			}
 
 			for(int j = 0; j < mediaCount; ++j)
 			{
@@ -361,7 +397,9 @@ public string? getArticles(Gee.List<Article> articles, int count, ArticleStatus 
 	}
 
 	if(root.has_member("continuation") && root.get_string_member("continuation") != "")
+	{
 		return root.get_string_member("continuation");
+	}
 
 	return null;
 }
@@ -371,9 +409,13 @@ public void edidTag(string articleID, string tagID, bool add = true)
 {
 	var message_string = "";
 	if(add)
+	{
 		message_string += "a=";
+	}
 	else
+	{
 		message_string += "r=";
+	}
 
 	message_string += tagID;
 	message_string += "&i=" + articleID;
@@ -422,17 +464,24 @@ public bool editSubscription(OldreaderSubscriptionAction action, string[] feedID
 		break;
 	}
 
-	foreach(string s in feedID)
+	foreach(string s in feedID) {
 		message_string += "&s=" + s;
+	}
 
 	if(title != null)
+	{
 		message_string += "&t=" + title;
+	}
 
 	if(add != null)
+	{
 		message_string += "&a=" + add;
+	}
 
 	if(remove != null)
+	{
 		message_string += "&r=" + remove;
+	}
 
 
 	var response = m_connection.send_post_request("subscription/edit?output=json", message_string);

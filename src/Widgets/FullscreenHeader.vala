@@ -44,7 +44,9 @@ public FullscreenHeader()
 	m_header.popClosed.connect(() => {
 			m_popover = false;
 			if(!m_hover)
-				m_revealer.set_reveal_child(false);
+			{
+			        m_revealer.set_reveal_child(false);
+			}
 		});
 	m_header.showArticleButtons(true);
 	m_revealer = new Gtk.Revealer();
@@ -65,15 +67,21 @@ public FullscreenHeader()
 		});
 	this.leave_notify_event.connect((event) => {
 			if(event.detail == Gdk.NotifyType.INFERIOR)
-				return false;
+			{
+			        return false;
+			}
 
 			if(event.detail == Gdk.NotifyType.NONLINEAR_VIRTUAL)
-				return false;
+			{
+			        return false;
+			}
 
 			m_hover = false;
 
 			if(m_popover)
-				return false;
+			{
+			        return false;
+			}
 
 
 			removeTimeout();

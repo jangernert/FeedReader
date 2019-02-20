@@ -165,7 +165,9 @@ private uint count_article_status(ArticleStatus status)
 	var query = "SELECT COUNT(*) FROM articles";
 	string status_column = status.column();
 	if(status_column != null)
+	{
 		query += @" WHERE $status_column = ?";
+	}
 	var rows = m_db.execute(query, { status });
 	assert(rows.size == 1 && rows[0].size == 1);
 	return rows[0][0].to_int();
@@ -187,7 +189,9 @@ private uint count_status_uncategorized(ArticleStatus status)
 	query.select_field("count(*)");
 	var status_column = status.column();
 	if(status_column != null)
+	{
 		query.where_equal_int(status_column, status.to_int());
+	}
 
 
 	var subquery = new QueryBuilder(QueryType.SELECT, "feeds");
@@ -218,7 +222,9 @@ public uint get_marked_uncategorized()
 public int get_new_unread_count(int row_id)
 {
 	if(row_id == 0)
+	{
 		return 0;
+	}
 
 	string query = "SELECT count(*) FROM articles WHERE unread = ? AND rowid > ?";
 	var rows = m_db.execute(query, { ArticleStatus.UNREAD, row_id });
@@ -247,7 +253,9 @@ public string? getTagName(string tag_id)
 	var rows = m_db.execute(query, { tag_id });
 	assert(rows.size == 0 || (rows.size == 1 && rows[0].size == 1));
 	if(rows.size == 1)
+	{
 		return rows[0][0].to_string();
+	}
 	return _("Unknown tag");
 }
 
@@ -257,25 +265,35 @@ public int getLastModified()
 	var rows = m_db.execute(query);
 	assert(rows.size == 0 || (rows.size == 1 && rows[0].size == 1));
 	if(rows.size == 1 && rows[0][0] != null)
+	{
 		return rows[0][0].to_int();
+	}
 	else
+	{
 		return 0;
+	}
 }
 
 public string getCategoryName(string catID)
 {
 	if(catID == CategoryID.TAGS.to_string())
+	{
 		return "Tags";
+	}
 
 	var query = "SELECT title FROM categories WHERE categorieID = ?";
 	var rows = m_db.execute(query, { catID });
 
 	string result = "";
 	if(rows.size != 0)
+	{
 		result = rows[0][0].to_string();
+	}
 
 	if(result == "")
+	{
 		result = _("Uncategorized");
+	}
 
 	return result;
 }
@@ -285,9 +303,13 @@ public string? getCategoryID(string catname)
 	var query = "SELECT categorieID FROM categories WHERE title = ?";
 	var rows = m_db.execute(query, { catname });
 	if(rows.size == 0)
+	{
 		return null;
+	}
 	else
+	{
 		return rows[0][0].to_string();
+	}
 }
 
 public bool preview_empty(string articleID)
@@ -312,11 +334,13 @@ public Gee.List<Article> read_article_between(
 	var sorting = (ArticleListSort)Settings.general().get_enum("articlelist-sort-by");
 
 	if(sorting == ArticleListSort.RECEIVED)
+	{
 		query.where(
 			"date BETWEEN (SELECT rowid FROM articles WHERE articleID = %s) AND (SELECT rowid FROM articles WHERE articleID = %s)"
 			.printf(
 				SQLite.quote_string(id1),
 				SQLite.quote_string(id2)));
+	}
 	else
 	{
 		bool bigger = (date1.to_unix() > date2.to_unix());
@@ -332,7 +356,9 @@ public Gee.List<Article> read_article_between(
 	{
 		if(stmt.column_text(2) == id1
 		   || stmt.column_text(2) == id2)
+		{
 			continue;
+		}
 
 		articles.add(new Article(
 				     stmt.column_text(2),                                                                                                                                                                       // articleID
@@ -395,11 +421,15 @@ public Article? read_article(string articleID)
 	Logger.debug(@"DataBaseReadOnly.read_article(): $articleID");
 	var rows = m_db.execute("SELECT ROWID, * FROM articles WHERE articleID = ?", { articleID });
 	if(rows.size == 0)
+	{
 		return null;
+	}
 	var row = rows[0];
 	string? author = row[4].to_string();
 	if(author == "")
+	{
 		author = null;
+	}
 
 	return new Article(
 		articleID,
@@ -425,7 +455,9 @@ public int getMaxCatLevel()
 	assert(rows.size == 1 && rows[0].size == 1);
 	int maxCatLevel = rows[0][0].to_int();
 	if(maxCatLevel == 0)
+	{
 		maxCatLevel = 1;
+	}
 	return maxCatLevel;
 }
 
@@ -441,7 +473,9 @@ public bool haveFeedsWithoutCat()
 		int count = stmt.column_int(0);
 
 		if(count > 0)
+		{
 			return true;
+		}
 	}
 	return false;
 }
@@ -474,9 +508,13 @@ ensures (result >= 0)
 	query.select_field(order_by);
 
 	if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
+	{
 		query2.where(@"$order_by < (%s)".printf(query.to_string()));
+	}
 	else
+	{
 		query2.where(@"$order_by > (%s)".printf(query.to_string()));
+	}
 
 
 	if(selectedType == FeedListType.FEED && feedID != FeedID.ALL.to_string())
@@ -505,7 +543,8 @@ ensures (result >= 0)
 		query2.where_equal_int("marked", ArticleStatus.MARKED.to_int());
 	}
 
-	if(searchTerm != "") {
+	if(searchTerm != "")
+	{
 		string search_column;
 		if(searchTerm.has_prefix("title: "))
 		{
@@ -603,9 +642,13 @@ public string getFeedIDofArticle(string articleID)
 	var rows = m_db.execute("SELECT feedID FROM articles WHERE articleID = ?", { articleID });
 	string id = null;
 	if(rows.size != 0)
+	{
 		id = rows[0][0].to_string();
+	}
 	if(id == null)
+	{
 		id = "";
+	}
 	return id;
 }
 
@@ -613,7 +656,9 @@ public string getNewestArticle()
 {
 	var rows = m_db.execute("SELECT articleID FROM articles WHERE rowid = ?",  { getMaxID("articles", "rowid") });
 	if(rows.size == 0)
+	{
 		return "";
+	}
 	return rows[0][0].to_string();
 }
 
@@ -622,9 +667,13 @@ public string getMaxID(string table, string field)
 	var rows = m_db.execute(@"SELECT MAX($field) FROM $table");
 	string? id = null;
 	if(rows.size > 0)
+	{
 		id = rows[0][0].to_string();
+	}
 	if(id == null)
+	{
 		id = "";
+	}
 	return id;
 }
 
@@ -640,7 +689,9 @@ public Feed? read_feed(string feedID)
 {
 	var rows = m_db.execute("SELECT * FROM feeds WHERE feed_id = ?", { feedID });
 	if(rows.size == 0)
+	{
 		return null;
+	}
 
 	var row = rows[0];
 	return new Feed(
@@ -677,9 +728,13 @@ public Gee.List<Feed> read_feeds(bool starredCount = false)
 
 		uint count = 0;
 		if(starredCount)
+		{
 			count = getFeedStarred(feedID);
+		}
 		else
+		{
 			count = getFeedUnread(feedID);
+		}
 
 		var feed = new Feed(feedID, name, url, count, categories, iconURL, xmlURL);
 		feeds.add(feed);
@@ -738,7 +793,9 @@ public Category? read_category(string catID)
 	var query = "SELECT * FROM categories WHERE categorieID = ?";
 	var rows = m_db.execute(query, { catID });
 	if(rows.size == 0)
+	{
 		return null;
+	}
 
 	var row = rows[0];
 	return new Category(
@@ -801,7 +858,9 @@ public Tag? read_tag(string tagID)
 	var query = "SELECT * FROM tags WHERE tagID = ?";
 	var rows = m_db.execute(query, { tagID });
 	if(rows.size == 0)
+	{
 		return null;
+	}
 
 	var row = rows[0];
 	return new Tag(
@@ -936,7 +995,8 @@ public QueryBuilder articleQuery(string id, FeedListType selectedType, ArticleLi
 		query.where_equal_int("marked", ArticleStatus.MARKED.to_int());
 	}
 
-	if(searchTerm != "") {
+	if(searchTerm != "")
+	{
 		if(searchTerm.has_prefix("title: "))
 		{
 			query.where("articleID IN (SELECT articleID FROM fts_table WHERE title MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
@@ -957,7 +1017,9 @@ public QueryBuilder articleQuery(string id, FeedListType selectedType, ArticleLi
 
 	bool desc = true;
 	if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
+	{
 		desc = false;
+	}
 
 	query.order_by(order_by, desc);
 
@@ -971,7 +1033,9 @@ requires (limit > 0)
 
 	string desc = "DESC";
 	if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
+	{
 		desc = "ASC";
+	}
 
 	if(searchRows != 0)
 	{

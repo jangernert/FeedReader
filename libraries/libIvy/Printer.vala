@@ -39,9 +39,13 @@ private string get_reset_style () {
 private string get_color_code (Style attr, Color fg, Color bg = background_color) {
 	/* Command is the control command to the terminal */
 	if (bg == Color.BLACK)
+	{
 		return "%c[%d;%dm".printf (0x1B, (int) attr, (int) fg + 30);
+	}
 	else
+	{
 		return "%c[%d;%d;%dm".printf (0x1B, (int) attr, (int) fg + 30, (int) bg + 40);
+	}
 }
 
 private string get_signal_name () {
@@ -55,20 +59,29 @@ private string get_highlight_code () {
 private string get_printable_function (Frame frame, int padding = 0) {
 	var result = "";
 	var is_unknown = false;
-	if (frame.function == "") {
+	if (frame.function == "")
+	{
 		result = "<unknown> " + frame.address;
 		is_unknown = true;
-	} else {
+	}
+	else
+	{
 		var s = "";
 		int count = padding - get_signal_name ().length;
 		if (padding != 0 && count > 0)
+		{
 			s = string.nfill (count, ' ');
+		}
 		result = "'" + frame.function + "'" + s;
 	}
 	if (is_unknown)
+	{
 		return result + get_reset_code ();
+	}
 	else
+	{
 		return get_highlight_code () + result + get_reset_code ();
+	}
 }
 
 private string get_printable_line_number (Frame frame, bool pad = true) {
@@ -77,8 +90,11 @@ private string get_printable_line_number (Frame frame, bool pad = true) {
 	var result = "";
 	var color = get_highlight_code ();
 	if (path.length >= max_line_number_length || !pad)
+	{
 		result = color + path + get_reset_style ();
-	else {
+	}
+	else
+	{
 		result = color + path + get_reset_style ();
 		result = string.nfill (max_line_number_length - path.length, ' ') + result;
 	}
@@ -91,8 +107,11 @@ private string get_printable_file_short_path (Frame frame, bool pad = true) {
 	var result = "";
 	var color = get_highlight_code ();
 	if (path.length >= max_file_name_length || !pad)
+	{
 		result = color + path + get_reset_style ();
-	else {
+	}
+	else
+	{
 		result = color + path + get_reset_style ();
 		result = result + string.nfill (max_file_name_length - path.length, ' ');
 	}
@@ -106,15 +125,19 @@ private string get_printable_title () {
 	var result = "";
 
 	if( stacktrace.is_custom)
+	{
 		result = "%sA function was called in %s".printf (
 			c,
 			get_reset_style ());
+	}
 	else
+	{
 		result = "%sAn error occured %s(%s)%s".printf (
 			c,
 			color,
 			get_signal_name (),
 			get_reset_style ());
+	}
 
 	title_length = get_signal_name ().length;
 	return result;
@@ -125,15 +148,18 @@ private string get_reason () {
 	var sig = stacktrace.sig;
 
 	var color = get_highlight_code ();
-	if (sig == ProcessSignal.TRAP) {
+	if (sig == ProcessSignal.TRAP)
+	{
 		return "The reason is likely %san uncaught error%s".printf (
 			color, get_reset_code ());
 	}
-	if (sig == ProcessSignal.ABRT) {
+	if (sig == ProcessSignal.ABRT)
+	{
 		return "The reason is likely %sa failed assertion (assert...)%s".printf (
 			color, get_reset_code ());
 	}
-	if (sig == ProcessSignal.SEGV) {
+	if (sig == ProcessSignal.SEGV)
+	{
 		return "The reason is likely %sa null reference being used%s".printf (
 			color, get_reset_code ());
 	}
@@ -153,7 +179,8 @@ public virtual void print (Stacktrace trace) {
 	                              get_reset_code ());
 	var first_vala = trace.first_vala;
 
-	if (trace.first_vala != null) {
+	if (trace.first_vala != null)
+	{
 		header = "%s in %s, line %s in %s\n".printf (
 			get_printable_title (),
 			get_printable_file_short_path (first_vala, false),
@@ -165,21 +192,24 @@ public virtual void print (Stacktrace trace) {
 	}
 	stdout.printf (header);
 	background_color = Color.BLACK;
-	if( !stacktrace.is_custom) {
+	if( !stacktrace.is_custom)
+	{
 		var reason = get_reason ();
 		stdout.printf ("   %s.\n", reason);
 	}
 	var is_all_file_name_blank = stacktrace.is_all_file_name_blank;
 
 	// Has the user forgot to compile with -g -X -rdynamic flag ?
-	if (is_all_file_name_blank) {
+	if (is_all_file_name_blank)
+	{
 		var advice = "   %sNote%s: no file path and line numbers can be retrieved. Are you sure %syou added -g -X -rdynamic%s to valac command line?\n";
 		var color = get_highlight_code ();
 		stdout.printf (advice, color, get_reset_code (), color, get_reset_code ());
 	}
 
 	// Has the user forgot to compile with rdynamic flag ?
-	if (stacktrace.is_all_function_name_blank && !is_all_file_name_blank) {
+	if (stacktrace.is_all_function_name_blank && !is_all_file_name_blank)
+	{
 		var advice = "   %sNote%s: no vala function name can be retrieved. Are you sure %syou added -X -rdynamic%s to valac command line?\n";
 		var color = get_highlight_code ();
 		stdout.printf (advice, color, get_reset_code (), color, get_reset_code ());
@@ -191,26 +221,33 @@ public virtual void print (Stacktrace trace) {
 	foreach (var frame in trace.frames) {
 		var show_frame = frame.function != "" || frame.file_path.has_suffix (".vala") || frame.file_path.has_suffix (".c");
 		if (Stacktrace.hide_installed_libraries && has_displayed_first_vala)
+		{
 			show_frame = show_frame && frame.file_short_path != "";
+		}
 
 		// Ignore glib tracing code if displayed before the first vala frame
 		if ((frame.function == "g_logv" || frame.function == "g_log") && !has_displayed_first_vala)
+		{
 			show_frame = false;
-		if (show_frame) {
+		}
+		if (show_frame)
+		{
 			// #2  ./OtherModule.c      line 80      in 'other_module_do_it'
 			// at /home/cran/Projects/noise/noise-perf-instant-search/tests/errors/module/OtherModule.vala:10
 			var str = " %s  #%d  %s    line %s in %s\n";
 			background_color = Color.BLACK;
 			var lead = " ";
 			var function_padding = 0;
-			if (frame == first_vala) {
+			if (frame == first_vala)
+			{
 				has_displayed_first_vala = true;
 				lead = "*";
 				background_color = stacktrace.error_background;
 				function_padding = 22;
 			}
 			var l_number = "";
-			if (frame.line_number == "") {
+			if (frame.line_number == "")
+			{
 				str = " %s  #%d  <unknown>  %s in %s\n";
 				var func_name = get_printable_function (frame);
 				var fill_len = int.max (stacktrace.max_file_name_length + stacktrace.max_line_number_length - 1, 0);
@@ -219,7 +256,9 @@ public virtual void print (Stacktrace trace) {
 					i,
 					string.nfill (fill_len, ' '),
 					func_name);
-			} else {
+			}
+			else
+			{
 				str = str.printf (
 					lead,
 					i,

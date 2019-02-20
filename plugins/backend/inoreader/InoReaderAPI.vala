@@ -56,7 +56,9 @@ private bool getUserID()
 	var response = m_connection.send_request("user-info");
 
 	if(response.status != 200)
+	{
 		return false;
+	}
 
 	var parser = new Json.Parser();
 	try
@@ -78,10 +80,14 @@ private bool getUserID()
 		Logger.info("Inoreader: userID = " + m_userID);
 
 		if(root.has_member("userEmail"))
+		{
 			m_utils.setEmail(root.get_string_member("userEmail"));
+		}
 
 		if(root.has_member("userName"))
+		{
 			m_utils.setUser(root.get_string_member("userName"));
+		}
 
 		return true;
 	}
@@ -94,7 +100,9 @@ public bool getFeeds(Gee.List<Feed> feeds)
 	var response = m_connection.send_request("subscription/list");
 
 	if(response.status != 200)
+	{
 		return false;
+	}
 
 	var parser = new Json.Parser();
 	try
@@ -147,7 +155,9 @@ public bool getCategoriesAndTags(Gee.List<Feed> feeds, Gee.List<Category> catego
 	var response = m_connection.send_request("tag/list");
 
 	if(response.status != 200)
+	{
 		return false;
+	}
 
 	var parser = new Json.Parser();
 	try{
@@ -209,7 +219,9 @@ public int getTotalUnread()
 	var response = m_connection.send_request("unread-count");
 
 	if(response.status != 200)
+	{
 		return 0;
+	}
 
 	var parser = new Json.Parser();
 	try{
@@ -245,11 +257,15 @@ public string? updateArticles(Gee.List<string> ids, int count, string? continuat
 	var message_string = "n=" + count.to_string();
 	message_string += "&xt=user/-/state/com.google/read";
 	if(continuation != null)
+	{
 		message_string += "&c=" + continuation;
+	}
 	var response = m_connection.send_request("stream/items/ids", message_string);
 
 	if(response.status != 200)
+	{
 		return null;
+	}
 
 	var parser = new Json.Parser();
 	try
@@ -264,7 +280,9 @@ public string? updateArticles(Gee.List<string> ids, int count, string? continuat
 
 	var root = parser.get_root().get_object();
 	if(!root.has_member("itemRefs"))
+	{
 		return null;
+	}
 	var array = root.get_array_member("itemRefs");
 	uint length = array.get_length();
 
@@ -275,7 +293,9 @@ public string? updateArticles(Gee.List<string> ids, int count, string? continuat
 	}
 
 	if(root.has_member("continuation") && root.get_string_member("continuation") != "")
+	{
 		return root.get_string_member("continuation");
+	}
 
 	return null;
 }
@@ -285,25 +305,39 @@ public string? getArticles(Gee.List<Article> articles, int count, ArticleStatus 
 	var message_string = "n=" + count.to_string();
 
 	if(whatToGet == ArticleStatus.UNREAD)
+	{
 		message_string += "&xt=user/-/state/com.google/read";
+	}
 	if(whatToGet == ArticleStatus.READ)
+	{
 		message_string += "&it=user/-/state/com.google/read";
+	}
 	else if(whatToGet == ArticleStatus.MARKED)
+	{
 		message_string += "&it=user/-/state/com.google/starred";
+	}
 
 	if(continuation != null)
+	{
 		message_string += "&c=" + continuation;
+	}
 
 
 	string api_endpoint = "stream/contents";
 	if(feed_id != null)
+	{
 		api_endpoint += "/" + GLib.Uri.escape_string(feed_id);
+	}
 	else if(tagID != null)
+	{
 		api_endpoint += "/" + GLib.Uri.escape_string(tagID);
+	}
 	var response = m_connection.send_request(api_endpoint, message_string);
 
 	if(response.status != 200)
+	{
 		return null;
+	}
 
 	var parser = new Json.Parser();
 	try
@@ -336,11 +370,17 @@ public string? getArticles(Gee.List<Article> articles, int count, ArticleStatus 
 		{
 			string cat = cats.get_string_element(j);
 			if(cat.has_suffix("com.google/starred"))
+			{
 				marked = true;
+			}
 			else if(cat.has_suffix("com.google/read"))
+			{
 				read = true;
+			}
 			else if(cat.contains("/label/") && db.getTagName(cat) != null)
+			{
 				tags.add(cat);
+			}
 		}
 
 		var enclosures = new Gee.ArrayList<Enclosure>();
@@ -350,7 +390,9 @@ public string? getArticles(Gee.List<Article> articles, int count, ArticleStatus 
 
 			uint mediaCount = 0;
 			if(attachments != null)
+			{
 				mediaCount = attachments.get_length();
+			}
 
 			for(int j = 0; j < mediaCount; ++j)
 			{
@@ -381,7 +423,9 @@ public string? getArticles(Gee.List<Article> articles, int count, ArticleStatus 
 	}
 
 	if(root.has_member("continuation") && root.get_string_member("continuation") != "")
+	{
 		return root.get_string_member("continuation");
+	}
 
 	return null;
 }
@@ -391,9 +435,13 @@ public void edidTag(string articleIDs, string tagID, bool add = true)
 {
 	var message_string = "";
 	if(add)
+	{
 		message_string += "a=";
+	}
 	else
+	{
 		message_string += "r=";
+	}
 
 	message_string += tagID;
 
@@ -448,17 +496,24 @@ public bool editSubscription(InoSubscriptionAction action, string[] feedID, stri
 		break;
 	}
 
-	foreach(string s in feedID)
+	foreach(string s in feedID) {
 		message_string += "&s=" + GLib.Uri.escape_string(s);
+	}
 
 	if(title != null)
+	{
 		message_string += "&t=" + title;
+	}
 
 	if(add != null)
+	{
 		message_string += "&a=" + add;
+	}
 
 	if(remove != null)
+	{
 		message_string += "&r=" + remove;
+	}
 
 
 	return m_connection.send_request("subscription/edit", message_string).status == 200;

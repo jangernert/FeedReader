@@ -198,7 +198,9 @@ public enum DropArticles {
 	{
 		int? weeks = to_weeks();
 		if(weeks == null)
+		{
 			return null;
+		}
 
 		return new DateTime.now_utc().add_weeks(-(int)weeks);
 	}
@@ -250,11 +252,17 @@ public enum EnclosureType {
 		if (str != null)
 		{
 			if (str.contains("audio"))
+			{
 				return AUDIO;
+			}
 			else if (str.contains("video"))
+			{
 				return VIDEO;
+			}
 			else if (str.contains("image"))
+			{
 				return IMAGE;
+			}
 		}
 		return FILE;
 	}

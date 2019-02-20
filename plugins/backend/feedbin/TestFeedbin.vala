@@ -8,7 +8,9 @@ void delete_subscription(FeedbinAPI api, string url)
 	foreach(var subscription in subscriptions)
 	{
 		if(subscription.feed_url != url)
+		{
 			continue;
+		}
 		api.delete_subscription(subscription.id);
 		break;
 	}
@@ -19,7 +21,9 @@ void add_login_tests(string host)
 	string? username = Environment.get_variable(user_env);
 	string? password = Environment.get_variable(password_env);
 	if(username == null || password == null)
+	{
 		return;
+	}
 
 	// Stick a random number at the end of Feed URL's to ensure that they're
 	// unique, even if we run two tests against the same account
@@ -208,7 +212,9 @@ void add_login_tests(string host)
 		foreach(var i in favicons.entries)
 		{
 		        if(i.key != "www.brendanlong.com")
-				continue;
+		        {
+		                continue;
+			}
 		        // Don't check the contents of the Favicon because Feedbin doesn't
 		        // seem to neccessarily return the exact icon we gave it
 		        found_favicon = true;
@@ -226,7 +232,9 @@ void main(string[] args)
 
 	string? host = Environment.get_variable(host_env);
 	if(host == null)
+	{
 		host = "https://api.feedbin.com";
+	}
 
 	// Tests that don't need a login
 	Test.add_data_func ("/feedbinapi/construct", () => {

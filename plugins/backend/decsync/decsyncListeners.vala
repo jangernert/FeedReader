@@ -166,7 +166,10 @@ public override void onSubfileEntryUpdate(Decsync.Entry entry, Unit extra)
 	}
 	var db = DataBase.writeAccess();
 	var feed = db.read_feed(feedID);
-	if (feed == null) return;
+	if (feed == null)
+	{
+		return;
+	}
 	var currentCatID = feed.getCatString();
 	string newCatID;
 	if (entry.value.is_null())

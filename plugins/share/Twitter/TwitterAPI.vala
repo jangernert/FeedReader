@@ -171,7 +171,9 @@ public bool logout(string id)
 	foreach(string i in array)
 	{
 		if(i != id)
+		{
 			array2 += i;
+		}
 	}
 	Settings.share("twitter").set_strv("account-ids", array2);
 	deleteAccount(id);
@@ -253,7 +255,9 @@ public ShareForm? shareWidget(string url)
 public int getUrlLength()
 {
 	if(m_urlLength > 0)
+	{
 		return m_urlLength;
+	}
 
 	var array = Settings.share("twitter").get_strv("account-ids");
 	string id = array[0];

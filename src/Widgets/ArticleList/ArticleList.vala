@@ -100,15 +100,17 @@ public ArticleList()
 	this.size_allocate.connect((allocation) => {
 			if(allocation.height != m_height)
 			{
-				if(allocation.height > m_height
-					&& m_stack.get_visible_child_name() != "empty"
-					&& m_stack.get_visible_child_name() != "syncing")
-				{
-						Logger.debug("ArticleList: size changed");
-						if(m_currentList.needLoadMore(allocation.height))
-					loadMore();
+			        if(allocation.height > m_height
+			           && m_stack.get_visible_child_name() != "empty"
+			           && m_stack.get_visible_child_name() != "syncing")
+			        {
+			                Logger.debug("ArticleList: size changed");
+			                if(m_currentList.needLoadMore(allocation.height))
+			                {
+			                        loadMore();
+					}
 				}
-				m_height = allocation.height;
+			        m_height = allocation.height;
 			}
 		});
 }
@@ -118,7 +120,9 @@ public void newList(Gtk.StackTransitionType transition = Gtk.StackTransitionType
 	Logger.debug("ArticleList: newList");
 
 	if(m_overlay != null)
+	{
 		m_overlay.dismiss();
+	}
 
 	Logger.debug("ArticleList: disallow signals from scroll");
 	m_currentScroll.allowSignals(false);
@@ -130,11 +134,11 @@ public void newList(Gtk.StackTransitionType transition = Gtk.StackTransitionType
 
 	Logger.debug("load articles from db");
 	articles = DataBase.readOnly().read_articles(m_selectedFeedListID,
-													m_selectedFeedListType,
-													m_state,
-													m_searchTerm,
-													limit,
-													offset);
+	                                             m_selectedFeedListType,
+	                                             m_state,
+	                                             m_searchTerm,
+	                                             limit,
+	                                             offset);
 	Logger.debug("actual articles loaded: " + articles.size.to_string());
 
 	if(articles.size == 0)
@@ -211,7 +215,9 @@ private void checkForNewRows()
 private void loadMore()
 {
 	if(m_currentList == null)
+	{
 		return;
+	}
 
 	Logger.debug("ArticleList.loadmore()");
 
@@ -219,11 +225,11 @@ private void loadMore()
 	uint offset = m_currentList.getSizeForState() + determineNewRowCount(null, null);
 
 	var articles = DataBase.readOnly().read_articles(m_selectedFeedListID,
-													m_selectedFeedListType,
-													m_state,
-													m_searchTerm,
-													m_dynamicRowThreshold,
-													offset);
+	                                                 m_selectedFeedListType,
+	                                                 m_state,
+	                                                 m_searchTerm,
+	                                                 m_dynamicRowThreshold,
+	                                                 offset);
 	Logger.debug("actual articles loaded: " + articles.size.to_string());
 
 	if(articles.size > 0)
@@ -253,11 +259,11 @@ private void loadNewer(int newCount, int offset)
 
 	Logger.debug("load articles from db");
 	var articles = DataBase.readOnly().read_articles(m_selectedFeedListID,
-													m_selectedFeedListType,
-													m_state,
-													m_searchTerm,
-													newCount,
-													offset);
+	                                                 m_selectedFeedListType,
+	                                                 m_state,
+	                                                 m_searchTerm,
+	                                                 newCount,
+	                                                 offset);
 	Logger.debug("actual articles loaded: " + articles.size.to_string());
 
 	if(articles.size > 0)
@@ -265,9 +271,13 @@ private void loadNewer(int newCount, int offset)
 		if(m_stack.get_visible_child_name() == "empty")
 		{
 			if(m_currentList == m_List1)
+			{
 				m_stack.set_visible_child_full("list1", Gtk.StackTransitionType.CROSSFADE);
+			}
 			else
+			{
 				m_stack.set_visible_child_full("list2", Gtk.StackTransitionType.CROSSFADE);
+			}
 		}
 
 		m_currentScroll.valueChanged.disconnect(updateVisibleRows);
@@ -327,7 +337,9 @@ public void updateArticleList()
 
 		if(first == null
 		   || second == null)
+		{
 			continue;
+		}
 
 		var insertArticles = DataBase.readOnly().read_article_between(  m_selectedFeedListID,
 		                                                                m_selectedFeedListType,
@@ -431,9 +443,13 @@ private void updateVisibleRows(ScrollDirection direction)
 			{
 				int visible = m_currentScroll.isVisible(row);
 				if(visible == 0 || visible == 1)
+				{
 					visibleArticles.add(row.getID());
+				}
 				else if(visible == -1)
+				{
 					break;
+				}
 			}
 		}
 		m_currentList.setVisibleRows(visibleArticles);
@@ -449,13 +465,17 @@ private bool keyPressed(Gdk.EventKey event)
 	case Gdk.Key.Down:
 		int diff = m_currentList.move(true);
 		if(m_state != ArticleListState.UNREAD)
+		{
 			m_currentScroll.scrollDiff(diff);
+		}
 		break;
 
 	case Gdk.Key.Up:
 		int diff = m_currentList.move(false);
 		if(m_state != ArticleListState.UNREAD)
+		{
 			m_currentScroll.scrollDiff(diff);
+		}
 		break;
 
 	case Gdk.Key.Page_Down:
@@ -474,7 +494,9 @@ public int move(bool down)
 	int diff = m_currentList.move(down);
 
 	if(m_state != ArticleListState.UNREAD)
+	{
 		m_currentScroll.scrollDiff(diff);
+	}
 
 	return diff;
 }
@@ -483,14 +505,18 @@ public void showOverlay()
 {
 	Logger.debug("ArticleList: showOverlay");
 	if(m_currentScroll.getScroll() > 0.0)
+	{
 		showNotification();
+	}
 }
 
 private void showNotification()
 {
 	if(m_overlay != null
 	   || m_state != ArticleListState.ALL)
+	{
 		return;
+	}
 
 	m_overlay = new InAppNotification.withIcon(
 		_("New articles"),
@@ -509,14 +535,18 @@ private void showNotification()
 public void dismissOverlay()
 {
 	if(m_overlay != null)
+	{
 		m_overlay.dismiss();
+	}
 }
 
 public Article? getSelectedArticle()
 {
 	if(m_stack.get_visible_child_name() == "empty"
 	   || m_stack.get_visible_child_name() == "syncing")
+	{
 		return null;
+	}
 
 	return m_currentList.getSelectedArticle();
 }
@@ -525,7 +555,9 @@ public Article? getFirstArticle()
 {
 	ArticleRow? selectedRow = m_currentList.getFirstRow();
 	if(selectedRow == null)
+	{
 		return null;
+	}
 
 	return selectedRow.getArticle();
 }

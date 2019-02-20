@@ -44,7 +44,9 @@ public LoginResponse getToken()
 	m_session.send_message(message);
 
 	if(message.status_code != 200)
+	{
 		return LoginResponse.NO_CONNECTION;
+	}
 
 	string response = (string)message.response_body.flatten().data;
 	try
@@ -91,7 +93,9 @@ private Response send_request(string path, string type, string? message_string =
 	message.request_headers.append("Authorization", oldauth);
 
 	if(message_string != null)
+	{
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
+	}
 
 	m_session.send_message(message);
 

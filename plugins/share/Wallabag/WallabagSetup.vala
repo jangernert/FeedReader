@@ -27,7 +27,9 @@ public WallabagSetup(string? id, WallabagAPI api, string username = "")
 {
 	bool loggedIN = false;
 	if(username != "")
+	{
 		loggedIN = true;
+	}
 
 	base("wallabag", "feed-share-wallabag", loggedIN, username);
 
@@ -103,7 +105,9 @@ public WallabagSetup(string? id, WallabagAPI api, string username = "")
 	m_api = api;
 
 	if(id != null)
+	{
 		m_id = id;
+	}
 }
 
 
@@ -133,7 +137,9 @@ public override void login()
 		}
 
 		if(!baseURL.has_suffix("/"))
+		{
 			baseURL += "/";
+		}
 
 		if(clientID == null || clientID == "")
 		{

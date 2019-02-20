@@ -11,7 +11,9 @@ namespace FeedReader.Rfc822 {
 public static DateTime? parseDate(string? str)
 {
 	if (str == null)
+	{
 		return null;
+	}
 
 	Regex re;
 	try {
@@ -40,7 +42,9 @@ public static DateTime? parseDate(string? str)
 
 	MatchInfo info;
 	if (!re.match(str, 0, out info))
+	{
 		return null;
+	}
 
 	var dayStr = info.fetch_named("day");
 	var day = int.parse(dayStr);
@@ -94,10 +98,14 @@ public static DateTime? parseDate(string? str)
 	var year = int.parse(yearStr);
 	// Two-digit years from 00 to 49 should be interpreted as 2000 to 2049
 	if (year >= 0 && year <= 49)
+	{
 		year += 2000;
+	}
 	// Two-digit years from 50 to 99 should be interpreted as 1950 to 1999
 	else if (year >= 50 && year < 100)
+	{
 		year += 1900;
+	}
 	var hourStr = info.fetch_named("hour");
 	var hour = int.parse(hourStr);
 	var minuteStr = info.fetch_named("minute");

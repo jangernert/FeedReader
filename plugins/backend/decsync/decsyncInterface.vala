@@ -386,7 +386,8 @@ public bool addFeedWithDecsync(string feedURL, string? catID, string? newCatName
 
 	if(feed != null)
 	{
-		if(!db.feed_exists(feed.getURL())) {
+		if(!db.feed_exists(feed.getURL()))
+		{
 			db.write_feeds(ListUtils.single(feed));
 
 			if (updateDecsync)
@@ -488,7 +489,9 @@ public override void getArticles(int count, ArticleStatus whatToGet, DateTime? s
 	{
 		var threads = new ThreadPool<Feed>.with_owned_data((feed) => {
 				if(cancellable != null && cancellable.is_cancelled())
-					return;
+				{
+				        return;
+				}
 
 				Logger.debug("getArticles for feed: " + feed.getTitle());
 				string url = feed.getXmlUrl().escape("");
@@ -544,9 +547,9 @@ public override void getArticles(int count, ArticleStatus whatToGet, DateTime? s
 				                articleID = item.link;
 					}
 
-					if (db.read_article(articleID) != null)
-					{
-						continue;
+				        if (db.read_article(articleID) != null)
+				        {
+				                continue;
 					}
 
 				        var date = Rfc822.parseDate(item.pub_date);
@@ -557,7 +560,9 @@ public override void getArticles(int count, ArticleStatus whatToGet, DateTime? s
 				        else
 				        {
 				                if (item.pub_date != null)
-							Logger.warning(@"RFC 822 date parser failed to parse $(item.pub_date). Falling back to DateTime.now()");
+				                {
+				                        Logger.warning(@"RFC 822 date parser failed to parse $(item.pub_date). Falling back to DateTime.now()");
+						}
 				                date = new DateTime.now_local();
 					}
 
@@ -570,7 +575,9 @@ public override void getArticles(int count, ArticleStatus whatToGet, DateTime? s
 				        string? content = m_utils.convert(item.description, locale);
 				        //Logger.info("Converted to: " + item.description);
 				        if(content == null)
-						content = _("Nothing to read here.");
+				        {
+				                content = _("Nothing to read here.");
+					}
 
 				        var enclosures = new Gee.ArrayList<Enclosure>();
 
@@ -582,7 +589,9 @@ public override void getArticles(int count, ArticleStatus whatToGet, DateTime? s
 
 				        string articleURL = item.link;
 				        if(articleURL.has_prefix("/"))
-						articleURL = feed.getURL() + articleURL.substring(1);
+				        {
+				                articleURL = feed.getURL() + articleURL.substring(1);
+					}
 
 				        var article = new Article(
 						articleID,

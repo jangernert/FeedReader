@@ -50,9 +50,13 @@ public AttachedMediaButton()
 			m_pop.hide();
 			mediaRow? mRow = row as mediaRow;
 			if(mRow != null)
-				playMedia(mRow.getURL());
+			{
+			        playMedia(mRow.getURL());
+			}
 			else
-				Logger.error("MediaPopover: invalid row clicked");
+			{
+			        Logger.error("MediaPopover: invalid row clicked");
+			}
 		});
 
 	m_pop = new Gtk.Popover(this);

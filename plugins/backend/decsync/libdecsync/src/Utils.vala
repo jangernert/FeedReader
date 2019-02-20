@@ -38,9 +38,12 @@ public Json.Node boolToNode(bool input)
 public Json.Node stringToNode(string? input)
 {
 	Json.Node node;
-	if (input == null) {
+	if (input == null)
+	{
 		node = new Json.Node(Json.NodeType.NULL);
-	} else {
+	}
+	else
+	{
 		node = new Json.Node(Json.NodeType.VALUE);
 		node.set_string(input);
 	}

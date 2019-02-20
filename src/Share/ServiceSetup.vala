@@ -138,21 +138,27 @@ public virtual void logout()
 private bool onEnter()
 {
 	if(m_isLoggedIN)
+	{
 		m_iconStack.set_visible_child_full("logOUT", Gtk.StackTransitionType.SLIDE_LEFT);
+	}
 	return false;
 }
 
 private bool onLeave()
 {
 	if(m_isLoggedIN)
+	{
 		m_iconStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.SLIDE_RIGHT);
+	}
 	return false;
 }
 
 public void reveal(bool animate = true)
 {
 	if(!animate)
+	{
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.NONE);
+	}
 
 	m_revealer.set_reveal_child(true);
 	this.show_all();

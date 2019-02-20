@@ -74,7 +74,9 @@ public string getRequestToken()
 	message_soup.set_request("application/x-www-form-urlencoded; charset=UTF8", Soup.MemoryUse.COPY, message.data);
 
 	if(Settings.tweaks().get_boolean("do-not-track"))
+	{
 		message_soup.request_headers.append("DNT", "1");
+	}
 
 	session.send_message(message_soup);
 
@@ -92,13 +94,17 @@ public bool getAccessToken(string id, string requestToken)
 	message_soup.set_request("application/x-www-form-urlencoded; charset=UTF8", Soup.MemoryUse.COPY, message.data);
 
 	if(Settings.tweaks().get_boolean("do-not-track"))
+	{
 		message_soup.request_headers.append("DNT", "1");
+	}
 
 	session.send_message(message_soup);
 
 	if((string)message_soup.response_body.flatten().data == null
 	   || (string)message_soup.response_body.flatten().data == "")
+	{
 		return false;
+	}
 
 	string response = (string)message_soup.response_body.flatten().data;
 	Logger.debug(response);
@@ -173,13 +179,17 @@ public bool addBookmark(string id, string url, bool system)
 	message_soup.set_request("application/x-www-form-urlencoded; charset=UTF8", Soup.MemoryUse.COPY, message.data);
 
 	if(Settings.tweaks().get_boolean("do-not-track"))
+	{
 		message_soup.request_headers.append("DNT", "1");
+	}
 
 	session.send_message(message_soup);
 
 	if((string)message_soup.response_body.flatten().data == null
 	   || (string)message_soup.response_body.flatten().data == "")
+	{
 		return false;
+	}
 
 	return true;
 }
@@ -200,7 +210,9 @@ public bool logout(string id)
 	foreach(string i in array)
 	{
 		if(i != id)
+		{
 			array2 += i;
+		}
 	}
 	Settings.share("pocket").set_strv("account-ids", array2);
 	deleteAccount(id);
@@ -242,7 +254,9 @@ public bool useSystemAccounts()
 	{
 		Goa.Client? client = new Goa.Client.sync();
 		if(client != null)
+		{
 			return true;
+		}
 
 		return false;
 	}

@@ -74,7 +74,9 @@ public void updating(bool status, bool insensitive = true)
 	m_status = status;
 	this.set_has_tooltip(!status);
 	if(insensitive)
+	{
 		this.setSensitive(!status);
+	}
 	if(status)
 	{
 		this.set_tooltip_text(_("Cancel"));
@@ -104,13 +106,17 @@ public void setSensitive(bool sensitive)
 public void setProgress(string text)
 {
 	if(m_hasPopup)
+	{
 		m_ProgressText.set_text(text);
+	}
 }
 
 private bool onClick(Gdk.EventButton event)
 {
 	if(event.button != 3)
+	{
 		return false;
+	}
 
 	if(m_status && !m_Popover.get_visible())
 	{

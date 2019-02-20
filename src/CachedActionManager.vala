@@ -23,7 +23,9 @@ private static CachedActionManager? m_manager = null;
 public static CachedActionManager get_default()
 {
 	if(m_manager == null)
+	{
 		m_manager = new CachedActionManager();
+	}
 
 	return m_manager;
 }
@@ -38,7 +40,9 @@ public void markArticleRead(string id, ArticleStatus read)
 {
 	var cachedAction = CachedActions.MARK_READ;
 	if(read == ArticleStatus.UNREAD)
+	{
 		cachedAction = CachedActions.MARK_UNREAD;
+	}
 
 	var action = new CachedAction(cachedAction, id, "");
 	addAction(action);
@@ -48,7 +52,9 @@ public void markArticleStarred(string id, ArticleStatus marked)
 {
 	var cachedAction = CachedActions.MARK_STARRED;
 	if(marked == ArticleStatus.UNMARKED)
+	{
 		cachedAction = CachedActions.MARK_UNSTARRED;
+	}
 
 	var action = new CachedAction(cachedAction, id, "");
 	addAction(action);

@@ -31,9 +31,13 @@ private Password m_htaccess_password;
 public ttrssUtils(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 {
 	if(settings_backend != null)
+	{
 		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.ttrss", settings_backend);
+	}
 	else
+	{
 		m_settings = new GLib.Settings("org.gnome.feedreader.ttrss");
+	}
 
 	var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 	                                  "URL", Secret.SchemaAttributeType.STRING,
@@ -63,15 +67,22 @@ public string getURL()
 
 	string tmp_url = Utils.gsettingReadString(m_settings, "url");
 
-	if(tmp_url != "") {
+	if(tmp_url != "")
+	{
 		if(!tmp_url.has_suffix("/"))
+		{
 			tmp_url = tmp_url + "/";
+		}
 
 		if(!tmp_url.has_suffix("/api/"))
+		{
 			tmp_url = tmp_url + "api/";
+		}
 
 		if(!tmp_url.has_prefix("http://") && !tmp_url.has_prefix("https://"))
+		{
 			tmp_url = "https://" + tmp_url;
+		}
 	}
 
 	Logger.debug("ttrss URL: " + tmp_url);

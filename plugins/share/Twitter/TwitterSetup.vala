@@ -21,14 +21,18 @@ public TwitterSetup(string? id, TwitterAPI api, string username = "")
 {
 	bool loggedIN = false;
 	if(username != "")
+	{
 		loggedIN = true;
+	}
 
 	base("Twitter", "feed-share-twitter", loggedIN, username);
 
 	m_api = api;
 
 	if(id != null)
+	{
 		m_id = id;
+	}
 }
 
 

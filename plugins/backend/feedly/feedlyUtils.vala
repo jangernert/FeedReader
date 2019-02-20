@@ -28,9 +28,13 @@ private GLib.Settings m_settings;
 public FeedlyUtils(GLib.SettingsBackend? settings_backend)
 {
 	if(settings_backend != null)
+	{
 		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.feedly", settings_backend);
+	}
 	else
+	{
 		m_settings = new GLib.Settings("org.gnome.feedreader.feedly");
+	}
 }
 
 public string getRefreshToken()

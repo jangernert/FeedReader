@@ -50,9 +50,9 @@ public SettingFont(string name, GLib.Settings settings, string key){
 	font_button.set_use_size(false);
 	font_button.set_show_size(true);
 	font_button.font_set.connect(() => {
-		var new_font = new Variant.string(font_button.get_font_name());
-		settings.set_value(key, new Variant.maybe(VariantType.STRING, new_font));
-	});
+			var new_font = new Variant.string(font_button.get_font_name());
+			settings.set_value(key, new Variant.maybe(VariantType.STRING, new_font));
+		});
 
 	this.pack_end(font_button, false, false, 0);
 }

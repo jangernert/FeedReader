@@ -40,10 +40,14 @@ public LoginResponse login()
 	{
 		var result = m_connection.getToken();
 		if(m_connection.postToken() && getUserID())
+		{
 			return result;
+		}
 	}
 	else if(getUserID())
+	{
 		return LoginResponse.SUCCESS;
+	}
 
 	return LoginResponse.UNKNOWN_ERROR;
 }
@@ -60,7 +64,9 @@ private bool getUserID()
 	var response = m_connection.send_get_request("user-info?" + msg.get());
 
 	if(response.status != 200)
+	{
 		return false;
+	}
 
 	var parser = new Json.Parser();
 	try{
@@ -80,7 +86,9 @@ private bool getUserID()
 		Logger.info("FeedHQ: userID = " + m_userID);
 
 		if(root.has_member("userName"))
+		{
 			m_utils.setUser(root.get_string_member("userName"));
+		}
 		return true;
 	}
 
@@ -94,7 +102,9 @@ public bool getFeeds(Gee.List<Feed> feeds)
 	var response = m_connection.send_get_request("subscription/list?" + msg.get());
 
 	if(response.status != 200)
+	{
 		return false;
+	}
 
 	var parser = new Json.Parser();
 	try
@@ -148,7 +158,9 @@ public bool getCategoriesAndTags(Gee.List<Feed> feeds, Gee.List<Category> catego
 	var response = m_connection.send_get_request("tag/list?" + msg.get());
 
 	if(response.status != 200)
+	{
 		return false;
+	}
 
 	var parser = new Json.Parser();
 	try
@@ -234,12 +246,16 @@ public string? updateArticles(Gee.List<string> ids, int count, string? continuat
 	msg.add("n", count.to_string());
 	msg.add("s", "user/-/state/com.google/read");
 	if(continuation != null)
+	{
 		msg.add("c", continuation);
+	}
 
 	var response = m_connection.send_get_request("stream/items/ids?" + msg.get());
 
 	if(response.status != 200)
+	{
 		return null;
+	}
 
 	var parser = new Json.Parser();
 	try
@@ -270,7 +286,9 @@ public string? updateArticles(Gee.List<string> ids, int count, string? continuat
 	}
 
 	if(root.has_member("continuation") && root.get_string_member("continuation") != "")
+	{
 		return root.get_string_member("continuation");
+	}
 
 	return null;
 }
@@ -282,24 +300,38 @@ public string? getArticles(Gee.List<Article> articles, int count, ArticleStatus 
 	msg.add("n", count.to_string());
 
 	if(whatToGet == ArticleStatus.UNREAD)
+	{
 		msg.add("xt", "user/-/state/com.google/read");
+	}
 	if(whatToGet == ArticleStatus.READ)
+	{
 		msg.add("s", "user/-/state/com.google/read");
+	}
 	else if(whatToGet == ArticleStatus.MARKED)
+	{
 		msg.add("s", "user/-/state/com.google/starred");
+	}
 
 	if(continuation != null)
+	{
 		msg.add("c", continuation);
+	}
 
 	string api_endpoint = "stream/contents";
 	if(feed_id != null)
+	{
 		api_endpoint += "/" + feed_id;
+	}
 	else if(tagID != null)
+	{
 		api_endpoint += "/" + tagID;
+	}
 	var response = m_connection.send_get_request(api_endpoint + "?" + msg.get());
 
 	if(response.status != 200)
+	{
 		return null;
+	}
 
 	Logger.debug(api_endpoint + "?" + msg.get());
 
@@ -331,11 +363,17 @@ public string? getArticles(Gee.List<Article> articles, int count, ArticleStatus 
 		{
 			string cat = cats.get_string_element(j);
 			if(cat.has_suffix("com.google/starred"))
+			{
 				marked = true;
+			}
 			else if(cat.has_suffix("com.google/read"))
+			{
 				read = true;
+			}
 			else if(cat.contains("/label/"))
+			{
 				tags.add(cat);
+			}
 		}
 
 		var enclosures = new Gee.ArrayList<Enclosure>();
@@ -345,7 +383,9 @@ public string? getArticles(Gee.List<Article> articles, int count, ArticleStatus 
 
 			uint mediaCount = 0;
 			if(attachments != null)
+			{
 				mediaCount = attachments.get_length();
+			}
 
 			for(int j = 0; j < mediaCount; ++j)
 			{
@@ -376,7 +416,9 @@ public string? getArticles(Gee.List<Article> articles, int count, ArticleStatus 
 	}
 
 	if(root.has_member("continuation") && root.get_string_member("continuation") != "")
+	{
 		return root.get_string_member("continuation");
+	}
 
 	return null;
 }
@@ -388,9 +430,13 @@ public void edidTag(string articleID, string tagID, bool add = true)
 	msg.add("output", "json");
 
 	if(add)
+	{
 		msg.add("a", tagID);
+	}
 	else
+	{
 		msg.add("r", tagID);
+	}
 
 	msg.add("i", articleID);
 	m_connection.send_post_request("edit-tag", msg.get());
@@ -446,18 +492,25 @@ public bool editSubscription(FeedHQSubscriptionAction action, string[] feedID, s
 		break;
 	}
 
-	foreach(string s in feedID)
+	foreach(string s in feedID) {
 		msg.add("s", s);
+	}
 
 	if(title != null)
+	{
 		msg.add("t", title);
+	}
 
 	if(add != null && add != "")
+	{
 		msg.add("a", add);
+	}
 
 
 	if(remove != null && remove != "")
+	{
 		msg.add("r", remove);
+	}
 
 	Logger.debug(msg.get());
 	var response = m_connection.send_post_request("subscription/edit", msg.get());

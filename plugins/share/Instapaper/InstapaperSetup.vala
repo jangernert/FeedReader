@@ -24,7 +24,9 @@ public InstapaperSetup(string? id, InstaAPI api, string username = "")
 {
 	bool loggedIN = false;
 	if(username != "")
+	{
 		loggedIN = true;
+	}
 
 	base("Instapaper", "feed-share-instapaper", loggedIN, username);
 
@@ -67,7 +69,9 @@ public InstapaperSetup(string? id, InstaAPI api, string username = "")
 	m_api = api;
 
 	if(id != null)
+	{
 		m_id = id;
+	}
 }
 
 

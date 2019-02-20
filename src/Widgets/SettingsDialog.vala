@@ -24,7 +24,9 @@ private static SettingsDialog? m_dialog = null;
 public static SettingsDialog get_default()
 {
 	if(m_dialog == null)
+	{
 		m_dialog = new SettingsDialog();
+	}
 
 	return m_dialog;
 }
@@ -165,7 +167,9 @@ private Gtk.Box setup_Internal()
 	internalsBox.expand = true;
 	internalsBox.pack_start(sync_settings, false, true, 0);
 	if(FeedReaderBackend.get_default().useMaxArticles())
+	{
 		internalsBox.pack_start(sync_count, false, true, 0);
+	}
 	internalsBox.pack_start(sync_time, false, true, 0);
 	internalsBox.pack_start(db_settings, false, true, 0);
 	internalsBox.pack_start(drop_articles, false, true, 0);
@@ -292,27 +296,43 @@ private int sortFunc(Gtk.ListBoxRow row1, Gtk.ListBoxRow row2)
 	var r2 = row2 as ServiceSetup;
 
 	if(r1 == null && r2 == null)
+	{
 		return 0;
+	}
 	else if(r1 == null)
+	{
 		return 1;
+	}
 	else if(r2 == null)
+	{
 		return -1;
+	}
 
 	if(r1.getUserName() == ""
 	   && r2.getUserName() == "")
+	{
 		return 0;
+	}
 	else if(r1.getUserName() == "")
+	{
 		return 1;
+	}
 	else if(r2.getUserName() == "")
+	{
 		return -1;
+	}
 
 	bool sys1 = r1.isSystemAccount();
 	bool sys2 = r2.isSystemAccount();
 
 	if(sys1 && sys2)
+	{
 		return 0;
+	}
 	else if(sys1)
+	{
 		return -1;
+	}
 
 	return 1;
 }
@@ -333,7 +353,9 @@ private void headerFunc(Gtk.ListBoxRow row, Gtk.ListBoxRow? before)
 
 	// this is the plus-button
 	if(r1 == null)
+	{
 		return;
+	}
 
 	bool sys1 = r1.isSystemAccount();
 

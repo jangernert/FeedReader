@@ -121,9 +121,13 @@ private int calcLenght(string text)
 	if(text.contains("$URL"))
 	{
 		if(m_url.length >= m_urlLength)
+		{
 			return (text.length-3) + m_urlLength;
+		}
 		else
+		{
 			return (text.length-3) + m_url.length;
+		}
 	}
 
 	return text.length;

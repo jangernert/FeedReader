@@ -20,9 +20,13 @@ GLib.Settings m_settings;
 public DecsyncUtils(GLib.SettingsBackend? settings_backend)
 {
 	if(settings_backend != null)
+	{
 		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.decsync", settings_backend);
+	}
 	else
+	{
 		m_settings = new GLib.Settings("org.gnome.feedreader.decsync");
+	}
 }
 
 public string getDecsyncDir()
@@ -95,7 +99,9 @@ public Feed? downloadFeed(Soup.Session session, string feed_url, string feedID, 
 
 	if(doc.link != null
 	   && doc.link != "")
+	{
 		url = doc.link;
+	}
 
 	errmsg = "";
 	return new Feed(
@@ -111,10 +117,14 @@ public Feed? downloadFeed(Soup.Session session, string feed_url, string feedID, 
 public string? convert(string? text, string? locale)
 {
 	if(text == null)
+	{
 		return null;
+	}
 
 	if(locale == null)
+	{
 		return text;
+	}
 
 	try
 	{

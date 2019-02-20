@@ -148,10 +148,14 @@ private bool onClick(Gdk.EventButton event)
 {
 	// only right click allowed
 	if(event.button != 3)
+	{
 		return false;
+	}
 
 	if(!Utils.canManipulateContent())
+	{
 		return false;
+	}
 
 	switch(event.type)
 	{
@@ -164,7 +168,9 @@ private bool onClick(Gdk.EventButton event)
 	var remove_action = new GLib.SimpleAction("deleteTag", null);
 	remove_action.activate.connect(() => {
 			if(this.is_selected())
-				moveUP();
+			{
+			        moveUP();
+			}
 
 			uint time = 300;
 			this.reveal(false, time);
@@ -271,7 +277,9 @@ private void showRenamePopover(Gdk.DragContext? context = null, uint time = 0, A
 
 	string label = _("rename");
 	if(m_tag.getTagID() == TagID.NEW && context != null)
+	{
 		label = _("add");
+	}
 
 	var renameButton = new Gtk.Button.with_label(label);
 	renameButton.get_style_context().add_class("suggested-action");

@@ -39,7 +39,9 @@ public FeedbinAPI(string username, string password, string? user_agent = null, s
 	m_session = new Soup.Session();
 
 	if(user_agent != null)
+	{
 		m_session.user_agent = user_agent;
+	}
 
 	m_session.authenticate.connect(authenticate);
 }
@@ -52,7 +54,9 @@ public FeedbinAPI(string username, string password, string? user_agent = null, s
 private void authenticate(Soup.Message msg, Soup.Auth auth, bool retrying)
 {
 	if(!retrying)
+	{
 		auth.authenticate(this.username, this.password);
+	}
 }
 
 private Soup.Message request(string method, string last_part, string? input = null) throws FeedbinError
@@ -65,10 +69,14 @@ ensures (result.status_code < 400)
 	var message = new Soup.Message(method, path);
 
 	if(method == "POST")
+	{
 		message.request_headers.append("Content-Type", "application/json; charset=utf-8");
+	}
 
 	if(input != null)
+	{
 		message.request_body.append_take(input.data);
+	}
 
 	m_session.send_message(message);
 	var status = message.status_code;
@@ -97,7 +105,9 @@ private static DateTime string_to_datetime(string s) throws FeedbinError
 {
 	var time = TimeVal();
 	if(!time.from_iso8601(s))
+	{
 		throw new FeedbinError.INVALID_FORMAT(@"Expected date but got $s");
+	}
 	return new DateTime.from_timeval_utc(time);
 }
 
@@ -232,7 +242,9 @@ public Subscription? add_subscription(string url) throws FeedbinError
 	{
 		var response = post_json_object("subscriptions.json", object);
 		if(response.status_code == 300)
+		{
 			throw new FeedbinError.MULTIPLE_CHOICES("Site $url has multiple feeds to subscribe to");
+		}
 
 		var root = parse_json(response);
 		return Subscription.from_json(root.get_object());
@@ -335,7 +347,9 @@ ensures (!result.contains(null))
 	}
 
 	if(feed_id != null)
+	{
 		path = @"feeds/$feed_id/$path";
+	}
 
 	Json.Node root;
 	try
@@ -419,11 +433,15 @@ public Gee.Map<string, Bytes?> get_favicons() throws FeedbinError
 	{
 		var root = get_json("favicons.json");
 		if(root == null)
+		{
 			return Gee.Map.empty<string, Bytes?>();
+		}
 
 		var array = root.get_array();
 		if(array == null)
+		{
 			return Gee.Map.empty<string, Bytes?>();
+		}
 
 		var favicons = new Gee.HashMap<string, Bytes?>();
 		for(var i = 0; i < array.get_length(); ++i)
@@ -431,10 +449,14 @@ public Gee.Map<string, Bytes?> get_favicons() throws FeedbinError
 			var obj = array.get_object_element(i);
 			string host = obj.get_string_member("host");
 			if(host == null)
+			{
 				continue;
+			}
 			var favicon_encoded = obj.get_string_member("favicon");
 			if(favicon_encoded == null)
+			{
 				continue;
+			}
 			var favicon = new Bytes.take(Base64.decode(favicon_encoded));
 			favicons.set(host, favicon);
 		}

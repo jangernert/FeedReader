@@ -110,10 +110,14 @@ public void setCategory(string id)
 public bool isUncategorized()
 {
 	if(m_catIDs.size == 0)
+	{
 		return true;
+	}
 
 	if(m_catIDs.size == 1 && m_catIDs[0].contains("global.must"))
+	{
 		return true;
+	}
 
 	return false;
 }

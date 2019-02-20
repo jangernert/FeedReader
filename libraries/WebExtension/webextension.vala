@@ -45,7 +45,9 @@ public void recalculate()
 
 		// don't offer imageviewer if image isn't local
 		if(image.src.has_prefix("http"))
+		{
 			continue;
+		}
 
 		// if image was so huge it had to be replaced with a downscaled version
 		if(image.has_attribute("FR_huge"))
@@ -72,9 +74,13 @@ public void recalculate()
 
 			if(hRatio <= threshold
 			   || wRatio <= threshold)
+			{
 				addListener(image, image.src);
+			}
 			else
+			{
 				removeListener(image);
+			}
 		}
 	}
 }
@@ -147,7 +153,9 @@ public void on_click(WebKit.DOM.EventTarget target, WebKit.DOM.Event event)
 	string url = "";
 	var parent = image.get_parent_element();
 	if(parent.tag_name == "A")
+	{
 		url = parent.get_attribute("href");
+	}
 
 
 	int height = (int)image.natural_height;
@@ -155,7 +163,9 @@ public void on_click(WebKit.DOM.EventTarget target, WebKit.DOM.Event event)
 	string src = image.src;
 	string pref = "file://";
 	if(src.has_prefix(pref))
+	{
 		src = src.substring(pref.length);
+	}
 
 	if(image.has_attribute("FR_huge"))
 	{

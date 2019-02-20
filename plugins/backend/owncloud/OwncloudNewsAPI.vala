@@ -56,18 +56,27 @@ public LoginResponse login()
 	m_password = m_utils.getPasswd();
 	m_OwnCloudURL = m_utils.getURL();
 
-	if(m_OwnCloudURL == "" && m_username == "" && m_password == "") {
+	if(m_OwnCloudURL == "" && m_username == "" && m_password == "")
+	{
 		m_OwnCloudURL = "example-host/nextcloud";
 		return LoginResponse.ALL_EMPTY;
 	}
 	if(m_OwnCloudURL == "")
+	{
 		return LoginResponse.MISSING_URL;
+	}
 	if(GLib.Uri.parse_scheme(m_OwnCloudURL) == null)
+	{
 		return LoginResponse.INVALID_URL;
+	}
 	if(m_username == "")
+	{
 		return LoginResponse.MISSING_USER;
+	}
 	if(m_password == "")
+	{
 		return LoginResponse.MISSING_PASSWD;
+	}
 
 	var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + "status", m_username, m_password, "GET");
 	int error = message.send();
@@ -358,7 +367,9 @@ public bool markFeedRead(string feedID, bool isCatID)
 	int error = message.send();
 
 	if(error == ConnectionError.SUCCESS)
+	{
 		return true;
+	}
 
 	Logger.error("OwncloudNewsAPI.markFeedRead");
 	return false;
@@ -372,7 +383,9 @@ public bool markAllItemsRead()
 	int error = message.send();
 
 	if(error == ConnectionError.SUCCESS)
+	{
 		return true;
+	}
 
 	Logger.error("OwncloudNewsAPI.markAllItemsRead");
 	return false;
@@ -384,16 +397,22 @@ public bool updateArticleUnread(string articleIDs, ArticleStatus unread)
 	string url = "";
 
 	if(unread == ArticleStatus.UNREAD)
+	{
 		url = "items/unread/multiple";
+	}
 	else if(unread == ArticleStatus.READ)
+	{
 		url = "items/read/multiple";
+	}
 
 	var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
 	message.add_int_array("items", articleIDs);
 	int error = message.send();
 
 	if(error == ConnectionError.SUCCESS)
+	{
 		return true;
+	}
 
 	Logger.error("OwncloudNewsAPI.updateArticleUnread");
 	return false;
@@ -406,15 +425,21 @@ public bool updateArticleMarked(string articleID, ArticleStatus marked)
 	string url = "items/%s/%s/".printf(article.getFeedID(), article.getHash());
 
 	if(marked == ArticleStatus.MARKED)
+	{
 		url += "star";
+	}
 	else if(marked == ArticleStatus.UNMARKED)
+	{
 		url += "unstar";
+	}
 
 	var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
 	int error = message.send();
 
 	if(error == ConnectionError.SUCCESS)
+	{
 		return true;
+	}
 
 	Logger.error("OwncloudNewsAPI.updateArticleMarked");
 	return false;
@@ -529,7 +554,9 @@ public bool removeFolder(string catID)
 	int error = message.send();
 
 	if(error == ConnectionError.SUCCESS)
+	{
 		return true;
+	}
 
 	Logger.error("OwncloudNewsAPI.removeFolder");
 	return false;
@@ -543,7 +570,9 @@ public void renameCategory(string catID, string title)
 	int error = message.send();
 
 	if(error != ConnectionError.SUCCESS)
+	{
 		Logger.error("OwncloudNewsAPI.renameCategory");
+	}
 }
 
 public bool ping()

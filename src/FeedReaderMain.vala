@@ -68,7 +68,9 @@ public static int main (string[] args)
 	{
 		Logger.init(verbose);
 		if(!Utils.ping(pingURL))
+		{
 			Logger.error("Ping failed");
+		}
 		return 0;
 	}
 

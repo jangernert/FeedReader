@@ -138,7 +138,9 @@ private bool websiteClicked(Gdk.EventButton event)
 {
 	// only accept left mouse button
 	if(event.button != 1)
+	{
 		return false;
+	}
 
 	switch(event.type)
 	{

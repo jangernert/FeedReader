@@ -21,7 +21,9 @@ public TelegramSetup(string? id, Telegram tg, string username = "")
 {
 	bool loggedIN = false;
 	if(username != "")
+	{
 		loggedIN = true;
+	}
 
 	base("Telegram", "feed-share-telegram", loggedIN, username);
 

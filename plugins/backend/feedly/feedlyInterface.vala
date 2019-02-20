@@ -258,7 +258,9 @@ public override bool addFeed(string feedURL, string? catID, string? newCatName, 
 	}
 
 	if(!success)
+	{
 		errmsg = @"feedly could not add $feedURL";
+	}
 
 	return success;
 }
@@ -317,15 +319,21 @@ public override bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> ca
 	if(m_api.getCategories(categories))
 	{
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return false;
+		}
 
 		if(m_api.getFeeds(feeds))
 		{
 			if(cancellable != null && cancellable.is_cancelled())
+			{
 				return false;
+			}
 
 			if(m_api.getTags(tags))
+			{
 				return true;
+			}
 		}
 	}
 
@@ -361,7 +369,9 @@ public override void getArticles(int count, ArticleStatus whatToGet, DateTime? s
 	while(skip > 0)
 	{
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return;
+		}
 
 		if(skip >= amount)
 		{
@@ -376,7 +386,9 @@ public override void getArticles(int count, ArticleStatus whatToGet, DateTime? s
 		continuation = m_api.getArticles(articles, amount, continuation, whatToGet, feedly_tagID, feedly_feedID);
 
 		if(continuation == null)
+		{
 			break;
+		}
 	}
 
 	writeArticles(articles);

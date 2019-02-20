@@ -29,7 +29,9 @@ private static FeedServer? m_server;
 public static FeedServer get_default()
 {
 	if(m_server == null)
+	{
 		m_server = new FeedServer();
+	}
 
 	return m_server;
 }
@@ -54,7 +56,9 @@ private FeedServer()
 			        // so lookup the alias before trying to create it.
 			        var secrets = Secret.Collection.for_alias_sync(secret_service, Secret.COLLECTION_DEFAULT, Secret.CollectionFlags.NONE);
 			        if(secrets == null)
-					secrets = Secret.Collection.create_sync(secret_service, "Login", Secret.COLLECTION_DEFAULT, Secret.CollectionCreateFlags.COLLECTION_CREATE_NONE);
+			        {
+			                secrets = Secret.Collection.create_sync(secret_service, "Login", Secret.COLLECTION_DEFAULT, Secret.CollectionCreateFlags.COLLECTION_CREATE_NONE);
+				}
 
 			        var settings_backend = null; // FIXME: Why does SettingsBackend.get_default() crash on Arch Linux?
 			        (extension as FeedServerInterface).init(settings_backend, secrets);
@@ -182,7 +186,9 @@ public void syncContent(GLib.Cancellable? cancellable = null)
 		var tags       = new Gee.LinkedList<Tag>();
 
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return;
+		}
 
 		syncProgress(_("Getting feeds and categories"));
 
@@ -193,10 +199,14 @@ public void syncContent(GLib.Cancellable? cancellable = null)
 		}
 
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return;
+		}
 
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return;
+		}
 
 		// write categories
 		db.reset_exists_flag();
@@ -219,7 +229,9 @@ public void syncContent(GLib.Cancellable? cancellable = null)
 	}
 
 	if(cancellable != null && cancellable.is_cancelled())
+	{
 		return;
+	}
 
 	var drop_articles = (DropArticles)Settings.general().get_enum("drop-articles-after");
 	DateTime? since = drop_articles.to_start_date();
@@ -251,7 +263,9 @@ public void syncContent(GLib.Cancellable? cancellable = null)
 	}
 
 	if(cancellable != null && cancellable.is_cancelled())
+	{
 		return;
+	}
 
 	//update fulltext table
 	db.updateFTS();
@@ -267,7 +281,9 @@ public void syncContent(GLib.Cancellable? cancellable = null)
 
 	var drop_weeks = drop_articles.to_weeks();
 	if(drop_weeks != null)
+	{
 		db.dropOldArticles(-(int)drop_weeks);
+	}
 
 	var now = new DateTime.now_local();
 	Settings.state().set_int("last-sync", (int)now.to_unix());
@@ -293,10 +309,14 @@ public void InitSyncContent(GLib.Cancellable? cancellable = null)
 		getFeedsAndCats(feeds, categories, tags, cancellable);
 
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return;
+		}
 
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return;
+		}
 
 		// write categories
 		db.write_categories(categories);
@@ -311,7 +331,9 @@ public void InitSyncContent(GLib.Cancellable? cancellable = null)
 	}
 
 	if(cancellable != null && cancellable.is_cancelled())
+	{
 		return;
+	}
 
 	var drop_articles = (DropArticles)Settings.general().get_enum("drop-articles-after");
 	DateTime? since = drop_articles.to_start_date();
@@ -321,7 +343,9 @@ public void InitSyncContent(GLib.Cancellable? cancellable = null)
 	getArticles(Settings.general().get_int("max-articles"), ArticleStatus.MARKED, since, null, false, cancellable);
 
 	if(cancellable != null && cancellable.is_cancelled())
+	{
 		return;
+	}
 
 	// get articles for each tag
 	syncProgress(_("Getting tagged articles"));
@@ -329,7 +353,9 @@ public void InitSyncContent(GLib.Cancellable? cancellable = null)
 	{
 		getArticles((Settings.general().get_int("max-articles")/8), ArticleStatus.ALL, since, tag_item.getTagID(), true, cancellable);
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return;
+		}
 	}
 
 	if(useMaxArticles())
@@ -339,14 +365,18 @@ public void InitSyncContent(GLib.Cancellable? cancellable = null)
 	}
 
 	if(cancellable != null && cancellable.is_cancelled())
+	{
 		return;
+	}
 
 	// get unread articles
 	syncProgress(_("Getting unread articles"));
 	getArticles(getUnreadCount(), ArticleStatus.UNREAD, since, null, false, cancellable);
 
 	if(cancellable != null && cancellable.is_cancelled())
+	{
 		return;
+	}
 
 	//update fulltext table
 	db.updateFTS();
@@ -383,7 +413,9 @@ public async void grabContent(GLib.Cancellable? cancellable = null)
 {
 	if(!Settings.general().get_boolean("download-images")
 	   && !Settings.general().get_boolean("content-grabber"))
+	{
 		return;
+	}
 
 	Logger.debug("FeedServer: grabContent");
 	var db = DataBase.writeAccess();
@@ -404,7 +436,9 @@ public async void grabContent(GLib.Cancellable? cancellable = null)
 		{
 			var threads = new ThreadPool<Article>.with_owned_data((article) => {
 					if(cancellable != null && cancellable.is_cancelled())
-						return;
+					{
+					        return;
+					}
 
 					if(Settings.general().get_boolean("content-grabber"))
 					{
@@ -443,9 +477,9 @@ public async void grabContent(GLib.Cancellable? cancellable = null)
 
 					if(cancellable == null || !cancellable.is_cancelled())
 					{
-						mutex.lock();
-						new_article_content.add(article);
-						mutex.unlock();
+					        mutex.lock();
+					        new_article_content.add(article);
+					        mutex.unlock();
 					}
 
 					++i;
@@ -469,12 +503,16 @@ public async void grabContent(GLib.Cancellable? cancellable = null)
 		foreach(var content in new_article_content)
 		{
 			if (cancellable != null && cancellable.is_cancelled())
+			{
 				return;
+			}
 			db.writeContent(content);
 		}
 
 		if (cancellable != null && cancellable.is_cancelled())
+		{
 			return;
+		}
 
 		//update fulltext table
 		db.updateFTS();
@@ -484,7 +522,9 @@ public async void grabContent(GLib.Cancellable? cancellable = null)
 private void downloadImages(Soup.Session session, Article article, GLib.Cancellable? cancellable = null)
 {
 	if(!Settings.general().get_boolean("download-images"))
+	{
 		return;
+	}
 
 	var html_cntx = new Html.ParserCtxt();
 	html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
@@ -522,7 +562,9 @@ private void downloadImages(Soup.Session session, Article article, GLib.Cancella
 private int ArticleSyncCount()
 {
 	if(!useMaxArticles())
+	{
 		return -1;
+	}
 
 	return Settings.general().get_int("max-articles");
 }
@@ -564,14 +606,18 @@ public static void grabArticle(string url)
 		string path = GLib.Environment.get_user_data_dir() + "/feedreader/debug-article/%s.html".printf(title);
 
 		if(FileUtils.test(path, GLib.FileTest.EXISTS))
+		{
 			GLib.FileUtils.remove(path);
+		}
 
 		try
 		{
 			var file = GLib.File.new_for_path(path);
 			var parent = file.get_parent();
 			if(!parent.query_exists())
+			{
 				parent.make_directory_with_parents();
+			}
 
 			var stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
 
@@ -592,7 +638,9 @@ public static void grabArticle(string url)
 			path = GLib.Environment.get_user_data_dir() + "/feedreader/debug-article/%s.txt".printf(title);
 
 			if(FileUtils.test(path, GLib.FileTest.EXISTS))
+			{
 				GLib.FileUtils.remove(path);
+			}
 
 			file = GLib.File.new_for_path(path);
 			stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
@@ -657,9 +705,13 @@ public static void grabImages(string htmlFile, string url)
 		html = html.replace(broken_iframe, fixed_iframe);
 		int pos3 = html.index_of("<iframe", pos1+7);
 		if(pos3 == pos1)
+		{
 			break;
+		}
 		else
+		{
 			pos1 = pos3;
+		}
 	}
 
 	try
@@ -679,7 +731,9 @@ public static void grabImages(string htmlFile, string url)
 public bool supportTags()
 {
 	if(!m_pluginLoaded)
+	{
 		return false;
+	}
 
 	return m_plugin.supportTags();
 }
@@ -687,7 +741,9 @@ public bool supportTags()
 public bool doInitSync()
 {
 	if(!m_pluginLoaded)
+	{
 		return false;
+	}
 
 	return m_plugin.doInitSync();
 }
@@ -697,7 +753,9 @@ public string symbolicIcon()
 	Logger.debug("feedserver: symbolicIcon");
 
 	if(!m_pluginLoaded)
+	{
 		return "none";
+	}
 
 	return m_plugin.symbolicIcon();
 }
@@ -705,7 +763,9 @@ public string symbolicIcon()
 public string accountName()
 {
 	if(!m_pluginLoaded)
+	{
 		return "none";
+	}
 
 	return m_plugin.accountName();
 }
@@ -713,7 +773,9 @@ public string accountName()
 public string getServerURL()
 {
 	if(!m_pluginLoaded)
+	{
 		return "none";
+	}
 
 	return m_plugin.getServerURL();
 }
@@ -721,7 +783,9 @@ public string getServerURL()
 public string uncategorizedID()
 {
 	if(!m_pluginLoaded)
+	{
 		return "";
+	}
 
 	return m_plugin.uncategorizedID();
 }
@@ -729,7 +793,9 @@ public string uncategorizedID()
 public bool hideCategoryWhenEmpty(string catID)
 {
 	if(!m_pluginLoaded)
+	{
 		return false;
+	}
 
 	return m_plugin.hideCategoryWhenEmpty(catID);
 }
@@ -737,7 +803,9 @@ public bool hideCategoryWhenEmpty(string catID)
 public bool supportCategories()
 {
 	if(!m_pluginLoaded)
+	{
 		return false;
+	}
 
 	return m_plugin.supportCategories();
 }
@@ -745,7 +813,9 @@ public bool supportCategories()
 public bool supportFeedManipulation()
 {
 	if(!m_pluginLoaded)
+	{
 		return false;
+	}
 
 	return m_plugin.supportFeedManipulation();
 }
@@ -753,7 +823,9 @@ public bool supportFeedManipulation()
 public bool supportMultiLevelCategories()
 {
 	if(!m_pluginLoaded)
+	{
 		return false;
+	}
 
 	return m_plugin.supportMultiLevelCategories();
 }
@@ -761,7 +833,9 @@ public bool supportMultiLevelCategories()
 public bool supportMultiCategoriesPerFeed()
 {
 	if(!m_pluginLoaded)
+	{
 		return false;
+	}
 
 	return m_plugin.supportMultiCategoriesPerFeed();
 }
@@ -769,7 +843,9 @@ public bool supportMultiCategoriesPerFeed()
 public bool syncFeedsAndCategories()
 {
 	if(!m_pluginLoaded)
+	{
 		return false;
+	}
 
 	return m_plugin.syncFeedsAndCategories();
 }
@@ -779,7 +855,9 @@ public bool syncFeedsAndCategories()
 public bool tagIDaffectedByNameChange()
 {
 	if(!m_pluginLoaded)
+	{
 		return false;
+	}
 
 	return m_plugin.tagIDaffectedByNameChange();
 }
@@ -787,7 +865,9 @@ public bool tagIDaffectedByNameChange()
 public void resetAccount()
 {
 	if(!m_pluginLoaded)
+	{
 		return;
+	}
 
 	m_plugin.resetAccount();
 }
@@ -796,7 +876,9 @@ public void resetAccount()
 public bool useMaxArticles()
 {
 	if(!m_pluginLoaded)
+	{
 		return true;
+	}
 
 	return m_plugin.useMaxArticles();
 }
@@ -809,7 +891,9 @@ public LoginResponse login()
 public bool logout()
 {
 	if(!m_pluginLoaded)
+	{
 		return false;
+	}
 
 	return m_plugin.logout();
 }
@@ -817,7 +901,9 @@ public bool logout()
 public void setArticleIsRead(string articleIDs, ArticleStatus read)
 {
 	if(!m_pluginLoaded)
+	{
 		return;
+	}
 
 	m_plugin.setArticleIsRead(articleIDs, read);
 }
@@ -825,7 +911,9 @@ public void setArticleIsRead(string articleIDs, ArticleStatus read)
 public void setArticleIsMarked(string articleID, ArticleStatus marked)
 {
 	if(!m_pluginLoaded)
+	{
 		return;
+	}
 
 	m_plugin.setArticleIsMarked(articleID, marked);
 }
@@ -833,7 +921,9 @@ public void setArticleIsMarked(string articleID, ArticleStatus marked)
 public bool alwaysSetReadByID()
 {
 	if(!m_pluginLoaded)
+	{
 		return false;
+	}
 
 	return m_plugin.alwaysSetReadByID();
 }
@@ -841,7 +931,9 @@ public bool alwaysSetReadByID()
 public void setFeedRead(string feedID)
 {
 	if(!m_pluginLoaded)
+	{
 		return;
+	}
 
 	m_plugin.setFeedRead(feedID);
 }
@@ -849,7 +941,9 @@ public void setFeedRead(string feedID)
 public void setCategoryRead(string catID)
 {
 	if(!m_pluginLoaded)
+	{
 		return;
+	}
 
 	m_plugin.setCategoryRead(catID);
 }
@@ -857,7 +951,9 @@ public void setCategoryRead(string catID)
 public void markAllItemsRead()
 {
 	if(!m_pluginLoaded)
+	{
 		return;
+	}
 
 	m_plugin.markAllItemsRead();
 }
@@ -865,7 +961,9 @@ public void markAllItemsRead()
 public void tagArticle(Article article, Tag tag)
 {
 	if(!m_pluginLoaded)
+	{
 		return;
+	}
 
 	m_plugin.tagArticle(article.getArticleID(), tag.getTagID());
 }
@@ -873,7 +971,9 @@ public void tagArticle(Article article, Tag tag)
 public void removeArticleTag(Article article, Tag tag)
 {
 	if(!m_pluginLoaded)
+	{
 		return;
+	}
 
 	m_plugin.removeArticleTag(article.getArticleID(), tag.getTagID());
 }
@@ -881,7 +981,9 @@ public void removeArticleTag(Article article, Tag tag)
 public string createTag(string caption)
 {
 	if(!m_pluginLoaded)
+	{
 		return "";
+	}
 
 	return m_plugin.createTag(caption);
 }
@@ -889,7 +991,9 @@ public string createTag(string caption)
 public void deleteTag(string tagID)
 {
 	if(!m_pluginLoaded)
+	{
 		return;
+	}
 
 	m_plugin.deleteTag(tagID);
 }
@@ -897,7 +1001,9 @@ public void deleteTag(string tagID)
 public void renameTag(string tagID, string title)
 {
 	if(!m_pluginLoaded)
+	{
 		return;
+	}
 
 	m_plugin.renameTag(tagID, title);
 }
@@ -905,21 +1011,26 @@ public void renameTag(string tagID, string title)
 public bool serverAvailable()
 {
 	if(!m_pluginLoaded)
+	{
 		return false;
+	}
 
 	return m_plugin.serverAvailable();
 }
 
 public bool addFeed(string feedURL, string? catID, string? newCatName, out string? feedID, out string errmsg)
 {
-	if(!m_pluginLoaded) {
+	if(!m_pluginLoaded)
+	{
 		feedID = null;
 		errmsg = "Plugin not loaded";
 		return false;
 	}
 
 	if(!m_plugin.addFeed(feedURL, catID, newCatName, out feedID, out errmsg))
+	{
 		return false;
+	}
 
 	int maxArticles = ArticleSyncCount();
 	DateTime? since = ((DropArticles)Settings.general().get_enum("drop-articles-after")).to_start_date();
@@ -932,7 +1043,9 @@ public bool addFeed(string feedURL, string? catID, string? newCatName, out strin
 public void addFeeds(Gee.List<Feed> feeds)
 {
 	if(!m_pluginLoaded)
+	{
 		return;
+	}
 
 	m_plugin.addFeeds(feeds);
 }
@@ -940,7 +1053,9 @@ public void addFeeds(Gee.List<Feed> feeds)
 public void removeFeed(string feedID)
 {
 	if(!m_pluginLoaded)
+	{
 		return;
+	}
 
 	m_plugin.removeFeed(feedID);
 }
@@ -948,7 +1063,9 @@ public void removeFeed(string feedID)
 public void renameFeed(string feedID, string title)
 {
 	if(!m_pluginLoaded)
+	{
 		return;
+	}
 
 	m_plugin.renameFeed(feedID, title);
 }
@@ -956,7 +1073,9 @@ public void renameFeed(string feedID, string title)
 public void moveFeed(string feedID, string newCatID, string? currentCatID = null)
 {
 	if(!m_pluginLoaded)
+	{
 		return;
+	}
 
 	m_plugin.moveFeed(feedID, newCatID, currentCatID);
 }
@@ -964,7 +1083,9 @@ public void moveFeed(string feedID, string newCatID, string? currentCatID = null
 public string createCategory(string title, string? parentID = null)
 {
 	if(!m_pluginLoaded)
+	{
 		return "";
+	}
 
 	return m_plugin.createCategory(title, parentID);
 }
@@ -972,7 +1093,9 @@ public string createCategory(string title, string? parentID = null)
 public void renameCategory(string catID, string title)
 {
 	if(!m_pluginLoaded)
+	{
 		return;
+	}
 
 	m_plugin.renameCategory(catID, title);
 }
@@ -980,7 +1103,9 @@ public void renameCategory(string catID, string title)
 public void moveCategory(string catID, string newParentID)
 {
 	if(!m_pluginLoaded)
+	{
 		return;
+	}
 
 	m_plugin.moveCategory(catID, newParentID);
 }
@@ -988,7 +1113,9 @@ public void moveCategory(string catID, string newParentID)
 public void deleteCategory(string catID)
 {
 	if(!m_pluginLoaded)
+	{
 		return;
+	}
 
 	m_plugin.deleteCategory(catID);
 }
@@ -996,7 +1123,9 @@ public void deleteCategory(string catID)
 public void removeCatFromFeed(string feedID, string catID)
 {
 	if(!m_pluginLoaded)
+	{
 		return;
+	}
 
 	m_plugin.removeCatFromFeed(feedID, catID);
 }
@@ -1004,7 +1133,9 @@ public void removeCatFromFeed(string feedID, string catID)
 public void importOPML(string opml)
 {
 	if(!m_pluginLoaded)
+	{
 		return;
+	}
 
 	m_plugin.importOPML(opml);
 }
@@ -1012,7 +1143,9 @@ public void importOPML(string opml)
 public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
 {
 	if(!m_pluginLoaded)
+	{
 		return false;
+	}
 
 	return m_plugin.getFeedsAndCats(feeds, categories, tags);
 }
@@ -1020,7 +1153,9 @@ public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories,
 public int getUnreadCount()
 {
 	if(!m_pluginLoaded)
+	{
 		return 0;
+	}
 
 	return m_plugin.getUnreadCount();
 }

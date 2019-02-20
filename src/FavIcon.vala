@@ -20,7 +20,9 @@ private static Gee.Map<string?, FavIcon?> m_map = null;
 public static FavIcon for_feed(Feed? feed)
 {
 	if(m_map == null)
+	{
 		m_map = new Gee.HashMap<string?, FavIcon?>();
+	}
 
 	var feed_id = feed != null ? feed.getFeedID() : null;
 	var icon = m_map.get(feed_id);
@@ -37,12 +39,16 @@ public static void delete_feed(string feed_id)
 ensures (m_map == null || !m_map.has_key(feed_id))
 {
 	if(m_map == null)
+	{
 		return;
+	}
 
 	FavIcon icon;
 	m_map.unset(feed_id, out icon);
 	if(icon == null)
+	{
 		return;
+	}
 
 	icon.delete.begin((obj,res) => {
 			icon.delete.end(res);
@@ -93,7 +99,9 @@ public async Cairo.Surface? get_surface()
 	{
 		Gdk.Pixbuf pixbuf = yield m_pixbuf.future.wait_async();
 		if(pixbuf == null)
+		{
 			return null;
+		}
 
 		return create_surface_from_pixbuf(pixbuf);
 	}
@@ -110,7 +118,9 @@ private async void load()
 	{
 		var stream = yield downloadFavIcon();
 		if(stream == null)
+		{
 			return;
+		}
 
 		var pixbuf = yield new Gdk.Pixbuf.from_stream_async(stream);
 		stream.close();
@@ -125,7 +135,9 @@ private async void load()
 
 		m_pixbuf.set_value(pixbuf);
 		if(pixbuf != null)
+		{
 			surface_changed(m_feed, create_surface_from_pixbuf(pixbuf));
+		}
 	}
 	catch(Error e)
 	{
@@ -134,14 +146,18 @@ private async void load()
 	finally
 	{
 		if(!m_pixbuf.future.ready)
+		{
 			m_pixbuf.set_value(null);
+		}
 	}
 }
 
 private InputStream? try_load_data_uri(string? icon_url)
 {
 	if(icon_url == null || !icon_url.has_prefix("data"))
+	{
 		return null;
+	}
 
 	// LibSoup doesn't seem to handle data URI's properly, so handle them
 	// ourselves..
@@ -186,7 +202,9 @@ private string metadataFileName()
 private async void delete()
 {
 	if (m_feed == null)
+	{
 		return;
+	}
 
 	try
 	{
@@ -216,19 +234,25 @@ requires(m_feed != null)
 {
 	var datastream = try_load_data_uri(m_feed.getIconURL());
 	if(datastream != null)
+	{
 		return datastream;
+	}
 
 	string icon_filename = iconFileName();
 	string metadata_filename = metadataFileName();
 
 	if(!yield Utils.ensure_path(m_icon_path))
+	{
 		return null;
+	}
 
 	m_metadata = yield ResourceMetadata.from_file_async(metadata_filename);
 	DateTime? expires = m_metadata.expires;
 
 	if(cancellable != null && cancellable.is_cancelled())
+	{
 		return null;
+	}
 
 	bool use_cached = false;
 	if(!m_metadata.is_expired())
@@ -259,7 +283,9 @@ requires(m_feed != null)
 		var obvious_icons = new Gee.ArrayList<string>();
 
 		if(m_feed.getIconURL() != null)
+		{
 			obvious_icons.add(m_feed.getIconURL());
+		}
 
 		// try domainname/favicon.ico
 		var uri = new Soup.URI(m_feed.getURL());
@@ -271,7 +297,9 @@ requires(m_feed != null)
 
 			var icon_url = siteURL;
 			if(!icon_url.has_suffix("/"))
+			{
 				icon_url += "/";
+			}
 			icon_url += "favicon.ico";
 			obvious_icons.add(icon_url);
 		}
@@ -281,19 +309,27 @@ requires(m_feed != null)
 		{
 			var stream = yield downloadIcon(url, cancellable);
 			if(stream != null)
+			{
 				return stream;
+			}
 
 			if(cancellable != null && cancellable.is_cancelled())
+			{
 				return null;
+			}
 		}
 
 		// If all else fails, download html and parse to find location of favicon
 		if(siteURL == null)
+		{
 			return null;
+		}
 
 		var message_html = new Soup.Message("GET", siteURL);
 		if(Settings.tweaks().get_boolean("do-not-track"))
+		{
 			message_html.request_headers.append("DNT", "1");
+		}
 
 		string html;
 		try
@@ -323,12 +359,16 @@ requires(m_feed != null)
 				var xpath = grabberUtils.getURL(doc, "//link[@rel='icon']");
 
 				if(xpath == null)
+				{
 					// check for <link rel="shortcut icon">
 					xpath = grabberUtils.getURL(doc, "//link[@rel='shortcut icon']");
+				}
 
 				if(xpath == null)
+				{
 					// check for <link rel="apple-touch-icon">
 					xpath = grabberUtils.getURL(doc, "//link[@rel='apple-touch-icon']");
+				}
 
 				if(xpath != null)
 				{
@@ -376,12 +416,18 @@ private async InputStream? downloadIcon(string? icon_url, Cancellable? cancellab
 		return null;
 	}
 	if(Settings.tweaks().get_boolean("do-not-track"))
+	{
 		message.request_headers.append("DNT", "1");
+	}
 
 	if(etag != null)
+	{
 		message.request_headers.append("If-None-Match", etag);
+	}
 	if(last_modified != null)
+	{
 		message.request_headers.append("If-Modified-Since", last_modified);
+	}
 
 	uint8[]? data;
 	try
@@ -427,7 +473,9 @@ private async InputStream? downloadIcon(string? icon_url, Cancellable? cancellab
 			{
 				var parts = header.split("=");
 				if(parts.length < 2 || parts[0] != "max-age")
+				{
 					continue;
+				}
 				var seconds = int64.parse(parts[1]);
 				var expires = new DateTime.now_utc();
 				expires.add_seconds(seconds);

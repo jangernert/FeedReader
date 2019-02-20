@@ -33,7 +33,9 @@ public Password(Secret.Collection secrets, Secret.Schema schema, string label, o
 private void unlock_keyring(Cancellable? cancellable = null) throws Error
 {
 	if (!m_secrets.get_locked())
+	{
 		return;
+	}
 
 	var collections_to_unlock = new List<Secret.Collection>();
 	collections_to_unlock.append(m_secrets);
@@ -49,19 +51,25 @@ public string get_password(Cancellable? cancellable = null)
 		unlock_keyring(cancellable);
 
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return "";
+		}
 
 		var secrets = m_secrets.search_sync(m_schema, attributes, Secret.SearchFlags.NONE, cancellable);
 
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return "";
+		}
 
 		if(secrets.length() != 0)
 		{
 			var item = secrets.data;
 			item.load_secret_sync(cancellable);
 			if(cancellable != null && cancellable.is_cancelled())
+			{
 				return "";
+			}
 
 			var secret = item.get_secret();
 			if(secret == null)
@@ -93,7 +101,9 @@ public void set_password(string password, Cancellable? cancellable = null)
 		unlock_keyring(cancellable);
 
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return;
+		}
 
 		var value = new Secret.Value(password, password.length, "text/plain");
 		Secret.Item.create_sync(m_secrets, m_schema, attributes, m_label, value, Secret.ItemCreateFlags.REPLACE, cancellable);
@@ -112,12 +122,16 @@ public bool delete_password(Cancellable? cancellable = null)
 		unlock_keyring(cancellable);
 
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return false;
+		}
 
 		var secrets = m_secrets.search_sync(m_schema, attributes, Secret.SearchFlags.NONE, cancellable);
 
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return false;
+		}
 
 		if(secrets.length() != 0)
 		{

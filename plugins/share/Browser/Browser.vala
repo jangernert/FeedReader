@@ -44,7 +44,9 @@ public bool logout(string id)
 public string getIconName()
 {
 	if(Gtk.IconTheme.get_default().lookup_icon("applications-internet", 0, Gtk.IconLookupFlags.FORCE_SVG) != null)
+	{
 		return "applications-internet";
+	}
 
 	return "feed-share-browser";
 }

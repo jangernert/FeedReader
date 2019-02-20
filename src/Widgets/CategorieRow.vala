@@ -133,9 +133,13 @@ public CategoryRow(string name, string categorieID, int orderID, uint unread_cou
 	set_unread_count(m_unread_count);
 
 	if(m_collapsed)
+	{
 		m_stack.set_visible_child_name("collapsed");
+	}
 	else
+	{
 		m_stack.set_visible_child_name("expanded");
+	}
 
 	if(Utils.canManipulateContent())
 	{
@@ -360,10 +364,14 @@ private bool onClick(Gdk.EventButton event)
 {
 	// only right click allowed
 	if(event.button != 3)
+	{
 		return false;
+	}
 
 	if(!Utils.canManipulateContent())
+	{
 		return false;
+	}
 
 
 	switch(event.type)
@@ -385,7 +393,9 @@ private bool onClick(Gdk.EventButton event)
 			}
 
 			if(this.is_selected())
-				moveUP();
+			{
+			        moveUP();
+			}
 
 			uint time = 300;
 			this.reveal(false, time);
@@ -399,17 +409,23 @@ private bool onClick(Gdk.EventButton event)
 				notification.disconnect(eventID);
 				this.reveal(true, time);
 				if(wasExpanded)
-					expand_collapse();
+				{
+				        expand_collapse();
+				}
 				notification.dismiss();
 			});
 		});
 	var removeWithChildren_action = new GLib.SimpleAction("deleteAllCat", null);
 	removeWithChildren_action.activate.connect(() => {
 			if(!m_collapsed)
-				expand_collapse();
+			{
+			        expand_collapse();
+			}
 
 			if(this.is_selected())
-				moveUP();
+			{
+			        moveUP();
+			}
 
 			uint time = 300;
 			this.reveal(false, time);
@@ -484,10 +500,12 @@ private void showRenamePopover(Gdk.DragContext? context = null, uint time = 0, s
 			        m_categorieID = FeedReaderBackend.get_default().addCategory(renameEntry.get_text(), "", true);
 
 			        if(id2 == null) // move feed
+
 			        {
 			                FeedReaderBackend.get_default().moveCategory(id1, m_categorieID);
 				}
 			        else // move category
+
 			        {
 			                FeedReaderBackend.get_default().moveFeed(id1, id2, m_categorieID);
 				}
@@ -500,7 +518,9 @@ private void showRenamePopover(Gdk.DragContext? context = null, uint time = 0, s
 
 	string label = _("rename");
 	if(m_categorieID == CategoryID.NEW.to_string() && context != null)
+	{
 		label = _("add");
+	}
 
 	var renameButton = new Gtk.Button.with_label(label);
 	renameButton.get_style_context().add_class("suggested-action");
@@ -555,7 +575,9 @@ private bool onExpandClick(Gdk.EventButton event)
 {
 	// only accept left mouse button
 	if(event.button != 1)
+	{
 		return false;
+	}
 
 	switch(event.type)
 	{
@@ -597,7 +619,9 @@ private bool onExpandLeave(Gdk.EventCrossing event)
 {
 	if(event.detail != Gdk.NotifyType.VIRTUAL
 	   && event.mode != Gdk.CrossingMode.NORMAL)
+	{
 		return false;
+	}
 
 	m_hovered = false;
 
@@ -633,7 +657,9 @@ public void upUnread()
 public void downUnread()
 {
 	if(m_unread_count > 0)
+	{
 		set_unread_count(m_unread_count-1);
+	}
 }
 
 public string getID()
@@ -689,7 +715,9 @@ public bool isRevealed()
 public void reveal(bool reveal, uint duration = 500)
 {
 	if(!reveal && this.is_selected())
+	{
 		deselectRow();
+	}
 
 	m_revealer.set_transition_duration(duration);
 	m_revealer.set_reveal_child(reveal);

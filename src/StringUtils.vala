@@ -18,7 +18,9 @@ public static Gee.List<string> split(string s, string sep, bool ignore_empty=fal
 {
 	var items = s.split(sep);
 	if (!ignore_empty)
+	{
 		return new Gee.ArrayList<string>.wrap(items);
+	}
 
 	var res = new Gee.ArrayList<string>();
 	foreach(string item in items)
@@ -43,7 +45,9 @@ public static void stringbuilder_append_join(StringBuilder out, Gee.Collection<s
 	foreach (var v in l)
 	{
 		if (!first)
+		{
 			out.append(sep);
+		}
 		out.append(v);
 		first = false;
 	}

@@ -48,7 +48,9 @@ private static FeedReaderBackend? m_backend;
 public static FeedReaderBackend get_default()
 {
 	if(m_backend == null)
+	{
 		m_backend = new FeedReaderBackend();
+	}
 
 	return m_backend;
 }
@@ -59,9 +61,13 @@ private FeedReaderBackend()
 	var plugID = Settings.general().get_string("plugin");
 
 	if(plugID == "none")
+	{
 		m_loggedin = LoginResponse.NO_BACKEND;
+	}
 	else
+	{
 		login(plugID);
+	}
 
 #if LIBUNITY
 	m_launcher = Unity.LauncherEntry.get_for_desktop_id("org.gnome.FeedReader.desktop");
@@ -171,7 +177,9 @@ public void scheduleSync(int time)
 	}
 
 	if(time == 0)
+	{
 		return;
+	}
 
 	m_timeout_source_id = GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, time*60, () => {
 				if(!Settings.state().get_boolean("currently-updating")
@@ -206,7 +214,9 @@ private void sync(bool initSync = false, GLib.Cancellable? cancellable = null)
 		}
 
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return;
+		}
 
 		Logger.info("backend: sync started");
 		syncStarted();
@@ -228,9 +238,13 @@ private void sync(bool initSync = false, GLib.Cancellable? cancellable = null)
 		m_cacheSync = true;
 
 		if(initSync && FeedServer.get_default().doInitSync())
+		{
 			FeedServer.get_default().InitSyncContent(cancellable);
+		}
 		else
+		{
 			FeedServer.get_default().syncContent(cancellable);
+		}
 
 		if(cancellable != null && cancellable.is_cancelled())
 		{
@@ -294,7 +308,9 @@ public bool checkOnline()
 public async bool checkOnlineAsync()
 {
 	if(!FeedServer.get_default().pluginLoaded())
+	{
 		return false;
+	}
 
 	Logger.debug("backend: checkOnlineAsync");
 	bool online = false;
@@ -362,11 +378,15 @@ public bool isOnline()
 public void updateArticleRead(Article article)
 {
 	if(m_offline)
+	{
 		CachedActionManager.get_default().markArticleRead(article.getArticleID(), article.getUnread());
+	}
 	else
 	{
 		if(m_cacheSync)
+		{
 			ActionCache.get_default().markArticleRead(article.getArticleID(), article.getUnread());
+		}
 
 		asyncPayload pl = () => { FeedServer.get_default().setArticleIsRead(article.getArticleID(), article.getUnread()); };
 		callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
@@ -383,11 +403,15 @@ public void updateArticleRead(Article article)
 public void updateArticleMarked(Article article)
 {
 	if(m_offline)
+	{
 		CachedActionManager.get_default().markArticleStarred(article.getArticleID(), article.getMarked());
+	}
 	else
 	{
 		if(m_cacheSync)
+		{
 			ActionCache.get_default().markArticleStarred(article.getArticleID(), article.getMarked());
+		}
 		asyncPayload pl = () => { FeedServer.get_default().setArticleIsMarked(article.getArticleID(), article.getMarked()); };
 		callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 	}
@@ -404,7 +428,9 @@ public void updateArticleMarked(Article article)
 public Tag? createTag(string caption)
 {
 	if(m_offline)
+	{
 		return null;
+	}
 
 	string tagID = FeedServer.get_default().createTag(caption);
 	var tag = new Tag(tagID, caption, 0);
@@ -417,7 +443,9 @@ public Tag? createTag(string caption)
 public void tagArticle(Article article, Tag tag, bool add)
 {
 	if(m_offline)
+	{
 		return;
+	}
 
 	if(add)
 	{
@@ -457,7 +485,9 @@ public void tagArticle(Article article, Tag tag, bool add)
 public Tag renameTag(Tag tag, string newName)
 {
 	if(m_offline)
+	{
 		return tag;
+	}
 
 	tag.setTitle(newName);
 
@@ -476,7 +506,9 @@ public Tag renameTag(Tag tag, string newName)
 public void deleteTag(Tag tag)
 {
 	if(m_offline)
+	{
 		return;
+	}
 
 	asyncPayload pl = () => { FeedServer.get_default().deleteTag(tag.getTagID()); };
 	callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
@@ -526,24 +558,36 @@ public void markFeedAsRead(string feedID, bool isCat)
 		if(m_offline)
 		{
 			if(useID)
+			{
 				CachedActionManager.get_default().markArticleRead(articleIDs, ArticleStatus.READ);
+			}
 			else
+			{
 				CachedActionManager.get_default().markCategoryRead(feedID);
+			}
 		}
 		else
 		{
 			if(m_cacheSync)
 			{
 				if(useID)
+				{
 					ActionCache.get_default().markArticleRead(articleIDs, ArticleStatus.READ);
+				}
 				else
+				{
 					ActionCache.get_default().markCategoryRead(feedID);
+				}
 			}
 			asyncPayload pl = () => {
 				if(useID)
+				{
 					FeedServer.get_default().setArticleIsRead(articleIDs, ArticleStatus.READ);
+				}
 				else
+				{
 					FeedServer.get_default().setCategoryRead(feedID);
+				}
 			};
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 		}
@@ -561,24 +605,36 @@ public void markFeedAsRead(string feedID, bool isCat)
 		if(m_offline)
 		{
 			if(useID)
+			{
 				CachedActionManager.get_default().markArticleRead(articleIDs, ArticleStatus.READ);
+			}
 			else
+			{
 				CachedActionManager.get_default().markFeedRead(feedID);
+			}
 		}
 		else
 		{
 			if(m_cacheSync)
 			{
 				if(useID)
+				{
 					ActionCache.get_default().markArticleRead(articleIDs, ArticleStatus.READ);
+				}
 				else
+				{
 					ActionCache.get_default().markFeedRead(feedID);
+				}
 			}
 			asyncPayload pl = () => {
 				if(useID)
+				{
 					FeedServer.get_default().setArticleIsRead(articleIDs, ArticleStatus.READ);
+				}
 				else
+				{
 					FeedServer.get_default().setFeedRead(feedID);
+				}
 			};
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 		}
@@ -611,24 +667,36 @@ public void markAllItemsRead()
 	if(m_offline)
 	{
 		if(useID)
+		{
 			CachedActionManager.get_default().markArticleRead(articleIDs, ArticleStatus.READ);
+		}
 		else
+		{
 			CachedActionManager.get_default().markAllRead();
+		}
 	}
 	else
 	{
 		if(m_cacheSync)
 		{
 			if(useID)
+			{
 				ActionCache.get_default().markArticleRead(articleIDs, ArticleStatus.READ);
+			}
 			else
+			{
 				ActionCache.get_default().markAllRead();
+			}
 		}
 		asyncPayload pl = () => {
 			if(useID)
+			{
 				FeedServer.get_default().setArticleIsRead(articleIDs, ArticleStatus.READ);
+			}
 			else
+			{
 				FeedServer.get_default().markAllItemsRead();
+			}
 		};
 		callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 	}
@@ -788,9 +856,13 @@ public void addFeed(string feedURL, string cat, bool isID)
 	if(cat != "")
 	{
 		if(isID)
+		{
 			catID = cat;
+		}
 		else
+		{
 			newCatName = cat;
+		}
 	}
 
 	string errmsg;
@@ -849,9 +921,13 @@ public void updateBadge()
 		Logger.debug("backend: update badge count %u".printf(count));
 		m_launcher.count = count;
 		if(count > 0)
+		{
 			m_launcher.count_visible = true;
+		}
 		else
+		{
 			m_launcher.count_visible = false;
+		}
 	}
 #endif
 }

@@ -27,7 +27,9 @@ private static ColumnView? m_columnView = null;
 public static ColumnView get_default()
 {
 	if(m_columnView == null)
+	{
 		m_columnView = new ColumnView();
+	}
 
 	return m_columnView;
 }
@@ -110,7 +112,9 @@ private ColumnView()
 	m_articleList = new ArticleList();
 	m_articleList.drag_begin.connect((context) => {
 			if(DataBase.readOnly().read_tags().is_empty)
-				m_feedList.newFeedlist(m_articleList.getState(), false, true);
+			{
+			        m_feedList.newFeedlist(m_articleList.getState(), false, true);
+			}
 			m_feedList.expand_collapse_category(CategoryID.TAGS.to_string(), true);
 			m_feedList.expand_collapse_category(CategoryID.MASTER.to_string(), false);
 			m_feedList.addEmptyTagRow();
@@ -122,9 +126,13 @@ private ColumnView()
 	m_articleList.drag_failed.connect((context, result) => {
 			Logger.debug("ContentPage: articleList drag_failed signal");
 			if(DataBase.readOnly().read_tags().is_empty)
-				m_feedList.newFeedlist(m_articleList.getState(), false, false);
+			{
+			        m_feedList.newFeedlist(m_articleList.getState(), false, false);
+			}
 			else
-				m_feedList.removeEmptyTagRow();
+			{
+			        m_feedList.removeEmptyTagRow();
+			}
 			return false;
 		});
 	setArticleListState((ArticleListState)Settings.state().get_enum("show-articles"));
@@ -207,7 +215,9 @@ public void showPane()
 public int ArticleListNEXT()
 {
 	if(m_article_view.fullscreenArticle())
+	{
 		m_article_view.setTransition(Gtk.StackTransitionType.SLIDE_LEFT, 500);
+	}
 
 	return m_articleList.move(false);
 }
@@ -215,7 +225,9 @@ public int ArticleListNEXT()
 public int ArticleListPREV()
 {
 	if(m_article_view.fullscreenArticle())
+	{
 		m_article_view.setTransition(Gtk.StackTransitionType.SLIDE_RIGHT, 500);
+	}
 
 	return m_articleList.move(true);
 }
@@ -276,7 +288,9 @@ private void setArticleListState(ArticleListState state)
 
 	if(oldState == ArticleListState.MARKED
 	   || state == ArticleListState.MARKED)
+	{
 		m_feedList.refreshCounters(state);
+	}
 }
 
 private void setSearchTerm(string searchTerm)
@@ -484,7 +498,9 @@ public void saveState(ref InterfaceState state)
 	state.setArticleViewScrollPos(m_article_view.getScrollPos());
 	var selectedArticle = m_articleList.getSelectedArticle();
 	if(selectedArticle != null)
+	{
 		state.setArticleListSelectedRow(selectedArticle.getArticleID());
+	}
 	state.setArticleListTopRow(m_articleList.getFirstArticle());
 
 	m_headerbar.saveState(ref state);

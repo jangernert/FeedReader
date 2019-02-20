@@ -53,17 +53,25 @@ public LoginResponse login()
 		return LoginResponse.ALL_EMPTY;
 	}
 	if(m_ttrss_url == "")
+	{
 		return LoginResponse.MISSING_URL;
+	}
 	if(GLib.Uri.parse_scheme(m_ttrss_url) == null)
+	{
 		return LoginResponse.INVALID_URL;
+	}
 	if(passwd == "")
+	{
 		return LoginResponse.MISSING_PASSWD;
+	}
 
 
 	var message = new ttrssMessage(m_session, m_ttrss_url);
 	message.add_string("op", "login");
 	if(username != "")
+	{
 		message.add_string("user", username);
+	}
 	message.add_string("password", passwd);
 	int status = message.send();
 
@@ -78,7 +86,9 @@ public LoginResponse login()
 		m_iconDir = m_ttrss_url.replace("api/", getIconDir());
 
 		if(haveAPIplugin())
+		{
 			return LoginResponse.SUCCESS;
+		}
 
 		return LoginResponse.PLUGIN_NEEDED;
 	}
@@ -466,9 +476,12 @@ public void getHeadlines(Gee.List<Article> articles, int skip, int limit, Articl
 
 				uint tag_count = 0;
 				if(labels != null)
+				{
 					tag_count = labels.get_length();
+				}
 
-				if(tag_count > 0) {
+				if(tag_count > 0)
+				{
 					tags = new Gee.ArrayList<string>();
 					for(int j = 0; j < tag_count; ++j)
 					{
@@ -484,13 +497,15 @@ public void getHeadlines(Gee.List<Article> articles, int skip, int limit, Articl
 
 				uint mediaCount = 0;
 				if(attachments != null)
+				{
 					mediaCount = attachments.get_length();
+				}
 
 				for(int j = 0; j < mediaCount; ++j)
 				{
 					var attachment = attachments.get_object_element(j);
 					enclosures.add(new Enclosure(
-					               UntypedJson.Object.get_string_member(headline_node, "id"),
+							       UntypedJson.Object.get_string_member(headline_node, "id"),
 							       attachment.get_string_member("content_url"),
 							       EnclosureType.from_string(attachment.get_string_member("content_type"))));
 				}
@@ -526,11 +541,17 @@ public Gee.List<string>? NewsPlus(ArticleStatus type, int limit)
 	message.add_int("feed_id", ttrssUtils.TTRSSSpecialID.ALL);
 	message.add_int("limit", limit);
 	if(type == ArticleStatus.UNREAD)
+	{
 		message.add_string("view_mode", "unread");
+	}
 	else if(type == ArticleStatus.MARKED)
+	{
 		message.add_string("view_mode", "marked");
+	}
 	else
+	{
 		return null;
+	}
 	int status = message.send();
 
 	if(status == ConnectionError.SUCCESS)
@@ -555,7 +576,9 @@ public Gee.List<Article> getArticles(Gee.List<int> articleIDs)
 {
 	var articles = new Gee.ArrayList<Article>();
 	if(articleIDs.is_empty)
+	{
 		return articles;
+	}
 
 	var message = new ttrssMessage(m_session, m_ttrss_url);
 	message.add_string("sid", m_ttrss_sessionid);
@@ -580,10 +603,14 @@ public Gee.List<Article> getArticles(Gee.List<int> articleIDs)
 
 				uint tag_count = 0;
 				if(labels != null)
+				{
 					tag_count = labels.get_length();
+				}
 
 				if(tag_count > 0)
+				{
 					tags = new Gee.ArrayList<string>();
+				}
 
 				for(int j = 0; j < tag_count; ++j)
 				{
@@ -598,7 +625,9 @@ public Gee.List<Article> getArticles(Gee.List<int> articleIDs)
 
 				uint mediaCount = 0;
 				if(attachments != null)
+				{
 					mediaCount = attachments.get_length();
+				}
 
 				for(int j = 0; j < mediaCount; ++j)
 				{
@@ -645,7 +674,9 @@ public bool catchupFeed(int feedID, bool isCatID)
 	{
 		var response = message.get_response_object();
 		if(response.get_string_member("status") == "OK")
+		{
 			return true;
+		}
 	}
 
 	return false;
@@ -658,9 +689,13 @@ public bool updateArticleUnread(Gee.List<int> articleIDs, ArticleStatus unread)
 	message.add_string("op", "updateArticle");
 	message.add_comma_separated_int_array("article_ids", articleIDs);
 	if(unread == ArticleStatus.UNREAD)
+	{
 		message.add_int("mode", 1);
+	}
 	else if(unread == ArticleStatus.READ)
+	{
 		message.add_int("mode", 0);
+	}
 	message.add_int("field", 2);
 	int status = message.send();
 
@@ -668,7 +703,9 @@ public bool updateArticleUnread(Gee.List<int> articleIDs, ArticleStatus unread)
 	{
 		var response = message.get_response_object();
 		if(response.get_string_member("status") == "OK")
+		{
 			return true;
+		}
 	}
 
 	return false;
@@ -682,9 +719,13 @@ public bool updateArticleMarked(int articleID, ArticleStatus marked)
 	message.add_string("op", "updateArticle");
 	message.add_int("article_ids", articleID);
 	if(marked == ArticleStatus.MARKED)
+	{
 		message.add_int("mode", 1);
+	}
 	else if(marked == ArticleStatus.UNMARKED)
+	{
 		message.add_int("mode", 0);
+	}
 	message.add_int("field", 0);
 	int status = message.send();
 
@@ -692,7 +733,9 @@ public bool updateArticleMarked(int articleID, ArticleStatus marked)
 	{
 		var response = message.get_response_object();
 		if(response.get_string_member("status") == "OK")
+		{
 			return true;
+		}
 	}
 
 	return false;
@@ -712,7 +755,9 @@ public bool setArticleLabel(int articleID, int tagID, bool add)
 	{
 		var response = message.get_response_object();
 		if(response.get_string_member("status") == "OK")
+		{
 			return true;
+		}
 	}
 
 	return false;
@@ -767,7 +812,9 @@ public bool subscribeToFeed(string feedURL, string? catID, string? username, str
 	message.add_string("feed_url", feedURL);
 
 	if(catID != null)
+	{
 		message.add_int("category_id", int.parse(catID));
+	}
 	if(username != null && password != null)
 	{
 		message.add_string("login", username);
@@ -806,9 +853,13 @@ public bool subscribeToFeed(string feedURL, string? catID, string? username, str
 					return false;
 				default:
 					if(status.has_member("message"))
+					{
 						errmsg = status.get_string_member("message");
+					}
 					else
+					{
 						errmsg = "ttrss error";
+					}
 					return false;
 				}
 			}
@@ -837,7 +888,9 @@ public string? createCategory(string title, int? parentID = null)
 	message.add_string("op", "addCategory");
 	message.add_string("caption", title);
 	if(parentID != null)
+	{
 		message.add_int("parent_id", parentID);
+	}
 	int status = message.send();
 
 	if(status == ConnectionError.SUCCESS)
@@ -866,7 +919,9 @@ public bool moveCategory(int catID, int parentID)
 	message.add_string("op", "moveCategory");
 	message.add_int("category_id", catID);
 	if(parentID != int.parse(CategoryID.MASTER.to_string()))
+	{
 		message.add_int("parent_id", parentID);
+	}
 	int status = message.send();
 
 	return status == ConnectionError.SUCCESS;

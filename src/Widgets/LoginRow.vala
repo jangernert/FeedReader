@@ -73,7 +73,9 @@ public BackendInfo getInfo()
 private bool rowEnter(Gdk.EventCrossing event)
 {
 	if(event.detail == Gdk.NotifyType.INFERIOR)
+	{
 		return true;
+	}
 
 	m_hovered = true;
 	m_infoStack.set_visible_child_name("button");
@@ -86,7 +88,9 @@ private bool rowLeave(Gdk.EventCrossing event)
 	   || event.detail == Gdk.NotifyType.VIRTUAL)
 	{
 		if(event.detail == Gdk.NotifyType.VIRTUAL)
+		{
 			m_hovered = false;
+		}
 		return true;
 	}
 
@@ -103,7 +107,9 @@ private void infoClicked()
 	pop.closed.connect_after(() => {
 			GLib.Timeout.add(50, () => {
 				if(!m_hovered)
-					m_infoStack.set_visible_child_name("empty");
+				{
+				        m_infoStack.set_visible_child_name("empty");
+				}
 				return false;
 			});
 		});

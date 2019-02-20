@@ -40,7 +40,9 @@ public TagPopover(Gtk.Widget widget)
 			// in the DB. This works around that but we should fix the
 			// underlying problem at some point
 			if (tag != null)
+			{
 				m_tags.add(tag);
+			}
 		}
 	}
 
@@ -86,9 +88,13 @@ public TagPopover(Gtk.Widget widget)
 	this.show_all();
 
 	if(m_tags.size == 0)
+	{
 		m_stack.set_visible_child_name("empty");
+	}
 	else
+	{
 		m_stack.set_visible_child_name("tags");
+	}
 }
 
 
@@ -121,7 +127,9 @@ private void prepareCompletion()
 		foreach(Tag tag2 in m_tags)
 		{
 			if(tag2.getTitle() == tag.getTitle())
+			{
 				alreadyHasTag = true;
+			}
 		}
 
 		if(!alreadyHasTag)
@@ -148,7 +156,9 @@ private void setupEntry()
 	m_entry.activate.connect(() => {
 			unowned string str = m_entry.get_text();
 			if(str == "")
-				return;
+			{
+			        return;
+			}
 			bool available = false;
 			Tag? selectedTag = null;
 

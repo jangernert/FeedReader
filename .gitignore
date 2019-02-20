@@ -1,6 +1,7 @@
 build/
 builddir/
 _build/
+.mypy_cache
 .vscode/
 *.~
 .DS_Store

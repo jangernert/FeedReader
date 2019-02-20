@@ -126,10 +126,10 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		
 		Logger.debug("ArticleList: disallow signals from scroll");
 		m_currentScroll.allowSignals(false);
-		Gee.List<Article> articles = new Gee.LinkedList<Article>();
+		Gee.List<Article> articles = new Gee.ArrayList<Article>();
 		uint offset = 0;
 		int height = this.get_allocated_height();
-		uint limit = height/100 + 5;
+		uint limit = height / 100 + 5;
 		offset = getListOffset();
 		
 		Logger.debug("load articles from db");
@@ -623,7 +623,10 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(selectedRow != "")
 		{
 			m_currentList.selectRow(selectedRow, 300);
-			Settings.state().set_string("articlelist-selected-row", "");
+		}
+		if(!m_currentList.has_id(selectedRow))
+		{
+			 Settings.state().set_string("articlelist-selected-row", "");
 		}
 	}
 	
@@ -749,7 +752,10 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	
 	private void rowActivated(Gtk.ListBoxRow row)
 	{
-		row_activated((ArticleRow)row);
+		var article_row = row as ArticleRow;
+		assert(article_row != null);
+		Settings.state().set_string("articlelist-selected-row", article_row.getID());
+		row_activated(article_row);
 	}
 	
 	public void clear()

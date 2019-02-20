@@ -593,10 +593,15 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		}
 		return scroll;
 	}
-	
+
+	public bool has_id(string article_id)
+	{
+		return m_articles.has_key(article_id);
+	}
+
 	public void selectRow(string articleID, int time = 10)
 	{
-		if(m_articles.has_key(articleID))
+		if(has_id(articleID))
 		{
 			selectAfter(m_articles.get(articleID), time);
 		}

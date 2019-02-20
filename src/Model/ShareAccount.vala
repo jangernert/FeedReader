@@ -14,51 +14,51 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.ShareAccount : GLib.Object {
-
-private string m_id;
-private string m_type;
-private string m_accountName;
-private string m_username;
-private string m_iconName;
-private bool m_systemAccount;
-
-public ShareAccount(string id, string type, string username, string iconName, string accountName, bool system = false)
-{
-	m_id = id;
-	m_type = type;
-	m_username = username;
-	m_iconName = iconName;
-	m_accountName = accountName;
-	m_systemAccount = system;
-}
-
-public string getID()
-{
-	return m_id;
-}
-
-public string getType()
-{
-	return m_type;
-}
-
-public string getUsername()
-{
-	return m_username;
-}
-
-public string getIconName()
-{
-	return m_iconName;
-}
-
-public string getAccountName()
-{
-	return m_accountName;
-}
-
-public bool isSystemAccount()
-{
-	return m_systemAccount;
-}
+	
+	private string m_id;
+	private string m_type;
+	private string m_accountName;
+	private string m_username;
+	private string m_iconName;
+	private bool m_systemAccount;
+	
+	public ShareAccount(string id, string type, string username, string iconName, string accountName, bool system = false)
+	{
+		m_id = id;
+		m_type = type;
+		m_username = username;
+		m_iconName = iconName;
+		m_accountName = accountName;
+		m_systemAccount = system;
+	}
+	
+	public string getID()
+	{
+		return m_id;
+	}
+	
+	public string getType()
+	{
+		return m_type;
+	}
+	
+	public string getUsername()
+	{
+		return m_username;
+	}
+	
+	public string getIconName()
+	{
+		return m_iconName;
+	}
+	
+	public string getAccountName()
+	{
+		return m_accountName;
+	}
+	
+	public bool isSystemAccount()
+	{
+		return m_systemAccount;
+	}
 }

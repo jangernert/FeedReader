@@ -14,41 +14,41 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.Logger : GLib.Object {
-const string LOG_DOMAIN = "feedreader";
-
-private static bool m_log_debug_information = false;
-
-private static void log(LogLevelFlags level, string message)
-{
-	GLib.log_structured(LOG_DOMAIN, level, "MESSAGE", "%s", message);
-}
-
-public static void error(string message)
-{
-	log(GLib.LogLevelFlags.LEVEL_CRITICAL, message);
-}
-
-public static void warning(string message)
-{
-	log(GLib.LogLevelFlags.LEVEL_WARNING, message);
-}
-
-public static void info(string message)
-{
-	log(GLib.LogLevelFlags.LEVEL_INFO, message);
-}
-
-public static void debug(string message)
-{
-	if(m_log_debug_information)
+	const string LOG_DOMAIN = "feedreader";
+	
+	private static bool m_log_debug_information = false;
+	
+	private static void log(LogLevelFlags level, string message)
 	{
-		log(GLib.LogLevelFlags.LEVEL_DEBUG, message);
+		GLib.log_structured(LOG_DOMAIN, level, "MESSAGE", "%s", message);
 	}
-}
-
-public static void init(bool verbose)
-{
-	m_log_debug_information = verbose;
-	GLib.Log.set_writer_func((LogWriterFunc)GLib.Log.writer_standard_streams);
-}
+	
+	public static void error(string message)
+	{
+		log(GLib.LogLevelFlags.LEVEL_CRITICAL, message);
+	}
+	
+	public static void warning(string message)
+	{
+		log(GLib.LogLevelFlags.LEVEL_WARNING, message);
+	}
+	
+	public static void info(string message)
+	{
+		log(GLib.LogLevelFlags.LEVEL_INFO, message);
+	}
+	
+	public static void debug(string message)
+	{
+		if(m_log_debug_information)
+		{
+			log(GLib.LogLevelFlags.LEVEL_DEBUG, message);
+		}
+	}
+	
+	public static void init(bool verbose)
+	{
+		m_log_debug_information = verbose;
+		GLib.Log.set_writer_func((LogWriterFunc)GLib.Log.writer_standard_streams);
+	}
 }

@@ -15,104 +15,104 @@
 
 
 public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
-
-private string m_body;
-private string m_to;
-
-public bool addBookmark(string id, string url, bool system)
-{
-	string subject = GLib.Uri.escape_string("Amazing article");
-	string body = GLib.Uri.escape_string(m_body.replace("$URL", url));
-	string mailto = @"mailto:$m_to?subject=$subject&body=$body";
-	Logger.debug(mailto);
-
-	try
+	
+	private string m_body;
+	private string m_to;
+	
+	public bool addBookmark(string id, string url, bool system)
 	{
-		Gtk.show_uri_on_window(MainWindow.get_default(), mailto, Gdk.CURRENT_TIME);
+		string subject = GLib.Uri.escape_string("Amazing article");
+		string body = GLib.Uri.escape_string(m_body.replace("$URL", url));
+		string mailto = @"mailto:$m_to?subject=$subject&body=$body";
+		Logger.debug(mailto);
+		
+		try
+		{
+			Gtk.show_uri_on_window(MainWindow.get_default(), mailto, Gdk.CURRENT_TIME);
+			return true;
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("share via mail failed: %s".printf(e.message));
+		}
+		
+		return false;
+	}
+	
+	public void setupSystemAccounts(Gee.List<ShareAccount> accounts)
+	{
+		
+	}
+	
+	public bool logout(string id)
+	{
+		return false;
+	}
+	
+	public string getIconName()
+	{
+		if(Gtk.IconTheme.get_default().lookup_icon("mail-send", 0, Gtk.IconLookupFlags.FORCE_SVG) != null)
+		{
+			return "mail-send";
+		}
+		
+		return "feed-share-mail";
+	}
+	
+	public string getUsername(string id)
+	{
+		return "Email";
+	}
+	
+	public bool needSetup()
+	{
+		return false;
+	}
+	
+	public bool singleInstance()
+	{
 		return true;
 	}
-	catch(GLib.Error e)
+	
+	public bool useSystemAccounts()
 	{
-		Logger.error("share via mail failed: %s".printf(e.message));
+		return false;
 	}
-
-	return false;
-}
-
-public void setupSystemAccounts(Gee.List<ShareAccount> accounts)
-{
-
-}
-
-public bool logout(string id)
-{
-	return false;
-}
-
-public string getIconName()
-{
-	if(Gtk.IconTheme.get_default().lookup_icon("mail-send", 0, Gtk.IconLookupFlags.FORCE_SVG) != null)
+	
+	public string pluginID()
 	{
-		return "mail-send";
+		return "mail";
 	}
-
-	return "feed-share-mail";
-}
-
-public string getUsername(string id)
-{
-	return "Email";
-}
-
-public bool needSetup()
-{
-	return false;
-}
-
-public bool singleInstance()
-{
-	return true;
-}
-
-public bool useSystemAccounts()
-{
-	return false;
-}
-
-public string pluginID()
-{
-	return "mail";
-}
-
-public string pluginName()
-{
-	return "Email";
-}
-
-public ServiceSetup? newSetup_withID(string id, string username)
-{
-	return null;
-}
-
-public ServiceSetup? newSetup()
-{
-	return null;
-}
-
-public ServiceSetup? newSystemAccount(string id, string username)
-{
-	return null;
-}
-
-public ShareForm? shareWidget(string url)
-{
-	var widget = new EmailForm(url);
-	widget.share.connect(() => {
+	
+	public string pluginName()
+	{
+		return "Email";
+	}
+	
+	public ServiceSetup? newSetup_withID(string id, string username)
+	{
+		return null;
+	}
+	
+	public ServiceSetup? newSetup()
+	{
+		return null;
+	}
+	
+	public ServiceSetup? newSystemAccount(string id, string username)
+	{
+		return null;
+	}
+	
+	public ShareForm? shareWidget(string url)
+	{
+		var widget = new EmailForm(url);
+		widget.share.connect(() => {
 			m_to = widget.getTo();
 			m_body = widget.getBody();
 		});
-	return widget;
-}
+		return widget;
+	}
 }
 
 [ModuleInit]

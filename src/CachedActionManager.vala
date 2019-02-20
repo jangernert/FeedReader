@@ -14,156 +14,156 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.CachedActionManager : GLib.Object {
-
-private CachedActions m_lastAction = CachedActions.NONE;
-private string m_ids = "";
-
-private static CachedActionManager? m_manager = null;
-
-public static CachedActionManager get_default()
-{
-	if(m_manager == null)
+	
+	private CachedActions m_lastAction = CachedActions.NONE;
+	private string m_ids = "";
+	
+	private static CachedActionManager? m_manager = null;
+	
+	public static CachedActionManager get_default()
 	{
-		m_manager = new CachedActionManager();
-	}
-
-	return m_manager;
-}
-
-private CachedActionManager()
-{
-
-}
-
-
-public void markArticleRead(string id, ArticleStatus read)
-{
-	var cachedAction = CachedActions.MARK_READ;
-	if(read == ArticleStatus.UNREAD)
-	{
-		cachedAction = CachedActions.MARK_UNREAD;
-	}
-
-	var action = new CachedAction(cachedAction, id, "");
-	addAction(action);
-}
-
-public void markArticleStarred(string id, ArticleStatus marked)
-{
-	var cachedAction = CachedActions.MARK_STARRED;
-	if(marked == ArticleStatus.UNMARKED)
-	{
-		cachedAction = CachedActions.MARK_UNSTARRED;
-	}
-
-	var action = new CachedAction(cachedAction, id, "");
-	addAction(action);
-}
-
-public void markFeedRead(string id)
-{
-	var action = new CachedAction(CachedActions.MARK_READ_FEED, id, "");
-	addAction(action);
-}
-
-public void markCategoryRead(string id)
-{
-	var action = new CachedAction(CachedActions.MARK_READ_CATEGORY, id, "");
-	addAction(action);
-}
-
-public void markAllRead()
-{
-	var action = new CachedAction(CachedActions.MARK_READ_ALL, "", "");
-	addAction(action);
-}
-
-private void addAction(CachedAction action)
-{
-	var db = DataBase.writeAccess();
-	if(db.cachedActionNecessary(action))
-	{
-		db.addCachedAction(action.getType(), action.getID());
-	}
-	else
-	{
-		db.deleteOppositeCachedAction(action);
-	}
-}
-
-public void executeActions()
-{
-	var db = DataBase.writeAccess();
-	if(db.isTableEmpty("CachedActions"))
-	{
-		Logger.debug("CachedActionManager - executeActions: no actions to perform");
-		return;
-	}
-
-
-	Logger.debug("CachedActionManager: executeActions");
-
-	var actions = db.readCachedActions();
-
-	foreach(CachedAction action in actions)
-	{
-		Logger.debug("CachedActionManager: executeActions %s %s".printf(action.getID(), action.getType().to_string()));
-		switch(action.getType())
+		if(m_manager == null)
 		{
-		case CachedActions.MARK_READ:
-		case CachedActions.MARK_UNREAD:
-			if(action.getType() != m_lastAction && m_ids != "")
+			m_manager = new CachedActionManager();
+		}
+		
+		return m_manager;
+	}
+	
+	private CachedActionManager()
+	{
+		
+	}
+	
+	
+	public void markArticleRead(string id, ArticleStatus read)
+	{
+		var cachedAction = CachedActions.MARK_READ;
+		if(read == ArticleStatus.UNREAD)
+		{
+			cachedAction = CachedActions.MARK_UNREAD;
+		}
+		
+		var action = new CachedAction(cachedAction, id, "");
+		addAction(action);
+	}
+	
+	public void markArticleStarred(string id, ArticleStatus marked)
+	{
+		var cachedAction = CachedActions.MARK_STARRED;
+		if(marked == ArticleStatus.UNMARKED)
+		{
+			cachedAction = CachedActions.MARK_UNSTARRED;
+		}
+		
+		var action = new CachedAction(cachedAction, id, "");
+		addAction(action);
+	}
+	
+	public void markFeedRead(string id)
+	{
+		var action = new CachedAction(CachedActions.MARK_READ_FEED, id, "");
+		addAction(action);
+	}
+	
+	public void markCategoryRead(string id)
+	{
+		var action = new CachedAction(CachedActions.MARK_READ_CATEGORY, id, "");
+		addAction(action);
+	}
+	
+	public void markAllRead()
+	{
+		var action = new CachedAction(CachedActions.MARK_READ_ALL, "", "");
+		addAction(action);
+	}
+	
+	private void addAction(CachedAction action)
+	{
+		var db = DataBase.writeAccess();
+		if(db.cachedActionNecessary(action))
+		{
+			db.addCachedAction(action.getType(), action.getID());
+		}
+		else
+		{
+			db.deleteOppositeCachedAction(action);
+		}
+	}
+	
+	public void executeActions()
+	{
+		var db = DataBase.writeAccess();
+		if(db.isTableEmpty("CachedActions"))
+		{
+			Logger.debug("CachedActionManager - executeActions: no actions to perform");
+			return;
+		}
+		
+		
+		Logger.debug("CachedActionManager: executeActions");
+		
+		var actions = db.readCachedActions();
+		
+		foreach(CachedAction action in actions)
+		{
+			Logger.debug("CachedActionManager: executeActions %s %s".printf(action.getID(), action.getType().to_string()));
+			switch(action.getType())
 			{
-				m_ids += action.getID();
-				execute(m_ids.substring(1), m_lastAction);
-				m_lastAction = CachedActions.NONE;
-				m_ids = "";
+				case CachedActions.MARK_READ:
+				case CachedActions.MARK_UNREAD:
+				if(action.getType() != m_lastAction && m_ids != "")
+				{
+					m_ids += action.getID();
+					execute(m_ids.substring(1), m_lastAction);
+					m_lastAction = CachedActions.NONE;
+					m_ids = "";
+				}
+				else
+				{
+					m_ids += "," + action.getID();
+				}
+				break;
+				case CachedActions.MARK_STARRED:
+				FeedServer.get_default().setArticleIsMarked(action.getID(), ArticleStatus.MARKED);
+				break;
+				case CachedActions.MARK_UNSTARRED:
+				FeedServer.get_default().setArticleIsMarked(action.getID(), ArticleStatus.UNMARKED);
+				break;
+				case CachedActions.MARK_READ_FEED:
+				FeedServer.get_default().setFeedRead(action.getID());
+				break;
+				case CachedActions.MARK_READ_CATEGORY:
+				FeedServer.get_default().setCategoryRead(action.getID());
+				break;
+				case CachedActions.MARK_READ_ALL:
+				FeedServer.get_default().markAllItemsRead();
+				break;
 			}
-			else
-			{
-				m_ids += "," + action.getID();
-			}
+			
+			m_lastAction = action.getType();
+		}
+		
+		if(m_ids != "")
+		{
+			execute(m_ids.substring(1), m_lastAction);
+		}
+		
+		db.resetCachedActions();
+	}
+	
+	private void execute(string ids, CachedActions action)
+	{
+		Logger.debug("CachedActionManager: execute %s %s".printf(ids, action.to_string()));
+		switch(action)
+		{
+			case CachedActions.MARK_READ:
+			FeedServer.get_default().setArticleIsRead(ids, ArticleStatus.READ);
 			break;
-		case CachedActions.MARK_STARRED:
-			FeedServer.get_default().setArticleIsMarked(action.getID(), ArticleStatus.MARKED);
-			break;
-		case CachedActions.MARK_UNSTARRED:
-			FeedServer.get_default().setArticleIsMarked(action.getID(), ArticleStatus.UNMARKED);
-			break;
-		case CachedActions.MARK_READ_FEED:
-			FeedServer.get_default().setFeedRead(action.getID());
-			break;
-		case CachedActions.MARK_READ_CATEGORY:
-			FeedServer.get_default().setCategoryRead(action.getID());
-			break;
-		case CachedActions.MARK_READ_ALL:
-			FeedServer.get_default().markAllItemsRead();
+			case CachedActions.MARK_UNREAD:
+			FeedServer.get_default().setArticleIsRead(ids, ArticleStatus.UNREAD);
 			break;
 		}
-
-		m_lastAction = action.getType();
 	}
-
-	if(m_ids != "")
-	{
-		execute(m_ids.substring(1), m_lastAction);
-	}
-
-	db.resetCachedActions();
-}
-
-private void execute(string ids, CachedActions action)
-{
-	Logger.debug("CachedActionManager: execute %s %s".printf(ids, action.to_string()));
-	switch(action)
-	{
-	case CachedActions.MARK_READ:
-		FeedServer.get_default().setArticleIsRead(ids, ArticleStatus.READ);
-		break;
-	case CachedActions.MARK_UNREAD:
-		FeedServer.get_default().setArticleIsRead(ids, ArticleStatus.UNREAD);
-		break;
-	}
-}
-
+	
 }

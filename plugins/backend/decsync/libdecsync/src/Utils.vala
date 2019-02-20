@@ -1,20 +1,20 @@
 /**
- * libdecsync-vala - Utils.vala
- *
- * Copyright (C) 2018 Aldo Gunsing
- *
- * This library is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation.
- *
- * This library is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this library; if not, see <http://www.gnu.org/licenses/>.
- */
+* libdecsync-vala - Utils.vala
+*
+* Copyright (C) 2018 Aldo Gunsing
+*
+* This library is free software; you can redistribute it and/or modify it
+* under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation.
+*
+* This library is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+* for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with this library; if not, see <http://www.gnu.org/licenses/>.
+*/
 
 public Gee.List<string> toList(string[] input)
 {
@@ -24,7 +24,7 @@ public Gee.List<string> toList(string[] input)
 public Gee.Predicate<Json.Node> stringEquals(string input)
 {
 	return json => {
-		       return json.get_string() == input;
+		return json.get_string() == input;
 	};
 }
 
@@ -66,6 +66,6 @@ public Gee.MultiMap<K, V> groupBy<T, K, V>(Gee.Collection<T> inputs, Gee.MapFunc
 		var value = f == null ? input : f(input);
 		resultsMap.@set(key, value);
 	}
-
+	
 	return resultsMap;
 }

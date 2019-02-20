@@ -14,139 +14,41 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace FeedReader.PocketSecrets {
-const string base_uri                   = "https://getpocket.com/v3/";
-const string oauth_consumer_key         = "43273-30a11c29b5eeabfa905df168";
-const string oauth_callback                     = "feedreader://pocket";
+	const string base_uri                   = "https://getpocket.com/v3/";
+	const string oauth_consumer_key         = "43273-30a11c29b5eeabfa905df168";
+	const string oauth_callback                     = "feedreader://pocket";
 }
 
 public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
-
-public PocketAPI()
-{
-
-}
-
-public void setupSystemAccounts(Gee.List<ShareAccount> accounts)
-{
-	try
+	
+	public PocketAPI()
 	{
-		Goa.Client? client = new Goa.Client.sync();
-		if(client != null)
-		{
-			var goaAccounts = client.get_accounts();
-			foreach(var object in goaAccounts)
-			{
-				if(object.account.provider_type == "pocket"
-				   && !object.account.read_later_disabled)
-				{
-					accounts.add(
-						new ShareAccount(
-							object.account.id,
-							pluginID(),
-							object.account.identity,
-							getIconName(),
-							pluginName(),
-							true
-							)
-						);
-				}
-			}
-		}
-		else
-		{
-			Logger.error("PocketAPI: goa not available");
-		}
+		
 	}
-	catch(GLib.Error e)
+	
+	public void setupSystemAccounts(Gee.List<ShareAccount> accounts)
 	{
-		Logger.error("PocketAPI.setupSystemAccounts: %s".printf(e.message));
-	}
-}
-
-public string getRequestToken()
-{
-	Logger.debug("PocketAPI: get request token");
-	var session = new Soup.Session();
-	session.user_agent = Constants.USER_AGENT;
-	string message = "consumer_key=" + PocketSecrets.oauth_consumer_key + "&redirect_uri=" + PocketSecrets.oauth_callback;
-
-	var message_soup = new Soup.Message("POST", "https://getpocket.com/v3/oauth/request");
-	message_soup.set_request("application/x-www-form-urlencoded; charset=UTF8", Soup.MemoryUse.COPY, message.data);
-
-	if(Settings.tweaks().get_boolean("do-not-track"))
-	{
-		message_soup.request_headers.append("DNT", "1");
-	}
-
-	session.send_message(message_soup);
-
-	string response = (string)message_soup.response_body.flatten().data;
-	return response.substring(response.index_of_char('=')+1);
-}
-
-public bool getAccessToken(string id, string requestToken)
-{
-	var session = new Soup.Session();
-	session.user_agent = Constants.USER_AGENT;
-	string message = "consumer_key=" + PocketSecrets.oauth_consumer_key + "&code=" + requestToken;
-
-	var message_soup = new Soup.Message("POST", "https://getpocket.com/v3/oauth/authorize");
-	message_soup.set_request("application/x-www-form-urlencoded; charset=UTF8", Soup.MemoryUse.COPY, message.data);
-
-	if(Settings.tweaks().get_boolean("do-not-track"))
-	{
-		message_soup.request_headers.append("DNT", "1");
-	}
-
-	session.send_message(message_soup);
-
-	if((string)message_soup.response_body.flatten().data == null
-	   || (string)message_soup.response_body.flatten().data == "")
-	{
-		return false;
-	}
-
-	string response = (string)message_soup.response_body.flatten().data;
-	Logger.debug(response);
-	int tokenStart = response.index_of_char('=')+1;
-	int tokenEnd = response.index_of_char('&', tokenStart);
-	int userStart = response.index_of_char('=', tokenEnd)+1;
-
-	string accessToken = response.substring(tokenStart, tokenEnd-tokenStart);
-	string user = GLib.Uri.unescape_string(response.substring(userStart));
-	var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
-	settings.set_string("oauth-access-token", accessToken);
-	settings.set_string("username", user);
-
-	var array = Settings.share("pocket").get_strv("account-ids");
-	array += id;
-	Settings.share("pocket").set_strv("account-ids", array);
-
-	return true;
-}
-
-
-public bool addBookmark(string id, string url, bool system)
-{
-	string oauthToken = "";
-
-	if(system)
-	{
-		Logger.debug(@"PocketAPI.addBookmark: $id is system account");
 		try
 		{
 			Goa.Client? client = new Goa.Client.sync();
 			if(client != null)
 			{
-				var accounts = client.get_accounts();
-				foreach(var object in accounts)
+				var goaAccounts = client.get_accounts();
+				foreach(var object in goaAccounts)
 				{
 					if(object.account.provider_type == "pocket"
-					   && object.account.id == id)
+					&& !object.account.read_later_disabled)
 					{
-						int expires = -1;
-						object.oauth2_based.call_get_access_token_sync(out oauthToken, out expires);
-						break;
+						accounts.add(
+							new ShareAccount(
+								object.account.id,
+								pluginID(),
+								object.account.identity,
+								getIconName(),
+								pluginName(),
+								true
+							)
+						);
 					}
 				}
 			}
@@ -157,145 +59,243 @@ public bool addBookmark(string id, string url, bool system)
 		}
 		catch(GLib.Error e)
 		{
-			Logger.error("PocketAPI GOA: %s".printf(e.message));
+			Logger.error("PocketAPI.setupSystemAccounts: %s".printf(e.message));
 		}
 	}
-	else
+	
+	public string getRequestToken()
+	{
+		Logger.debug("PocketAPI: get request token");
+		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
+		string message = "consumer_key=" + PocketSecrets.oauth_consumer_key + "&redirect_uri=" + PocketSecrets.oauth_callback;
+		
+		var message_soup = new Soup.Message("POST", "https://getpocket.com/v3/oauth/request");
+		message_soup.set_request("application/x-www-form-urlencoded; charset=UTF8", Soup.MemoryUse.COPY, message.data);
+		
+		if(Settings.tweaks().get_boolean("do-not-track"))
+		{
+			message_soup.request_headers.append("DNT", "1");
+		}
+		
+		session.send_message(message_soup);
+		
+		string response = (string)message_soup.response_body.flatten().data;
+		return response.substring(response.index_of_char('=')+1);
+	}
+	
+	public bool getAccessToken(string id, string requestToken)
+	{
+		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
+		string message = "consumer_key=" + PocketSecrets.oauth_consumer_key + "&code=" + requestToken;
+		
+		var message_soup = new Soup.Message("POST", "https://getpocket.com/v3/oauth/authorize");
+		message_soup.set_request("application/x-www-form-urlencoded; charset=UTF8", Soup.MemoryUse.COPY, message.data);
+		
+		if(Settings.tweaks().get_boolean("do-not-track"))
+		{
+			message_soup.request_headers.append("DNT", "1");
+		}
+		
+		session.send_message(message_soup);
+		
+		if((string)message_soup.response_body.flatten().data == null
+		|| (string)message_soup.response_body.flatten().data == "")
+		{
+			return false;
+		}
+		
+		string response = (string)message_soup.response_body.flatten().data;
+		Logger.debug(response);
+		int tokenStart = response.index_of_char('=')+1;
+		int tokenEnd = response.index_of_char('&', tokenStart);
+		int userStart = response.index_of_char('=', tokenEnd)+1;
+		
+		string accessToken = response.substring(tokenStart, tokenEnd-tokenStart);
+		string user = GLib.Uri.unescape_string(response.substring(userStart));
+		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
+		settings.set_string("oauth-access-token", accessToken);
+		settings.set_string("username", user);
+		
+		var array = Settings.share("pocket").get_strv("account-ids");
+		array += id;
+		Settings.share("pocket").set_strv("account-ids", array);
+		
+		return true;
+	}
+	
+	
+	public bool addBookmark(string id, string url, bool system)
+	{
+		string oauthToken = "";
+		
+		if(system)
+		{
+			Logger.debug(@"PocketAPI.addBookmark: $id is system account");
+			try
+			{
+				Goa.Client? client = new Goa.Client.sync();
+				if(client != null)
+				{
+					var accounts = client.get_accounts();
+					foreach(var object in accounts)
+					{
+						if(object.account.provider_type == "pocket"
+						&& object.account.id == id)
+						{
+							int expires = -1;
+							object.oauth2_based.call_get_access_token_sync(out oauthToken, out expires);
+							break;
+						}
+					}
+				}
+				else
+				{
+					Logger.error("PocketAPI: goa not available");
+				}
+			}
+			catch(GLib.Error e)
+			{
+				Logger.error("PocketAPI GOA: %s".printf(e.message));
+			}
+		}
+		else
+		{
+			var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
+			oauthToken = settings.get_string("oauth-access-token");
+		}
+		
+		
+		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
+		string message = "url=" + GLib.Uri.escape_string(url)
+		+ "&consumer_key=" + PocketSecrets.oauth_consumer_key
+		+ "&access_token=" + oauthToken;
+		
+		Logger.debug("PocketAPI: " + message);
+		
+		var message_soup = new Soup.Message("POST", "https://getpocket.com/v3/add");
+		message_soup.set_request("application/x-www-form-urlencoded; charset=UTF8", Soup.MemoryUse.COPY, message.data);
+		
+		if(Settings.tweaks().get_boolean("do-not-track"))
+		{
+			message_soup.request_headers.append("DNT", "1");
+		}
+		
+		session.send_message(message_soup);
+		
+		if((string)message_soup.response_body.flatten().data == null
+		|| (string)message_soup.response_body.flatten().data == "")
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public bool logout(string id)
+	{
+		Logger.debug(@"PocketAPI: logout($id)");
+		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
+		var keys = settings.list_keys();
+		foreach(string key in keys)
+		{
+			settings.reset(key);
+		}
+		
+		var array = Settings.share("pocket").get_strv("account-ids");
+		string[] array2 = {};
+		
+		foreach(string i in array)
+		{
+			if(i != id)
+			{
+				array2 += i;
+			}
+		}
+		Settings.share("pocket").set_strv("account-ids", array2);
+		deleteAccount(id);
+		
+		return true;
+	}
+	
+	public string getURL(string token)
+	{
+		return "https://getpocket.com/auth/authorize?request_token="
+		+ token + "&redirect_uri="
+		+ GLib.Uri.escape_string(PocketSecrets.oauth_callback);
+	}
+	
+	public string getIconName()
+	{
+		return "feed-share-pocket";
+	}
+	
+	public string getUsername(string id)
 	{
 		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
-		oauthToken = settings.get_string("oauth-access-token");
+		return settings.get_string("username");
 	}
-
-
-	var session = new Soup.Session();
-	session.user_agent = Constants.USER_AGENT;
-	string message = "url=" + GLib.Uri.escape_string(url)
-	                 + "&consumer_key=" + PocketSecrets.oauth_consumer_key
-	                 + "&access_token=" + oauthToken;
-
-	Logger.debug("PocketAPI: " + message);
-
-	var message_soup = new Soup.Message("POST", "https://getpocket.com/v3/add");
-	message_soup.set_request("application/x-www-form-urlencoded; charset=UTF8", Soup.MemoryUse.COPY, message.data);
-
-	if(Settings.tweaks().get_boolean("do-not-track"))
+	
+	public bool needSetup()
 	{
-		message_soup.request_headers.append("DNT", "1");
+		return true;
 	}
-
-	session.send_message(message_soup);
-
-	if((string)message_soup.response_body.flatten().data == null
-	   || (string)message_soup.response_body.flatten().data == "")
+	
+	public bool singleInstance()
 	{
 		return false;
 	}
-
-	return true;
-}
-
-public bool logout(string id)
-{
-	Logger.debug(@"PocketAPI: logout($id)");
-	var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
-	var keys = settings.list_keys();
-	foreach(string key in keys)
+	
+	public bool useSystemAccounts()
 	{
-		settings.reset(key);
-	}
-
-	var array = Settings.share("pocket").get_strv("account-ids");
-	string[] array2 = {};
-
-	foreach(string i in array)
-	{
-		if(i != id)
+		try
 		{
-			array2 += i;
+			Goa.Client? client = new Goa.Client.sync();
+			if(client != null)
+			{
+				return true;
+			}
+			
+			return false;
+		}
+		catch(GLib.Error e)
+		{
+			Logger.debug("PocketAPI.useSystemAccounts(): %s".printf(e.message));
+			return false;
 		}
 	}
-	Settings.share("pocket").set_strv("account-ids", array2);
-	deleteAccount(id);
-
-	return true;
-}
-
-public string getURL(string token)
-{
-	return "https://getpocket.com/auth/authorize?request_token="
-	       + token + "&redirect_uri="
-	       + GLib.Uri.escape_string(PocketSecrets.oauth_callback);
-}
-
-public string getIconName()
-{
-	return "feed-share-pocket";
-}
-
-public string getUsername(string id)
-{
-	var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
-	return settings.get_string("username");
-}
-
-public bool needSetup()
-{
-	return true;
-}
-
-public bool singleInstance()
-{
-	return false;
-}
-
-public bool useSystemAccounts()
-{
-	try
+	
+	public string pluginID()
 	{
-		Goa.Client? client = new Goa.Client.sync();
-		if(client != null)
-		{
-			return true;
-		}
-
-		return false;
+		return "pocket";
 	}
-	catch(GLib.Error e)
+	
+	public string pluginName()
 	{
-		Logger.debug("PocketAPI.useSystemAccounts(): %s".printf(e.message));
-		return false;
+		return "Pocket";
 	}
-}
-
-public string pluginID()
-{
-	return "pocket";
-}
-
-public string pluginName()
-{
-	return "Pocket";
-}
-
-public ServiceSetup? newSetup_withID(string id, string username)
-{
-	return new PocketSetup(id, this, username);
-}
-
-public ServiceSetup? newSetup()
-{
-	return new PocketSetup(null, this);
-}
-
-public ServiceSetup? newSystemAccount(string id, string username)
-{
-	return new PocketSetup(id, this, username, true);
-}
-
-public ShareForm? shareWidget(string url)
-{
-	return null;
-}
+	
+	public ServiceSetup? newSetup_withID(string id, string username)
+	{
+		return new PocketSetup(id, this, username);
+	}
+	
+	public ServiceSetup? newSetup()
+	{
+		return new PocketSetup(null, this);
+	}
+	
+	public ServiceSetup? newSystemAccount(string id, string username)
+	{
+		return new PocketSetup(id, this, username, true);
+	}
+	
+	public ShareForm? shareWidget(string url)
+	{
+		return null;
+	}
 }
 
 [ModuleInit]

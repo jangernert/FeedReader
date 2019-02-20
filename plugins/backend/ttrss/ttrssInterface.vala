@@ -14,531 +14,531 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.ttrssInterface : FeedServerInterface {
-
-private ttrssAPI m_api;
-private ttrssUtils m_utils;
-private Gtk.Entry m_urlEntry;
-private Gtk.Entry m_userEntry;
-private Gtk.Entry m_passwordEntry;
-private Gtk.Entry m_authPasswordEntry;
-private Gtk.Entry m_authUserEntry;
-private Gtk.Revealer m_revealer;
-
-public override void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
-{
-	m_utils = new ttrssUtils(settings_backend, secrets);
-	m_api = new ttrssAPI(m_utils);
-}
-
-public override string getWebsite()
-{
-	return "https://tt-rss.org/";
-}
-
-public override BackendFlags getFlags()
-{
-	return (BackendFlags.SELF_HOSTED | BackendFlags.FREE_SOFTWARE | BackendFlags.FREE);
-}
-
-public override string getID()
-{
-	return "ttrss";
-}
-
-public override string iconName()
-{
-	return "feed-service-ttrss";
-}
-
-public override string serviceName()
-{
-	return "Tiny Tiny RSS";
-}
-
-public override bool needWebLogin()
-{
-	return false;
-}
-
-public override Gtk.Box? getWidget()
-{
-	var url_label = new Gtk.Label(_("Tiny Tiny RSS URL:"));
-	var user_label = new Gtk.Label(_("Username:"));
-	var password_label = new Gtk.Label(_("Password:"));
-
-	url_label.set_alignment(1.0f, 0.5f);
-	user_label.set_alignment(1.0f, 0.5f);
-	password_label.set_alignment(1.0f, 0.5f);
-
-	url_label.set_hexpand(true);
-	user_label.set_hexpand(true);
-	password_label.set_hexpand(true);
-
-	m_urlEntry = new Gtk.Entry();
-	m_userEntry = new Gtk.Entry();
-	m_passwordEntry = new Gtk.Entry();
-
-	m_urlEntry.activate.connect(() => { tryLogin(); });
-	m_userEntry.activate.connect(() => { tryLogin(); });
-	m_passwordEntry.activate.connect(() => { tryLogin(); });
-
-	m_passwordEntry.set_input_purpose(Gtk.InputPurpose.PASSWORD);
-	m_passwordEntry.set_visibility(false);
-
-	var grid = new Gtk.Grid();
-	grid.set_column_spacing(10);
-	grid.set_row_spacing(10);
-	grid.set_valign(Gtk.Align.CENTER);
-	grid.set_halign(Gtk.Align.CENTER);
-
-	grid.attach(url_label, 0, 0, 1, 1);
-	grid.attach(m_urlEntry, 1, 0, 1, 1);
-	grid.attach(user_label, 0, 1, 1, 1);
-	grid.attach(m_userEntry, 1, 1, 1, 1);
-	grid.attach(password_label, 0, 2, 1, 1);
-	grid.attach(m_passwordEntry, 1, 2, 1, 1);
-
-
-	// http auth stuff ----------------------------------------------------
-	var auth_user_label = new Gtk.Label(_("Username:"));
-	var auth_password_label = new Gtk.Label(_("Password:"));
-
-	auth_user_label.set_alignment(1.0f, 0.5f);
-	auth_password_label.set_alignment(1.0f, 0.5f);
-
-	auth_user_label.set_hexpand(true);
-	auth_password_label.set_hexpand(true);
-
-	m_authUserEntry = new Gtk.Entry();
-	m_authPasswordEntry = new Gtk.Entry();
-	m_authPasswordEntry.set_input_purpose(Gtk.InputPurpose.PASSWORD);
-	m_authPasswordEntry.set_visibility(false);
-
-	m_authUserEntry.activate.connect(() => { tryLogin(); });
-	m_authPasswordEntry.activate.connect(() => { tryLogin(); });
-
-	var authGrid = new Gtk.Grid();
-	authGrid.margin = 10;
-	authGrid.set_column_spacing(10);
-	authGrid.set_row_spacing(10);
-	authGrid.set_valign(Gtk.Align.CENTER);
-	authGrid.set_halign(Gtk.Align.CENTER);
-
-	authGrid.attach(auth_user_label, 0, 0, 1, 1);
-	authGrid.attach(m_authUserEntry, 1, 0, 1, 1);
-	authGrid.attach(auth_password_label, 0, 1, 1, 1);
-	authGrid.attach(m_authPasswordEntry, 1, 1, 1, 1);
-
-	var frame = new Gtk.Frame(_("HTTP Authorization"));
-	frame.set_halign(Gtk.Align.CENTER);
-	frame.add(authGrid);
-	m_revealer = new Gtk.Revealer();
-	m_revealer.add(frame);
-	//---------------------------------------------------------------------
-
-	var logo = new Gtk.Image.from_icon_name("feed-service-ttrss", Gtk.IconSize.MENU);
-
-	var loginLabel = new Gtk.Label(_("Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"));
-	loginLabel.get_style_context().add_class("h2");
-	loginLabel.set_justify(Gtk.Justification.CENTER);
-	loginLabel.set_lines(3);
-
-	var loginButton = new Gtk.Button.with_label(_("Login"));
-	loginButton.halign = Gtk.Align.END;
-	loginButton.set_size_request(80, 30);
-	loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
-	loginButton.clicked.connect(() => { tryLogin(); });
-
-	var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
-	box.valign = Gtk.Align.CENTER;
-	box.halign = Gtk.Align.CENTER;
-	box.pack_start(loginLabel, false, false, 10);
-	box.pack_start(logo, false, false, 10);
-	box.pack_start(grid, true, true, 10);
-	box.pack_start(m_revealer, true, true, 10);
-	box.pack_end(loginButton, false, false, 20);
-
-	m_urlEntry.set_text(m_utils.getUnmodifiedURL());
-	m_userEntry.set_text(m_utils.getUser());
-	m_passwordEntry.set_text(m_utils.getPasswd());
-
-	return box;
-}
-
-public override void showHtAccess()
-{
-	m_revealer.set_reveal_child(true);
-}
-
-public override void writeData()
-{
-	string url = m_urlEntry.get_text();
-	if (GLib.Uri.parse_scheme(url) == null)
+	
+	private ttrssAPI m_api;
+	private ttrssUtils m_utils;
+	private Gtk.Entry m_urlEntry;
+	private Gtk.Entry m_userEntry;
+	private Gtk.Entry m_passwordEntry;
+	private Gtk.Entry m_authPasswordEntry;
+	private Gtk.Entry m_authUserEntry;
+	private Gtk.Revealer m_revealer;
+	
+	public override void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 	{
-		url = "https://" + url;
-		m_urlEntry.set_text(url);
+		m_utils = new ttrssUtils(settings_backend, secrets);
+		m_api = new ttrssAPI(m_utils);
 	}
-	m_utils.setURL(url);
-	m_utils.setUser(m_userEntry.get_text().strip());
-	m_utils.setPassword(m_passwordEntry.get_text().strip());
-}
-
-public override bool supportTags()
-{
-	return true;
-}
-
-public override bool doInitSync()
-{
-	return true;
-}
-
-public override string symbolicIcon()
-{
-	return "feed-service-ttrss-symbolic";
-}
-
-public override string accountName()
-{
-	return m_utils.getUser();
-}
-
-public override string getServerURL()
-{
-	return m_utils.getURL();
-}
-
-public override string uncategorizedID()
-{
-	return "0";
-}
-
-public override bool hideCategoryWhenEmpty(string catID)
-{
-	return catID == "0";
-}
-
-public override bool supportCategories()
-{
-	return true;
-}
-
-public override bool supportFeedManipulation()
-{
-	return true;
-}
-
-public override bool supportMultiLevelCategories()
-{
-	return true;
-}
-
-public override bool supportMultiCategoriesPerFeed()
-{
-	return false;
-}
-
-public override bool syncFeedsAndCategories()
-{
-	return true;
-}
-
-public override bool tagIDaffectedByNameChange()
-{
-	return false;
-}
-
-public override void resetAccount()
-{
-	m_utils.resetAccount();
-}
-
-public override bool useMaxArticles()
-{
-	return true;
-}
-
-public override LoginResponse login()
-{
-	return m_api.login();
-}
-
-public override bool logout()
-{
-	return m_api.logout();
-}
-
-public override bool serverAvailable()
-{
-	return m_api.ping();
-}
-
-public override void setArticleIsRead(string articleIDs, ArticleStatus read)
-{
-	var ids = new Gee.ArrayList<int>();
-	foreach(var id in StringUtils.split(articleIDs, ","))
+	
+	public override string getWebsite()
 	{
-		ids.add(int.parse(id));
+		return "https://tt-rss.org/";
 	}
-	m_api.updateArticleUnread(ids, read);
-}
-
-public override void setArticleIsMarked(string articleID, ArticleStatus marked)
-{
-	m_api.updateArticleMarked(int.parse(articleID), marked);
-}
-
-public override bool alwaysSetReadByID()
-{
-	return false;
-}
-
-public override void setFeedRead(string feedID)
-{
-	m_api.catchupFeed(int.parse(feedID), false);
-}
-
-public override void setCategoryRead(string catID)
-{
-	m_api.catchupFeed(int.parse(catID), true);
-}
-
-public override void markAllItemsRead()
-{
-	var categories = DataBase.readOnly().read_categories();
-	foreach(Category cat in categories)
+	
+	public override BackendFlags getFlags()
 	{
-		m_api.catchupFeed(int.parse(cat.getCatID()), true);
+		return (BackendFlags.SELF_HOSTED | BackendFlags.FREE_SOFTWARE | BackendFlags.FREE);
 	}
-}
-
-public override void tagArticle(string articleID, string tagID)
-{
-	m_api.setArticleLabel(int.parse(articleID), int.parse(tagID), true);
-}
-
-public override void removeArticleTag(string articleID, string tagID)
-{
-	m_api.setArticleLabel(int.parse(articleID), int.parse(tagID), false);
-}
-
-public override string createTag(string caption)
-{
-	return m_api.addLabel(caption).to_string();
-}
-
-public override void deleteTag(string tagID)
-{
-	m_api.removeLabel(int.parse(tagID));
-}
-
-public override void renameTag(string tagID, string title)
-{
-	m_api.renameLabel(int.parse(tagID), title);
-}
-
-public override bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
-{
-	bool success = false;
-	if(catID == null && newCatName != null)
+	
+	public override string getID()
 	{
-		var newCatID = m_api.createCategory(newCatName);
-		success = m_api.subscribeToFeed(feedURL, newCatID, null, null, out errmsg);
+		return "ttrss";
 	}
-	else
+	
+	public override string iconName()
 	{
-		success = m_api.subscribeToFeed(feedURL, catID, null, null, out errmsg);
+		return "feed-service-ttrss";
 	}
-
-	if(success)
+	
+	public override string serviceName()
 	{
-		feedID = (int.parse(DataBase.readOnly().getMaxID("feeds", "feed_id")) + 1).to_string();
+		return "Tiny Tiny RSS";
 	}
-	else
+	
+	public override bool needWebLogin()
 	{
-		feedID = "-98";
+		return false;
 	}
-
-
-	return success;
-}
-
-public override void removeFeed(string feedID)
-{
-	m_api.unsubscribeFeed(int.parse(feedID));
-}
-
-public override void renameFeed(string feedID, string title)
-{
-	m_api.renameFeed(int.parse(feedID), title);
-}
-
-public override void moveFeed(string feedID, string newCatID, string? currentCatID)
-{
-	m_api.moveFeed(int.parse(feedID), int.parse(newCatID));
-}
-
-public override string createCategory(string title, string? parentID)
-{
-	if(parentID != null)
+	
+	public override Gtk.Box? getWidget()
 	{
-		return m_api.createCategory(title, int.parse(parentID));
+		var url_label = new Gtk.Label(_("Tiny Tiny RSS URL:"));
+		var user_label = new Gtk.Label(_("Username:"));
+		var password_label = new Gtk.Label(_("Password:"));
+		
+		url_label.set_alignment(1.0f, 0.5f);
+		user_label.set_alignment(1.0f, 0.5f);
+		password_label.set_alignment(1.0f, 0.5f);
+		
+		url_label.set_hexpand(true);
+		user_label.set_hexpand(true);
+		password_label.set_hexpand(true);
+		
+		m_urlEntry = new Gtk.Entry();
+		m_userEntry = new Gtk.Entry();
+		m_passwordEntry = new Gtk.Entry();
+		
+		m_urlEntry.activate.connect(() => { tryLogin(); });
+		m_userEntry.activate.connect(() => { tryLogin(); });
+		m_passwordEntry.activate.connect(() => { tryLogin(); });
+		
+		m_passwordEntry.set_input_purpose(Gtk.InputPurpose.PASSWORD);
+		m_passwordEntry.set_visibility(false);
+		
+		var grid = new Gtk.Grid();
+		grid.set_column_spacing(10);
+		grid.set_row_spacing(10);
+		grid.set_valign(Gtk.Align.CENTER);
+		grid.set_halign(Gtk.Align.CENTER);
+		
+		grid.attach(url_label, 0, 0, 1, 1);
+		grid.attach(m_urlEntry, 1, 0, 1, 1);
+		grid.attach(user_label, 0, 1, 1, 1);
+		grid.attach(m_userEntry, 1, 1, 1, 1);
+		grid.attach(password_label, 0, 2, 1, 1);
+		grid.attach(m_passwordEntry, 1, 2, 1, 1);
+		
+		
+		// http auth stuff ----------------------------------------------------
+		var auth_user_label = new Gtk.Label(_("Username:"));
+		var auth_password_label = new Gtk.Label(_("Password:"));
+		
+		auth_user_label.set_alignment(1.0f, 0.5f);
+		auth_password_label.set_alignment(1.0f, 0.5f);
+		
+		auth_user_label.set_hexpand(true);
+		auth_password_label.set_hexpand(true);
+		
+		m_authUserEntry = new Gtk.Entry();
+		m_authPasswordEntry = new Gtk.Entry();
+		m_authPasswordEntry.set_input_purpose(Gtk.InputPurpose.PASSWORD);
+		m_authPasswordEntry.set_visibility(false);
+		
+		m_authUserEntry.activate.connect(() => { tryLogin(); });
+		m_authPasswordEntry.activate.connect(() => { tryLogin(); });
+		
+		var authGrid = new Gtk.Grid();
+		authGrid.margin = 10;
+		authGrid.set_column_spacing(10);
+		authGrid.set_row_spacing(10);
+		authGrid.set_valign(Gtk.Align.CENTER);
+		authGrid.set_halign(Gtk.Align.CENTER);
+		
+		authGrid.attach(auth_user_label, 0, 0, 1, 1);
+		authGrid.attach(m_authUserEntry, 1, 0, 1, 1);
+		authGrid.attach(auth_password_label, 0, 1, 1, 1);
+		authGrid.attach(m_authPasswordEntry, 1, 1, 1, 1);
+		
+		var frame = new Gtk.Frame(_("HTTP Authorization"));
+		frame.set_halign(Gtk.Align.CENTER);
+		frame.add(authGrid);
+		m_revealer = new Gtk.Revealer();
+		m_revealer.add(frame);
+		//---------------------------------------------------------------------
+		
+		var logo = new Gtk.Image.from_icon_name("feed-service-ttrss", Gtk.IconSize.MENU);
+		
+		var loginLabel = new Gtk.Label(_("Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"));
+		loginLabel.get_style_context().add_class("h2");
+		loginLabel.set_justify(Gtk.Justification.CENTER);
+		loginLabel.set_lines(3);
+		
+		var loginButton = new Gtk.Button.with_label(_("Login"));
+		loginButton.halign = Gtk.Align.END;
+		loginButton.set_size_request(80, 30);
+		loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+		loginButton.clicked.connect(() => { tryLogin(); });
+		
+		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
+		box.valign = Gtk.Align.CENTER;
+		box.halign = Gtk.Align.CENTER;
+		box.pack_start(loginLabel, false, false, 10);
+		box.pack_start(logo, false, false, 10);
+		box.pack_start(grid, true, true, 10);
+		box.pack_start(m_revealer, true, true, 10);
+		box.pack_end(loginButton, false, false, 20);
+		
+		m_urlEntry.set_text(m_utils.getUnmodifiedURL());
+		m_userEntry.set_text(m_utils.getUser());
+		m_passwordEntry.set_text(m_utils.getPasswd());
+		
+		return box;
 	}
-
-	return m_api.createCategory(title);
-}
-
-public override void renameCategory(string catID, string title)
-{
-	m_api.renameCategory(int.parse(catID), title);
-}
-
-public override void moveCategory(string catID, string newParentID)
-{
-	m_api.moveCategory(int.parse(catID), int.parse(newParentID));
-}
-
-public override void deleteCategory(string catID)
-{
-	m_api.removeCategory(int.parse(catID));
-}
-
-public override void removeCatFromFeed(string feedID, string catID)
-{
-	return;
-}
-
-public override bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
-{
-	if(m_api.getCategories(categories))
+	
+	public override void showHtAccess()
 	{
-		if(cancellable != null && cancellable.is_cancelled())
+		m_revealer.set_reveal_child(true);
+	}
+	
+	public override void writeData()
+	{
+		string url = m_urlEntry.get_text();
+		if (GLib.Uri.parse_scheme(url) == null)
 		{
-			return false;
+			url = "https://" + url;
+			m_urlEntry.set_text(url);
 		}
-
-		if(m_api.getFeeds(feeds, categories))
+		m_utils.setURL(url);
+		m_utils.setUser(m_userEntry.get_text().strip());
+		m_utils.setPassword(m_passwordEntry.get_text().strip());
+	}
+	
+	public override bool supportTags()
+	{
+		return true;
+	}
+	
+	public override bool doInitSync()
+	{
+		return true;
+	}
+	
+	public override string symbolicIcon()
+	{
+		return "feed-service-ttrss-symbolic";
+	}
+	
+	public override string accountName()
+	{
+		return m_utils.getUser();
+	}
+	
+	public override string getServerURL()
+	{
+		return m_utils.getURL();
+	}
+	
+	public override string uncategorizedID()
+	{
+		return "0";
+	}
+	
+	public override bool hideCategoryWhenEmpty(string catID)
+	{
+		return catID == "0";
+	}
+	
+	public override bool supportCategories()
+	{
+		return true;
+	}
+	
+	public override bool supportFeedManipulation()
+	{
+		return true;
+	}
+	
+	public override bool supportMultiLevelCategories()
+	{
+		return true;
+	}
+	
+	public override bool supportMultiCategoriesPerFeed()
+	{
+		return false;
+	}
+	
+	public override bool syncFeedsAndCategories()
+	{
+		return true;
+	}
+	
+	public override bool tagIDaffectedByNameChange()
+	{
+		return false;
+	}
+	
+	public override void resetAccount()
+	{
+		m_utils.resetAccount();
+	}
+	
+	public override bool useMaxArticles()
+	{
+		return true;
+	}
+	
+	public override LoginResponse login()
+	{
+		return m_api.login();
+	}
+	
+	public override bool logout()
+	{
+		return m_api.logout();
+	}
+	
+	public override bool serverAvailable()
+	{
+		return m_api.ping();
+	}
+	
+	public override void setArticleIsRead(string articleIDs, ArticleStatus read)
+	{
+		var ids = new Gee.ArrayList<int>();
+		foreach(var id in StringUtils.split(articleIDs, ","))
+		{
+			ids.add(int.parse(id));
+		}
+		m_api.updateArticleUnread(ids, read);
+	}
+	
+	public override void setArticleIsMarked(string articleID, ArticleStatus marked)
+	{
+		m_api.updateArticleMarked(int.parse(articleID), marked);
+	}
+	
+	public override bool alwaysSetReadByID()
+	{
+		return false;
+	}
+	
+	public override void setFeedRead(string feedID)
+	{
+		m_api.catchupFeed(int.parse(feedID), false);
+	}
+	
+	public override void setCategoryRead(string catID)
+	{
+		m_api.catchupFeed(int.parse(catID), true);
+	}
+	
+	public override void markAllItemsRead()
+	{
+		var categories = DataBase.readOnly().read_categories();
+		foreach(Category cat in categories)
+		{
+			m_api.catchupFeed(int.parse(cat.getCatID()), true);
+		}
+	}
+	
+	public override void tagArticle(string articleID, string tagID)
+	{
+		m_api.setArticleLabel(int.parse(articleID), int.parse(tagID), true);
+	}
+	
+	public override void removeArticleTag(string articleID, string tagID)
+	{
+		m_api.setArticleLabel(int.parse(articleID), int.parse(tagID), false);
+	}
+	
+	public override string createTag(string caption)
+	{
+		return m_api.addLabel(caption).to_string();
+	}
+	
+	public override void deleteTag(string tagID)
+	{
+		m_api.removeLabel(int.parse(tagID));
+	}
+	
+	public override void renameTag(string tagID, string title)
+	{
+		m_api.renameLabel(int.parse(tagID), title);
+	}
+	
+	public override bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
+	{
+		bool success = false;
+		if(catID == null && newCatName != null)
+		{
+			var newCatID = m_api.createCategory(newCatName);
+			success = m_api.subscribeToFeed(feedURL, newCatID, null, null, out errmsg);
+		}
+		else
+		{
+			success = m_api.subscribeToFeed(feedURL, catID, null, null, out errmsg);
+		}
+		
+		if(success)
+		{
+			feedID = (int.parse(DataBase.readOnly().getMaxID("feeds", "feed_id")) + 1).to_string();
+		}
+		else
+		{
+			feedID = "-98";
+		}
+		
+		
+		return success;
+	}
+	
+	public override void removeFeed(string feedID)
+	{
+		m_api.unsubscribeFeed(int.parse(feedID));
+	}
+	
+	public override void renameFeed(string feedID, string title)
+	{
+		m_api.renameFeed(int.parse(feedID), title);
+	}
+	
+	public override void moveFeed(string feedID, string newCatID, string? currentCatID)
+	{
+		m_api.moveFeed(int.parse(feedID), int.parse(newCatID));
+	}
+	
+	public override string createCategory(string title, string? parentID)
+	{
+		if(parentID != null)
+		{
+			return m_api.createCategory(title, int.parse(parentID));
+		}
+		
+		return m_api.createCategory(title);
+	}
+	
+	public override void renameCategory(string catID, string title)
+	{
+		m_api.renameCategory(int.parse(catID), title);
+	}
+	
+	public override void moveCategory(string catID, string newParentID)
+	{
+		m_api.moveCategory(int.parse(catID), int.parse(newParentID));
+	}
+	
+	public override void deleteCategory(string catID)
+	{
+		m_api.removeCategory(int.parse(catID));
+	}
+	
+	public override void removeCatFromFeed(string feedID, string catID)
+	{
+		return;
+	}
+	
+	public override bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
+	{
+		if(m_api.getCategories(categories))
 		{
 			if(cancellable != null && cancellable.is_cancelled())
 			{
 				return false;
 			}
-
-			if(m_api.getUncategorizedFeeds(feeds))
+			
+			if(m_api.getFeeds(feeds, categories))
 			{
 				if(cancellable != null && cancellable.is_cancelled())
 				{
 					return false;
 				}
-
-				if(m_api.getTags(tags))
+				
+				if(m_api.getUncategorizedFeeds(feeds))
 				{
-					return true;
+					if(cancellable != null && cancellable.is_cancelled())
+					{
+						return false;
+					}
+					
+					if(m_api.getTags(tags))
+					{
+						return true;
+					}
 				}
 			}
 		}
+		
+		return false;
 	}
-
-	return false;
-}
-
-public override int getUnreadCount()
-{
-	return m_api.getUnreadCount();
-}
-
-public override void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
-{
-	var settings_general = new GLib.Settings("org.gnome.feedreader");
-
-	// first use newsPlus plugin to update states of 10x as much articles as we would normaly do
-	var unreadIDs = m_api.NewsPlus(ArticleStatus.UNREAD, 10*settings_general.get_int("max-articles"));
-
-	if(cancellable != null && cancellable.is_cancelled())
+	
+	public override int getUnreadCount()
 	{
-		return;
+		return m_api.getUnreadCount();
 	}
-
-	var db = DataBase.writeAccess();
-	if(unreadIDs != null && whatToGet == ArticleStatus.ALL)
+	
+	public override void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
-		Logger.debug("getArticles: newsplus plugin active");
-		var markedIDs = m_api.NewsPlus(ArticleStatus.MARKED, settings_general.get_int("max-articles"));
-		db.updateArticlesByID(unreadIDs, "unread");
-		db.updateArticlesByID(markedIDs, "marked");
-		//updateArticleList();
-	}
-
-	if(cancellable != null && cancellable.is_cancelled())
-	{
-		return;
-	}
-
-	var articleIDs = new Gee.ArrayList<int>();
-	int skip = count;
-	int amount = 200;
-
-	while(skip > 0)
-	{
+		var settings_general = new GLib.Settings("org.gnome.feedreader");
+		
+		// first use newsPlus plugin to update states of 10x as much articles as we would normaly do
+		var unreadIDs = m_api.NewsPlus(ArticleStatus.UNREAD, 10*settings_general.get_int("max-articles"));
+		
 		if(cancellable != null && cancellable.is_cancelled())
 		{
 			return;
 		}
-
-		if(skip >= amount)
+		
+		var db = DataBase.writeAccess();
+		if(unreadIDs != null && whatToGet == ArticleStatus.ALL)
 		{
-			skip -= amount;
+			Logger.debug("getArticles: newsplus plugin active");
+			var markedIDs = m_api.NewsPlus(ArticleStatus.MARKED, settings_general.get_int("max-articles"));
+			db.updateArticlesByID(unreadIDs, "unread");
+			db.updateArticlesByID(markedIDs, "marked");
+			//updateArticleList();
 		}
-		else
+		
+		if(cancellable != null && cancellable.is_cancelled())
 		{
-			amount = skip;
-			skip = 0;
+			return;
 		}
-
-		var articles = new Gee.LinkedList<Article>();
-		m_api.getHeadlines(articles, skip, amount, whatToGet, (feedID == null) ? ttrssUtils.TTRSSSpecialID.ALL : int.parse(feedID));
-
-		// only update article states if they haven't been updated by the newsPlus-plugin
-		if(unreadIDs == null || whatToGet != ArticleStatus.ALL)
+		
+		var articleIDs = new Gee.ArrayList<int>();
+		int skip = count;
+		int amount = 200;
+		
+		while(skip > 0)
 		{
-			db.update_articles(articles);
-			updateArticleList();
-		}
-
-		foreach(Article article in articles)
-		{
-			var id = article.getArticleID();
-			if(!db.article_exists(id))
+			if(cancellable != null && cancellable.is_cancelled())
 			{
-				articleIDs.add(int.parse(id));
+				return;
+			}
+			
+			if(skip >= amount)
+			{
+				skip -= amount;
+			}
+			else
+			{
+				amount = skip;
+				skip = 0;
+			}
+			
+			var articles = new Gee.LinkedList<Article>();
+			m_api.getHeadlines(articles, skip, amount, whatToGet, (feedID == null) ? ttrssUtils.TTRSSSpecialID.ALL : int.parse(feedID));
+			
+			// only update article states if they haven't been updated by the newsPlus-plugin
+			if(unreadIDs == null || whatToGet != ArticleStatus.ALL)
+			{
+				db.update_articles(articles);
+				updateArticleList();
+			}
+			
+			foreach(Article article in articles)
+			{
+				var id = article.getArticleID();
+				if(!db.article_exists(id))
+				{
+					articleIDs.add(int.parse(id));
+				}
 			}
 		}
-	}
-	var articles = m_api.getArticles(articleIDs);
-	var article_id_strings = new Gee.ArrayList<string>();
-	foreach(int id in articleIDs)
-	{
-		article_id_strings.add(id.to_string());
-	}
-	Logger.info("Getting articles: " + StringUtils.join(article_id_strings, ","));
-
-	articles.sort((a, b) => {
+		var articles = m_api.getArticles(articleIDs);
+		var article_id_strings = new Gee.ArrayList<string>();
+		foreach(int id in articleIDs)
+		{
+			article_id_strings.add(id.to_string());
+		}
+		Logger.info("Getting articles: " + StringUtils.join(article_id_strings, ","));
+		
+		articles.sort((a, b) => {
 			return strcmp(a.getArticleID(), b.getArticleID());
 		});
-
-	if(cancellable != null && cancellable.is_cancelled())
-	{
-		return;
+		
+		if(cancellable != null && cancellable.is_cancelled())
+		{
+			return;
+		}
+		
+		if(articles.size > 0)
+		{
+			db.write_articles(articles);
+			refreshFeedListCounter();
+			updateArticleList();
+		}
 	}
-
-	if(articles.size > 0)
-	{
-		db.write_articles(articles);
-		refreshFeedListCounter();
-		updateArticleList();
-	}
-}
-
+	
 }
 
 [ModuleInit]

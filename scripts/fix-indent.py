@@ -10,6 +10,10 @@ for file_name in sys.argv[1:]:
         indent = 0
         for line in f:
             line = line.strip()
+            if not line:
+                o.write("\n")
+                continue
+
             if line.startswith("}") or line.count(")") > line.count("("):
                 indent -= 1
             for _ in range(indent):

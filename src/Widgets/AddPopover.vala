@@ -14,7 +14,7 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.AddPopover : Gtk.Popover {
-	
+
 	private Gtk.Stack m_stack;
 	private Gtk.Box m_box;
 	private Gtk.Grid m_feedGrid;
@@ -24,12 +24,12 @@ public class FeedReader.AddPopover : Gtk.Popover {
 	private Gtk.FileChooserButton m_chooser;
 	private Gtk.EntryCompletion m_complete;
 	private Gee.List<Category> m_cats;
-	
+
 	public AddPopover(Gtk.Widget parent)
 	{
 		this.relative_to = parent;
 		this.position = Gtk.PositionType.TOP;
-		
+
 		m_urlEntry = new Gtk.Entry();
 		m_urlEntry.activate.connect(() => {
 			m_catEntry.grab_focus();
@@ -52,7 +52,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		addButton.get_style_context().add_class("suggested-action");
 		addButton.halign = Gtk.Align.END;
 		addButton.clicked.connect(addFeed);
-		
+
 		m_feedGrid = new Gtk.Grid();
 		m_feedGrid.row_spacing = 5;
 		m_feedGrid.column_spacing = 8;
@@ -61,7 +61,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		m_feedGrid.attach(catLabel, 0, 1, 1, 1);
 		m_feedGrid.attach(m_catEntry, 1, 1, 1, 1);
 		m_feedGrid.attach(addButton, 0, 2, 2, 1);
-		
+
 		var opmlLabel = new Gtk.Label(_("OPML File:"));
 		opmlLabel.expand = true;
 		m_chooser = new Gtk.FileChooserButton(_("Select OPML File"), Gtk.FileChooserAction.OPEN);
@@ -69,47 +69,47 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		filter.add_mime_type("text/x-opml");
 		m_chooser.set_filter(filter);
 		m_chooser.expand = true;
-		
+
 		var importButton = new Gtk.Button.with_label(_("Import"));
 		importButton.get_style_context().add_class("suggested-action");
 		importButton.halign = Gtk.Align.END;
 		importButton.clicked.connect(importOPML);
 		importButton.sensitive = false;
-		
+
 		m_chooser.file_set.connect(() => {
 			importButton.sensitive = true;
 		});
-		
+
 		m_opmlGrid = new Gtk.Grid();
 		m_opmlGrid.row_spacing = 10;
 		m_opmlGrid.column_spacing = 8;
 		m_opmlGrid.attach(opmlLabel, 0, 0, 1, 1);
 		m_opmlGrid.attach(m_chooser, 1, 0, 1, 1);
 		m_opmlGrid.attach(importButton, 0, 1, 2, 1);
-		
-		
+
+
 		m_stack = new Gtk.Stack();
 		m_stack.add_titled(m_feedGrid, "feeds", _("Add feed"));
 		m_stack.add_titled(m_opmlGrid, "opml", _("Import OPML"));
-		
+
 		var switcher = new Gtk.StackSwitcher();
 		switcher.halign = Gtk.Align.CENTER;
 		switcher.set_stack(m_stack);
-		
+
 		m_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
 		m_box.margin = 10;
 		m_box.pack_start(switcher);
 		m_box.pack_start(m_stack);
-		
+
 		this.add(m_box);
 		this.show_all();
 		m_urlEntry.grab_focus();
-		
+
 		GLib.Idle.add(() => {
 			Gtk.ListStore list_store = new Gtk.ListStore(1, typeof (string));
 			Gtk.TreeIter iter;
 			m_cats = DataBase.readOnly().read_categories();
-			
+
 			foreach(var cat in m_cats)
 			{
 				list_store.append(out iter);
@@ -122,7 +122,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 			return false;
 		}, GLib.Priority.HIGH_IDLE);
 	}
-	
+
 	private void addFeed()
 	{
 		string url = m_urlEntry.text;
@@ -131,28 +131,28 @@ public class FeedReader.AddPopover : Gtk.Popover {
 			m_urlEntry.grab_focus();
 			return;
 		}
-		
+
 		string? catID = DataBase.readOnly().getCategoryID(m_catEntry.text);
 		bool isID = true;
-		
+
 		if(catID == null)
 		{
 			catID = m_catEntry.text;
 			isID = false;
 		}
-		
-		
+
+
 		if (GLib.Uri.parse_scheme(url) == null)
 		{
 			url = "http://" + url;
 		}
-		
+
 		Logger.debug("addFeed: %s, %s".printf(url, (catID == "") ? "null" : catID));
 		FeedReaderBackend.get_default().addFeed(url, catID, isID);
-		
+
 		setBusy();
 	}
-	
+
 	private void importOPML()
 	{
 		try
@@ -170,7 +170,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		}
 		setBusy();
 	}
-	
+
 	private void setBusy()
 	{
 		ColumnView.get_default().footerSetBusy();

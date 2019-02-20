@@ -14,10 +14,10 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.ArticleViewLoadProgress : Gtk.Revealer {
-	
+
 	private Gtk.ProgressBar m_progress;
 	private uint m_timeout_source_id = 0;
-	
+
 	public ArticleViewLoadProgress()
 	{
 		m_progress = new Gtk.ProgressBar();
@@ -28,17 +28,17 @@ public class FeedReader.ArticleViewLoadProgress : Gtk.Revealer {
 		this.no_show_all = true;
 		this.add(m_progress);
 	}
-	
+
 	public void setPercentage(uint percentage)
 	{
 		m_progress.set_fraction(percentage);
 	}
-	
+
 	public void setPercentageF(double percentage)
 	{
 		m_progress.set_fraction(percentage);
 	}
-	
+
 	public void reveal(bool show)
 	{
 		if(m_timeout_source_id > 0)
@@ -46,7 +46,7 @@ public class FeedReader.ArticleViewLoadProgress : Gtk.Revealer {
 			GLib.Source.remove(m_timeout_source_id);
 			m_timeout_source_id = 0;
 		}
-		
+
 		if(show)
 		{
 			this.visible = true;
@@ -62,11 +62,11 @@ public class FeedReader.ArticleViewLoadProgress : Gtk.Revealer {
 			this.set_reveal_child(false);
 		}
 	}
-	
+
 	public void reset()
 	{
 		reveal(false);
 	}
-	
-	
+
+
 }

@@ -16,7 +16,7 @@
 /* A wrapper around the low-level SQLite API */
 public class FeedReader.SQLite : GLib.Object {
 	private Sqlite.Database m_db;
-	
+
 	public SQLite(string db_path, int busy_timeout = 1000)
 	{
 		var path = GLib.File.new_for_path(db_path);
@@ -35,16 +35,16 @@ public class FeedReader.SQLite : GLib.Object {
 				Logger.error("SQLite: " + e.message);
 			}
 		}
-		
+
 		int rc = Sqlite.Database.open_v2(db_path, out m_db);
 		if(rc != Sqlite.OK)
 		{
 			error("Can't open database: %d: %s".printf(m_db.errcode(), m_db.errmsg()));
 		}
-		
+
 		m_db.busy_timeout(busy_timeout);
 	}
-	
+
 	// Backwards compatibility interface
 	public Sqlite.Statement prepare(string query)
 	requires (query != "")
@@ -57,17 +57,17 @@ public class FeedReader.SQLite : GLib.Object {
 		}
 		return stmt;
 	}
-	
+
 	public string errmsg()
 	{
 		return m_db.errmsg();
 	}
-	
+
 	public void checkpoint()
 	{
 		m_db.wal_checkpoint("");
 	}
-	
+
 	public void simple_query(string query)
 	requires (query != "")
 	{
@@ -78,7 +78,7 @@ public class FeedReader.SQLite : GLib.Object {
 			error("Failed to execute simple query: %d: %s\nSQL is: %s".printf(ec, errmsg, query));
 		}
 	}
-	
+
 	public Gee.List<Gee.List<Sqlite.Value?>> execute(string query, GLib.Value?[]? params = null)
 	requires (query != "")
 	{
@@ -88,7 +88,7 @@ public class FeedReader.SQLite : GLib.Object {
 		{
 			error("Can't prepare statement: %d: %s\nSQL is: %s".printf(m_db.errcode(), m_db.errmsg(), query));
 		}
-		
+
 		if(params != null)
 		{
 			int i = 1;
@@ -125,7 +125,7 @@ public class FeedReader.SQLite : GLib.Object {
 				++i;
 			}
 		}
-		
+
 		var rows = new Gee.ArrayList<Gee.List<Sqlite.Value?>>();
 		while(stmt.step() == Sqlite.ROW)
 		{
@@ -137,10 +137,10 @@ public class FeedReader.SQLite : GLib.Object {
 			rows.add(row);
 		}
 		stmt.reset ();
-		
+
 		return rows;
 	}
-	
+
 	public static string quote_string(string str)
 	{
 		var escaped = str.replace("'", "''");

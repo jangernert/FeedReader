@@ -21,32 +21,32 @@ namespace FeedReader.InstapaperSecrets {
 }
 
 public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
-	
+
 	public InstaAPI()
 	{
-		
+
 	}
-	
+
 	public void setupSystemAccounts(Gee.List<ShareAccount> accounts)
 	{
-		
+
 	}
-	
+
 	public string getRequestToken()
 	{
 		return "";
 	}
-	
+
 	public bool getAccessToken(string id, string username, string password)
 	{
 		string userID = "";
-		
+
 		var oauthObject = new Rest.OAuthProxy (
 			InstapaperSecrets.oauth_consumer_key,
 			InstapaperSecrets.oauth_consumer_secret,
 			"https://www.instapaper.com/api/1/",
 		false);
-		
+
 		var call = oauthObject.new_call();
 		oauthObject.url_format = "https://www.instapaper.com/api/1/";
 		call.set_function ("oauth/access_token");
@@ -62,26 +62,26 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 		{
 			Logger.error("instapaper getAccessToken: " + e.message);
 		}
-		
+
 		string response = call.get_payload();
 		int64 status = call.get_status_code();
-		
+
 		if(status != 200)
 		{
 			return false;
 		}
-		
-		
+
+
 		int secretStart = response.index_of_char('=')+1;
 		int secretEnd = response.index_of_char('&', secretStart);
 		int tokenStart = response.index_of_char('=', secretEnd)+1;
-		
+
 		string accessToken_secret = response.substring(secretStart, secretEnd-secretStart);
 		string accessToken = response.substring(tokenStart);
-		
+
 		oauthObject.set_token(accessToken);
 		oauthObject.set_token_secret(accessToken_secret);
-		
+
 		// get userID -------------------------------------------------------------------------------------------------
 		var call2 = oauthObject.new_call();
 		oauthObject.url_format = "https://www.instapaper.com/api/1/";
@@ -95,7 +95,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 		{
 			Logger.debug("getUserID: " + e.message);
 		}
-		
+
 		var parser = new Json.Parser();
 		try
 		{
@@ -106,7 +106,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 			Logger.error("Could not load response to Message from instapaper");
 			Logger.error(e.message);
 		}
-		
+
 		var root_node = parser.get_root();
 		var userArray = root_node.get_array();
 		var root_object = userArray.get_object_element(0);
@@ -120,21 +120,21 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 			Logger.error(root_object.get_string_member("message"));
 		}
 		//-------------------------------------------------------------------------------------------------------------
-		
-		
+
+
 		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
 		settings.set_string("oauth-access-token", accessToken);
 		settings.set_string("oauth-access-token-secret", accessToken_secret);
 		settings.set_string("username", username);
 		settings.set_string("user-id", userID);
-		
+
 		var array = Settings.share("instapaper").get_strv("account-ids");
 		array += id;
 		Settings.share("instapaper").set_strv("account-ids", array);
-		
+
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password", Secret.SchemaFlags.NONE,
 		"userID", Secret.SchemaAttributeType.STRING);
-		
+
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["userID"] = userID;
 		try
@@ -145,18 +145,18 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 		{
 			Logger.error("InstaAPI - getAccessToken: " + e.message);
 		}
-		
+
 		return true;
 	}
-	
+
 	public bool addBookmark(string id, string url, bool system)
 	{
 		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
-		
+
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password", Secret.SchemaFlags.NONE, "userID", Secret.SchemaAttributeType.STRING);
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["userID"] = settings.get_string("user-id");
-		
+
 		string password = "";
 		try
 		{
@@ -166,48 +166,48 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 		{
 			Logger.error("InstaAPI addBookmark: " + e.message);
 		}
-		
+
 		var session = new Soup.Session();
 		session.user_agent = Constants.USER_AGENT;
 		string message  = "user_id=" + settings.get_string("user-id")
 		+ "&username=" + settings.get_string("username")
 		+ "&password=" + password
 		+ "&url=" + GLib.Uri.escape_string(url);
-		
+
 		Logger.debug("InstaAPI: " + message);
-		
+
 		var message_soup = new Soup.Message("POST", "https://www.instapaper.com/api/add");
 		message_soup.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message.data);
-		
+
 		if(Settings.tweaks().get_boolean("do-not-track"))
 		{
 			message_soup.request_headers.append("DNT", "1");
 		}
-		
+
 		session.send_message(message_soup);
 		string response = (string)message_soup.response_body.flatten().data;
-		
+
 		if(response == null || response == "")
 		{
 			return false;
 		}
-		
+
 		Logger.debug("InstaAPI: " + response);
-		
+
 		return true;
 	}
-	
+
 	public bool logout(string id)
 	{
 		Logger.debug(@"InstaAPI.logout($id)");
 		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", @"/org/gnome/feedreader/share/instapaper/$id/");
 		var pwSchema = new Secret.Schema("org.gnome.feedreader.instapaper.password",
 		Secret.SchemaFlags.NONE, "userID", Secret.SchemaAttributeType.STRING);
-		
+
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["userID"] = settings.get_string("user-id");
 		bool removed = false;
-		
+
 		Secret.password_clearv.begin(pwSchema, attributes, null, (obj, async_res) => {
 			try
 			{
@@ -222,15 +222,15 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 				Logger.error("InstaAPI.logout: %s".printf(e.message));
 			}
 		});
-		
+
 		var keys = settings.list_keys();
 		foreach(string key in keys)
 		{
 			settings.reset(key);
 		}
-		
+
 		var array = Settings.share("instapaper").get_strv("account-ids");
-		
+
 		string[] array2 = {};
 		foreach(string i in array)
 		{
@@ -241,66 +241,66 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 		}
 		Settings.share("instapaper").set_strv("account-ids", array2);
 		deleteAccount(id);
-		
+
 		return true;
 	}
-	
+
 	public string getIconName()
 	{
 		return "feed-share-instapaper";
 	}
-	
+
 	public string getUsername(string id)
 	{
 		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
 		return settings.get_string("username");
 	}
-	
+
 	public bool needSetup()
 	{
 		return true;
 	}
-	
+
 	public bool singleInstance()
 	{
 		return false;
 	}
-	
+
 	public bool useSystemAccounts()
 	{
 		return false;
 	}
-	
+
 	public string pluginID()
 	{
 		return "instapaper";
 	}
-	
+
 	public string pluginName()
 	{
 		return "Instapaper";
 	}
-	
+
 	public string getURL(string token)
 	{
 		return "";
 	}
-	
+
 	public ServiceSetup? newSetup_withID(string id, string username)
 	{
 		return new InstapaperSetup(id, this, username);
 	}
-	
+
 	public ServiceSetup? newSetup()
 	{
 		return new InstapaperSetup(null, this);
 	}
-	
+
 	public ServiceSetup? newSystemAccount(string id, string username)
 	{
 		return null;
 	}
-	
+
 	public ShareForm? shareWidget(string url)
 	{
 		return null;

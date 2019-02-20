@@ -25,32 +25,32 @@ public errordomain FeedbinError {
 
 public class FeedbinAPI : Object {
 	private const string BASE_URI_FORMAT = "%s/v2/";
-	
+
 	private Soup.Session m_session;
 	private string m_base_uri;
 	public string username { get; set; }
 	public string password { get; set; }
-	
+
 	public FeedbinAPI(string username, string password, string? user_agent = null, string? host = "https://api.feedbin.com")
 	{
 		this.username = username;
 		this.password = password;
 		m_base_uri = BASE_URI_FORMAT.printf(host);
 		m_session = new Soup.Session();
-		
+
 		if(user_agent != null)
 		{
 			m_session.user_agent = user_agent;
 		}
-		
+
 		m_session.authenticate.connect(authenticate);
 	}
-	
+
 	~FeedbinAPI()
 	{
 		m_session.authenticate.disconnect(authenticate);
 	}
-	
+
 	private void authenticate(Soup.Message msg, Soup.Auth auth, bool retrying)
 	{
 		if(!retrying)
@@ -58,7 +58,7 @@ public class FeedbinAPI : Object {
 			auth.authenticate(this.username, this.password);
 		}
 	}
-	
+
 	private Soup.Message request(string method, string last_part, string? input = null) throws FeedbinError
 	requires (method == "DELETE" || method == "GET" || method == "POST")
 	requires (input == null || method != "GET")
@@ -67,17 +67,17 @@ public class FeedbinAPI : Object {
 	{
 		var path = m_base_uri + last_part;
 		var message = new Soup.Message(method, path);
-		
+
 		if(method == "POST")
 		{
 			message.request_headers.append("Content-Type", "application/json; charset=utf-8");
 		}
-		
+
 		if(input != null)
 		{
 			message.request_body.append_take(input.data);
 		}
-		
+
 		m_session.send_message(message);
 		var status = message.status_code;
 		if(status < 200 || status >= 400)
@@ -99,7 +99,7 @@ public class FeedbinAPI : Object {
 		}
 		return message;
 	}
-	
+
 	// TODO: Move to DateUtils
 	private static DateTime string_to_datetime(string s) throws FeedbinError
 	{
@@ -110,7 +110,7 @@ public class FeedbinAPI : Object {
 		}
 		return new DateTime.from_timeval_utc(time);
 	}
-	
+
 	// TODO: JSON utils?
 	private static DateTime get_datetime_member(Json.Object obj, string name) throws FeedbinError
 	requires (name != "")
@@ -118,23 +118,23 @@ public class FeedbinAPI : Object {
 		var s = obj.get_string_member(name);
 		return string_to_datetime(s);
 	}
-	
+
 	private Soup.Message post_request(string path, string input) throws FeedbinError
 	requires (input != "")
 	{
 		return request("POST", path, input);
 	}
-	
+
 	private Soup.Message delete_request(string path) throws FeedbinError
 	{
 		return request("DELETE", path);
 	}
-	
+
 	private Soup.Message get_request(string path) throws FeedbinError
 	{
 		return request("GET", path);
 	}
-	
+
 	private static Json.Node parse_json(Soup.Message response) throws FeedbinError
 	{
 		var method = response.method;
@@ -144,7 +144,7 @@ public class FeedbinAPI : Object {
 		{
 			throw new FeedbinError.INVALID_FORMAT(@"$method $uri returned no content but expected JSON");
 		}
-		
+
 		var parser = new Json.Parser();
 		try
 		{
@@ -156,26 +156,26 @@ public class FeedbinAPI : Object {
 		}
 		return parser.get_root();
 	}
-	
+
 	private Json.Node get_json(string path) throws FeedbinError
 	requires (path != "")
 	{
 		var response = get_request(path);
 		return parse_json(response);
 	}
-	
+
 	private Soup.Message post_json_object(string path, Json.Object obj) throws FeedbinError
 	{
 		var root = new Json.Node(Json.NodeType.OBJECT);
 		root.set_object(obj);
-		
+
 		var gen = new Json.Generator();
 		gen.set_root(root);
 		var data = gen.to_data(null);
-		
+
 		return post_request(path, data);
 	}
-	
+
 	public bool login() throws FeedbinError
 	{
 		try
@@ -188,7 +188,7 @@ public class FeedbinAPI : Object {
 			return false;
 		}
 	}
-	
+
 	public struct Subscription {
 		int64 id;
 		DateTime created_at;
@@ -196,7 +196,7 @@ public class FeedbinAPI : Object {
 		string? title;
 		string? feed_url;
 		string? site_url;
-		
+
 		public Subscription.from_json(Json.Object object) throws FeedbinError
 		{
 			id = object.get_int_member("id");
@@ -207,13 +207,13 @@ public class FeedbinAPI : Object {
 			site_url = object.get_string_member("site_url");
 		}
 	}
-	
+
 	public Subscription get_subscription(int64 subscription_id) throws FeedbinError
 	{
 		var root = get_json(@"subscriptions/$subscription_id.json");
 		return Subscription.from_json(root.get_object());
 	}
-	
+
 	public Gee.List<Subscription?> get_subscriptions() throws FeedbinError
 	ensures (!result.contains(null))
 	{
@@ -227,17 +227,17 @@ public class FeedbinAPI : Object {
 		}
 		return subscriptions;
 	}
-	
+
 	public void delete_subscription(int64 subscription_id) throws FeedbinError
 	{
 		delete_request(@"subscriptions/$subscription_id.json");
 	}
-	
+
 	public Subscription? add_subscription(string url) throws FeedbinError
 	{
 		Json.Object object = new Json.Object();
 		object.set_string_member("feed_url", url);
-		
+
 		try
 		{
 			var response = post_json_object("subscriptions.json", object);
@@ -245,7 +245,7 @@ public class FeedbinAPI : Object {
 			{
 				throw new FeedbinError.MULTIPLE_CHOICES("Site $url has multiple feeds to subscribe to");
 			}
-			
+
 			var root = parse_json(response);
 			return Subscription.from_json(root.get_object());
 		}
@@ -254,20 +254,20 @@ public class FeedbinAPI : Object {
 			return null;
 		}
 	}
-	
+
 	public void rename_subscription(int64 subscription_id, string title) throws FeedbinError
 	{
 		Json.Object object = new Json.Object();
 		object.set_string_member("title", title);
 		post_json_object(@"subscriptions/$subscription_id/update.json", object);
 	}
-	
+
 	public struct Tagging
 	{
 		int64 id;
 		int64 feed_id;
 		string name;
-		
+
 		public Tagging.from_json(Json.Object object)
 		{
 			id = object.get_int_member("id");
@@ -275,22 +275,22 @@ public class FeedbinAPI : Object {
 			name = object.get_string_member("name");
 		}
 	}
-	
+
 	public void add_tagging(int64 feed_id, string tag_name) throws FeedbinError
 	{
 		Json.Object object = new Json.Object();
 		object.set_int_member("feed_id", feed_id);
 		object.set_string_member("name", tag_name);
-		
+
 		post_json_object("taggings.json", object);
 		// TODO: Return id
 	}
-	
+
 	public void delete_tagging(int64 tagging_id) throws FeedbinError
 	{
 		delete_request(@"taggings/$tagging_id.json");
 	}
-	
+
 	public Gee.List<Tagging?> get_taggings() throws FeedbinError
 	ensures (!result.contains(null))
 	{
@@ -304,7 +304,7 @@ public class FeedbinAPI : Object {
 		}
 		return taggings;
 	}
-	
+
 	public struct Entry
 	{
 		int64 id;
@@ -316,7 +316,7 @@ public class FeedbinAPI : Object {
 		string? summary;
 		DateTime published;
 		DateTime created_at;
-		
+
 		public Entry.from_json(Json.Object object) throws FeedbinError
 		{
 			id = object.get_int_member("id");
@@ -330,7 +330,7 @@ public class FeedbinAPI : Object {
 			created_at = get_datetime_member(object, "created_at");
 		}
 	}
-	
+
 	public Gee.List<Entry?> get_entries(int page, bool only_starred, DateTime? since, int64? feed_id = null) throws FeedbinError
 	requires (page >= 0)
 	ensures (!result.contains(null))
@@ -345,12 +345,12 @@ public class FeedbinAPI : Object {
 				path += "&since=" + t.to_iso8601();
 			}
 		}
-		
+
 		if(feed_id != null)
 		{
 			path = @"feeds/$feed_id/$path";
 		}
-		
+
 		Json.Node root;
 		try
 		{
@@ -360,7 +360,7 @@ public class FeedbinAPI : Object {
 		{
 			return Gee.List.empty<Entry?>();
 		}
-		
+
 		var entries = new Gee.ArrayList<Entry?>();
 		var array = root.get_array();
 		for(var i = 0; i < array.get_length(); ++i)
@@ -370,7 +370,7 @@ public class FeedbinAPI : Object {
 		}
 		return entries;
 	}
-	
+
 	private Gee.Set<int64?> get_x_entries(string path) throws FeedbinError
 	{
 		var root = get_json(path);
@@ -386,17 +386,17 @@ public class FeedbinAPI : Object {
 		}
 		return ids;
 	}
-	
+
 	public Gee.Set<int64?> get_unread_entries() throws FeedbinError
 	{
 		return get_x_entries("unread_entries.json");
 	}
-	
+
 	public Gee.Set<int64?> get_starred_entries() throws FeedbinError
 	{
 		return get_x_entries("starred_entries.json");
 	}
-	
+
 	private void set_entries_status(string type, Gee.Collection<int64?> entry_ids, bool create) throws FeedbinError
 	requires (!entry_ids.contains(null))
 	{
@@ -405,26 +405,26 @@ public class FeedbinAPI : Object {
 		{
 			array.add_int_element(id);
 		}
-		
+
 		Json.Object object = new Json.Object();
 		object.set_array_member(type, array);
-		
+
 		string path = create ? @"$type.json" : @"$type/delete.json";
 		post_json_object(path, object);
 	}
-	
+
 	public void set_entries_read(Gee.Collection<int64?> entry_ids, bool read) throws FeedbinError
 	requires (!entry_ids.contains(null))
 	{
 		set_entries_status("unread_entries", entry_ids, !read);
 	}
-	
+
 	public void set_entries_starred(Gee.Collection<int64?> entry_ids, bool starred) throws FeedbinError
 	requires (!entry_ids.contains(null))
 	{
 		set_entries_status("starred_entries", entry_ids, starred);
 	}
-	
+
 	public Gee.Map<string, Bytes?> get_favicons() throws FeedbinError
 	{
 		// The favicon API isn't public right now; make sure to handle it
@@ -436,13 +436,13 @@ public class FeedbinAPI : Object {
 			{
 				return Gee.Map.empty<string, Bytes?>();
 			}
-			
+
 			var array = root.get_array();
 			if(array == null)
 			{
 				return Gee.Map.empty<string, Bytes?>();
 			}
-			
+
 			var favicons = new Gee.HashMap<string, Bytes?>();
 			for(var i = 0; i < array.get_length(); ++i)
 			{

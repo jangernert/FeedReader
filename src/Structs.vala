@@ -14,7 +14,7 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace FeedReader {
-	
+
 	public struct BackendInfo {
 		string ID;
 		string name;
@@ -22,33 +22,33 @@ namespace FeedReader {
 		string website;
 		string iconName;
 	}
-	
+
 	public struct Response {
 		uint status;
 		string data;
 		Soup.MessageHeaders headers;
-		
+
 		public bool is_ok()
 		{
 			return status >= 200 && status < 400;
 		}
 	}
-	
+
 	public struct ResourceMetadata
 	{
 		private const string CACHE_GROUP = "cache";
 		private const string ETAG_KEY = "etag";
 		private const string LAST_MODIFIED_KEY = "last_modified";
 		private const string EXPIRES_KEY = "last_checked";
-		
+
 		string? etag;
 		string? last_modified;
 		DateTime? expires;
-		
+
 		public ResourceMetadata()
 		{
 		}
-		
+
 		public ResourceMetadata.from_data(string data)
 		{
 			try
@@ -61,7 +61,7 @@ namespace FeedReader {
 				try { this.last_modified = config.get_string(CACHE_GROUP, LAST_MODIFIED_KEY); }
 				catch (KeyFileError.KEY_NOT_FOUND e) {}
 				catch (KeyFileError.GROUP_NOT_FOUND e) {}
-				
+
 				int64? expires = null;
 				try { expires = config.get_int64(CACHE_GROUP, EXPIRES_KEY); }
 				catch (KeyFileError.KEY_NOT_FOUND e) {}
@@ -76,7 +76,7 @@ namespace FeedReader {
 				Logger.warning(@"FaviconMetadata.from_file: Failed to load from $data");
 			}
 		}
-		
+
 		public static async ResourceMetadata from_file_async(string filename)
 		{
 			try
@@ -95,7 +95,7 @@ namespace FeedReader {
 			}
 			return ResourceMetadata();
 		}
-		
+
 		public async void save_to_file_async(string filename)
 		{
 			var file = File.new_for_path(filename);
@@ -147,21 +147,21 @@ namespace FeedReader {
 				}
 			}
 		}
-		
+
 		public bool is_expired()
 		{
 			if(expires == null)
 			{
 				return true;
 			}
-			
+
 			if(expires.compare(new DateTime.now_utc()) == 1)
 			{
 				return false;
 			}
-			
+
 			return true;
 		}
 	}
-	
+
 }

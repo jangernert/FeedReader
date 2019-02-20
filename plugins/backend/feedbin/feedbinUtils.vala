@@ -14,10 +14,10 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.FeedbinUtils : GLib.Object {
-	
+
 	GLib.Settings m_settings;
 	Password m_password;
-	
+
 	public FeedbinUtils(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 	{
 		if(settings_backend != null)
@@ -28,7 +28,7 @@ public class FeedReader.FeedbinUtils : GLib.Object {
 		{
 			m_settings = new GLib.Settings("org.gnome.feedreader.feedbin");
 		}
-		
+
 		var password_schema =
 		new Secret.Schema("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 			"URL", Secret.SchemaAttributeType.STRING,
@@ -40,27 +40,27 @@ public class FeedReader.FeedbinUtils : GLib.Object {
 			return attributes;
 		});
 	}
-	
+
 	public string getUser()
 	{
 		return Utils.gsettingReadString(m_settings, "username");
 	}
-	
+
 	public void setUser(string user)
 	{
 		Utils.gsettingWriteString(m_settings, "username", user);
 	}
-	
+
 	public string getPassword(Cancellable? cancellable = null)
 	{
 		return m_password.get_password(cancellable);
 	}
-	
+
 	public void setPassword(string password, Cancellable? cancellable = null)
 	{
 		m_password.set_password(password, cancellable);
 	}
-	
+
 	public void resetAccount(Cancellable? cancellable = null)
 	{
 		Utils.resetSettings(m_settings);

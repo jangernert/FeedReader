@@ -14,33 +14,33 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.DataBaseReadOnly : GLib.Object {
-	
+
 	protected SQLite m_db;
-	
+
 	static construct {
 		Sqlite.config(Sqlite.Config.LOG, errorLogCallback);
 	}
-	
+
 	public DataBaseReadOnly(string db_file = "feedreader-%01i.db".printf(Constants.DB_SCHEMA_VERSION))
 	{
 		string db_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/" + db_file;
-		
+
 		Logger.debug(@"Opening Database: $db_path");
 		m_db = new SQLite(db_path);
 	}
-	
+
 	private void errorLogCallback(int code, string msg)
 	{
 		Logger.error(@"dbErrorLog: $code: $msg");
 	}
-	
+
 	public void init()
 	{
 		Logger.debug("init database");
 		m_db.simple_query("PRAGMA journal_mode = WAL");
 		m_db.simple_query("PRAGMA page_size = 4096");
 		m_db.simple_query("PRAGMA foreign_keys = ON");
-		
+
 		m_db.simple_query("""
 			CREATE  TABLE  IF NOT EXISTS "main"."feeds"
 			(
@@ -53,7 +53,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				"iconURL" TEXT
 			)
 		""");
-		
+
 		m_db.simple_query("""
 			CREATE  TABLE  IF NOT EXISTS "main"."categories"
 			(
@@ -65,7 +65,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				"Level" INTEGER
 			)
 		""");
-		
+
 		m_db.simple_query("""
 			CREATE  TABLE  IF NOT EXISTS "main"."articles"
 			(
@@ -84,7 +84,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				"contentFetched" INTEGER NOT NULL
 			)
 		""");
-		
+
 		m_db.simple_query("""
 			CREATE  TABLE  IF NOT EXISTS "main"."tags"
 			(
@@ -94,7 +94,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				"color" INTEGER
 			)
 		""");
-		
+
 		m_db.simple_query("""
 			CREATE  TABLE  IF NOT EXISTS "main"."CachedActions"
 			(
@@ -103,7 +103,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				"argument" INTEGER
 			)
 		""");
-		
+
 		m_db.simple_query("""
 			CREATE  TABLE  IF NOT EXISTS "main"."Enclosures"
 			(
@@ -113,7 +113,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				FOREIGN KEY(articleID) REFERENCES articles(articleID)
 			)
 		""");
-		
+
 		m_db.simple_query("""
 			CREATE  TABLE  IF NOT EXISTS "main"."taggings"
 			(
@@ -123,18 +123,18 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				FOREIGN KEY(tagID) REFERENCES tags(tagID)
 			)
 		""");
-		
+
 		m_db.simple_query("""
 			CREATE INDEX IF NOT EXISTS "index_articles"
 			ON "articles" ("feedID" DESC, "unread" ASC, "marked" ASC)
 		""");
-		
+
 		m_db.simple_query("""
 			CREATE VIRTUAL TABLE IF NOT EXISTS fts_table
 			USING fts4 (content='articles', articleID, preview, title, author)
 		""");
 	}
-	
+
 	public bool uninitialized()
 	{
 		string query = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='articles'";
@@ -142,7 +142,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		assert(rows.size == 1 && rows[0].size == 1);
 		return rows[0][0].to_int() == 0;
 	}
-	
+
 	public bool isEmpty()
 	{
 		return isTableEmpty("articles")
@@ -150,7 +150,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		&& isTableEmpty("feeds")
 		&& isTableEmpty("tags");
 	}
-	
+
 	public bool isTableEmpty(string table)
 	requires (table != "")
 	{
@@ -159,7 +159,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		assert(rows.size == 1 && rows[0].size == 1);
 		return rows[0][0].to_int() == 0;
 	}
-	
+
 	private uint count_article_status(ArticleStatus status)
 	{
 		var query = "SELECT COUNT(*) FROM articles";
@@ -172,17 +172,17 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		assert(rows.size == 1 && rows[0].size == 1);
 		return rows[0][0].to_int();
 	}
-	
+
 	public uint get_unread_total()
 	{
 		return count_article_status(ArticleStatus.UNREAD);
 	}
-	
+
 	public uint get_marked_total()
 	{
 		return count_article_status(ArticleStatus.MARKED);
 	}
-	
+
 	private uint count_status_uncategorized(ArticleStatus status)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
@@ -192,15 +192,15 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		{
 			query.where_equal_int(status_column, status.to_int());
 		}
-		
-		
+
+
 		var subquery = new QueryBuilder(QueryType.SELECT, "feeds");
 		subquery.select_field("feed_id");
 		subquery.where(getUncategorizedQuery());
 		query.where("feedID IN (%s)".printf(subquery.to_string()));
-		
+
 		Sqlite.Statement stmt = m_db.prepare(query.to_string());
-		
+
 		int unread = 0;
 		while (stmt.step() == Sqlite.ROW) {
 			unread = stmt.column_int(0);
@@ -208,30 +208,30 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		stmt.reset();
 		return unread;
 	}
-	
+
 	public uint get_unread_uncategorized()
 	{
 		return count_status_uncategorized(ArticleStatus.UNREAD);
 	}
-	
+
 	public uint get_marked_uncategorized()
 	{
 		return count_status_uncategorized(ArticleStatus.MARKED);
 	}
-	
+
 	public int get_new_unread_count(int row_id)
 	{
 		if(row_id == 0)
 		{
 			return 0;
 		}
-		
+
 		string query = "SELECT count(*) FROM articles WHERE unread = ? AND rowid > ?";
 		var rows = m_db.execute(query, { ArticleStatus.UNREAD, row_id });
 		assert(rows.size == 1 && rows[0].size == 1);
 		return rows[0][0].to_int();
 	}
-	
+
 	public int getTagColor()
 	{
 		var rows = m_db.execute("SELECT COUNT(*) FROM tags WHERE instr(tagID, 'global.') = 0");
@@ -239,14 +239,14 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		int tagCount = rows[0][0].to_int();
 		return tagCount % Constants.COLORS.length;
 	}
-	
+
 	public bool tag_still_used(Tag tag)
 	{
 		var query = "SELECT 1 FROM main.taggings WHERE tagID = ? LIMIT 1";
 		var rows = m_db.execute(query, { tag.getTagID() });
 		return rows.size > 0;
 	}
-	
+
 	public string? getTagName(string tag_id)
 	{
 		var query = "SELECT title FROM tags WHERE tagID = ?";
@@ -258,7 +258,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 		return _("Unknown tag");
 	}
-	
+
 	public int getLastModified()
 	{
 		var query = "SELECT MAX(lastModified) FROM articles";
@@ -273,31 +273,31 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			return 0;
 		}
 	}
-	
+
 	public string getCategoryName(string catID)
 	{
 		if(catID == CategoryID.TAGS.to_string())
 		{
 			return "Tags";
 		}
-		
+
 		var query = "SELECT title FROM categories WHERE categorieID = ?";
 		var rows = m_db.execute(query, { catID });
-		
+
 		string result = "";
 		if(rows.size != 0)
 		{
 			result = rows[0][0].to_string();
 		}
-		
+
 		if(result == "")
 		{
 			result = _("Uncategorized");
 		}
-		
+
 		return result;
 	}
-	
+
 	public string? getCategoryID(string catname)
 	{
 		var query = "SELECT categorieID FROM categories WHERE title = ?";
@@ -311,7 +311,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			return rows[0][0].to_string();
 		}
 	}
-	
+
 	public bool preview_empty(string articleID)
 	{
 		var query = "SELECT COUNT(*) FROM articles WHERE articleID = ? AND preview != ''";
@@ -319,7 +319,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		assert(rows.size == 1 && rows[0].size == 1);
 		return rows[0][0].to_int() != 0;
 	}
-	
+
 	public Gee.List<Article> read_article_between(
 		string feedID,
 		FeedListType selectedType,
@@ -332,7 +332,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	{
 		var query = articleQuery(feedID, selectedType, state, searchTerm);
 		var sorting = (ArticleListSort)Settings.general().get_enum("articlelist-sort-by");
-		
+
 		if(sorting == ArticleListSort.RECEIVED)
 		{
 			query.where(
@@ -348,9 +348,9 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				var smallerDate = (bigger) ? date2.to_unix() : date1.to_unix();
 				query.where(@"date BETWEEN $smallerDate AND $biggerDate");
 			}
-			
+
 			Sqlite.Statement stmt = m_db.prepare(query.to_string());
-			
+
 			var articles = new Gee.ArrayList<Article>();
 			while (stmt.step () == Sqlite.ROW)
 			{
@@ -359,7 +359,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				{
 					continue;
 				}
-				
+
 				articles.add(new Article(
 					stmt.column_text(2),                                                                                                                                                                       // articleID
 					stmt.column_text(3),                                                                                                                                                                       // title
@@ -380,32 +380,32 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			stmt.reset();
 			return articles;
 		}
-		
+
 		private Gee.List<Enclosure> read_enclosures(string article_id)
 		{
 			var list = new Gee.ArrayList<Enclosure>();
-			
+
 			var query = "SELECT url, type FROM Enclosures WHERE articleID = ?";
 			var rows = m_db.execute(query, { article_id });
-			
+
 			foreach(var row in rows)
 			{
 				list.add(new Enclosure(article_id, row[0].to_string(), (EnclosureType)row[1].to_int()));
 			}
-			
+
 			return list;
 		}
-		
+
 		public Gee.HashMap<string, Article> read_article_stats(Gee.List<string> ids)
 		{
 			var query = new QueryBuilder(QueryType.SELECT, "articles");
 			query.select_field("articleID, unread, marked");
 			query.where_in_strings("articleID", ids);
-			
+
 			Sqlite.Statement stmt = m_db.prepare(query.to_string());
-			
+
 			var articles = new Gee.HashMap<string, Article>();
-			
+
 			while(stmt.step() == Sqlite.ROW)
 			{
 				articles.set(stmt.column_text(0),
@@ -415,7 +415,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				stmt.reset();
 				return articles;
 			}
-			
+
 			public Article? read_article(string articleID)
 			{
 				Logger.debug(@"DataBaseReadOnly.read_article(): $articleID");
@@ -430,7 +430,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				{
 					author = null;
 				}
-				
+
 				return new Article(
 					articleID,
 					row[3].to_string(),
@@ -448,7 +448,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					row[11].to_string()                                                                                     // guid
 				);
 			}
-			
+
 			public int getMaxCatLevel()
 			{
 				var rows = m_db.execute("SELECT MAX(Level) FROM categories");
@@ -460,18 +460,18 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				}
 				return maxCatLevel;
 			}
-			
+
 			public bool haveFeedsWithoutCat()
 			{
 				var query = new QueryBuilder(QueryType.SELECT, "feeds");
 				query.select_field("count(*)");
 				query.where(getUncategorizedQuery());
-				
+
 				Sqlite.Statement stmt = m_db.prepare(query.to_string());
-				
+
 				while (stmt.step () == Sqlite.ROW) {
 					int count = stmt.column_int(0);
-					
+
 					if(count > 0)
 					{
 						return true;
@@ -479,34 +479,34 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				}
 				return false;
 			}
-			
+
 			public bool haveCategories()
 			{
 				var rows = m_db.execute("SELECT COUNT(*) FROM categories");
 				assert(rows.size == 1 && rows[0].size == 1);
 				return rows[0][0].to_int() > 0;
 			}
-			
+
 			public bool article_exists(string articleID)
 			{
 				var rows = m_db.execute("SELECT 1 FROM articles WHERE articleID = ? LIMIT 1", { articleID });
 				return rows.size != 0;
 			}
-			
+
 			public int getArticleCountNewerThanID(string articleID, string feedID, FeedListType selectedType, ArticleListState state, string searchTerm)
 			ensures (result >= 0)
 			{
 				string order_by = ((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.RECEIVED) ? "rowid" : "date";
-				
+
 				var query = new QueryBuilder(QueryType.SELECT, "articles");
 				query.where_equal_string("articleID", articleID);
-				
+
 				var query2 = new QueryBuilder(QueryType.SELECT, "articles");
 				query2.select_field("count(*)");
-				
-				
+
+
 				query.select_field(order_by);
-				
+
 				if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
 				{
 					query2.where(@"$order_by < (%s)".printf(query.to_string()));
@@ -515,8 +515,8 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				{
 					query2.where(@"$order_by > (%s)".printf(query.to_string()));
 				}
-				
-				
+
+
 				if(selectedType == FeedListType.FEED && feedID != FeedID.ALL.to_string())
 				{
 					query2.where_equal_string("feedID", feedID);
@@ -533,7 +533,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				{
 					query2.where_in_strings("articleID", read_taggings_by_tag_id(feedID));
 				}
-				
+
 				if(state == ArticleListState.UNREAD)
 				{
 					query2.where_equal_int("unread", ArticleStatus.UNREAD.to_int());
@@ -542,7 +542,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				{
 					query2.where_equal_int("marked", ArticleStatus.MARKED.to_int());
 				}
-				
+
 				if(searchTerm != "")
 				{
 					string search_column;
@@ -568,37 +568,37 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 							search_column,
 						SQLite.quote_string(Utils.prepareSearchQuery(searchTerm))));
 					}
-					
+
 					bool desc = true;
 					if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
 					{
 						desc = false;
 					}
-					
+
 					query2.order_by(order_by, desc);
-					
+
 					Sqlite.Statement stmt = m_db.prepare(query2.to_string());
-					
+
 					int res = 0;
 					while (stmt.step () == Sqlite.ROW) {
 						res = stmt.column_int(0);
 					}
 					return res;
 				}
-				
+
 				public Gee.List<string> getFeedIDofCategorie(string categorieID)
 				{
 					var feedIDs = new Gee.ArrayList<string>();
-					
+
 					var query = new QueryBuilder(QueryType.SELECT, "feeds");
 					query.select_field("feed_id, category_id");
-					
+
 					Sqlite.Statement stmt = m_db.prepare(query.to_string());
-					
+
 					while (stmt.step() == Sqlite.ROW) {
 						string catString = stmt.column_text(1);
 						string[] categories = catString.split(",");
-						
+
 						if(categorieID == "")
 						{
 							if((categories.length == 0)
@@ -620,13 +620,13 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					}
 					return feedIDs;
 				}
-				
+
 				protected string getUncategorizedQuery()
 				{
 					string catID = FeedServer.get_default().uncategorizedID();
 					return "category_id = %s".printf(SQLite.quote_string(catID));
 				}
-				
+
 				protected bool showCategory(string catID, Gee.List<Feed> feeds)
 				{
 					if(FeedServer.get_default().hideCategoryWhenEmpty(catID)
@@ -636,7 +636,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					}
 					return true;
 				}
-				
+
 				public string getFeedIDofArticle(string articleID)
 				{
 					var rows = m_db.execute("SELECT feedID FROM articles WHERE articleID = ?", { articleID });
@@ -651,7 +651,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					}
 					return id;
 				}
-				
+
 				public string getNewestArticle()
 				{
 					var rows = m_db.execute("SELECT articleID FROM articles WHERE rowid = ?",  { getMaxID("articles", "rowid") });
@@ -661,7 +661,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					}
 					return rows[0][0].to_string();
 				}
-				
+
 				public string getMaxID(string table, string field)
 				{
 					var rows = m_db.execute(@"SELECT MAX($field) FROM $table");
@@ -676,7 +676,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					}
 					return id;
 				}
-				
+
 				public bool feed_exists(string feed_url)
 				{
 					var rows = m_db.execute("SELECT COUNT(*) FROM main.feeds WHERE url = ? LIMIT 1", { feed_url });
@@ -684,7 +684,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					// FIXME: Why > 1 and not > 0?
 					return rows[0][0].to_int() > 1;
 				}
-				
+
 				public Feed? read_feed(string feedID)
 				{
 					var rows = m_db.execute("SELECT * FROM feeds WHERE feed_id = ?", { feedID });
@@ -692,7 +692,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					{
 						return null;
 					}
-					
+
 					var row = rows[0];
 					return new Feed(
 						feedID,
@@ -703,20 +703,20 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 						row[6].to_string(),
 					row[5].to_string());
 				}
-				
+
 				public Gee.List<Feed> read_feeds(bool starredCount = false)
 				{
 					Gee.List<Feed> feeds = new Gee.ArrayList<Feed>();
-					
+
 					var query = new QueryBuilder(QueryType.SELECT, "feeds");
 					query.select_field("*");
 					if(Settings.general().get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
 					{
 						query.order_by("name", true);
 					}
-					
+
 					Sqlite.Statement stmt = m_db.prepare(query.to_string());
-					
+
 					while (stmt.step () == Sqlite.ROW) {
 						string feedID = stmt.column_text(0);
 						string catString = stmt.column_text(3);
@@ -725,7 +725,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 						string url = stmt.column_text(2);
 						string name = stmt.column_text(1);
 						var categories = StringUtils.split(catString, ",", true);
-						
+
 						uint count = 0;
 						if(starredCount)
 						{
@@ -735,14 +735,14 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 						{
 							count = getFeedUnread(feedID);
 						}
-						
+
 						var feed = new Feed(feedID, name, url, count, categories, iconURL, xmlURL);
 						feeds.add(feed);
 					}
-					
+
 					return feeds;
 				}
-				
+
 				public uint getFeedUnread(string feedID)
 				{
 					var query = "SELECT COUNT(*) FROM articles WHERE unread = ? AND feedID = ?";
@@ -750,7 +750,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					assert(rows.size == 1 && rows[0].size == 1);
 					return rows[0][0].to_int();
 				}
-				
+
 				public uint getFeedStarred(string feedID)
 				{
 					var query = "SELECT COUNT(*) FROM articles WHERE marked = ? AND feedID = ?";
@@ -758,11 +758,11 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					assert(rows.size == 1 && rows[0].size == 1);
 					return rows[0][0].to_int();
 				}
-				
+
 				public Gee.List<Feed> read_feeds_without_cat()
 				{
 					var feeds = new Gee.ArrayList<Feed>();
-					
+
 					var query = new QueryBuilder(QueryType.SELECT, "feeds");
 					query.select_field("*");
 					query.where(getUncategorizedQuery());
@@ -770,9 +770,9 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					{
 						query.order_by("name", true);
 					}
-					
+
 					Sqlite.Statement stmt = m_db.prepare(query.to_string());
-					
+
 					while (stmt.step () == Sqlite.ROW) {
 						string feedID = stmt.column_text(0);
 						string catString = stmt.column_text(3);
@@ -784,10 +784,10 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 						var feed = new Feed(feedID, name, url, getFeedUnread(feedID), categories, iconURL, xmlURL);
 						feeds.add(feed);
 					}
-					
+
 					return feeds;
 				}
-				
+
 				public Category? read_category(string catID)
 				{
 					var query = "SELECT * FROM categories WHERE categorieID = ?";
@@ -796,7 +796,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					{
 						return null;
 					}
-					
+
 					var row = rows[0];
 					return new Category(
 						catID,
@@ -807,11 +807,11 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 						row[5].to_int()
 					);
 				}
-				
+
 				public Gee.List<Tag> read_tags()
 				{
 					var rows = m_db.execute("SELECT * FROM tags WHERE instr(tagID, 'global.') = 0");
-					
+
 					var tags = new Gee.ArrayList<Tag>();
 					foreach(var row in rows)
 					{
@@ -821,38 +821,38 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 						row[3].to_int());
 						tags.add(tag);
 					}
-					
+
 					return tags;
 				}
-				
+
 				private Gee.List<string> read_taggings_by_article_id(string articleID)
 				{
 					var list = new Gee.LinkedList<string>();
-					
+
 					var rows = m_db.execute("SELECT tagID FROM taggings WHERE articleID = ?", { articleID });
-					
+
 					foreach(var row in rows)
 					{
 						list.add(row[0].to_string());
 					}
-					
+
 					return list;
 				}
-				
+
 				private Gee.List<string> read_taggings_by_tag_id(string tagID)
 				{
 					var list = new Gee.LinkedList<string>();
-					
+
 					var rows = m_db.execute("SELECT articleID FROM taggings WHERE tagID = ?", { tagID });
-					
+
 					foreach(var row in rows)
 					{
 						list.add(row[0].to_string());
 					}
-					
+
 					return list;
 				}
-				
+
 				public Tag? read_tag(string tagID)
 				{
 					var query = "SELECT * FROM tags WHERE tagID = ?";
@@ -861,24 +861,24 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					{
 						return null;
 					}
-					
+
 					var row = rows[0];
 					return new Tag(
 						row[0].to_string(),
 						row[1].to_string(),
 					row[3].to_int());
 				}
-				
+
 				protected string getAllTagsCondition()
 				{
 					return "articleID IN (SELECT articleID FROM taggings WHERE instr(tagID, 'global.') = 0)";
 				}
-				
+
 				public Gee.List<Category> read_categories_level(int level, Gee.List<Feed>? feeds = null)
 				{
 					var categories = read_categories(feeds);
 					var results = new Gee.ArrayList<Category>();
-					
+
 					foreach(Category cat in categories)
 					{
 						if(cat.getLevel() == level)
@@ -886,15 +886,15 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 							results.add(cat);
 						}
 					}
-					
+
 					return results;
 				}
-				
+
 				public Gee.List<Category> read_categories(Gee.List<Feed>? feeds = null)
 				{
 					var query = new QueryBuilder(QueryType.SELECT, "categories");
 					query.select_field("*");
-					
+
 					if(Settings.general().get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
 					{
 						query.order_by("title", true);
@@ -903,14 +903,14 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					{
 						query.order_by("orderID", true);
 					}
-					
+
 					Sqlite.Statement stmt = m_db.prepare(query.to_string());
-					
+
 					var results = new Gee.ArrayList<Category>();
 					while(stmt.step () == Sqlite.ROW)
 					{
 						string catID = stmt.column_text(0);
-						
+
 						if(feeds == null || showCategory(catID, feeds))
 						{
 							var category = new Category(
@@ -921,18 +921,18 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 								stmt.column_text(4),
 								stmt.column_int(5)
 							);
-							
+
 							results.add(category);
 						}
 					}
-					
+
 					return results;
 				}
-				
+
 				public Gee.List<Article> readUnfetchedArticles()
 				{
 					var rows = m_db.execute("SELECT articleID, url, preview, html, feedID FROM articles WHERE contentFetched = 0");
-					
+
 					var articles = new Gee.LinkedList<Article>();
 					foreach(var row in rows)
 					{
@@ -951,11 +951,11 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					}
 					return articles;
 				}
-				
+
 				public QueryBuilder articleQuery(string id, FeedListType selectedType, ArticleListState state, string searchTerm)
 				{
 					string order_by = ((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.RECEIVED) ? "rowid" : "date";
-					
+
 					var query = new QueryBuilder(QueryType.SELECT, "articles");
 					query.select_field("ROWID");
 					query.select_field("feedID");
@@ -968,7 +968,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					query.select_field("marked");
 					query.select_field("date");
 					query.select_field("guidHash");
-					
+
 					if(selectedType == FeedListType.FEED && id != FeedID.ALL.to_string())
 					{
 						query.where_equal_string("feedID", id);
@@ -985,7 +985,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					{
 						query.where_in_strings("articleID", read_taggings_by_tag_id(id));
 					}
-					
+
 					if(state == ArticleListState.UNREAD)
 					{
 						query.where_equal_int("unread", ArticleStatus.UNREAD.to_int());
@@ -994,7 +994,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					{
 						query.where_equal_int("marked", ArticleStatus.MARKED.to_int());
 					}
-					
+
 					if(searchTerm != "")
 					{
 						if(searchTerm.has_prefix("title: "))
@@ -1014,40 +1014,40 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 							query.where("articleID IN (SELECT articleID FROM fts_table WHERE fts_table MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
 						}
 					}
-					
+
 					bool desc = true;
 					if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
 					{
 						desc = false;
 					}
-					
+
 					query.order_by(order_by, desc);
-					
+
 					return query;
 				}
-				
+
 				public Gee.List<Article> read_articles(string id, FeedListType selectedType, ArticleListState state, string searchTerm, uint limit = 20, uint offset = 0, int searchRows = 0)
 				requires (limit > 0)
 				{
 					var query = articleQuery(id, selectedType, state, searchTerm);
-					
+
 					string desc = "DESC";
 					if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
 					{
 						desc = "ASC";
 					}
-					
+
 					if(searchRows != 0)
 					{
 						string order_by = ((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.RECEIVED) ? "rowid" : "date";
 						query.where(@"articleID in (SELECT articleID FROM articles ORDER BY $order_by $desc LIMIT $searchRows)");
 					}
-					
+
 					query.limit(limit);
 					query.offset(offset);
-					
+
 					Sqlite.Statement stmt = m_db.prepare(query.to_string());
-					
+
 					var results = new Gee.LinkedList<Article>();
 					while (stmt.step () == Sqlite.ROW)
 					{
@@ -1068,7 +1068,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 							stmt.column_text(10)                                                                                                                                        // guid
 						));
 					}
-					
+
 					return results;
 				}
 			}

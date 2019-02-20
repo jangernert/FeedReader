@@ -14,13 +14,13 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.ttrssAPI : GLib.Object {
-	
+
 	public string m_ttrss_url { get; private set; }
 	private ttrssUtils m_utils;
 	private string m_ttrss_sessionid;
 	private string? m_iconDir = null;
 	private Soup.Session m_session;
-	
+
 	public ttrssAPI (ttrssUtils utils)
 	{
 		m_utils = utils;
@@ -38,15 +38,15 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			}
 		});
 	}
-	
-	
+
+
 	public LoginResponse login()
 	{
 		Logger.debug("TTRSS: login");
 		string username = m_utils.getUser();
 		string passwd = m_utils.getPasswd();
 		m_ttrss_url = m_utils.getURL();
-		
+
 		if(m_ttrss_url == "" && username == "" && passwd == "")
 		{
 			m_ttrss_url = "example-host/tt-rss";
@@ -64,8 +64,8 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		{
 			return LoginResponse.MISSING_PASSWD;
 		}
-		
-		
+
+
 		var message = new ttrssMessage(m_session, m_ttrss_url);
 		message.add_string("op", "login");
 		if(username != "")
@@ -74,7 +74,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		}
 		message.add_string("password", passwd);
 		int status = message.send();
-		
+
 		if(status == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
@@ -82,17 +82,17 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			var api_level = UntypedJson.Object.get_int_member(response, "api_level");
 			Logger.info("TTRSS Session ID: %s".printf(m_ttrss_sessionid));
 			Logger.info("TTRSS API Level: %lld".printf(api_level));
-			
+
 			m_iconDir = m_ttrss_url.replace("api/", getIconDir());
-			
+
 			if(haveAPIplugin())
 			{
 				return LoginResponse.SUCCESS;
 			}
-			
+
 			return LoginResponse.PLUGIN_NEEDED;
 		}
-		
+
 		if(status == ConnectionError.API_ERROR)
 		{
 			return LoginResponse.API_ERROR;
@@ -113,10 +113,10 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		{
 			return LoginResponse.UNAUTHORIZED;
 		}
-		
+
 		return LoginResponse.UNKNOWN_ERROR;
 	}
-	
+
 	public bool logout()
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -124,18 +124,18 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_string("op", "logout");
 		int status = message.send();
 		Logger.warning("TTRSS: logout");
-		
+
 		if(status == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
 			m_ttrss_sessionid = "";
 			return response.get_boolean_member("status");
 		}
-		
+
 		return false;
 	}
-	
-	
+
+
 	public bool isloggedin()
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -143,23 +143,23 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_string("op", "isLoggedIn");
 		int status = message.send();
 		Logger.debug("TTRSS: isloggedin?");
-		
+
 		if(status == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
 			return response.get_boolean_member("status");
 		}
-		
+
 		return false;
 	}
-	
+
 	private bool haveAPIplugin()
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "removeLabel");
 		int status = message.send();
-		
+
 		if(status == ConnectionError.API_ERROR)
 		{
 			var response = message.get_response_object();
@@ -171,11 +171,11 @@ public class FeedReader.ttrssAPI : GLib.Object {
 				}
 			}
 		}
-		
+
 		return false;
 	}
-	
-	
+
+
 	public int getUnreadCount()
 	{
 		int unread = 0;
@@ -183,7 +183,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getUnread");
 		int status = message.send();
-		
+
 		if(status == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
@@ -198,11 +198,11 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			}
 		}
 		Logger.info("There are %i unread articles".printf(unread));
-		
+
 		return unread;
 	}
-	
-	
+
+
 	public bool getFeeds(Gee.List<Feed> feeds, Gee.List<Category> categories)
 	{
 		foreach(var item in categories)
@@ -214,18 +214,18 @@ public class FeedReader.ttrssAPI : GLib.Object {
 				message.add_string("op", "getFeeds");
 				message.add_int("cat_id", int.parse(item.getCatID()));
 				int status = message.send();
-				
+
 				if(status == ConnectionError.SUCCESS)
 				{
 					var response = message.get_response_array();
 					var feed_count = response.get_length();
-					
+
 					for(uint i = 0; i < feed_count; i++)
 					{
 						var feed_node = response.get_object_element(i);
 						string feed_id = UntypedJson.Object.get_string_member(feed_node, "id");
 						string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir + feed_id + ".ico" : null;
-						
+
 						feeds.add(
 							new Feed(
 								feed_id,
@@ -247,8 +247,8 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		}
 		return true;
 	}
-	
-	
+
+
 	public bool getUncategorizedFeeds(Gee.List<Feed> feeds)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -256,18 +256,18 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_string("op", "getFeeds");
 		message.add_int("cat_id", 0);
 		int status = message.send();
-		
+
 		if(status == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_array();
 			var feed_count = response.get_length();
-			
+
 			for(uint i = 0; i < feed_count; i++)
 			{
 				var feed_node = response.get_object_element(i);
 				string feed_id = UntypedJson.Object.get_string_member(feed_node, "id");
 				string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir + feed_id + ".ico" : null;
-				
+
 				feeds.add(
 					new Feed(
 						feed_id,
@@ -282,22 +282,22 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			}
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	public bool getTags(Gee.List<Tag> tags)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getLabels");
 		int status = message.send();
-		
+
 		if(status == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_array();
 			var tag_count = response.get_length();
-			
+
 			var db = DataBase.readOnly();
 			for(uint i = 0; i < tag_count; ++i)
 			{
@@ -310,31 +310,31 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					)
 				);
 			}
-			
+
 			return true;
 		}
-		
+
 		return false;
 	}
-	
-	
+
+
 	public string? getIconDir()
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getConfig");
 		int status = message.send();
-		
+
 		if(status == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
 			return response.get_string_member("icons_url") + "/";
 		}
-		
+
 		return null;
 	}
-	
-	
+
+
 	public bool getCategories(Gee.List<Category> categories)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -342,7 +342,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_string("op", "getFeedTree");
 		message.add_bool("include_empty", true);
 		int status = message.send();
-		
+
 		if(status == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
@@ -353,11 +353,11 @@ public class FeedReader.ttrssAPI : GLib.Object {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
-	
+
+
 	private void getSubCategories(Gee.List<Category> categories, Json.Object categorie, int level, string parent)
 	{
 		level++;
@@ -372,17 +372,17 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			{
 				orderID++;
 				string categorieID = catID.slice(4, catID.length);
-				
+
 				if(int.parse(categorieID) > 0)
 				{
 					string title = categorie_node.get_string_member("name");
 					int unread_count = UntypedJson.Object.get_int_member(categorie_node, "unread");
-					
+
 					if(title == "Uncategorized")
 					{
 						unread_count = getUncategorizedUnread();
 					}
-					
+
 					categories.add(
 						new Category (
 							categorieID,
@@ -394,13 +394,13 @@ public class FeedReader.ttrssAPI : GLib.Object {
 						)
 					);
 				}
-				
+
 				getSubCategories(categories, categorie_node, level, categorieID);
 			}
 		}
 	}
-	
-	
+
+
 	private int getUncategorizedUnread()
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -408,12 +408,12 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_string("op", "getCounters");
 		message.add_string("output_mode", "c");
 		int status = message.send();
-		
+
 		if(status == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_array();
 			var categorie_count = response.get_length();
-			
+
 			for(int i = 0; i < categorie_count; i++)
 			{
 				var categorie_node = response.get_object_element(i);
@@ -429,11 +429,11 @@ public class FeedReader.ttrssAPI : GLib.Object {
 				}
 			}
 		}
-		
+
 		return 0;
 	}
-	
-	
+
+
 	public void getHeadlines(Gee.List<Article> articles, int skip, int limit, ArticleStatus whatToGet, int feedID)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -442,44 +442,44 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_int("feed_id", feedID);
 		message.add_int("limit", limit);
 		message.add_int("skip", skip);
-		
+
 		switch(whatToGet)
 		{
 			case ArticleStatus.ALL:
 			message.add_string("view_mode", "all_articles");
 			break;
-			
+
 			case ArticleStatus.UNREAD:
 			message.add_string("view_mode", "unread");
 			break;
-			
+
 			case ArticleStatus.MARKED:
 			message.add_string("view_mode", "marked");
 			break;
 		}
-		
+
 		int status = message.send();
-		
+
 		if(status == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_array();
 			var headline_count = response.get_length();
-			
+
 			for(uint i = 0; i < headline_count; i++)
 			{
 				var headline_node = response.get_object_element(i);
-				
+
 				Gee.List<string>? tags = null;
 				if(headline_node.has_member("labels"))
 				{
 					var labels = headline_node.get_array_member("labels");
-					
+
 					uint tag_count = 0;
 					if(labels != null)
 					{
 						tag_count = labels.get_length();
 					}
-					
+
 					if(tag_count > 0)
 					{
 						tags = new Gee.ArrayList<string>();
@@ -489,18 +489,18 @@ public class FeedReader.ttrssAPI : GLib.Object {
 						}
 					}
 				}
-				
+
 				var enclosures = new Gee.ArrayList<Enclosure>();
 				if(headline_node.has_member("attachments"))
 				{
 					var attachments = headline_node.get_array_member("attachments");
-					
+
 					uint mediaCount = 0;
 					if(attachments != null)
 					{
 						mediaCount = attachments.get_length();
 					}
-					
+
 					for(int j = 0; j < mediaCount; ++j)
 					{
 						var attachment = attachments.get_object_element(j);
@@ -510,7 +510,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 						EnclosureType.from_string(attachment.get_string_member("content_type"))));
 					}
 				}
-				
+
 				var Article = new Article(
 					UntypedJson.Object.get_string_member(headline_node, "id"),
 					headline_node.get_string_member("title"),
@@ -526,12 +526,12 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					tags,
 					enclosures
 				);
-				
+
 				articles.add(Article);
 			}
 		}
 	}
-	
+
 	// tt-rss server needs newsplusplus extention
 	public Gee.List<string>? NewsPlus(ArticleStatus type, int limit)
 	{
@@ -553,14 +553,14 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			return null;
 		}
 		int status = message.send();
-		
+
 		if(status == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_array();
 			var headline_count = response.get_length();
-			
+
 			var ids = new Gee.LinkedList<string>();
-			
+
 			for(uint i = 0; i < headline_count; i++)
 			{
 				var headline_node = response.get_object_element(i);
@@ -570,8 +570,8 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		}
 		return null;
 	}
-	
-	
+
+
 	public Gee.List<Article> getArticles(Gee.List<int> articleIDs)
 	{
 		var articles = new Gee.ArrayList<Article>();
@@ -579,56 +579,56 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		{
 			return articles;
 		}
-		
+
 		var message = new ttrssMessage(m_session, m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getArticle");
 		message.add_comma_separated_int_array("article_id", articleIDs);
 		int status = message.send();
-		
+
 		if(status == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_array();
 			var article_count = response.get_length();
 			Logger.debug(@"Got $article_count new articles");
-			
+
 			for(uint i = 0; i < article_count; i++)
 			{
 				var article_node = response.get_object_element(i);
-				
+
 				Gee.List<string>? tags = null;
 				if(article_node.has_member("labels"))
 				{
 					var labels = article_node.get_array_member("labels");
-					
+
 					uint tag_count = 0;
 					if(labels != null)
 					{
 						tag_count = labels.get_length();
 					}
-					
+
 					if(tag_count > 0)
 					{
 						tags = new Gee.ArrayList<string>();
 					}
-					
+
 					for(int j = 0; j < tag_count; ++j)
 					{
 						tags.add(labels.get_array_element(j).get_int_element(0).to_string());
 					}
 				}
-				
+
 				var enclosures = new Gee.ArrayList<Enclosure>();
 				if(article_node.has_member("attachments"))
 				{
 					var attachments = article_node.get_array_member("attachments");
-					
+
 					uint mediaCount = 0;
 					if(attachments != null)
 					{
 						mediaCount = attachments.get_length();
 					}
-					
+
 					for(int j = 0; j < mediaCount; ++j)
 					{
 						var attachment = attachments.get_object_element(j);
@@ -638,7 +638,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 						EnclosureType.from_string(attachment.get_string_member("content_type"))));
 					}
 				}
-				
+
 				var Article = new Article(
 					UntypedJson.Object.get_string_member(article_node, "id"),
 					article_node.get_string_member("title"),
@@ -654,13 +654,13 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					tags,
 					enclosures
 				);
-				
+
 				articles.add(Article);
 			}
 		}
 		return articles;
 	}
-	
+
 	public bool catchupFeed(int feedID, bool isCatID)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -669,7 +669,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_int("feed_id", feedID);
 		message.add_bool("is_cat", isCatID);
 		int status = message.send();
-		
+
 		if(status == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
@@ -678,10 +678,10 @@ public class FeedReader.ttrssAPI : GLib.Object {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public bool updateArticleUnread(Gee.List<int> articleIDs, ArticleStatus unread)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -698,7 +698,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		}
 		message.add_int("field", 2);
 		int status = message.send();
-		
+
 		if(status == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
@@ -707,11 +707,11 @@ public class FeedReader.ttrssAPI : GLib.Object {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
-	
+
+
 	public bool updateArticleMarked(int articleID, ArticleStatus marked)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -728,7 +728,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		}
 		message.add_int("field", 0);
 		int status = message.send();
-		
+
 		if(status == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
@@ -737,10 +737,10 @@ public class FeedReader.ttrssAPI : GLib.Object {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public bool setArticleLabel(int articleID, int tagID, bool add)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -750,7 +750,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_int("label_id", tagID);
 		message.add_bool("assign", add);
 		int status = message.send();
-		
+
 		if(status == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
@@ -759,10 +759,10 @@ public class FeedReader.ttrssAPI : GLib.Object {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public int64 addLabel(string caption)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -770,15 +770,15 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_string("op", "addLabel");
 		message.add_string("caption", caption);
 		int status = message.send();
-		
+
 		if(status == ConnectionError.SUCCESS)
 		{
 			return message.get_response_int();
 		}
-		
+
 		return 0;
 	}
-	
+
 	public bool removeLabel(int tagID)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -786,10 +786,10 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_string("op", "removeLabel");
 		message.add_int("label_id", tagID);
 		int status = message.send();
-		
+
 		return status == ConnectionError.SUCCESS;
 	}
-	
+
 	public bool renameLabel(int tagID, string newName)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -798,11 +798,11 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_int("label_id", tagID);
 		message.add_string("caption", newName);
 		int status = message.send();
-		
+
 		return status == ConnectionError.SUCCESS;
 	}
-	
-	
+
+
 	public bool subscribeToFeed(string feedURL, string? catID, string? username, string? password, out string errmsg)
 	{
 		errmsg = "";
@@ -810,7 +810,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "subscribeToFeed");
 		message.add_string("feed_url", feedURL);
-		
+
 		if(catID != null)
 		{
 			message.add_int("category_id", int.parse(catID));
@@ -820,9 +820,9 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			message.add_string("login", username);
 			message.add_string("password", password);
 		}
-		
+
 		int msg_status = message.send();
-		
+
 		if(msg_status == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
@@ -865,11 +865,11 @@ public class FeedReader.ttrssAPI : GLib.Object {
 				}
 			}
 		}
-		
+
 		errmsg = _("Error reaching tt-rss");
 		return false;
 	}
-	
+
 	public bool unsubscribeFeed(int feedID)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -877,10 +877,10 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_string("op", "unsubscribeFeed");
 		message.add_int("feed_id", feedID);
 		int status = message.send();
-		
+
 		return status == ConnectionError.SUCCESS;
 	}
-	
+
 	public string? createCategory(string title, int? parentID = null)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -892,15 +892,15 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			message.add_int("parent_id", parentID);
 		}
 		int status = message.send();
-		
+
 		if(status == ConnectionError.SUCCESS)
 		{
 			return message.get_response_string();
 		}
-		
+
 		return null;
 	}
-	
+
 	public bool removeCategory(int catID)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -908,10 +908,10 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_string("op", "removeCategory");
 		message.add_int("category_id", catID);
 		int status = message.send();
-		
+
 		return status == ConnectionError.SUCCESS;
 	}
-	
+
 	public bool moveCategory(int catID, int parentID)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -923,10 +923,10 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			message.add_int("parent_id", parentID);
 		}
 		int status = message.send();
-		
+
 		return status == ConnectionError.SUCCESS;
 	}
-	
+
 	public bool renameCategory(int catID, string title)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -935,10 +935,10 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_int("category_id", catID);
 		message.add_string("caption", title);
 		int status = message.send();
-		
+
 		return status == ConnectionError.SUCCESS;
 	}
-	
+
 	public bool renameFeed(int feedID, string title)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -947,10 +947,10 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_int("feed_id", feedID);
 		message.add_string("caption", title);
 		int status = message.send();
-		
+
 		return status == ConnectionError.SUCCESS;
 	}
-	
+
 	public bool moveFeed(int feedID, int catID)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -959,16 +959,16 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_int("feed_id", feedID);
 		message.add_int("category_id", catID);
 		int status = message.send();
-		
+
 		return status == ConnectionError.SUCCESS;
 	}
-	
+
 	public bool ping()
 	{
 		Logger.debug("TTRSS: ping");
 		var message = new ttrssMessage(m_session, m_ttrss_url);
 		int status = message.send(true);
-		
+
 		return status == ConnectionError.SUCCESS;
 	}
 }

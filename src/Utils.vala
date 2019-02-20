@@ -14,9 +14,9 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.Utils : GLib.Object {
-	
+
 	private static Soup.Session? m_session;
-	
+
 	public static Soup.Session getSession()
 	{
 		if(m_session == null)
@@ -26,10 +26,10 @@ public class FeedReader.Utils : GLib.Object {
 			m_session.ssl_strict = false;
 			m_session.timeout = 5;
 		}
-		
+
 		return m_session;
 	}
-	
+
 	public static void generatePreviews(Gee.List<Article> articles)
 	{
 		string noPreview = _("No Preview Available");
@@ -54,26 +54,26 @@ public class FeedReader.Utils : GLib.Object {
 					{
 						output = output.strip();
 					}
-					
+
 					if(output == "" || output == null)
 					{
 						Logger.info("generatePreviews: no Preview");
 						Article.setPreview(noPreview);
 						continue;
 					}
-					
+
 					string xml = "<?xml";
-					
+
 					while(output.has_prefix(xml))
 					{
 						int end = output.index_of_char('>');
 						output = output.slice(end+1, output.length).chug();
 						output = output.strip();
 					}
-					
+
 					output = output.replace("\n"," ");
 					output = output.replace("_"," ");
-					
+
 					Article.setPreview(output.chug());
 				}
 				else
@@ -85,7 +85,7 @@ public class FeedReader.Utils : GLib.Object {
 			}
 		}
 	}
-	
+
 	public static void checkHTML(Gee.List<Article> articles)
 	{
 		var db = DataBase.readOnly();
@@ -102,7 +102,7 @@ public class FeedReader.Utils : GLib.Object {
 				}
 			}
 		}
-		
+
 		public static string UTF8fix(string? old_string, bool remove_html = false)
 		{
 			if(old_string == null)
@@ -110,7 +110,7 @@ public class FeedReader.Utils : GLib.Object {
 				Logger.warning("Utils.UTF8fix: string is NULL");
 				return "NULL";
 			}
-			
+
 			string output = old_string;
 			if (remove_html)
 			{
@@ -121,12 +121,12 @@ public class FeedReader.Utils : GLib.Object {
 			output = output.make_valid().replace("\n"," ").strip();
 			return output;
 		}
-		
+
 		public static string[] getDefaultExpandedCategories()
 		{
 			return {CategoryID.MASTER.to_string(), CategoryID.TAGS.to_string()};
 		}
-		
+
 		/*public static GLib.DateTime convertStringToDate(string date)
 		{
 			return new GLib.DateTime(
@@ -139,42 +139,42 @@ public class FeedReader.Utils : GLib.Object {
 				int.parse(date.substring(date.index_of_nth_char(17), date.index_of_nth_char(19) - date.index_of_nth_char(17)))		// sec
 			);
 		}*/
-		
+
 		public static bool springCleaningNecessary()
 		{
 			var lastClean = new DateTime.from_unix_local(Settings.state().get_int("last-spring-cleaning"));
 			var now = new DateTime.now_local();
-			
+
 			var difference = now.difference(lastClean);
 			bool doCleaning = false;
-			
+
 			Logger.debug("last clean: %s".printf(lastClean.format("%Y-%m-%d %H:%M:%S")));
 			Logger.debug("now: %s".printf(now.format("%Y-%m-%d %H:%M:%S")));
 			Logger.debug("difference: %f".printf(difference/GLib.TimeSpan.DAY));
-			
+
 			if((difference/GLib.TimeSpan.DAY) >= Settings.general().get_int("spring-clean-after"))
 			{
 				doCleaning = true;
 			}
-			
+
 			return doCleaning;
 		}
-		
+
 		// thanks to
 		// http://kuikie.com/snippet/79-8/vala/strings/vala-generate-random-string/%7B$ROOT_URL%7D/terms/
 		public static string string_random(int length = 8, string charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890")
 		{
 			string random = "";
-			
+
 			for(int i=0; i<length; i++) {
 				int random_index = Random.int_range(0,charset.length);
 				string ch = charset.get_char(charset.index_of_nth_char(random_index)).to_string();
 				random += ch;
 			}
-			
+
 			return random;
 		}
-		
+
 		public static bool arrayContains(string[] array, string key)
 		{
 			foreach(string s in array)
@@ -184,16 +184,16 @@ public class FeedReader.Utils : GLib.Object {
 					return true;
 				}
 			}
-			
+
 			return false;
 		}
-		
+
 		public static void copyAutostart()
 		{
 			string desktop = "org.gnome.FeedReader-autostart.desktop";
 			string filename = GLib.Environment.get_user_data_dir() + "/" + desktop;
-			
-			
+
+
 			if(Settings.tweaks().get_boolean("feedreader-autostart") && !FileUtils.test(filename, GLib.FileTest.EXISTS))
 			{
 				try
@@ -208,117 +208,117 @@ public class FeedReader.Utils : GLib.Object {
 				}
 			}
 		}
-		
+
 		public static string printTlsCertificateFlags(GLib.TlsCertificateFlags flag)
 		{
 			string errors = "";
 			int flags = flag;
-			
+
 			if(flags - GLib.TlsCertificateFlags.GENERIC_ERROR >= 0)
 			{
 				errors += "GENERIC_ERROR ";
 				flags -= GLib.TlsCertificateFlags.VALIDATE_ALL;
 			}
-			
+
 			if(flags - GLib.TlsCertificateFlags.INSECURE >= 0)
 			{
 				errors += "INSECURE ";
 				flags -= GLib.TlsCertificateFlags.INSECURE;
 			}
-			
+
 			if(flags - GLib.TlsCertificateFlags.REVOKED >= 0)
 			{
 				errors += "REVOKED ";
 				flags -= GLib.TlsCertificateFlags.REVOKED;
 			}
-			
+
 			if(flags - GLib.TlsCertificateFlags.EXPIRED >= 0)
 			{
 				errors += "EXPIRED ";
 				flags -= GLib.TlsCertificateFlags.EXPIRED;
 			}
-			
+
 			if(flags - GLib.TlsCertificateFlags.NOT_ACTIVATED >= 0)
 			{
 				errors += "NOT_ACTIVATED ";
 				flags -= GLib.TlsCertificateFlags.NOT_ACTIVATED;
 			}
-			
+
 			if(flags - GLib.TlsCertificateFlags.BAD_IDENTITY >= 0)
 			{
 				errors += "BAD_IDENTITY ";
 				flags -= GLib.TlsCertificateFlags.BAD_IDENTITY;
 			}
-			
+
 			if(flags - GLib.TlsCertificateFlags.UNKNOWN_CA >= 0)
 			{
 				errors += "UNKNOWN_CA ";
 				flags -= GLib.TlsCertificateFlags.UNKNOWN_CA;
 			}
-			
+
 			return errors;
 		}
-		
+
 		public static bool ping(string link)
 		{
 			Logger.debug("Ping: " + link);
 			var uri = new Soup.URI(link);
-			
+
 			if(uri == null)
 			{
 				Logger.error(@"Ping failed: can't parse url $link! Seems to be not valid.");
 				return false;
 			}
-			
+
 			var message = new Soup.Message.from_uri("HEAD", uri);
-			
+
 			if(message == null)
 			{
 				Logger.error(@"Ping failed: can't send message to $link! Seems to be not valid.");
 				return false;
 			}
-			
+
 			var status = getSession().send_message(message);
-			
+
 			Logger.debug(@"Ping: status $status");
-			
+
 			if(status >= 200 && status <= 208)
 			{
 				Logger.debug("Ping successful");
 				return true;
 			}
-			
+
 			Logger.error(@"Ping: failed %u - %s".printf(status, Soup.Status.get_phrase(status)));
-			
+
 			return false;
 		}
-		
-		
+
+
 		public static bool remove_directory(string path, uint level = 0)
 		{
 			++level;
 			bool flag = false;
-			
+
 			try
 			{
 				var directory = GLib.File.new_for_path(path);
-				
+
 				var enumerator = directory.enumerate_children(GLib.FileAttribute.STANDARD_NAME, 0);
-				
+
 				GLib.FileInfo file_info;
 				while((file_info = enumerator.next_file()) != null)
 				{
 					string file_name = file_info.get_name();
-					
+
 					if((file_info.get_file_type()) == GLib.FileType.DIRECTORY)
 					{
 						remove_directory(path + file_name + "/", level);
 					}
-					
+
 					var file = directory.get_child(file_name);
 					file.delete();
 				}
-				
+
 				if(level == 1)
 				{
 					directory.delete();
@@ -331,12 +331,12 @@ public class FeedReader.Utils : GLib.Object {
 			{
 				Logger.error("Utils - remove_directory: " + e.message);
 			}
-			
-			
+
+
 			return flag;
 		}
-		
-		
+
+
 		public static string shortenURL(string url)
 		{
 			string longURL = url;
@@ -348,20 +348,20 @@ public class FeedReader.Utils : GLib.Object {
 			{
 				longURL = longURL.substring(7);
 			}
-			
+
 			if(longURL.has_prefix("www."))
 			{
 				longURL = longURL.substring(4);
 			}
-			
+
 			if(longURL.has_suffix("api/"))
 			{
 				longURL = longURL.substring(0, longURL.length - 4);
 			}
-			
+
 			return longURL;
 		}
-		
+
 	// thx to geary :)
 	public static string prepareSearchQuery(string raw_query)
 	{
@@ -390,14 +390,14 @@ StringBuilder prepared_query = new StringBuilder();
 foreach(string s in words)
 {
 	s = s.strip();
-	
+
 	int quotes = countChar(s, '"');
 	if(!in_quote && quotes > 0)
 	{
 		in_quote = true;
 		--quotes;
 	}
-	
+
 	if(!in_quote)
 	{
 		string lower = s.down();
@@ -405,25 +405,25 @@ foreach(string s in words)
 		{
 			continue;
 		}
-		
+
 		if(s.has_prefix("-"))
 		{
 			s = s.substring(1);
 		}
-		
+
 		if(s == "")
 		{
 			continue;
 		}
-		
+
 		s = "\"" + s + "*\"";
 	}
-	
+
 	if(in_quote && quotes % 2 != 0)
 	{
 		in_quote = false;
 	}
-	
+
 	prepared_query.append(s);
 	prepared_query.append(" ");
 }
@@ -677,15 +677,15 @@ switch(Settings.general().get_enum("article-theme"))
 	case ArticleTheme.DEFAULT:
 	theme += "default";
 	break;
-	
+
 	case ArticleTheme.SPRING:
 	theme += "spring";
 	break;
-	
+
 	case ArticleTheme.MIDNIGHT:
 	theme += "midnight";
 	break;
-	
+
 	case ArticleTheme.PARCHMENT:
 	theme += "parchment";
 	break;
@@ -876,18 +876,18 @@ try
 	{
 		articleName = DataBase.readOnly().read_article(articleID).getTitle();
 	}
-	
+
 	var file = GLib.File.new_for_path(imagePath);
 	var mimeType = file.query_info("standard::content-type", 0, null).get_content_type();
 	var filter = new Gtk.FileFilter();
 	filter.add_mime_type(mimeType);
-	
+
 	var map = new Gee.HashMap<string, string>();
 	map.set("image/gif", ".gif");
 	map.set("image/jpeg", ".jpeg");
 	map.set("image/png", ".png");
 	map.set("image/x-icon", ".ico");
-	
+
 	var save_dialog = new Gtk.FileChooserDialog("Save Image",
 		MainWindow.get_default(),
 		Gtk.FileChooserAction.SAVE,
@@ -917,7 +917,7 @@ try
 				Logger.debug("imagePopup: save file: " + e.message);
 			}
 			break;
-			
+
 			case Gtk.ResponseType.CANCEL:
 			default:
 			break;
@@ -1006,11 +1006,11 @@ switch(selectedRow[0])
 	case "feed":
 	IDtype = FeedListType.FEED;
 	break;
-	
+
 	case "cat":
 	IDtype = FeedListType.CATEGORY;
 	break;
-	
+
 	case "tag":
 	IDtype = FeedListType.TAG;
 	break;

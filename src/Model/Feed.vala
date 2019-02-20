@@ -14,7 +14,7 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.Feed : GLib.Object {
-	
+
 	private string m_feedID;
 	private string m_title;
 	private string m_url;
@@ -22,7 +22,7 @@ public class FeedReader.Feed : GLib.Object {
 	private uint m_unread;
 	private Gee.List<string> m_catIDs;
 	private string? m_iconURL;
-	
+
 	public Feed(string feedID, string? title, string? url, uint unread, Gee.List<string>? catIDs = null, string? iconURL = null, string? xmlURL = null)
 	{
 		m_feedID = feedID;
@@ -33,110 +33,110 @@ public class FeedReader.Feed : GLib.Object {
 		m_iconURL = iconURL == "" ? null : iconURL;
 		m_xmlURL = xmlURL;
 	}
-	
+
 	public string getFeedID()
 	{
 		return m_feedID;
 	}
-	
+
 	public string getFeedFileName()
 	{
 		return GLib.Base64.encode(m_feedID.data);
 	}
-	
+
 	public string getTitle()
 	{
 		return m_title;
 	}
-	
+
 	public void setTitle(string title)
 	{
 		m_title = title;
 	}
-	
+
 	public string getURL()
 	{
 		return m_url;
 	}
-	
+
 	public void setURL(string url)
 	{
 		m_url = url;
 	}
-	
+
 	public uint getUnread()
 	{
 		return m_unread;
 	}
-	
+
 	public void setUnread(uint unread)
 	{
 		m_unread = unread;
 	}
-	
+
 	public Gee.List<string> getCatIDs()
 	{
 		return m_catIDs;
 	}
-	
+
 	public string getCatString()
 	{
 		return StringUtils.join(m_catIDs, ",");
 	}
-	
+
 	public bool hasCat(string catID)
 	{
 		return m_catIDs.contains(catID);
 	}
-	
+
 	public void addCat(string catID)
 	{
 		m_catIDs.add(catID);
 	}
-	
+
 	public void setCats(Gee.Collection<string> catIDs)
 	{
 		m_catIDs.clear();
 		m_catIDs.add_all(catIDs);
 	}
-	
+
 	// Helper function for backends that only support one category per feed
 	public void setCategory(string id)
 	{
 		m_catIDs.clear();
 		m_catIDs.add(id);
 	}
-	
+
 	public bool isUncategorized()
 	{
 		if(m_catIDs.size == 0)
 		{
 			return true;
 		}
-		
+
 		if(m_catIDs.size == 1 && m_catIDs[0].contains("global.must"))
 		{
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	public string? getIconURL()
 	{
 		return m_iconURL;
 	}
-	
+
 	public void setIconURL(string? url)
 	{
 		m_iconURL = url;
 	}
-	
+
 	public string? getXmlUrl()
 	{
 		return m_xmlURL;
 	}
-	
+
 	public void print()
 	{
 		Logger.debug("\ntitle: %s\nid: %s\nurl: %s\nunread: %u".printf(m_title, m_feedID, m_url, m_unread));

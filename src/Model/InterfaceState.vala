@@ -14,7 +14,7 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.InterfaceState : GLib.Object {
-	
+
 	private int m_WindowHeight = 900;
 	private int m_WindowWidth = 1600;
 	private int m_FeedsAndArticleWidth = 600;
@@ -30,12 +30,12 @@ public class FeedReader.InterfaceState : GLib.Object {
 	private string? m_ArticleListTopRow = null;
 	private string[] m_ExpandedCategories = {};
 	private ArticleListState m_ArticleListState = ArticleListState.ALL;
-	
+
 	public InterfaceState()
 	{
-		
+
 	}
-	
+
 	public void write(bool shutdown)
 	{
 		Settings.state().set_int      ("window-width",                m_WindowWidth);
@@ -57,93 +57,93 @@ public class FeedReader.InterfaceState : GLib.Object {
 			Settings.state().set_int      ("articlelist-row-offset",      m_ArticleListRowOffset);
 		}
 	}
-	
+
 	public void setWindowSize(int height, int width)
 	{
 		m_WindowHeight = height;
 		m_WindowWidth = width;
 	}
-	
+
 	public int getWindowHeight()
 	{
 		return m_WindowHeight;
 	}
-	
+
 	public int getWindowWidth()
 	{
 		return m_WindowWidth;
 	}
-	
+
 	public void setFeedsAndArticleWidth(int size)
 	{
 		m_FeedsAndArticleWidth = size;
 	}
-	
+
 	public int getFeedsAndArticleWidth()
 	{
 		return m_FeedsAndArticleWidth;
 	}
-	
+
 	public void setFeedListWidth(int size)
 	{
 		m_FeedListWidth = size;
 	}
-	
+
 	public int getFeedListWidth()
 	{
 		return m_FeedListWidth;
 	}
-	
+
 	public void setFeedListScrollPos(double pos)
 	{
 		m_FeedListScrollPos = pos;
 	}
-	
+
 	public double getFeedListScrollPos()
 	{
 		return m_FeedListScrollPos;
 	}
-	
+
 	public void setArticleViewScrollPos(int pos)
 	{
 		m_ArticleViewScrollPos = pos;
 	}
-	
+
 	public int getArticleViewScrollPos()
 	{
 		return m_ArticleViewScrollPos;
 	}
-	
+
 	public void setArticleListScrollPos(double pos)
 	{
 		m_ArticleListScrollPos = pos;
 	}
-	
+
 	public double getArticleListScrollPos()
 	{
 		return m_ArticleListScrollPos;
 	}
-	
+
 	public void setArticleListRowOffset(int count)
 	{
 		m_ArticleListRowOffset = count;
 	}
-	
+
 	public int getArticleListRowOffset()
 	{
 		return m_ArticleListRowOffset;
 	}
-	
+
 	public void setArticleListSelectedRow(string articleID)
 	{
 		m_ArticleListSelectedRow = articleID;
 	}
-	
+
 	public string getArticleListSelectedRow()
 	{
 		return m_ArticleListSelectedRow;
 	}
-	
+
 	public void setArticleListTopRow(Article? article)
 	{
 		if(article == null)
@@ -155,60 +155,60 @@ public class FeedReader.InterfaceState : GLib.Object {
 			m_ArticleListTopRow = article.getArticleID();
 		}
 	}
-	
+
 	public string getArticleListTopRow()
 	{
 		return m_ArticleListTopRow;
 	}
-	
+
 	public void setWindowMaximized(bool max)
 	{
 		m_WindowMaximized = max;
 	}
-	
+
 	public bool getWindowMaximized()
 	{
 		return m_WindowMaximized;
 	}
-	
+
 	public void setSearchTerm(string search)
 	{
 		m_SearchTerm = search;
 	}
-	
+
 	public string getSearchTerm()
 	{
 		return m_SearchTerm;
 	}
-	
+
 	public void setFeedListSelectedRow(string code)
 	{
 		m_FeedListSelectedRow = code;
 	}
-	
+
 	public string getFeedListSelectedRow()
 	{
 		return m_FeedListSelectedRow;
 	}
-	
+
 	public void setExpandedCategories(string[] array)
 	{
 		m_ExpandedCategories = array;
 	}
-	
+
 	public string[] getExpandedCategories()
 	{
 		return m_ExpandedCategories;
 	}
-	
+
 	public void setArticleListState(ArticleListState state)
 	{
 		m_ArticleListState = state;
 	}
-	
+
 	public ArticleListState getArticleListState()
 	{
 		return m_ArticleListState;
 	}
-	
+
 }

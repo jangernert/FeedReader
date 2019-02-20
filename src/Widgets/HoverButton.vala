@@ -14,14 +14,14 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.HoverButton : Gtk.EventBox {
-	
+
 	private Gtk.Button m_button;
 	private Gtk.Stack m_stack;
 	private Gtk.Image m_inactive;
 	private Gtk.Image m_active;
 	private bool m_isActive;
 	public signal void clicked(bool active);
-	
+
 	public HoverButton(Gtk.Image inactive, Gtk.Image active, bool isActive)
 	{
 		m_inactive = inactive;
@@ -35,11 +35,11 @@ public class FeedReader.HoverButton : Gtk.EventBox {
 			toggle();
 			clicked(m_isActive);
 		});
-		
+
 		m_stack.add_named(inactive, "inactive");
 		m_stack.add_named(active, "active");
 		m_button.add(m_stack);
-		
+
 		if(isActive)
 		{
 			m_stack.set_visible_child_name("active");
@@ -48,39 +48,39 @@ public class FeedReader.HoverButton : Gtk.EventBox {
 		{
 			m_stack.set_visible_child_name("inactive");
 		}
-		
-		
-		
+
+
+
 		this.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
 		this.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
 		this.set_size_request(16, 16);
 		this.add(m_button);
-		
+
 		this.enter_notify_event.connect(onEnter);
 		this.leave_notify_event.connect(onLeave);
 	}
-	
+
 	private void setActiveIcon()
 	{
 		m_stack.set_visible_child_name("active");
 		m_active.show();
 	}
-	
+
 	private void setInactiveIcon()
 	{
 		m_stack.set_visible_child_name("inactive");
 		m_inactive.show();
 	}
-	
+
 	public void toggle()
 	{
 		setActive(!m_isActive);
 	}
-	
+
 	public void setActive(bool active)
 	{
 		m_isActive = active;
-		
+
 		if(m_isActive)
 		{
 			setActiveIcon();
@@ -90,8 +90,8 @@ public class FeedReader.HoverButton : Gtk.EventBox {
 			setInactiveIcon();
 		}
 	}
-	
-	
+
+
 	private bool onEnter(Gdk.EventCrossing event)
 	{
 		if(m_isActive)
@@ -104,14 +104,14 @@ public class FeedReader.HoverButton : Gtk.EventBox {
 		}
 		return true;
 	}
-	
+
 	private bool onLeave(Gdk.EventCrossing event)
 	{
 		if(event.detail == Gdk.NotifyType.INFERIOR)
 		{
 			return false;
 		}
-		
+
 		if(m_isActive)
 		{
 			setActiveIcon();
@@ -120,9 +120,9 @@ public class FeedReader.HoverButton : Gtk.EventBox {
 		{
 			setInactiveIcon();
 		}
-		
+
 		return true;
 	}
-	
-	
+
+
 }

@@ -14,10 +14,10 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.ShareRow : Gtk.ListBoxRow {
-	
+
 	private string m_id;
 	private string m_type;
-	
+
 	public ShareRow(string type, string id, string username, string iconName)
 	{
 		m_id = id;
@@ -29,25 +29,25 @@ public class FeedReader.ShareRow : Gtk.ListBoxRow {
 		serviceLabel.set_ellipsize(Pango.EllipsizeMode.END);
 		serviceLabel.set_alignment(0.0f, 0.5f);
 		serviceLabel.get_style_context().add_class("h4");
-		
+
 		var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 3);
 		box.margin = 3;
 		box.pack_start(icon, false, false, 8);
 		box.pack_start(serviceLabel, true, true, 0);
-		
+
 		this.add(box);
 		this.margin = 2;
 		this.show_all();
 	}
-	
+
 	public string getID()
 	{
 		return m_id;
 	}
-	
+
 	public string getType()
 	{
 		return m_type;
 	}
-	
+
 }

@@ -14,13 +14,13 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.FeedListFooter : Gtk.Box {
-	
+
 	private Gtk.Box m_box;
 	private Gtk.Stack m_addStack;
 	private Gtk.Spinner m_addSpinner;
 	private AddButton m_addButton;
 	private RemoveButton m_removeButton;
-	
+
 	public FeedListFooter()
 	{
 		this.orientation = Gtk.Orientation.VERTICAL;
@@ -47,27 +47,27 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		m_box.pack_start(m_removeButton);
 		this.pack_start(sep2, false, false);
 		this.pack_start(m_box);
-		
+
 		if(!FeedReaderBackend.get_default().supportFeedManipulation())
 		{
 			m_addButton.set_sensitive(false);
 			m_removeButton.set_sensitive(false);
 		}
 	}
-	
+
 	public void setBusy()
 	{
 		m_addStack.set_visible_child_name("spinner");
 		m_addStack.show_all();
 	}
-	
+
 	public void setReady()
 	{
 		m_addStack.set_visible_child_name("button");
 		m_addSpinner.start();
 		m_addStack.show_all();
 	}
-	
+
 	public void setRemoveButtonSensitive(bool sensitive)
 	{
 		if(FeedReaderApp.get_default().isOnline() && FeedReaderBackend.get_default().supportFeedManipulation())
@@ -75,12 +75,12 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 			m_removeButton.set_sensitive(sensitive);
 		}
 	}
-	
+
 	public void setSelectedRow(FeedListType type, string id)
 	{
 		m_removeButton.setSelectedRow(type, id);
 	}
-	
+
 	public void setAddButtonSensitive(bool active)
 	{
 		if(FeedReaderBackend.get_default().supportFeedManipulation())
@@ -89,12 +89,12 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 			m_removeButton.set_sensitive(active);
 		}
 	}
-	
+
 	public void showError(string errmsg)
 	{
 		var label = new Gtk.Label(errmsg);
 		label.margin = 20;
-		
+
 		var pop = new Gtk.Popover(m_addStack);
 		pop.add(label);
 		pop.show_all();
@@ -114,7 +114,7 @@ public class FeedReader.AddButton : Gtk.Button {
 		this.relief = Gtk.ReliefStyle.NONE;
 		this.set_tooltip_text(_("Add feed"));
 	}
-	
+
 	public void onClick()
 	{
 		this.get_style_context().add_class("footer-popover");
@@ -131,7 +131,7 @@ public class FeedReader.AddButton : Gtk.Button {
 public class FeedReader.RemoveButton : Gtk.Button {
 	private FeedListType m_type;
 	private string m_id;
-	
+
 	public RemoveButton()
 	{
 		var image = new Gtk.Image.from_icon_name("feed-remove-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
@@ -143,7 +143,7 @@ public class FeedReader.RemoveButton : Gtk.Button {
 		this.relief = Gtk.ReliefStyle.NONE;
 		this.set_tooltip_text(_("Remove feed"));
 	}
-	
+
 	public void onClick()
 	{
 		this.get_style_context().add_class("footer-popover");

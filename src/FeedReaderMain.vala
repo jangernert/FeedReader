@@ -14,7 +14,7 @@ namespace FeedReader.Main {
 		{ "unreadCount", 0, 0, OptionArg.NONE, ref unreadCount, "current count of unread articles in the database", null },
 		{ null }
 	};
-	
+
 	private static bool version = false;
 	private static bool about = false;
 	private static bool verbose = false;
@@ -25,11 +25,11 @@ namespace FeedReader.Main {
 	private static string? grabImages = null;
 	private static string? articleUrl = null;
 	private static bool unreadCount = false;
-	
+
 	public static int main (string[] args)
 	{
 		Ivy.Stacktrace.register_handlers();
-		
+
 		try
 		{
 			var opt_context = new OptionContext();
@@ -42,28 +42,28 @@ namespace FeedReader.Main {
 			print(e.message + "\n");
 			return 0;
 		}
-		
+
 		FeedReaderApp.m_verbose = verbose;
-		
+
 		if(version)
 		{
 			stdout.printf("Version: %s\n", AboutInfo.version);
 			stdout.printf("Git Commit: %s\n", Constants.GIT_SHA1);
 			return 0;
 		}
-		
+
 		if(about)
 		{
 			FeedReader.show_about(args);
 			return 0;
 		}
-		
+
 		if(media != null)
 		{
 			Utils.playMedia(args, media);
 			return 0;
 		}
-		
+
 		if(pingURL != null)
 		{
 			Logger.init(verbose);
@@ -73,7 +73,7 @@ namespace FeedReader.Main {
 			}
 			return 0;
 		}
-		
+
 		if(feedURL != null)
 		{
 			Logger.init(verbose);
@@ -81,21 +81,21 @@ namespace FeedReader.Main {
 			FeedReaderBackend.get_default().addFeed(feedURL, "", false);
 			return 0;
 		}
-		
+
 		if(grabImages != null && articleUrl != null)
 		{
 			Logger.init(verbose);
 			FeedServer.grabImages(grabImages, articleUrl);
 			return 0;
 		}
-		
+
 		if(grabArticle != null)
 		{
 			Logger.init(verbose);
 			FeedServer.grabArticle(grabArticle);
 			return 0;
 		}
-		
+
 		if(unreadCount)
 		{
 			var old_stdout =(owned)stdout;
@@ -105,7 +105,7 @@ namespace FeedReader.Main {
 			stdout.printf("%u\n", DataBase.readOnly().get_unread_total());
 			return 0;
 		}
-		
+
 		try
 		{
 			Gst.init_check(ref args);
@@ -114,10 +114,10 @@ namespace FeedReader.Main {
 		{
 			Logger.error("Gst.init: " + e.message);
 		}
-		
+
 		var app = FeedReaderApp.get_default();
 		app.run(args);
-		
+
 		return 0;
 	}
 }

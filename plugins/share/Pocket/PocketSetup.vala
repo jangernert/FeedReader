@@ -14,9 +14,9 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.PocketSetup : ServiceSetup {
-	
+
 	private PocketAPI m_api;
-	
+
 	public PocketSetup(string? id, PocketAPI api, string username = "", bool system = false)
 	{
 		bool loggedIN = false;
@@ -24,18 +24,18 @@ public class FeedReader.PocketSetup : ServiceSetup {
 		{
 			loggedIN = true;
 		}
-		
+
 		base("Pocket", "feed-share-pocket", loggedIN, username, system);
-		
+
 		m_api = api;
-		
+
 		if(id != null)
 		{
 			m_id = id;
 		}
 	}
-	
-	
+
+
 	public override void login()
 	{
 		string id = Share.get_default().generateNewID();
@@ -49,10 +49,10 @@ public class FeedReader.PocketSetup : ServiceSetup {
 		}
 		catch(GLib.Error e)
 		{
-			
+
 		}
-		
-		
+
+
 		m_login_button.set_label(_("waiting"));
 		m_login_button.set_sensitive(false);
 		FeedReaderApp.get_default().callback.connect((content) => {
@@ -77,7 +77,7 @@ public class FeedReader.PocketSetup : ServiceSetup {
 			}
 		});
 	}
-	
+
 	public override void logout()
 	{
 		m_isLoggedIN = false;
@@ -86,5 +86,5 @@ public class FeedReader.PocketSetup : ServiceSetup {
 		m_api.logout(m_id);
 		removeRow();
 	}
-	
+
 }

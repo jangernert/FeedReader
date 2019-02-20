@@ -14,33 +14,33 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.ActionCache : GLib.Object {
-	
+
 	// Similar to CachedActionManager this class collects all the actions done during a period of time
 	// to use that information at a later point of time
 	// however this class does not write the actions to the database
 	// this class is used cache the actions during a sync so the synced data can be updated accordingly afterwards
 	// this prevents articles that were marked as read after the sync began but before the data was written to the database
 	// to suddenly become unread again after the sync (and similar issues)
-	
+
 	private Gee.List<CachedAction> m_list;
-	
+
 	private static ActionCache? m_cache = null;
-	
+
 	public static ActionCache get_default()
 	{
 		if(m_cache == null)
 		{
 			m_cache = new ActionCache();
 		}
-		
+
 		return m_cache;
 	}
-	
+
 	private ActionCache()
 	{
 		m_list = new Gee.ArrayList<CachedAction>();
 	}
-	
+
 	public void markArticleRead(string id, ArticleStatus read)
 	{
 		var cachedAction = CachedActions.MARK_READ;
@@ -48,11 +48,11 @@ public class FeedReader.ActionCache : GLib.Object {
 		{
 			cachedAction = CachedActions.MARK_UNREAD;
 		}
-		
+
 		var action = new CachedAction(cachedAction, id, "");
 		addAction(action);
 	}
-	
+
 	public void markArticleStarred(string id, ArticleStatus marked)
 	{
 		var cachedAction = CachedActions.MARK_STARRED;
@@ -60,29 +60,29 @@ public class FeedReader.ActionCache : GLib.Object {
 		{
 			cachedAction = CachedActions.MARK_UNSTARRED;
 		}
-		
+
 		var action = new CachedAction(cachedAction, id, "");
 		addAction(action);
 	}
-	
+
 	public void markFeedRead(string id)
 	{
 		var action = new CachedAction(CachedActions.MARK_READ_FEED, id, "");
 		addAction(action);
 	}
-	
+
 	public void markCategoryRead(string id)
 	{
 		var action = new CachedAction(CachedActions.MARK_READ_CATEGORY, id, "");
 		addAction(action);
 	}
-	
+
 	public void markAllRead()
 	{
 		var action = new CachedAction(CachedActions.MARK_READ_ALL, "", "");
 		addAction(action);
 	}
-	
+
 	private void addAction(CachedAction action)
 	{
 		switch(action.getType())
@@ -93,23 +93,23 @@ public class FeedReader.ActionCache : GLib.Object {
 			case CachedActions.MARK_UNSTARRED:
 			removeOpposite(action);
 			break;
-			
+
 			case CachedActions.MARK_READ_FEED:
 			removeForFeed(action.getID());
 			break;
-			
+
 			case CachedActions.MARK_READ_CATEGORY:
 			removeForCategory(action.getID());
 			break;
-			
+
 			case CachedActions.MARK_READ_ALL:
 			removeForALL();
 			break;
 		}
-		
+
 		m_list.add(action);
 	}
-	
+
 	private void removeOpposite(CachedAction action)
 	{
 		foreach(CachedAction a in m_list)
@@ -122,7 +122,7 @@ public class FeedReader.ActionCache : GLib.Object {
 			}
 		}
 	}
-	
+
 	private void removeForFeed(string feedID)
 	{
 		DataBaseReadOnly db = null;
@@ -142,7 +142,7 @@ public class FeedReader.ActionCache : GLib.Object {
 			}
 		}
 	}
-	
+
 	private void removeForCategory(string catID)
 	{
 		var feedIDs = DataBase.readOnly().getFeedIDofCategorie(catID);
@@ -156,11 +156,11 @@ public class FeedReader.ActionCache : GLib.Object {
 					m_list.remove(a);
 				}
 			}
-			
+
 			removeForFeed(feedID);
 		}
 	}
-	
+
 	private void removeForALL()
 	{
 		foreach(CachedAction a in m_list)
@@ -177,7 +177,7 @@ public class FeedReader.ActionCache : GLib.Object {
 			}
 		}
 	}
-	
+
 	public ArticleStatus checkStarred(string articleID, ArticleStatus marked)
 	{
 		var type = CachedActions.NONE;
@@ -189,7 +189,7 @@ public class FeedReader.ActionCache : GLib.Object {
 		{
 			type = CachedActions.MARK_UNSTARRED;
 		}
-		
+
 		foreach(CachedAction a in m_list)
 		{
 			if(a.getType() == type
@@ -199,17 +199,17 @@ public class FeedReader.ActionCache : GLib.Object {
 				{
 					return ArticleStatus.MARKED;
 				}
-				
+
 				if(type == CachedActions.MARK_UNSTARRED)
 				{
 					return ArticleStatus.UNMARKED;
 				}
 			}
 		}
-		
+
 		return marked;
 	}
-	
+
 	public ArticleStatus checkRead(Article a)
 	{
 		if(a.getUnread() == ArticleStatus.READ)
@@ -232,14 +232,14 @@ public class FeedReader.ActionCache : GLib.Object {
 				{
 					case CachedActions.MARK_READ_ALL:
 					return ArticleStatus.READ;
-					
+
 					case CachedActions.MARK_READ_FEED:
 					if(action.getID() == a.getFeedID())
 					{
 						return ArticleStatus.READ;
 					}
 					break;
-					
+
 					case CachedActions.MARK_READ_CATEGORY:
 					if (db == null)
 					{
@@ -257,7 +257,7 @@ public class FeedReader.ActionCache : GLib.Object {
 				}
 			}
 		}
-		
+
 		return a.getUnread();
 	}
 }

@@ -14,11 +14,11 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.freshConnection {
-	
+
 	private freshUtils m_utils;
 	private GLib.Settings m_settingsTweaks;
 	private Soup.Session m_session;
-	
+
 	public freshConnection(freshUtils utils)
 	{
 		m_utils = utils;
@@ -36,26 +36,26 @@ public class FeedReader.freshConnection {
 			}
 		});
 	}
-	
+
 	public LoginResponse getSID()
 	{
 		var message = new Soup.Message("POST", m_utils.getURL()+"accounts/ClientLogin");
-		
+
 		var msg = new freshMessage();
 		msg.add("Email", m_utils.getUser());
 		msg.add("Passwd", m_utils.getPasswd());
-		
+
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, msg.get().data);
 		m_session.send_message(message);
-		
+
 		if(message.status_code != 200)
 		{
 			Logger.error("No response from freshRSS to message getSID()");
 			return LoginResponse.NO_CONNECTION;
 		}
-		
+
 		string response = (string)message.response_body.flatten().data;
-		
+
 		if(!response.has_prefix("SID="))
 		{
 			m_utils.setToken("");
@@ -73,55 +73,55 @@ public class FeedReader.freshConnection {
 			return LoginResponse.SUCCESS;
 		}
 	}
-	
+
 	public string getToken()
 	{
 		return getRequest("reader/api/0/token").data.replace("\n", "");
 	}
-	
+
 	public Response postRequest(string path, string input, string type)
 	{
 		var message = new Soup.Message("POST", m_utils.getURL()+path);
-		
+
 		if(m_settingsTweaks.get_boolean("do-not-track"))
 		{
 			message.request_headers.append("DNT", "1");
 		}
-		
+
 		message.request_headers.append("Authorization","GoogleLogin auth=%s".printf(m_utils.getToken()));
 		message.request_headers.append("Content-Type", type);
-		
+
 		message.request_body.append_take(input.data);
 		m_session.send_message(message);
-		
+
 		if(message.status_code != 200)
 		{
 			Logger.warning("freshConnection: message unexpected response %u".printf(message.status_code));
 		}
-		
+
 		return Response() {
 			status = message.status_code,
 			data = (string)message.response_body.flatten().data
 		};
 	}
-	
+
 	public Response getRequest(string path)
 	{
 		var message = new Soup.Message("GET", m_utils.getURL()+path);
 		message.request_headers.append("Authorization","GoogleLogin auth=%s".printf(m_utils.getToken()));
-		
+
 		if(m_settingsTweaks.get_boolean("do-not-track"))
 		{
 			message.request_headers.append("DNT", "1");
 		}
-		
+
 		m_session.send_message(message);
-		
+
 		if(message.status_code != 200)
 		{
 			Logger.warning("freshConnection: message unexpected response %u".printf(message.status_code));
 		}
-		
+
 		return Response() {
 			status = message.status_code,
 			data = (string)message.response_body.flatten().data
@@ -131,26 +131,26 @@ public class FeedReader.freshConnection {
 
 
 public class FeedReader.freshMessage {
-	
+
 	string request = "";
-	
+
 	public freshMessage()
 	{
-		
+
 	}
-	
+
 	public void add(string parameter, string val)
 	{
 		if(request != "")
 		{
 			request += "&";
 		}
-		
+
 		request += parameter;
 		request += "=";
 		request += GLib.Uri.escape_string(val, "/");
 	}
-	
+
 	public string get()
 	{
 		return request;

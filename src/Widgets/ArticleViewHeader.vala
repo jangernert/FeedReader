@@ -15,7 +15,7 @@
 
 
 public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
-	
+
 	private Gtk.Button m_share_button;
 	private Gtk.Button m_tag_button;
 	private Gtk.Button m_print_button;
@@ -29,7 +29,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 	public signal void fsClick();
 	public signal void popClosed();
 	public signal void popOpened();
-	
+
 	public ArticleViewHeader(string fsIcon, string fsTooltip)
 	{
 		var share_icon = Utils.checkIcon("emblem-shared-symbolic", "feed-share-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
@@ -39,7 +39,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		var read_icon = new Gtk.Image.from_icon_name("feed-read-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var unread_icon = new Gtk.Image.from_icon_name("feed-unread-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var fs_icon = new Gtk.Image.from_icon_name(fsIcon, Gtk.IconSize.SMALL_TOOLBAR);
-		
+
 		m_mark_button = new HoverButton(unmarked_icon, marked_icon, false);
 		m_mark_button.sensitive = false;
 		m_mark_button.clicked.connect(() => {
@@ -50,7 +50,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		m_read_button.clicked.connect(() => {
 			toggledRead();
 		});
-		
+
 		m_fullscreen_button = new Gtk.Button();
 		m_fullscreen_button.add(fs_icon);
 		m_fullscreen_button.set_relief(Gtk.ReliefStyle.NONE);
@@ -60,7 +60,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		m_fullscreen_button.clicked.connect(() => {
 			fsClick();
 		});
-		
+
 		m_tag_button = new Gtk.Button();
 		m_tag_button.add(tag_icon);
 		m_tag_button.set_relief(Gtk.ReliefStyle.NONE);
@@ -74,8 +74,8 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 				popClosed();
 			});
 		});
-		
-		
+
+
 		m_print_button = new Gtk.Button.from_icon_name("printer-symbolic");
 		m_print_button.set_relief(Gtk.ReliefStyle.NONE);
 		m_print_button.set_focus_on_click(false);
@@ -84,15 +84,15 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		m_print_button.clicked.connect(() => {
 			ColumnView.get_default().print();
 		});
-		
-		
+
+
 		m_share_button = new Gtk.Button();
 		m_share_button.add(share_icon);
 		m_share_button.set_relief(Gtk.ReliefStyle.NONE);
 		m_share_button.set_focus_on_click(false);
 		m_share_button.set_tooltip_text(_("Share article"));
 		m_share_button.sensitive = false;
-		
+
 		var shareSpinner = new Gtk.Spinner();
 		var shareStack = new Gtk.Stack();
 		shareStack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
@@ -100,7 +100,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		shareStack.add_named(m_share_button, "button");
 		shareStack.add_named(shareSpinner, "spinner");
 		shareStack.set_visible_child_name("button");
-		
+
 		m_share_button.clicked.connect(() => {
 			popOpened();
 			m_sharePopover = new SharePopover(m_share_button);
@@ -117,7 +117,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 				popClosed();
 			});
 		});
-		
+
 		m_media_button = new AttachedMediaButton();
 		m_media_button.popOpened.connect(() => {
 			popOpened();
@@ -125,7 +125,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		m_media_button.popClosed.connect(() => {
 			popClosed();
 		});
-		
+
 		this.pack_start(m_fullscreen_button);
 		this.pack_start(m_mark_button);
 		this.pack_start(m_read_button);
@@ -134,7 +134,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		this.pack_end(m_print_button);
 		this.pack_end(m_media_button);
 	}
-	
+
 	public void showArticleButtons(bool show)
 	{
 		Logger.debug("HeaderBar: showArticleButtons %s".printf(sensitive ? "true" : "false"));
@@ -143,14 +143,14 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		m_fullscreen_button.sensitive = show;
 		m_share_button.sensitive = (show && FeedReaderApp.get_default().isOnline());
 		m_print_button.sensitive = show;
-		
+
 		if(FeedReaderBackend.get_default().supportTags()
 		&& Utils.canManipulateContent())
 		{
 			m_tag_button.sensitive = (show && FeedReaderApp.get_default().isOnline());
 		}
 	}
-	
+
 	public void setMarked(ArticleStatus marked)
 	{
 		switch(marked)
@@ -164,12 +164,12 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 			break;
 		}
 	}
-	
+
 	public void toggleMarked()
 	{
 		m_mark_button.toggle();
 	}
-	
+
 	public void setRead(ArticleStatus read)
 	{
 		switch(read)
@@ -183,12 +183,12 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 			break;
 		}
 	}
-	
+
 	public void toggleRead()
 	{
 		m_read_button.toggle();
 	}
-	
+
 	public void setOffline()
 	{
 		m_share_button.sensitive = false;
@@ -198,7 +198,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 			m_tag_button.sensitive = false;
 		}
 	}
-	
+
 	public void setOnline()
 	{
 		if(m_mark_button.sensitive)
@@ -211,21 +211,21 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 			}
 		}
 	}
-	
+
 	public void showMediaButton(bool show)
 	{
 		m_media_button.update();
 		m_media_button.visible = show;
 	}
-	
+
 	public void refreshSahrePopover()
 	{
 		if(m_sharePopover == null)
 		{
 			return;
 		}
-		
+
 		m_sharePopover.refreshList();
 	}
-	
+
 }

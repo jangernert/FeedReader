@@ -14,16 +14,16 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.OPMLparser : GLib.Object {
-	
+
 	private string m_opmlString;
 	private uint m_level = 0;
 	private Gee.List<Feed> m_feeds = new Gee.ArrayList<Feed>();
-	
+
 	public OPMLparser(string opml)
 	{
 		m_opmlString = opml;
 	}
-	
+
 	public Gee.List<Feed> parse()
 	{
 		if(!m_feeds.is_empty)
@@ -31,22 +31,22 @@ public class FeedReader.OPMLparser : GLib.Object {
 			Logger.error("OPMLParser is not meant to be re-used!");
 			m_feeds = new Gee.ArrayList<Feed>();
 		}
-		
+
 		Xml.Doc* doc = Xml.Parser.read_doc(m_opmlString, null, null, 0);
 		if(doc == null)
 		{
 			Logger.error("OPML: parsing xml failed");
 			return m_feeds;
 		}
-		
+
 		Xml.Node* root = doc->get_root_element();
 		if(root->name != "opml")
 		{
 			return m_feeds;
 		}
-		
+
 		Logger.debug("OPML version: " + root->get_prop("version"));
-		
+
 		for(var node = root->children; node != null; node = node->next)
 		{
 			if(node->type == Xml.ElementType.ELEMENT_NODE)
@@ -56,17 +56,17 @@ public class FeedReader.OPMLparser : GLib.Object {
 					case "head":
 					parseHead(node);
 					break;
-					
+
 					case "body":
 					parseTree(node);
 					break;
 				}
 			}
 		}
-		
+
 		return m_feeds;
 	}
-	
+
 	private void parseHead(Xml.Node* root)
 	{
 		Logger.debug("Parse OPML head");
@@ -79,11 +79,11 @@ public class FeedReader.OPMLparser : GLib.Object {
 					case "title":
 					Logger.debug("Title: " + node->get_content());
 					break;
-					
+
 					case "dateCreated":
 					Logger.debug("dateCreated: " + node->get_content());
 					break;
-					
+
 					case "dateModified":
 					Logger.debug("dateModified: " + node->get_content());
 					break;
@@ -91,7 +91,7 @@ public class FeedReader.OPMLparser : GLib.Object {
 			}
 		}
 	}
-	
+
 	private void parseTree(Xml.Node* root, string? catID = null)
 	{
 		m_level++;
@@ -115,7 +115,7 @@ public class FeedReader.OPMLparser : GLib.Object {
 		}
 		m_level--;
 	}
-	
+
 	private void parseCat(Xml.Node* node, string? parentCatID = null)
 	{
 		string title = "No Title";
@@ -127,12 +127,12 @@ public class FeedReader.OPMLparser : GLib.Object {
 		{
 			title = node->get_prop("title");
 		}
-		
+
 		Logger.debug(space() + "Category: " + title);
 		string catID = FeedReaderBackend.get_default().addCategory(title, parentCatID, true);
 		parseTree(node, catID);
 	}
-	
+
 	private void parseFeed(Xml.Node* node, string? catID = null)
 	{
 		if(node->get_prop("type") == "rss" || node->get_prop("type") == "atom")
@@ -147,9 +147,9 @@ public class FeedReader.OPMLparser : GLib.Object {
 				title = node->get_prop("title");
 			}
 			string feedURL = node->get_prop("xmlUrl");
-			
+
 			string website = "";
-			
+
 			if(hasProp(node, "htmlUrl"))
 			{
 				website = node->get_prop("htmlUrl");
@@ -159,7 +159,7 @@ public class FeedReader.OPMLparser : GLib.Object {
 			{
 				Logger.debug(space() + "Feed: " + title + " feedURL: " + feedURL);
 			}
-			
+
 			var categories = new Gee.ArrayList<string>();
 			if(catID == null)
 			{
@@ -169,21 +169,21 @@ public class FeedReader.OPMLparser : GLib.Object {
 			{
 				categories.add(catID);
 			}
-			
+
 			m_feeds.add(new Feed("", title, website, 0, categories, null, feedURL));
 		}
 	}
-	
+
 	private bool hasProp(Xml.Node* node, string prop)
 	{
 		if(node->get_prop(prop) != null)
 		{
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	private string space()
 	{
 		string tmp = "";
@@ -191,7 +191,7 @@ public class FeedReader.OPMLparser : GLib.Object {
 		{
 			tmp += "	";
 		}
-		
+
 		return tmp;
 	}
 }

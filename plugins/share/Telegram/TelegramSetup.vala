@@ -14,9 +14,9 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.TelegramSetup : ServiceSetup {
-	
+
 	private Telegram m_tg;
-	
+
 	public TelegramSetup(string? id, Telegram tg, string username = "")
 	{
 		bool loggedIN = false;
@@ -24,17 +24,17 @@ public class FeedReader.TelegramSetup : ServiceSetup {
 		{
 			loggedIN = true;
 		}
-		
+
 		base("Telegram", "feed-share-telegram", loggedIN, username);
-		
+
 		m_tg = tg;
 		//no login, so change the labels
 		m_login_button.set_label(_("Add"));
 		m_logout_button.set_label(_("Remove"));
 		m_id = m_tg.pluginID();
 	}
-	
-	
+
+
 	public override void login()
 	{
 		showInfoBar(_("Info: Telegram would need to be installed for this plugin to work."));
@@ -48,7 +48,7 @@ public class FeedReader.TelegramSetup : ServiceSetup {
 		m_login_button.clicked.disconnect(login);
 		m_login_button.clicked.connect(logout);
 	}
-	
+
 	public override void logout()
 	{
 		m_isLoggedIN = false;
@@ -57,5 +57,5 @@ public class FeedReader.TelegramSetup : ServiceSetup {
 		m_tg.logout(m_id);
 		removeRow();
 	}
-	
+
 }

@@ -28,42 +28,42 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	private SpringCleanPage m_SpringClean;
 	private Gtk.CssProvider m_cssProvider;
 	private uint m_stackTransitionTime = 100;
-	
+
 	private static MainWindow? m_window = null;
-	
+
 	public static MainWindow get_default()
 	{
 		if(m_window == null)
 		{
 			m_window = new MainWindow();
 		}
-		
+
 		return m_window;
 	}
-	
+
 	private MainWindow()
 	{
 		Object(application: FeedReaderApp.get_default(), title: _("FeedReader"), show_menubar: false);
 		this.window_position = WindowPosition.CENTER;
-		
+
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		m_stack.set_transition_duration(m_stackTransitionTime);
-		
+
 		m_overlay = new Gtk.Overlay();
 		m_overlay.add(m_stack);
-		
+
 		setupCSS();
 		setupLoginPage();
 		setupResetPage();
 		setupContentPage();
 		setupSpringCleanPage();
-		
+
 		var shortcutsAction = new SimpleAction("shortcuts", null);
 		shortcutsAction.activate.connect(showShortcutWindow);
 		this.add_action(shortcutsAction);
 		shortcutsAction.set_enabled(true);
-		
+
 		var reportBugAction = new SimpleAction("bugs", null);
 		reportBugAction.activate.connect(() => {
 			try{
@@ -75,7 +75,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		});
 		this.add_action(reportBugAction);
 		reportBugAction.set_enabled(true);
-		
+
 		var bountyAction = new SimpleAction("bounty", null);
 		bountyAction.activate.connect(() => {
 			try{
@@ -87,21 +87,21 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		});
 		this.add_action(bountyAction);
 		bountyAction.set_enabled(true);
-		
+
 		var settingsAction = new SimpleAction("settings", null);
 		settingsAction.activate.connect(() => {
 			SettingsDialog.get_default().showDialog("ui");
 		});
 		this.add_action(settingsAction);
 		settingsAction.set_enabled(true);
-		
+
 		var login_action = new SimpleAction("reset", null);
 		login_action.activate.connect(() => {
 			showReset(Gtk.StackTransitionType.SLIDE_RIGHT);
 		});
 		this.add_action(login_action);
 		login_action.set_enabled(true);
-		
+
 		var about_action = new SimpleAction("about", null);
 		about_action.activate.connect(() => {
 			Gtk.AboutDialog dialog = new Gtk.AboutDialog();
@@ -111,7 +111,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			dialog.authors = AboutInfo.authors;
 			dialog.documenters = null;
 			dialog.translator_credits = AboutInfo.translators;
-			
+
 			dialog.program_name = AboutInfo.programmName;
 			dialog.comments = AboutInfo.comments;
 			dialog.copyright = AboutInfo.copyright;
@@ -120,27 +120,27 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			dialog.license_type = Gtk.License.GPL_3_0;
 			dialog.wrap_license = true;
 			dialog.website = AboutInfo.website;
-			
+
 			dialog.response.connect((response_id) => {
 				if (response_id == Gtk.ResponseType.CANCEL || response_id == Gtk.ResponseType.DELETE_EVENT)
 				{
 					dialog.hide_on_delete();
 				}
 			});
-			
+
 			dialog.present();
 		});
 		this.add_action(about_action);
 		about_action.set_enabled(true);
-		
+
 		m_simpleHeader = new SimpleHeader();
-		
+
 		if(Settings.state().get_boolean("window-maximized"))
 		{
 			Logger.debug("MainWindow: maximize");
 			this.maximize();
 		}
-		
+
 		this.window_state_event.connect(onStateEvent);
 		this.key_press_event.connect(shortcuts);
 		this.add(m_overlay);
@@ -149,7 +149,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		this.set_title("FeedReader");
 		this.set_default_size(Settings.state().get_int("window-width"), Settings.state().get_int("window-height"));
 		this.show_all();
-		
+
 		Logger.debug("MainWindow: determining state");
 		if(FeedReaderBackend.get_default().isOnline())
 		{
@@ -164,13 +164,13 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			showLogin();
 		}
 	}
-	
+
 	public override bool delete_event(Gdk.EventAny event)
 	{
 		this.hide();
 		return true;
 	}
-	
+
 	private bool onStateEvent(Gdk.EventWindowState event)
 	{
 		if(event.type == Gdk.EventType.WINDOW_STATE)
@@ -182,19 +182,19 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 				{
 					return true;
 				}
-				
+
 				if(ColumnView.get_default().isFullscreenVideo())
 				{
 					if((event.new_window_state & Gdk.WindowState.FULLSCREEN) != Gdk.WindowState.FULLSCREEN)
 					{
 						ColumnView.get_default().exitFullscreenVideo();
 					}
-					
+
 					base.window_state_event(event);
 					return true;
 				}
-				
-				
+
+
 				if((event.new_window_state & Gdk.WindowState.FULLSCREEN) == Gdk.WindowState.FULLSCREEN)
 				{
 					Logger.debug("MainWindow: fullscreen event");
@@ -208,17 +208,17 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 				}
 			}
 		}
-		
+
 		base.window_state_event(event);
 		return false;
 	}
-	
+
 	public void showOfflineContent()
 	{
 		showContent();
 		ColumnView.get_default().setOffline();
 	}
-	
+
 	public void showContent(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE, bool noNewFeedList = false)
 	{
 		Logger.debug("MainWindow: show content");
@@ -228,14 +228,14 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		}
 		m_stack.set_visible_child_full("content", transition);
 		ColumnView.get_default().getHeader().setButtonsSensitive(true);
-		
+
 		if(!ColumnView.get_default().isFullscreen())
 		{
 			ColumnView.get_default().getHeader().show_all();
 			this.set_titlebar(ColumnView.get_default().getHeader());
 		}
 	}
-	
+
 	private void showLogin(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
 		Logger.debug("MainWindow: show login");
@@ -245,19 +245,19 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		ColumnView.get_default().getHeader().setButtonsSensitive(false);
 		this.set_titlebar(m_simpleHeader);
 	}
-	
+
 	private void showReset(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
 		Logger.debug("MainWindow: show reset");
-		
+
 		// kill playing media
 		ColumnView.get_default().articleViewKillMedia();
-		
+
 		m_stack.set_visible_child_full("reset", transition);
 		ColumnView.get_default().getHeader().setButtonsSensitive(false);
 		this.set_titlebar(m_simpleHeader);
 	}
-	
+
 	public void showSpringClean(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
 		Logger.debug("MainWindow: show springClean");
@@ -265,57 +265,57 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		ColumnView.get_default().getHeader().setButtonsSensitive(false);
 		this.set_titlebar(m_simpleHeader);
 	}
-	
+
 	public InterfaceState getInterfaceState()
 	{
 		int windowWidth = 0;
 		int windowHeight = 0;
 		this.get_size(out windowWidth, out windowHeight);
-		
+
 		var state = new InterfaceState();
 		state.setWindowSize(windowHeight, windowWidth);
 		state.setWindowMaximized(this.is_maximized);
 		ColumnView.get_default().saveState(ref state);
 		return state;
 	}
-	
+
 	public void writeInterfaceState(bool shutdown = false)
 	{
 		getInterfaceState().write(shutdown);
 	}
-	
+
 	public void reloadCSS()
 	{
 		Logger.debug("MainWindow: reloadCSS");
 		removeProvider(m_cssProvider);
 		setupCSS();
 	}
-	
+
 	private void setupCSS()
 	{
 		Logger.debug("MainWindow: setupCSS");
 		string path = "/org/gnome/FeedReader/gtk-css/";
-		
+
 		addProvider(path + "basics.css");
-		
+
 		FeedListTheme theme = (FeedListTheme)Settings.general().get_enum("feedlist-theme");
-		
+
 		switch(theme)
 		{
 			case FeedListTheme.GTK:
 			m_cssProvider = addProvider(path + "gtk.css");
 			break;
-			
+
 			case FeedListTheme.DARK:
 			m_cssProvider = addProvider(path + "dark.css");
 			break;
-			
+
 			case FeedListTheme.ELEMENTARY:
 			m_cssProvider = addProvider(path + "elementary.css");
 			break;
 		}
 	}
-	
+
 	private Gtk.CssProvider? addProvider(string path)
 	{
 		Gtk.CssProvider provider = new Gtk.CssProvider();
@@ -325,14 +325,14 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
 		return provider;
 	}
-	
+
 	private void removeProvider(Gtk.CssProvider provider)
 	{
 		weak Gdk.Display display = Gdk.Display.get_default();
 		weak Gdk.Screen screen = display.get_default_screen();
 		Gtk.StyleContext.remove_provider_for_screen(screen, provider);
 	}
-	
+
 	private void setupLoginPage()
 	{
 		m_error_bar = new Gtk.InfoBar();
@@ -342,12 +342,12 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		error_content.add(m_ErrorMessage);
 		m_error_bar.set_message_type(Gtk.MessageType.WARNING);
 		m_error_bar.set_show_close_button(true);
-		
+
 		m_ignore_tls_errors = m_error_bar.add_button("Ignore", Gtk.ResponseType.APPLY);
 		m_ignore_tls_errors.get_style_context().add_class(Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
 		m_ignore_tls_errors.set_tooltip_text(_("Ignore all TLS errors from now on"));
 		m_ignore_tls_errors.set_visible(false);
-		
+
 		m_error_bar.response.connect((response_id) => {
 			switch(response_id)
 			{
@@ -362,14 +362,14 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 				break;
 			}
 		});
-		
+
 		m_login = new LoginPage();
-		
+
 		var loginBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
-		
+
 		loginBox.pack_start(m_error_bar, false, false, 0);
 		loginBox.pack_start(m_login, true, true, 0);
-		
+
 		m_login.submit_data.connect(() => {
 			Settings.state().set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
 			Settings.state().set_string("feedlist-selected-row", "feed -4");
@@ -382,7 +382,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		m_stack.add_named(loginBox, "login");
 		m_error_bar.set_visible(false);
 	}
-	
+
 	private void setupResetPage()
 	{
 		var reset = new ResetPage();
@@ -394,18 +394,18 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			showLogin(Gtk.StackTransitionType.SLIDE_LEFT);
 		});
 	}
-	
+
 	private void setupSpringCleanPage()
 	{
 		m_SpringClean = new SpringCleanPage();
 		m_stack.add_named(m_SpringClean, "springClean");
 	}
-	
+
 	private void setupContentPage()
 	{
 		m_stack.add_named(ColumnView.get_default(), "content");
 	}
-	
+
 	private void showErrorBar(int ErrorCode)
 	{
 		Logger.debug("MainWindow: show error bar - errorCode = " + ErrorCode.to_string());
@@ -461,12 +461,12 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			m_error_bar.set_visible(false);
 			return;
 		}
-		
+
 		Logger.debug("MainWindow: show error bar");
 		m_error_bar.set_visible(true);
 		m_ErrorMessage.show();
 	}
-	
+
 	private void loadContent()
 	{
 		Logger.debug("MainWindow: load content");
@@ -474,12 +474,12 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		showContent(Gtk.StackTransitionType.NONE);
 		m_stack.set_transition_duration(m_stackTransitionTime);
 	}
-	
+
 	private void markSelectedRead()
 	{
 		ColumnView.get_default().markAllArticlesAsRead();
 		string[] selectedRow = ColumnView.get_default().getSelectedFeedListRow().split(" ", 2);
-		
+
 		if(selectedRow[0] == "feed")
 		{
 			if(selectedRow[1] == FeedID.ALL.to_string())
@@ -491,7 +491,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 					FeedReaderBackend.get_default().markFeedAsRead(cat.getCatID(), true);
 					Logger.debug("MainWindow: mark all articles as read cat: %s".printf(cat.getTitle()));
 				}
-				
+
 				var feeds = db.read_feeds_without_cat();
 				foreach(Feed feed in feeds)
 				{
@@ -509,15 +509,15 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			FeedReaderBackend.get_default().markFeedAsRead(selectedRow[1], true);
 		}
 	}
-	
-	
+
+
 	private bool checkShortcut(Gdk.EventKey event, string gsettingKey)
 	{
 		uint? key;
 		Gdk.ModifierType? mod;
 		string setting = Settings.keybindings().get_string(gsettingKey);
 		Gtk.accelerator_parse(setting, out key, out mod);
-		
+
 		if(key != null && Gdk.keyval_to_lower(event.keyval) == key)
 		{
 			if(mod == null || mod == 0)
@@ -533,50 +533,50 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	private bool shortcuts(Gdk.EventKey event)
 	{
 		if(m_stack.get_visible_child_name() != "content")
 		{
 			return false;
 		}
-		
+
 		if(ColumnView.get_default().searchFocused())
 		{
 			return false;
 		}
-		
+
 		if(checkShortcut(event, "articlelist-prev"))
 		{
 			Logger.debug("shortcut: articlelist prev");
 			ColumnView.get_default().ArticleListPREV();
 			return true;
 		}
-		
+
 		if(checkShortcut(event, "articlelist-next"))
 		{
 			Logger.debug("shortcut: articlelist next");
 			ColumnView.get_default().ArticleListNEXT();
 			return true;
 		}
-		
+
 		if(checkShortcut(event, "feedlist-prev"))
 		{
 			Logger.debug("shortcut: feedlist prev");
 			ColumnView.get_default().FeedListPREV();
 			return true;
 		}
-		
+
 		if(checkShortcut(event, "feedlist-next"))
 		{
 			Logger.debug("shortcut: feedlist next");
 			ColumnView.get_default().FeedListNEXT();
 			return true;
 		}
-		
+
 		if(event.keyval == Gdk.Key.Left || event.keyval == Gdk.Key.Right)
 		{
 			if(ColumnView.get_default().isFullscreen())
@@ -589,7 +589,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 				{
 					ColumnView.get_default().ArticleListNEXT();
 				}
-				
+
 				return true;
 			}
 			else
@@ -597,49 +597,49 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 				return false;
 			}
 		}
-		
+
 		if(checkShortcut(event, "articleview-up"))
 		{
 			event.keyval = Gdk.Key.Up;
 			ColumnView.get_default().ArticleViewSendEvent(event);
 			return true;
 		}
-		
+
 		if(checkShortcut(event, "articleview-down"))
 		{
 			event.keyval = Gdk.Key.Down;
 			ColumnView.get_default().ArticleViewSendEvent(event);
 			return true;
 		}
-		
+
 		if(checkShortcut(event, "articlelist-toggle-read"))
 		{
 			Logger.debug("shortcut: toggle read");
 			ColumnView.get_default().toggleReadSelectedArticle();
 			return true;
 		}
-		
+
 		if(checkShortcut(event, "articlelist-toggle-marked"))
 		{
 			Logger.debug("shortcut: toggle marked");
 			ColumnView.get_default().toggleMarkedSelectedArticle();
 			return true;
 		}
-		
+
 		if(checkShortcut(event, "articlelist-open-url"))
 		{
 			Logger.debug("shortcut: open in browser");
 			ColumnView.get_default().openSelectedArticle();
 			return true;
 		}
-		
+
 		if(checkShortcut(event, "feedlist-mark-read"))
 		{
 			Logger.debug("shortcut: mark all as read");
 			markSelectedRead();
 			return true;
 		}
-		
+
 		if(checkShortcut(event, "global-sync"))
 		{
 			Logger.debug("shortcut: sync");
@@ -647,28 +647,28 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			app.sync();
 			return true;
 		}
-		
+
 		if(checkShortcut(event, "articlelist-center-selected"))
 		{
 			Logger.debug("shortcut: scroll to selcted row");
 			ColumnView.get_default().centerSelectedRow();
 			return true;
 		}
-		
+
 		if(checkShortcut(event, "global-search"))
 		{
 			Logger.debug("shortcut: focus search");
 			ColumnView.get_default().getHeader().focusSearch();
 			return true;
 		}
-		
+
 		if(checkShortcut(event, "global-quit"))
 		{
 			Logger.debug("shortcut: quit");
 			FeedReaderApp.get_default().activate_action("quit", null);
 			return true;
 		}
-		
+
 		if(event.keyval == Gdk.Key.Escape && ColumnView.get_default().isFullscreen())
 		{
 			this.unfullscreen();
@@ -676,27 +676,27 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			ColumnView.get_default().leaveFullscreenArticle();
 			return true;
 		}
-		
+
 		if(checkShortcut(event, "global-help"))
 		{
 			Logger.debug("shortcut: showShortcutWindow");
 			showShortcutWindow();
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	private void showShortcutWindow()
 	{
 		new ShortcutsWindow(this);
 	}
-	
+
 	public SimpleHeader getSimpleHeader()
 	{
 		return m_simpleHeader;
 	}
-	
+
 	public InAppNotification showNotification(string message, string buttonText = "undo")
 	{
 		var notification = new InAppNotification(message, buttonText);
@@ -704,5 +704,5 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		this.show_all();
 		return notification;
 	}
-	
+
 }

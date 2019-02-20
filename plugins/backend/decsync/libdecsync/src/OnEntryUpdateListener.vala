@@ -22,22 +22,22 @@ public interface OnEntryUpdateListener<T> : GLib.Object {
 }
 
 public abstract class OnSubdirEntryUpdateListener<T> : GLib.Object, OnEntryUpdateListener<T> {
-	
+
 	public abstract Gee.List<string> subdir();
 	public abstract void onSubdirEntryUpdate(Gee.List<string> path, Decsync.Entry entry, T extra);
-	
+
 	public bool matchesPath(Gee.List<string> path)
 	{
 		return path.size >= subdir().size && pathEquals(path.slice(0, subdir().size), subdir());
 	}
-	
+
 	public void onEntriesUpdate(Gee.List<string> path, Gee.Collection<Decsync.Entry> entries, T extra)
 	{
 		foreach (var entry in entries) {
 			onSubdirEntryUpdate(convertPath(path), entry, extra);
 		}
 	}
-	
+
 	private Gee.List<string> convertPath(Gee.List<string> path)
 	{
 		return path.slice(subdir().size, path.size);
@@ -45,15 +45,15 @@ public abstract class OnSubdirEntryUpdateListener<T> : GLib.Object, OnEntryUpdat
 }
 
 public abstract class OnSubfileEntryUpdateListener<T> : GLib.Object, OnEntryUpdateListener<T> {
-	
+
 	public abstract Gee.List<string> subfile();
 	public abstract void onSubfileEntryUpdate(Decsync.Entry entry, T extra);
-	
+
 	public bool matchesPath(Gee.List<string> path)
 	{
 		return pathEquals(path, subfile());
 	}
-	
+
 	public void onEntriesUpdate(Gee.List<string> path, Gee.Collection<Decsync.Entry> entries, T extra)
 	{
 		foreach (var entry in entries) {

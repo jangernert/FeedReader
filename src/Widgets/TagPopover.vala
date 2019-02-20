@@ -14,7 +14,7 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.TagPopover : Gtk.Popover {
-	
+
 	private Gtk.ListBox m_list;
 	private Gtk.Box m_box;
 	private Gtk.Viewport m_viewport;
@@ -23,7 +23,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 	private Gee.List<Tag> m_tags;
 	private Gtk.EntryCompletion m_complete;
 	private Gee.List<Tag> m_availableTags;
-	
+
 	public TagPopover(Gtk.Widget widget)
 	{
 		m_availableTags = new Gee.ArrayList<Tag>();
@@ -45,23 +45,23 @@ public class FeedReader.TagPopover : Gtk.Popover {
 				}
 			}
 		}
-		
+
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_type(Gtk.StackTransitionType.NONE);
 		m_stack.set_transition_duration(0);
-		
+
 		var empty_label = new Gtk.Label(_("Add Tag:"));
 		empty_label.get_style_context().add_class("h4");
 		empty_label.set_alignment(0, 0.5f);
 		m_stack.add_named(empty_label, "empty");
-		
+
 		m_list = new Gtk.ListBox();
 		m_list.margin = 2;
 		m_list.set_size_request(150, 0);
 		m_list.set_selection_mode(Gtk.SelectionMode.NONE);
 		m_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		m_box.margin = 10;
-		
+
 		var tag_label = new Gtk.Label(_("Tags:"));
 		tag_label.get_style_context().add_class("h4");
 		tag_label.set_alignment(0, 0.5f);
@@ -73,20 +73,20 @@ public class FeedReader.TagPopover : Gtk.Popover {
 		box.pack_start(tag_label);
 		box.pack_start(m_viewport);
 		m_stack.add_named(box, "tags");
-		
-		
+
+
 		setupEntry();
 		populateList();
-		
-		
+
+
 		m_box.pack_start(m_stack);
 		m_box.pack_start(m_entry);
-		
+
 		this.add(m_box);
 		this.set_relative_to(widget);
 		this.set_position(Gtk.PositionType.BOTTOM);
 		this.show_all();
-		
+
 		if(m_tags.size == 0)
 		{
 			m_stack.set_visible_child_name("empty");
@@ -96,8 +96,8 @@ public class FeedReader.TagPopover : Gtk.Popover {
 			m_stack.set_visible_child_name("tags");
 		}
 	}
-	
-	
+
+
 	private void populateList()
 	{
 		foreach(Tag t in m_tags)
@@ -107,23 +107,23 @@ public class FeedReader.TagPopover : Gtk.Popover {
 			m_list.add(row);
 		}
 	}
-	
+
 	private void prepareCompletion()
 	{
 		m_complete = new Gtk.EntryCompletion();
 		m_entry.set_completion(m_complete);
-		
+
 		Gtk.ListStore list_store = new Gtk.ListStore(1, typeof (string));
 		m_complete.set_model(list_store);
 		m_complete.set_text_column(0);
 		Gtk.TreeIter iter;
-		
+
 		var tags = DataBase.readOnly().read_tags();
-		
+
 		foreach(Tag tag in tags)
 		{
 			bool alreadyHasTag = false;
-			
+
 			foreach(Tag tag2 in m_tags)
 			{
 				if(tag2.getTitle() == tag.getTitle())
@@ -131,7 +131,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 					alreadyHasTag = true;
 				}
 			}
-			
+
 			if(!alreadyHasTag)
 			{
 				list_store.append(out iter);
@@ -140,7 +140,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 			}
 		}
 	}
-	
+
 	private void setupEntry()
 	{
 		m_entry = new Gtk.Entry();
@@ -161,7 +161,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 			}
 			bool available = false;
 			Tag? selectedTag = null;
-			
+
 			foreach(Tag tag in m_tags)
 			{
 				if(str == tag.getTitle())
@@ -171,7 +171,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 					return;
 				}
 			}
-			
+
 			foreach(Tag tag in m_availableTags)
 			{
 				if(str == tag.getTitle())
@@ -182,30 +182,30 @@ public class FeedReader.TagPopover : Gtk.Popover {
 					break;
 				}
 			}
-			
+
 			if(!available)
 			{
 				selectedTag = FeedReaderBackend.get_default().createTag(str);
 				Logger.debug("TagPopover: %s created with id %s".printf(str, selectedTag.getTagID()));
 			}
 			FeedReaderBackend.get_default().tagArticle(getActiveArticleID(), selectedTag, true);
-			
-			
+
+
 			var row = new TagPopoverRow(selectedTag);
 			row.remove_tag.connect(removeTag);
 			m_list.add(row);
 			m_stack.set_visible_child_name("tags");
 			m_entry.set_text("");
 		});
-		
+
 		prepareCompletion();
 	}
-	
+
 	private void removeTag(TagPopoverRow row)
 	{
 		FeedReaderBackend.get_default().tagArticle(getActiveArticleID(), row.getTag(), false);
 		m_list.remove(row);
-		
+
 		foreach(Tag tag in m_tags)
 		{
 			if(tag.getTagID() == row.getTagID())
@@ -214,24 +214,24 @@ public class FeedReader.TagPopover : Gtk.Popover {
 				break;
 			}
 		}
-		
+
 		if(m_list.get_children().length() == 0)
 		{
 			m_stack.set_visible_child_name("empty");
 			this.show_all();
 		}
-		
+
 		ColumnView.get_default().removeTagFromSelectedRow(row.getTagID());
 	}
-	
+
 	private Article getActiveArticleID()
 	{
 		return ColumnView.get_default().getSelectedArticle();
 	}
-	
+
 	public bool entryFocused()
 	{
 		return m_entry.has_focus;
 	}
-	
+
 }

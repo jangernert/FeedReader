@@ -66,6 +66,6 @@ public Gee.MultiMap<K, V> groupBy<T, K, V>(Gee.Collection<T> inputs, Gee.MapFunc
 		var value = f == null ? input : f(input);
 		resultsMap.@set(key, value);
 	}
-	
+
 	return resultsMap;
 }

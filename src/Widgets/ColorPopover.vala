@@ -16,8 +16,8 @@
 public class FeedReader.ColorPopover : Gtk.Popover {
 	private Gtk.Grid m_grid;
 	public signal void newColorSelected(int color);
-	
-	
+
+
 	public ColorPopover(Gtk.Widget widget)
 	{
 		m_grid = new Gtk.Grid();
@@ -32,7 +32,7 @@ public class FeedReader.ColorPopover : Gtk.Popover {
 		int rows = Constants.COLORS.length/4;
 		int color = 0;
 		ColorCircle tmpCircle;
-		
+
 		for(int i = 0; i < rows; ++i)
 		{
 			for(int j = 0; j < columns; ++j)
@@ -46,7 +46,7 @@ public class FeedReader.ColorPopover : Gtk.Popover {
 				++color;
 			}
 		}
-		
+
 		m_grid.show_all();
 		this.add(m_grid);
 		this.set_modal(true);

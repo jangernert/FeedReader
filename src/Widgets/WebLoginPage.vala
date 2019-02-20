@@ -14,13 +14,13 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.WebLoginPage : Gtk.Bin {
-	
+
 	private WebKit.WebView m_view;
 	private bool m_success = false;
 	public signal bool getApiCode(string url);
 	public signal void success();
-	
-	
+
+
 	public WebLoginPage()
 	{
 		var settings = new WebKit.Settings();
@@ -32,14 +32,14 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 		this.add(m_view);
 		this.show_all();
 	}
-	
-	
+
+
 	public void loadPage(string url)
 	{
 		Logger.debug("WebLoginPage: load URL: " + url);
 		m_view.load_uri(url);
 	}
-	
+
 	public void redirection(WebKit.LoadEvent load_event)
 	{
 		switch(load_event)
@@ -56,7 +56,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 			break;
 		}
 	}
-	
+
 	private void check()
 	{
 		if(m_success)
@@ -64,18 +64,18 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 			// code already successfully extracted
 			return;
 		}
-		
+
 		string url = m_view.get_uri();
-		
+
 		if(getApiCode(url))
 		{
 			m_view.stop_loading();
 			m_success = true;
 			success();
-			
+
 		}
 	}
-	
+
 	public void reset()
 	{
 		m_view.load_uri("about:blank");

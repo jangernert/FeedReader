@@ -18,10 +18,10 @@ namespace FeedReader.OldReaderSecret {
 }
 
 public class FeedReader.OldReaderUtils : GLib.Object {
-	
+
 	private GLib.Settings m_settings;
 	private Password m_password;
-	
+
 	public OldReaderUtils(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 	{
 		if(settings_backend != null)
@@ -32,7 +32,7 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 		{
 			m_settings = new GLib.Settings("org.gnome.feedreader.oldreader");
 		}
-		
+
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.oldreader", Secret.SchemaFlags.NONE,
 			"type", "oldreader",
 		"Username", Secret.SchemaAttributeType.STRING);
@@ -42,48 +42,48 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 			return attributes;
 		});
 	}
-	
+
 	public string getUser()
 	{
 		return Utils.gsettingReadString(m_settings, "username");
 	}
-	
+
 	public void setUser(string user)
 	{
 		Utils.gsettingWriteString(m_settings, "username", user);
 	}
-	
+
 	public string getAccessToken()
 	{
 		return Utils.gsettingReadString(m_settings, "access-token");
 	}
-	
+
 	public void setAccessToken(string token)
 	{
 		Utils.gsettingWriteString(m_settings, "access-token", token);
 	}
-	
+
 	public string getUserID()
 	{
 		return Utils.gsettingReadString(m_settings, "user-id");
 	}
-	
+
 	public void setUserID(string id)
 	{
 		Utils.gsettingWriteString(m_settings, "user-id", id);
 	}
-	
+
 	public void resetAccount()
 	{
 		Utils.resetSettings(m_settings);
 		m_password.delete_password();
 	}
-	
+
 	public string getPasswd()
 	{
 		return m_password.get_password();
 	}
-	
+
 	public void setPassword(string passwd)
 	{
 		m_password.set_password(passwd);

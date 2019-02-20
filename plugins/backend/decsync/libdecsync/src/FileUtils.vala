@@ -17,7 +17,7 @@
 */
 
 public class FileUtils : GLib.Object {
-	
+
 	public static void writeFile(File file, string content, bool append = false) throws GLib.Error
 	{
 		var parent = file.get_parent();
@@ -25,7 +25,7 @@ public class FileUtils : GLib.Object {
 		{
 			parent.make_directory_with_parents();
 		}
-		
+
 		GLib.FileOutputStream stream;
 		if (append)
 		{
@@ -41,7 +41,7 @@ public class FileUtils : GLib.Object {
 		}
 		stream.write(content.data);
 	}
-	
+
 	public static void @delete(File src) throws GLib.Error
 	{
 		if (!src.query_exists())
@@ -59,7 +59,7 @@ public class FileUtils : GLib.Object {
 		}
 		src.@delete();
 	}
-	
+
 	public static void copy(File src, File dst, bool overwrite = false) throws GLib.Error
 	{
 		switch (src.query_file_type(FileQueryInfoFlags.NONE)) {
@@ -82,7 +82,7 @@ public class FileUtils : GLib.Object {
 			return;
 		}
 	}
-	
+
 	public static void filterFile(File file, Gee.Predicate<string> linePred) throws GLib.Error
 	{
 		var tempFile = File.new_for_path(file.get_parent().get_path() + "." + file.get_basename() + ".tmp");
@@ -97,7 +97,7 @@ public class FileUtils : GLib.Object {
 		}
 		tempFile.move(file, FileCopyFlags.OVERWRITE);
 	}
-	
+
 	public static Gee.ArrayList<Gee.ArrayList<string>> listFilesRecursiveRelative(File src, File? readBytesSrc = null, Gee.Predicate<Gee.List<string>>? pathPred = null)
 	{
 		if (src.get_basename()[0] == '.')
@@ -108,7 +108,7 @@ public class FileUtils : GLib.Object {
 		{
 			return new Gee.ArrayList<Gee.ArrayList<string>>();
 		}
-		
+
 		switch (src.query_file_type(FileQueryInfoFlags.NONE)) {
 			case FileType.REGULAR:
 			var result = new Gee.ArrayList<Gee.ArrayList<string>>();
@@ -154,7 +154,7 @@ public class FileUtils : GLib.Object {
 					}
 				}
 			}
-			
+
 			var result = new Gee.ArrayList<Gee.ArrayList<string>>();
 			try {
 				var enumerator = src.enumerate_children("standard::name", FileQueryInfoFlags.NONE);
@@ -167,7 +167,7 @@ public class FileUtils : GLib.Object {
 						Log.w("Cannot decode name " + name);
 						continue;
 					}
-					
+
 					var newReadBytesSrc = readBytesSrc == null ? null : readBytesSrc.get_child(name);
 					Gee.Predicate<Gee.List<string>>? newPathPred = null;
 					if (pathPred != null)
@@ -188,14 +188,14 @@ public class FileUtils : GLib.Object {
 			return new Gee.ArrayList<Gee.ArrayList<string>>();
 		}
 	}
-	
+
 	public static string pathToString(Gee.List<string> path)
 	{
 		var encodedPath = new Gee.ArrayList<string>();
 		encodedPath.add_all_iterator(path.map<string>(part => { return urlencode(part); }));
 		return string.joinv("/", encodedPath.to_array());
 	}
-	
+
 	public static string urlencode(string input)
 	{
 		var builder = new StringBuilder();
@@ -211,15 +211,15 @@ public class FileUtils : GLib.Object {
 			}
 		}
 		var output = builder.str;
-		
+
 		if (output != "" && output[0] == '.')
 		{
 			output = "%2E" + output.substring(1);
 		}
-		
+
 		return output;
 	}
-	
+
 	public static string? urldecode(string input)
 	{
 		var builder = new StringBuilder();

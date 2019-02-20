@@ -14,17 +14,17 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.localUtils : GLib.Object {
-	
+
 	public localUtils()
 	{
-		
+
 	}
-	
+
 	public Feed? downloadFeed(Soup.Session session, string feed_url, string feedID, Gee.List<string> catIDs, out string errmsg)
 	{
 		var error = new StringBuilder(_("Failed to add feed"));
 		error.append_printf(" %s\n", feed_url);
-		
+
 		var msg = new Soup.Message("GET", feed_url);
 		if (msg == null)
 		{
@@ -33,7 +33,7 @@ public class FeedReader.localUtils : GLib.Object {
 			Logger.warning(errmsg);
 			return null;
 		}
-		
+
 		uint status = session.send_message(msg);
 		if(status < 100 || status >= 400)
 		{
@@ -46,14 +46,14 @@ public class FeedReader.localUtils : GLib.Object {
 				error.append(_("Got HTTP error code"));
 				error.append_printf(" %u %s", status, Soup.Status.get_phrase(status));
 			}
-			
+
 			errmsg = error.str;
 			Logger.warning(errmsg);
 			return null;
 		}
 		string xml = (string)msg.response_body.flatten().data;
 		string? url = null;
-		
+
 		// parse
 		Rss.Parser parser = new Rss.Parser();
 		try
@@ -67,15 +67,15 @@ public class FeedReader.localUtils : GLib.Object {
 			Logger.warning(errmsg);
 			return null;
 		}
-		
+
 		var doc = parser.get_document();
-		
+
 		if(doc.link != null
 		&& doc.link != "")
 		{
 			url = doc.link;
 		}
-		
+
 		errmsg = "";
 		return new Feed(
 			feedID,
@@ -86,19 +86,19 @@ public class FeedReader.localUtils : GLib.Object {
 			doc.image_url,
 		feed_url);
 	}
-	
+
 	public string? convert(string? text, string? locale)
 	{
 		if(text == null)
 		{
 			return null;
 		}
-		
+
 		if(locale == null)
 		{
 			return text;
 		}
-		
+
 		try
 		{
 			return GLib.convert(text, -1, "utf-8", locale);
@@ -107,7 +107,7 @@ public class FeedReader.localUtils : GLib.Object {
 		{
 			Logger.error(e.message);
 		}
-		
+
 		return "";
 	}
 }

@@ -14,25 +14,25 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.DecsyncListeners : GLib.Object {
-	
+
 	public class ReadMarkListener : OnSubdirEntryUpdateListener<Unit> {
-		
+
 		private Gee.List<string> m_subdir;
 		private bool m_is_read_entry;
 		private decsyncInterface m_plugin;
-		
+
 		public ReadMarkListener(bool is_read_entry, decsyncInterface plugin)
 		{
 			this.m_subdir = toList({"articles", is_read_entry ? "read" : "marked"});
 			this.m_is_read_entry = is_read_entry;
 			this.m_plugin = plugin;
 		}
-		
+
 		public override Gee.List<string> subdir()
 		{
 			return m_subdir;
 		}
-		
+
 		public override void onSubdirEntryUpdate(Gee.List<string> path, Decsync.Entry entry, Unit extra)
 		{
 			var articleID = entry.key.get_string();
@@ -68,23 +68,23 @@ public class FeedReader.DecsyncListeners : GLib.Object {
 			db.update_article(article);
 		}
 	}
-	
+
 	public class SubscriptionsListener : OnSubfileEntryUpdateListener<Unit> {
-		
+
 		private Gee.List<string> m_subfile;
 		private decsyncInterface m_plugin;
-		
+
 		public SubscriptionsListener(decsyncInterface plugin)
 		{
 			this.m_subfile = toList({"feeds", "subscriptions"});
 			this.m_plugin = plugin;
 		}
-		
+
 		public override Gee.List<string> subfile()
 		{
 			return m_subfile;
 		}
-		
+
 		public override void onSubfileEntryUpdate(Decsync.Entry entry, Unit extra)
 		{
 			var feedID = entry.key.get_string();
@@ -105,23 +105,23 @@ public class FeedReader.DecsyncListeners : GLib.Object {
 			}
 		}
 	}
-	
+
 	public class FeedNamesListener : OnSubfileEntryUpdateListener<Unit> {
-		
+
 		private Gee.List<string> m_subfile;
 		private decsyncInterface m_plugin;
-		
+
 		public FeedNamesListener(decsyncInterface plugin)
 		{
 			this.m_subfile = toList({"feeds", "names"});
 			this.m_plugin = plugin;
 		}
-		
+
 		public override Gee.List<string> subfile()
 		{
 			return m_subfile;
 		}
-		
+
 		public override void onSubfileEntryUpdate(Decsync.Entry entry, Unit extra)
 		{
 			var feedID = entry.key.get_string();
@@ -139,23 +139,23 @@ public class FeedReader.DecsyncListeners : GLib.Object {
 			DataBase.writeAccess().rename_feed(feedID, name);
 		}
 	}
-	
+
 	public class CategoriesListener : OnSubfileEntryUpdateListener<Unit> {
-		
+
 		private Gee.List<string> m_subfile;
 		private decsyncInterface m_plugin;
-		
+
 		public CategoriesListener(decsyncInterface plugin)
 		{
 			this.m_subfile = toList({"feeds", "categories"});
 			this.m_plugin = plugin;
 		}
-		
+
 		public override Gee.List<string> subfile()
 		{
 			return m_subfile;
 		}
-		
+
 		public override void onSubfileEntryUpdate(Decsync.Entry entry, Unit extra)
 		{
 			var feedID = entry.key.get_string();
@@ -189,23 +189,23 @@ public class FeedReader.DecsyncListeners : GLib.Object {
 			db.move_feed(feedID, currentCatID, newCatID);
 		}
 	}
-	
+
 	public class CategoryNamesListener : OnSubfileEntryUpdateListener<Unit> {
-		
+
 		private Gee.List<string> m_subfile;
 		private decsyncInterface m_plugin;
-		
+
 		public CategoryNamesListener(decsyncInterface plugin)
 		{
 			this.m_subfile = toList({"categories", "names"});
 			this.m_plugin = plugin;
 		}
-		
+
 		public override Gee.List<string> subfile()
 		{
 			return m_subfile;
 		}
-		
+
 		public override void onSubfileEntryUpdate(Decsync.Entry entry, Unit extra)
 		{
 			var catID = entry.key.get_string();
@@ -224,23 +224,23 @@ public class FeedReader.DecsyncListeners : GLib.Object {
 			Logger.debug("Renamed category " + catID + " to " + name);
 		}
 	}
-	
+
 	public class CategoryParentsListener : OnSubfileEntryUpdateListener<Unit> {
-		
+
 		private Gee.List<string> m_subfile;
 		private decsyncInterface m_plugin;
-		
+
 		public CategoryParentsListener(decsyncInterface plugin)
 		{
 			this.m_subfile = toList({"categories", "parents"});
 			this.m_plugin = plugin;
 		}
-		
+
 		public override Gee.List<string> subfile()
 		{
 			return m_subfile;
 		}
-		
+
 		public override void onSubfileEntryUpdate(Decsync.Entry entry, Unit extra)
 		{
 			var catID = entry.key.get_string();
@@ -268,7 +268,7 @@ public class FeedReader.DecsyncListeners : GLib.Object {
 			Logger.debug("Moved category " + catID + " to " + parentID);
 		}
 	}
-	
+
 	private static void addCategory(decsyncInterface plugin, string catID)
 	{
 		if (catID == plugin.uncategorizedID() || catID == CategoryID.MASTER.to_string() || DataBase.readOnly().read_category(catID) != null)

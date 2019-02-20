@@ -14,7 +14,7 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.GrabberConfig : GLib.Object {
-	
+
 	private Gee.List<string> m_xpath_title;
 	private Gee.List<string> m_xpath_author;
 	private Gee.List<string> m_xpath_date;
@@ -29,7 +29,7 @@ public class FeedReader.GrabberConfig : GLib.Object {
 	private string m_nextPageLink;
 	private Gee.List<StringPair> m_replace;
 	private string m_testURL;
-	
+
 	public GrabberConfig(string filename)
 	{
 		m_xpath_title = new Gee.ArrayList<string>();
@@ -40,25 +40,25 @@ public class FeedReader.GrabberConfig : GLib.Object {
 		m_xpath_stripIDorClass = new Gee.ArrayList<string>();
 		m_xpath_stripImgSrc = new Gee.ArrayList<string>();
 		m_replace = new Gee.ArrayList<StringPair>();
-		
+
 		// init defaults:
 		m_tidy = true;
 		m_prune = true;
 		m_autodetectOnFailure = true;
-		
+
 		var file = File.new_for_path(filename);
-		
+
 		if(!file.query_exists())
 		{
 			Logger.error("File '%s' doesn't exist.".printf(file.get_path()));
 			return;
 		}
-		
+
 		try
 		{
 			var dis = new DataInputStream(file.read ());
 			string line;
-			
+
 			while((line = dis.read_line()) != null)
 			{
 				line = line.chug();
@@ -146,20 +146,20 @@ public class FeedReader.GrabberConfig : GLib.Object {
 				error("%s", e.message);
 			}
 		}
-		
+
 		private string extractValue(string identifier, string line)
 		{
 			string res = line.splice(0, identifier.length);
-			
+
 			int index = res.index_of("#");
 			if(index != -1)
 			{
 				res = res.splice(index, res.length);
 			}
-			
+
 			return res.chug().chomp();
 		}
-		
+
 		private void splitValues(ref Gee.List<string> list, string line)
 		{
 			var array = line.split(" | ");
@@ -168,11 +168,11 @@ public class FeedReader.GrabberConfig : GLib.Object {
 				list.add(tmp);
 			}
 		}
-		
+
 		public void print()
 		{
 			const string TAB = "     ";
-			
+
 			if(m_xpath_title.size != 0)
 			{
 				Logger.debug("title:");
@@ -181,7 +181,7 @@ public class FeedReader.GrabberConfig : GLib.Object {
 					Logger.debug(TAB + title);
 				}
 			}
-			
+
 			if(m_xpath_author.size != 0)
 			{
 				Logger.debug("author:");
@@ -190,7 +190,7 @@ public class FeedReader.GrabberConfig : GLib.Object {
 					Logger.debug(TAB + author);
 				}
 			}
-			
+
 			if(m_xpath_date.size != 0)
 			{
 				Logger.debug("date:");
@@ -199,7 +199,7 @@ public class FeedReader.GrabberConfig : GLib.Object {
 					Logger.debug(TAB + date);
 				}
 			}
-			
+
 			if(m_xpath_body.size != 0)
 			{
 				Logger.debug("body:");
@@ -208,7 +208,7 @@ public class FeedReader.GrabberConfig : GLib.Object {
 					Logger.debug(TAB + body);
 				}
 			}
-			
+
 			if(m_xpath_strip.size != 0)
 			{
 				Logger.debug("strip:");
@@ -217,7 +217,7 @@ public class FeedReader.GrabberConfig : GLib.Object {
 					Logger.debug(TAB + strip);
 				}
 			}
-			
+
 			if(m_xpath_stripIDorClass.size != 0)
 			{
 				Logger.debug("stripIDorClass:");
@@ -226,7 +226,7 @@ public class FeedReader.GrabberConfig : GLib.Object {
 					Logger.debug(TAB + stripIDorClass);
 				}
 			}
-			
+
 			if(m_xpath_stripImgSrc.size != 0)
 			{
 				Logger.debug("stripImgSrc:");
@@ -235,7 +235,7 @@ public class FeedReader.GrabberConfig : GLib.Object {
 					Logger.debug(TAB + stripImgSrc);
 				}
 			}
-			
+
 			if(m_tidy)
 			{
 				Logger.debug("tidy: yes");
@@ -244,7 +244,7 @@ public class FeedReader.GrabberConfig : GLib.Object {
 			{
 				Logger.debug("tidy: no");
 			}
-			
+
 			if(m_prune)
 			{
 				Logger.debug("prune: yes");
@@ -253,7 +253,7 @@ public class FeedReader.GrabberConfig : GLib.Object {
 			{
 				Logger.debug("prune: no");
 			}
-			
+
 			if(m_autodetectOnFailure)
 			{
 				Logger.debug("autodetectOnFailure: yes");
@@ -262,17 +262,17 @@ public class FeedReader.GrabberConfig : GLib.Object {
 			{
 				Logger.debug("autodetectOnFailure: no");
 			}
-			
+
 			if(m_singlePageLink != null)
 			{
 				Logger.debug("singlePageLink: " + m_singlePageLink);
 			}
-			
+
 			if(m_nextPageLink != null)
 			{
 				Logger.debug("nextPageLink: " + m_nextPageLink);
 			}
-			
+
 			if(m_replace.size != 0)
 			{
 				Logger.debug("replace:");
@@ -281,59 +281,59 @@ public class FeedReader.GrabberConfig : GLib.Object {
 					Logger.debug("replace %s with %s".printf(tmp.getString1(), tmp.getString2()));
 				}
 			}
-			
+
 			if(m_testURL != null)
 			{
 				Logger.debug("testURL: " + m_testURL);
 			}
 		}
-		
-		
+
+
 		public string getXPathNextPageURL()
 		{
 			return m_nextPageLink;
 		}
-		
+
 		public string getXPathSinglePageURL()
 		{
 			return m_singlePageLink;
 		}
-		
+
 		public unowned Gee.List<string> getXPathTitle()
 		{
 			return m_xpath_title;
 		}
-		
+
 		public unowned Gee.List<string> getXPathAuthor()
 		{
 			return m_xpath_author;
 		}
-		
+
 		public unowned Gee.List<string> getXPathDate()
 		{
 			return m_xpath_date;
 		}
-		
+
 		public unowned Gee.List<string> getXPathStrip()
 		{
 			return m_xpath_strip;
 		}
-		
+
 		public unowned Gee.List<string> getXPathStripIDorClass()
 		{
 			return m_xpath_stripIDorClass;
 		}
-		
+
 		public unowned Gee.List<string> getXPathStripImgSrc()
 		{
 			return m_xpath_stripImgSrc;
 		}
-		
+
 		public unowned Gee.List<string> getXPathBody()
 		{
 			return m_xpath_body;
 		}
-		
+
 		public unowned Gee.List<StringPair> getReplace()
 		{
 			return m_replace;

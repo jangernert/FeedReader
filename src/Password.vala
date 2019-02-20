@@ -14,14 +14,14 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.Password : GLib.Object {
-	
+
 	public delegate HashTable<string, string> GetAttributesFunc();
-	
+
 	private Secret.Collection m_secrets;
 	private Secret.Schema m_schema;
 	private GetAttributesFunc m_get_attributes;
 	private string m_label;
-	
+
 	public Password(Secret.Collection secrets, Secret.Schema schema, string label, owned GetAttributesFunc get_attributes)
 	{
 		m_secrets = secrets;
@@ -29,39 +29,39 @@ public class FeedReader.Password : GLib.Object {
 		m_label = label;
 		m_get_attributes = (owned)get_attributes;
 	}
-	
+
 	private void unlock_keyring(Cancellable? cancellable = null) throws Error
 	{
 		if (!m_secrets.get_locked())
 		{
 			return;
 		}
-		
+
 		var collections_to_unlock = new List<Secret.Collection>();
 		collections_to_unlock.append(m_secrets);
 		var service = m_secrets.get_service();
 		service.unlock_sync(collections_to_unlock, cancellable, null);
 	}
-	
+
 	public string get_password(Cancellable? cancellable = null)
 	{
 		var attributes = m_get_attributes();
 		try
 		{
 			unlock_keyring(cancellable);
-			
+
 			if(cancellable != null && cancellable.is_cancelled())
 			{
 				return "";
 			}
-			
+
 			var secrets = m_secrets.search_sync(m_schema, attributes, Secret.SearchFlags.NONE, cancellable);
-			
+
 			if(cancellable != null && cancellable.is_cancelled())
 			{
 				return "";
 			}
-			
+
 			if(secrets.length() != 0)
 			{
 				var item = secrets.data;
@@ -70,7 +70,7 @@ public class FeedReader.Password : GLib.Object {
 				{
 					return "";
 				}
-				
+
 				var secret = item.get_secret();
 				if(secret == null)
 				{
@@ -92,19 +92,19 @@ public class FeedReader.Password : GLib.Object {
 		}
 		return "";
 	}
-	
+
 	public void set_password(string password, Cancellable? cancellable = null)
 	{
 		var attributes = m_get_attributes();
 		try
 		{
 			unlock_keyring(cancellable);
-			
+
 			if(cancellable != null && cancellable.is_cancelled())
 			{
 				return;
 			}
-			
+
 			var value = new Secret.Value(password, password.length, "text/plain");
 			Secret.Item.create_sync(m_secrets, m_schema, attributes, m_label, value, Secret.ItemCreateFlags.REPLACE, cancellable);
 		}
@@ -113,26 +113,26 @@ public class FeedReader.Password : GLib.Object {
 			Logger.error("Password.setPassword: " + e.message);
 		}
 	}
-	
+
 	public bool delete_password(Cancellable? cancellable = null)
 	{
 		var attributes = m_get_attributes();
 		try
 		{
 			unlock_keyring(cancellable);
-			
+
 			if(cancellable != null && cancellable.is_cancelled())
 			{
 				return false;
 			}
-			
+
 			var secrets = m_secrets.search_sync(m_schema, attributes, Secret.SearchFlags.NONE, cancellable);
-			
+
 			if(cancellable != null && cancellable.is_cancelled())
 			{
 				return false;
 			}
-			
+
 			if(secrets.length() != 0)
 			{
 				var item = secrets.data;

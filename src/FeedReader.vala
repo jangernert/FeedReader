@@ -17,48 +17,48 @@ using GLib;
 using Gtk;
 
 namespace FeedReader {
-	
+
 	public const string QUICKLIST_ABOUT_STOCK = N_("About FeedReader");
-	
+
 	public class FeedReaderApp : Gtk.Application {
-		
+
 		private MainWindow m_window;
 		private bool m_online = true;
 		private static FeedReaderApp? m_app = null;
 		public static bool m_verbose = false;
 		public signal void callback (string content);
-		
-		
+
+
 		public new static FeedReaderApp get_default()
 		{
 			if(m_app == null)
 			{
 				m_app = new FeedReaderApp();
 			}
-			
+
 			return m_app;
 		}
-		
+
 		public bool isOnline()
 		{
 			return m_online;
 		}
-		
+
 		public void setOnline(bool online)
 		{
 			m_online = online;
 		}
-		
+
 		protected override void startup()
 		{
 			Logger.init(m_verbose);
 			Logger.info("FeedReader " + AboutInfo.version);
-			
+
 			Settings.state().set_boolean("currently-updating", false);
-			
+
 			base.startup();
 		}
-		
+
 		public override void activate()
 		{
 			base.activate();
@@ -67,14 +67,14 @@ namespace FeedReader {
 			Intl.bindtextdomain (Constants.GETTEXT_PACKAGE, Constants.LOCALE_DIR);
 			Intl.bind_textdomain_codeset (Constants.GETTEXT_PACKAGE, "UTF-8");
 			Intl.textdomain (Constants.GETTEXT_PACKAGE);
-			
+
 			if(m_window == null)
 			{
 				SetupActions();
 				m_window = MainWindow.get_default();
 				m_window.set_icon_name("org.gnome.FeedReader");
 				Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
-				
+
 				FeedReaderBackend.get_default().newFeedList.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: newFeedList");
@@ -82,7 +82,7 @@ namespace FeedReader {
 						return GLib.Source.REMOVE;
 					});
 				});
-				
+
 				FeedReaderBackend.get_default().refreshFeedListCounter.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: refreshFeedListCounter");
@@ -90,7 +90,7 @@ namespace FeedReader {
 						return GLib.Source.REMOVE;
 					});
 				});
-				
+
 				FeedReaderBackend.get_default().updateArticleList.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: updateArticleList");
@@ -98,7 +98,7 @@ namespace FeedReader {
 						return GLib.Source.REMOVE;
 					});
 				});
-				
+
 				FeedReaderBackend.get_default().syncStarted.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: syncStarted");
@@ -107,7 +107,7 @@ namespace FeedReader {
 						return GLib.Source.REMOVE;
 					});
 				});
-				
+
 				FeedReaderBackend.get_default().syncFinished.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: syncFinished");
@@ -117,7 +117,7 @@ namespace FeedReader {
 						return GLib.Source.REMOVE;
 					});
 				});
-				
+
 				FeedReaderBackend.get_default().springCleanStarted.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: springCleanStarted");
@@ -125,7 +125,7 @@ namespace FeedReader {
 						return GLib.Source.REMOVE;
 					});
 				});
-				
+
 				FeedReaderBackend.get_default().springCleanFinished.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: springCleanFinished");
@@ -133,7 +133,7 @@ namespace FeedReader {
 						return GLib.Source.REMOVE;
 					});
 				});
-				
+
 				FeedReaderBackend.get_default().showArticleListOverlay.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: showArticleListOverlay");
@@ -141,7 +141,7 @@ namespace FeedReader {
 						return GLib.Source.REMOVE;
 					});
 				});
-				
+
 				FeedReaderBackend.get_default().setOffline.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: setOffline");
@@ -153,7 +153,7 @@ namespace FeedReader {
 						return GLib.Source.REMOVE;
 					});
 				});
-				
+
 				FeedReaderBackend.get_default().setOnline.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: setOnline");
@@ -165,7 +165,7 @@ namespace FeedReader {
 						return GLib.Source.REMOVE;
 					});
 				});
-				
+
 				FeedReaderBackend.get_default().feedAdded.connect((error, errmsg) => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: feedAdded");
@@ -177,7 +177,7 @@ namespace FeedReader {
 						return GLib.Source.REMOVE;
 					});
 				});
-				
+
 				FeedReaderBackend.get_default().opmlImported.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: opmlImported");
@@ -186,7 +186,7 @@ namespace FeedReader {
 						return GLib.Source.REMOVE;
 					});
 				});
-				
+
 				FeedReaderBackend.get_default().updateSyncProgress.connect((progress) => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: updateSyncProgress");
@@ -194,15 +194,15 @@ namespace FeedReader {
 						return GLib.Source.REMOVE;
 					});
 				});
-				
+
 				FeedReaderBackend.get_default().updateBadge();
 				FeedReaderBackend.get_default().checkOnlineAsync.begin();
 			}
-			
+
 			m_window.show_all();
 			m_window.present();
 		}
-		
+
 		public override int command_line(ApplicationCommandLine command_line)
 		{
 			var args = command_line.get_arguments();
@@ -211,42 +211,42 @@ namespace FeedReader {
 				Logger.debug("FeedReader: callback %s".printf(args[1]));
 				callback (args[1]);
 			}
-			
+
 			activate();
-			
+
 			return 0;
 		}
-		
+
 		protected override void shutdown()
 		{
 			Logger.debug("Shutdown!");
 			Gst.deinit();
 			base.shutdown();
 		}
-		
+
 		public void sync()
 		{
 			FeedReaderBackend.get_default().startSync();
 		}
-		
+
 		public void cancelSync()
 		{
 			FeedReaderBackend.get_default().cancelSync();
 		}
-		
+
 		private FeedReaderApp()
 		{
 			GLib.Object(application_id: "org.gnome.FeedReader", flags : ApplicationFlags.HANDLES_COMMAND_LINE);
 		}
-		
+
 		private void SetupActions()
 		{
 			var quit_action = new SimpleAction("quit", null);
 			quit_action.activate.connect(() => {
-				
+
 				MainWindow.get_default().writeInterfaceState(true);
 				m_window.close();
-				
+
 				if(Settings.state().get_boolean("currently-updating"))
 				{
 					Logger.debug("Quit: FeedReader seems to be syncing -> trying to cancel");
@@ -255,20 +255,20 @@ namespace FeedReader {
 					{
 						Gtk.main_iteration();
 					}
-					
+
 					Logger.debug("Quit: Sync cancelled -> shutting down");
 				}
 				else
 				{
 					Logger.debug("No Sync ongoing -> Quit right away");
 				}
-				
+
 				FeedReaderApp.get_default().quit();
 			});
 			this.add_action(quit_action);
 		}
 	}
-	
+
 	public static void show_about(string[] args)
 	{
 		Gtk.init(ref args);
@@ -279,12 +279,12 @@ namespace FeedReader {
 				Gtk.main_quit();
 			}
 		});
-		
+
 		dialog.artists = AboutInfo.artists;
 		dialog.authors = AboutInfo.authors;
 		dialog.documenters = null;
 		dialog.translator_credits = AboutInfo.translators;
-		
+
 		dialog.program_name = AboutInfo.programmName;
 		dialog.comments = AboutInfo.comments;
 		dialog.copyright = AboutInfo.copyright;
@@ -292,11 +292,11 @@ namespace FeedReader {
 		dialog.logo_icon_name = AboutInfo.iconName;
 		dialog.license_type = Gtk.License.GPL_3_0;
 		dialog.wrap_license = true;
-		
+
 		dialog.website = AboutInfo.website;
 		dialog.present();
-		
+
 		Gtk.main();
 	}
-	
+
 }

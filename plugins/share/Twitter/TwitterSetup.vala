@@ -14,9 +14,9 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.TwitterSetup : ServiceSetup {
-	
+
 	private TwitterAPI m_api;
-	
+
 	public TwitterSetup(string? id, TwitterAPI api, string username = "")
 	{
 		bool loggedIN = false;
@@ -24,18 +24,18 @@ public class FeedReader.TwitterSetup : ServiceSetup {
 		{
 			loggedIN = true;
 		}
-		
+
 		base("Twitter", "feed-share-twitter", loggedIN, username);
-		
+
 		m_api = api;
-		
+
 		if(id != null)
 		{
 			m_id = id;
 		}
 	}
-	
-	
+
+
 	public override void login()
 	{
 		string id = Share.get_default().generateNewID();
@@ -49,22 +49,22 @@ public class FeedReader.TwitterSetup : ServiceSetup {
 		}
 		catch(GLib.Error e)
 		{
-			
+
 		}
-		
+
 		m_login_button.set_label(_("waiting"));
 		m_login_button.set_sensitive(false);
 		FeedReaderApp.get_default().callback.connect((content) => {
-			
+
 			if(content.has_prefix(TwitterSecrets.callback))
 			{
 				int token_start = content.index_of("token=")+6;
 				int token_end = content.index_of("&", token_start);
 				string token = content.substring(token_start, token_end-token_start);
-				
+
 				int verifier_start = content.index_of("verifier=")+9;
 				string verifier = content.substring(verifier_start);
-				
+
 				if(token == requestToken)
 				{
 					if(m_api.getAccessToken(id, verifier))
@@ -84,11 +84,11 @@ public class FeedReader.TwitterSetup : ServiceSetup {
 						m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
 					}
 				}
-				
+
 			}
 		});
 	}
-	
+
 	public override void logout()
 	{
 		m_isLoggedIN = false;
@@ -97,5 +97,5 @@ public class FeedReader.TwitterSetup : ServiceSetup {
 		m_api.logout(m_id);
 		removeRow();
 	}
-	
+
 }

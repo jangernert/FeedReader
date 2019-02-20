@@ -15,7 +15,7 @@
 
 
 public class FeedReader.Browser : ShareAccountInterface, Peas.ExtensionBase {
-	
+
 	public bool addBookmark(string id, string url, bool system)
 	{
 		try
@@ -27,75 +27,75 @@ public class FeedReader.Browser : ShareAccountInterface, Peas.ExtensionBase {
 		{
 			Logger.error("BrowserPlugin: Error opening url: " + e.message);
 		}
-		
+
 		return false;
 	}
-	
+
 	public void setupSystemAccounts(Gee.List<ShareAccount> accounts)
 	{
-		
+
 	}
-	
+
 	public bool logout(string id)
 	{
 		return false;
 	}
-	
+
 	public string getIconName()
 	{
 		if(Gtk.IconTheme.get_default().lookup_icon("applications-internet", 0, Gtk.IconLookupFlags.FORCE_SVG) != null)
 		{
 			return "applications-internet";
 		}
-		
+
 		return "feed-share-browser";
 	}
-	
+
 	public string getUsername(string id)
 	{
 		return "Browser";
 	}
-	
+
 	public bool needSetup()
 	{
 		return false;
 	}
-	
+
 	public bool singleInstance()
 	{
 		return true;
 	}
-	
+
 	public bool useSystemAccounts()
 	{
 		return false;
 	}
-	
+
 	public string pluginID()
 	{
 		return "browser";
 	}
-	
+
 	public string pluginName()
 	{
 		return _("Open in Browser");
 	}
-	
+
 	public ServiceSetup? newSetup_withID(string id, string username)
 	{
 		return null;
 	}
-	
+
 	public ServiceSetup? newSetup()
 	{
 		return null;
 	}
-	
+
 	public ServiceSetup? newSystemAccount(string id, string username)
 	{
 		return null;
 	}
-	
+
 	public ShareForm? shareWidget(string url)
 	{
 		return null;

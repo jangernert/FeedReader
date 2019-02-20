@@ -14,16 +14,16 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.InfoBar : Gtk.Revealer {
-	
+
 	// THIS IS BASICALLY A WORKAROUND FOR THIS GTK+ BUG:
 	// https://bugzilla.gnome.org/show_bug.cgi?id=710888
-	
+
 	private Gtk.Label m_Label;
-	
+
 	public InfoBar(string text)
 	{
 		m_Label = new Gtk.Label(text);
-		
+
 		var bar = new Gtk.InfoBar();
 		bar.valign = Gtk.Align.START;
 		bar.get_content_area().add(m_Label);
@@ -35,22 +35,22 @@ public class FeedReader.InfoBar : Gtk.Revealer {
 				this.set_reveal_child(false);
 			}
 		});
-		
+
 		this.set_transition_duration(200);
 		this.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
 		this.valign = Gtk.Align.START;
 		this.add(bar);
 	}
-	
+
 	public void reveal()
 	{
 		this.show_all();
 		this.set_reveal_child(true);
 	}
-	
+
 	public void setText(string text)
 	{
 		m_Label.set_text(text);
 	}
-	
+
 }

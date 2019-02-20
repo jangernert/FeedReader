@@ -1,5 +1,5 @@
 namespace FeedReader.Rfc822 {
-	
+
 	/**
 	* Parse a date string in RFC 822 format
 	* Note that we don't use Time.strptime because it uses the current locale
@@ -14,7 +14,7 @@ namespace FeedReader.Rfc822 {
 		{
 			return null;
 		}
-		
+
 		Regex re;
 		try {
 			re = new Regex("""
@@ -39,16 +39,16 @@ namespace FeedReader.Rfc822 {
 			assert(false);
 			return null;
 		}
-		
+
 		MatchInfo info;
 		if (!re.match(str, 0, out info))
 		{
 			return null;
 		}
-		
+
 		var dayStr = info.fetch_named("day");
 		var day = int.parse(dayStr);
-		
+
 		var monthStr = info.fetch_named("month").ascii_down();
 		int month;
 		switch(monthStr) {
@@ -93,7 +93,7 @@ namespace FeedReader.Rfc822 {
 			assert(false);
 			return null;
 		}
-		
+
 		var yearStr = info.fetch_named("year");
 		var year = int.parse(yearStr);
 		// Two-digit years from 00 to 49 should be interpreted as 2000 to 2049
@@ -112,7 +112,7 @@ namespace FeedReader.Rfc822 {
 		var minute = int.parse(minuteStr);
 		var secondStr = info.fetch_named("second");
 		var second = secondStr == null || secondStr == "" ? 0 : int.parse(secondStr);
-		
+
 		var zoneStr = info.fetch_named("zone");
 		TimeZone zone;
 		switch(zoneStr.ascii_up()) {
@@ -136,7 +136,7 @@ namespace FeedReader.Rfc822 {
 			case "PST":
 			zone = new TimeZone("-08");
 			break;
-			
+
 			case "GMT":
 			case "UT":
 			case "Z":
@@ -146,7 +146,7 @@ namespace FeedReader.Rfc822 {
 			zone = new TimeZone(zoneStr);
 			break;
 		}
-		
+
 		return new DateTime(zone, year, month, day, hour, minute, second);
 	}
 }

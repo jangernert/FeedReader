@@ -17,19 +17,19 @@
 */
 
 public class DirectoryMonitor : GLib.Object {
-	
+
 	private File mDir;
 	private string mPath;
 	private FileMonitor mMonitor;
 	private Gee.ArrayList<DirectoryMonitor> mChilds = new Gee.ArrayList<DirectoryMonitor>();
-	
+
 	public signal void changed(string path);
-	
+
 	public DirectoryMonitor(File dir) throws GLib.Error
 	{
 		this.withPath(dir, "");
 	}
-	
+
 	private DirectoryMonitor.withPath(File dir, string path) throws GLib.Error
 	{
 		mDir = dir;
@@ -43,7 +43,7 @@ public class DirectoryMonitor : GLib.Object {
 			}
 		});
 		Log.d("Monitor created for " + currentDir.get_path() + " (folder " + dir.get_path() + ")");
-		
+
 		var enumerator = currentDir.enumerate_children("standard::*", FileQueryInfoFlags.NONE);
 		FileInfo info = null;
 		while (((info = enumerator.next_file(null)) != null)) {
@@ -57,7 +57,7 @@ public class DirectoryMonitor : GLib.Object {
 			}
 		}
 	}
-	
+
 	private void onEvent(string path, FileMonitorEvent event)
 	{
 		Log.d("Received inotify event " + event.to_string() + " at " + mDir.get_path() + "/" + path);

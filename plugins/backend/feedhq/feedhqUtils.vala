@@ -18,10 +18,10 @@ namespace FeedReader.FeedHQSecret {
 }
 
 public class FeedReader.FeedHQUtils : GLib.Object {
-	
+
 	private GLib.Settings m_settings;
 	private Password m_password;
-	
+
 	public FeedHQUtils(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 	{
 		if(settings_backend != null)
@@ -32,7 +32,7 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 		{
 			m_settings = new GLib.Settings("org.gnome.feedreader.feedhq");
 		}
-		
+
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.feedhq", Secret.SchemaFlags.NONE,
 			"type", Secret.SchemaAttributeType.STRING,
 		"Username", Secret.SchemaAttributeType.STRING);
@@ -43,32 +43,32 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 			return attributes;
 		});
 	}
-	
+
 	public string getUser()
 	{
 		return Utils.gsettingReadString(m_settings, "username");
 	}
-	
+
 	public void setUser(string user)
 	{
 		Utils.gsettingWriteString(m_settings, "username", user);
 	}
-	
+
 	public string getAccessToken()
 	{
 		return Utils.gsettingReadString(m_settings, "access-token");
 	}
-	
+
 	public void setAccessToken(string token)
 	{
 		Utils.gsettingWriteString(m_settings, "access-token", token);
 	}
-	
+
 	public string getPostToken()
 	{
 		return Utils.gsettingReadString(m_settings, "post-token");
 	}
-	
+
 	public void setPostToken(string token)
 	{
 		Utils.gsettingWriteString(m_settings, "post-token", token);
@@ -77,28 +77,28 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 	{
 		return Utils.gsettingReadString(m_settings, "user-id");
 	}
-	
+
 	public void setUserID(string id)
 	{
 		Utils.gsettingWriteString(m_settings, "user-id", id);
 	}
-	
+
 	public string getEmail()
 	{
 		return Utils.gsettingReadString(m_settings, "user-email");
 	}
-	
+
 	public void setEmail(string email)
 	{
 		Utils.gsettingWriteString(m_settings, "user-email", email);
 	}
-	
+
 	public void resetAccount()
 	{
 		Utils.resetSettings(m_settings);
 		m_password.delete_password();
 	}
-	
+
 	public bool tagIsCat(string tagID, Gee.List<Feed> feeds)
 	{
 		foreach(Feed feed in feeds)
@@ -110,12 +110,12 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 		}
 		return false;
 	}
-	
+
 	public string getPasswd()
 	{
 		return m_password.get_password();
 	}
-	
+
 	public void setPassword(string passwd)
 	{
 		m_password.set_password(passwd);

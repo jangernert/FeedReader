@@ -14,37 +14,37 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.freshAPI : Object {
-	
+
 	private freshConnection m_connection;
 	private freshUtils m_utils;
-	
+
 	public freshAPI(freshUtils utils)
 	{
 		m_utils = utils;
 		m_connection = new freshConnection(m_utils);
 	}
-	
+
 	public LoginResponse login()
 	{
 		Logger.debug("fresh backend: login");
-		
+
 		if(!Utils.ping(m_utils.getUnmodifiedURL()))
 		{
 			return LoginResponse.NO_CONNECTION;
 		}
-		
+
 		return m_connection.getSID();
 	}
-	
+
 	public bool getSubscriptionList(Gee.List<Feed> feeds)
 	{
 		var response = m_connection.getRequest("reader/api/0/subscription/list?output=json");
-		
+
 		if(response.status != 200)
 		{
 			return false;
 		}
-		
+
 		var parser = new Json.Parser();
 		try
 		{
@@ -57,16 +57,16 @@ public class FeedReader.freshAPI : Object {
 			return false;
 		}
 		Json.Array array = parser.get_root().get_object().get_array_member("subscriptions");
-		
+
 		for (int i = 0; i < array.get_length (); i++)
 		{
 			Json.Object object = array.get_object_element(i);
-			
+
 			string url = object.get_string_member("htmlUrl");
 			string id = object.get_string_member("id");
 			string catID = object.get_array_member("categories").get_object_element(0).get_string_member("id");
 			string xmlURL = object.get_string_member("url");
-			
+
 			feeds.add(
 				new Feed(
 					id,
@@ -78,20 +78,20 @@ public class FeedReader.freshAPI : Object {
 				xmlURL)
 			);
 		}
-		
+
 		return true;
 	}
-	
+
 	public bool getTagList(Gee.List<Category> categories)
 	{
 		var response = m_connection.getRequest("reader/api/0/tag/list?output=json");
 		string prefix = "user/-/label/";
-		
+
 		if(response.status != 200)
 		{
 			return false;
 		}
-		
+
 		var parser = new Json.Parser();
 		try
 		{
@@ -104,18 +104,18 @@ public class FeedReader.freshAPI : Object {
 			return false;
 		}
 		Json.Array array = parser.get_root().get_object().get_array_member("tags");
-		
+
 		for (int i = 0; i < array.get_length (); i++)
 		{
 			Json.Object object = array.get_object_element(i);
 			string categorieID = object.get_string_member("id");
-			
-			
+
+
 			if(!categorieID.has_prefix(prefix))
 			{
 				continue;
 			}
-			
+
 			categories.add(
 				new Category (
 					categorieID,
@@ -127,21 +127,21 @@ public class FeedReader.freshAPI : Object {
 				)
 			);
 		}
-		
+
 		return true;
 	}
-	
+
 	public int getUnreadCounts()
 	{
 		var response = m_connection.getRequest("reader/api/0/unread-count?output=json");
-		
+
 		if(response.status != 200)
 		{
 			return 0;
 		}
-		
+
 		int count = 0;
-		
+
 		var parser = new Json.Parser();
 		try
 		{
@@ -153,7 +153,7 @@ public class FeedReader.freshAPI : Object {
 			Logger.error(e.message);
 		}
 		Json.Array array = parser.get_root().get_object().get_array_member("unreadcounts");
-		
+
 		for (int i = 0; i < array.get_length (); i++)
 		{
 			Json.Object object = array.get_object_element(i);
@@ -162,10 +162,10 @@ public class FeedReader.freshAPI : Object {
 				count = (int)object.get_int_member("count");
 			}
 		}
-		
+
 		return count;
 	}
-	
+
 	public string? getStreamContents(
 		Gee.List<Article> articles,
 		string? feedID = null,
@@ -178,7 +178,7 @@ public class FeedReader.freshAPI : Object {
 	{
 		var now = new DateTime.now_local();
 		string path = "reader/api/0/stream/contents";
-		
+
 		if(feedID != null)
 		{
 			path += "/" + feedID;
@@ -187,34 +187,34 @@ public class FeedReader.freshAPI : Object {
 		{
 			path += "/" + labelID;
 		}
-		
-		
+
+
 		var msg = new freshMessage();
 		msg.add("output", "json");
 		msg.add("r", order);
 		msg.add("n", count.to_string());
 		msg.add("client", "FeedReader");
 		msg.add("ck", now.to_unix().to_string());
-		
+
 		if(exclude != null)
 		{
 			msg.add("xt", exclude);
 		}
-		
+
 		if(checkpoint != null)
 		{
 			msg.add("c", checkpoint);
 		}
-		
+
 		Logger.debug("getStreamContents: %s".printf(msg.get()));
-		
+
 		var response = m_connection.getRequest(path + "?" + msg.get());
-		
+
 		if(response.status != 200)
 		{
 			return null;
 		}
-		
+
 		var parser = new Json.Parser();
 		try
 		{
@@ -225,11 +225,11 @@ public class FeedReader.freshAPI : Object {
 			Logger.error("getStreamContents: Could not load message response");
 			Logger.error(e.message);
 		}
-		
+
 		var root = parser.get_root().get_object();
 		var array = root.get_array_member("items");
 		uint length = array.get_length();
-		
+
 		for(uint i = 0; i < length; i++)
 		{
 			Json.Object object = array.get_object_element(i);
@@ -238,7 +238,7 @@ public class FeedReader.freshAPI : Object {
 			bool read = false;
 			var cats = object.get_array_member("categories");
 			uint cat_length = cats.get_length();
-			
+
 			for(uint j = 0; j < cat_length; j++)
 			{
 				string cat = cats.get_string_element(j);
@@ -251,30 +251,30 @@ public class FeedReader.freshAPI : Object {
 					read = true;
 				}
 			}
-			
+
 			var enclosures = new Gee.ArrayList<Enclosure>();
 			if(object.has_member("enclosure"))
 			{
 				var attachments = object.get_array_member("enclosure");
-				
+
 				uint mediaCount = 0;
 				if(attachments != null)
 				{
 					mediaCount = attachments.get_length();
 				}
-				
+
 				for(int j = 0; j < mediaCount; ++j)
 				{
 					var attachment = attachments.get_object_element(j);
 					string type = attachment.has_member("type") ? attachment.get_string_member("type") : "";
-					
+
 					enclosures.add(
 						new Enclosure(id, attachment.get_string_member("href"),
 						EnclosureType.from_string(type))
 					);
 				}
 			}
-			
+
 			articles.add(new Article(
 				id,
 				object.get_string_member("title"),
@@ -292,13 +292,13 @@ public class FeedReader.freshAPI : Object {
 			)
 		);
 	}
-	
-	
+
+
 	if(root.has_member("continuation") && root.get_string_member("continuation") != "")
 	{
 		return root.get_string_member("continuation");
 	}
-	
+
 	return null;
 }
 
@@ -306,27 +306,27 @@ public void editTags(string articleIDs, string? addTag = null, string? removeTag
 {
 	string path = "reader/api/0/edit-tag";
 	string[] arrayID = articleIDs.split(",");
-	
+
 	var msg = new freshMessage();
 	msg.add("T", m_connection.getToken());
-	
+
 	if(addTag != null)
 	{
 		msg.add("a", addTag);
 	}
-	
+
 	if(removeTag != null)
 	{
 		msg.add("r", removeTag);
 	}
-	
+
 	foreach(string id in arrayID)
 	{
 		msg.add("i", "-/" + id);
 	}
-	
+
 	var response = m_connection.postRequest(path,  msg.get(), "application/x-www-form-urlencoded");
-	
+
 	if(response.status != 200)
 	{
 		Logger.debug(path + " " + msg.get());
@@ -337,14 +337,14 @@ public void editTags(string articleIDs, string? addTag = null, string? removeTag
 public void markAllAsRead(string streamID)
 {
 	string path = "reader/api/0/mark-all-as-read";
-	
+
 	var msg = new freshMessage();
 	msg.add("T", m_connection.getToken());
 	msg.add("s", streamID);
 	msg.add("ts", DataBase.readOnly().getNewestArticle());
-	
+
 	var response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
-	
+
 	if(response.status != 200)
 	{
 		Logger.debug(path + " " + msg.get());
@@ -361,41 +361,41 @@ public Response editStream(
 )
 {
 	string path = "reader/api/0/subscription/edit";
-	
+
 	var msg = new freshMessage();
 	msg.add("T", m_connection.getToken());
 	msg.add("ac", action);
-	
+
 	if(streamID != null)
 	{
 		foreach(string s in streamID) {
 			msg.add("s", s);
 		}
 	}
-	
+
 	if(title != null)
 	{
 		msg.add("t", title);
 	}
-	
+
 	if(add != null)
 	{
 		msg.add("a", add);
 	}
-	
+
 	if(remove != null)
 	{
 		msg.add("r", remove);
 	}
-	
+
 	var response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
-	
+
 	if(response.status != 200)
 	{
 		Logger.debug(path + " " + msg.get());
 		Logger.debug(response.status.to_string());
 	}
-	
+
 	return response;
 }
 
@@ -407,15 +407,15 @@ public string composeTagID(string title)
 public void renameTag(string tagID, string title)
 {
 	string path = "reader/api/0/rename-tag";
-	
+
 	var msg = new freshMessage();
 	msg.add("T", m_connection.getToken());
 	msg.add("s", tagID);
 	msg.add("dest", composeTagID(title));
-	
+
 	var response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
-	
-	
+
+
 	if(response.status != 200)
 	{
 		Logger.debug(path + " " + msg.get());
@@ -426,13 +426,13 @@ public void renameTag(string tagID, string title)
 public void deleteTag(string tagID)
 {
 	string path = "reader/api/0/disable-tag";
-	
+
 	var msg = new freshMessage();
 	msg.add("T", m_connection.getToken());
 	msg.add("s", tagID);
-	
+
 	var response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
-	
+
 	if(response.status != 200)
 	{
 		Logger.debug(path + " " + msg.get());

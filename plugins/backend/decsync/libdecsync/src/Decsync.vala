@@ -93,13 +93,13 @@ public Decsync(string dir, string ownAppId, Gee.Iterable<OnEntryUpdateListener<T
 public class EntryWithPath {
 	public Gee.List<string> path;
 	public Entry entry;
-	
+
 	public EntryWithPath(string[] path, Entry entry)
 	{
 		this.path = toList(path);
 		this.entry = entry;
 	}
-	
+
 	public EntryWithPath.now(string[] path, Json.Node key, Json.Node value)
 	{
 		this.path = toList(path);
@@ -115,21 +115,21 @@ public class Entry {
 	internal string datetime;
 	public Json.Node key;
 	public Json.Node value;
-	
+
 	public Entry(string datetime, Json.Node key, Json.Node value)
 	{
 		this.datetime = datetime;
 		this.key = key;
 		this.value = value;
 	}
-	
+
 	public Entry.now(Json.Node key, Json.Node value)
 	{
 		this.datetime = new GLib.DateTime.now_utc().format("%FT%T");
 		this.key = key;
 		this.value = value;
 	}
-	
+
 	internal string toLine()
 	{
 		var json = new Json.Node(Json.NodeType.ARRAY);
@@ -140,7 +140,7 @@ public class Entry {
 		json.set_array(array);
 		return Json.to_string(json, false);
 	}
-	
+
 	internal static Entry? fromLine(string line)
 	{
 		try {
@@ -172,7 +172,7 @@ private class EntriesLocation {
 	public File newEntriesFile;
 	public File? storedEntriesFile;
 	public File? readBytesFile;
-	
+
 	public EntriesLocation.getNewEntriesLocation(Decsync decsync, Gee.List<string> path, string appId)
 	{
 		var pathString = FileUtils.pathToString(path);
@@ -182,7 +182,7 @@ private class EntriesLocation {
 		this.storedEntriesFile = File.new_for_path(decsync.dir + "/stored-entries/" + decsync.ownAppIdEncoded + "/" + pathString);
 		this.readBytesFile = File.new_for_path(decsync.dir + "/read-bytes/" + decsync.ownAppIdEncoded + "/" + appIdEncoded + "/" + pathString);
 	}
-	
+
 	public EntriesLocation.getStoredEntriesLocation(Decsync decsync, Gee.List<string> path)
 	{
 		var pathString = FileUtils.pathToString(path);
@@ -234,7 +234,7 @@ public void setEntriesForPath(Gee.List<string> path, Gee.Collection<Entry> entri
 {
 	Log.d("Write to path " + FileUtils.pathToString(path));
 	var entriesLocation = new EntriesLocation.getNewEntriesLocation(this, path, ownAppId);
-	
+
 	// Write new entries
 	var builder = new StringBuilder();
 	foreach (var entry in entries) {
@@ -245,13 +245,13 @@ public void setEntriesForPath(Gee.List<string> path, Gee.Collection<Entry> entri
 	} catch (Error e) {
 		Log.w(e.message);
 	}
-	
+
 	// Update .decsync-sequence files
 	while (!path.is_empty) {
 		path.remove_at(path.size - 1);
 		var dir = new EntriesLocation.getNewEntriesLocation(this, path, ownAppId).newEntriesFile;
 		var file = dir.get_child(".decsync-sequence");
-		
+
 		// Get the old version
 		int64 version = 0;
 		if (file.query_exists())
@@ -263,7 +263,7 @@ public void setEntriesForPath(Gee.List<string> path, Gee.Collection<Entry> entri
 				Log.w(e.message);
 			}
 		}
-		
+
 		// Write the new version
 		try {
 			FileUtils.writeFile(file, (version + 1).to_string());
@@ -271,7 +271,7 @@ public void setEntriesForPath(Gee.List<string> path, Gee.Collection<Entry> entri
 			Log.w(e.message);
 		}
 	}
-	
+
 	// Update stored entries
 	updateStoredEntries(entriesLocation, entries);
 }
@@ -356,7 +356,7 @@ private void executeEntriesLocation(EntriesLocation entriesLocation, T extra, Ge
 			Log.w(e.message);
 		}
 	}
-	
+
 	// Write the new number of read bytes (= size of the entry file)
 	if (entriesLocation.readBytesFile != null)
 	{
@@ -371,9 +371,9 @@ private void executeEntriesLocation(EntriesLocation entriesLocation, T extra, Ge
 			Log.w(e.message);
 		}
 	}
-	
+
 	Log.d("Execute entries of " + entriesLocation.newEntriesFile.get_path());
-	
+
 	// Execute the entries
 	var entriesMap = new Gee.HashMap<Json.Node, Entry>(
 		a => { return a.hash(); },
@@ -411,14 +411,14 @@ private void executeEntriesLocation(EntriesLocation entriesLocation, T extra, Ge
 private void executeEntries(EntriesLocation entriesLocation, Gee.Collection<Entry> entries, T extra)
 {
 	updateStoredEntries(entriesLocation, entries);
-	
+
 	var listener = getListener(entriesLocation.path);
 	if (listener == null)
 	{
 		Log.e("Unknown action for path " + FileUtils.pathToString(entriesLocation.path));
 		return;
 	}
-	
+
 	listener.onEntriesUpdate(entriesLocation.path, entries, extra);
 }
 
@@ -428,7 +428,7 @@ private void updateStoredEntries(EntriesLocation entriesLocation, Gee.Collection
 	{
 		return;
 	}
-	
+
 	try {
 		var haveToFilterFile = false;
 		if (entriesLocation.storedEntriesFile.query_exists())
@@ -459,7 +459,7 @@ private void updateStoredEntries(EntriesLocation entriesLocation, Gee.Collection
 				}
 			}
 		}
-		
+
 		if (haveToFilterFile)
 		{
 			FileUtils.filterFile(entriesLocation.storedEntriesFile, line => {
@@ -471,7 +471,7 @@ private void updateStoredEntries(EntriesLocation entriesLocation, Gee.Collection
 				return !entries.any_match(entry => { return entry.key.equal(entryLine.key); });
 			});
 		}
-		
+
 		var builder = new StringBuilder();
 		entries.@foreach(entry => {
 			builder.append(entry.toLine() + "\n");
@@ -557,19 +557,19 @@ public void initStoredEntries()
 		Log.i("No appId found for initialization");
 		return;
 	}
-	
+
 	// Copy the stored files and update the read bytes
 	if (appId != ownAppId)
 	{
 		var appIdEncoded = FileUtils.urlencode(appId);
-		
+
 		try {
 			FileUtils.@delete(File.new_for_path(dir + "/stored-entries/" + ownAppIdEncoded));
 			FileUtils.copy(File.new_for_path(dir + "/stored-entries/" + appIdEncoded), File.new_for_path(dir + "/stored-entries/" + ownAppIdEncoded));
 		} catch (GLib.Error e) {
 			Log.w(e.message);
 		}
-		
+
 		try {
 			FileUtils.@delete(File.new_for_path(dir + "/read-bytes/" + ownAppIdEncoded));
 			FileUtils.copy(File.new_for_path(dir + "/read-bytes/" + appIdEncoded), File.new_for_path(dir + "/read-bytes/" + ownAppIdEncoded));
@@ -615,14 +615,14 @@ public static Json.Node? getStoredStaticValue(string decsyncDir, string[] pathAr
 			{
 				continue;
 			}
-			
+
 			var appIdEncoded = info.get_name();
 			var file = File.new_for_path(decsyncDir + "/stored-entries/" + appIdEncoded + "/" + pathString);
 			if (!file.query_exists() || file.query_file_type(FileQueryInfoFlags.NONE) != FileType.REGULAR)
 			{
 				continue;
 			}
-			
+
 			var stream = new DataInputStream(file.read());
 			string line;
 			while ((line = stream.read_line(null)) != null) {
@@ -641,7 +641,7 @@ public static Json.Node? getStoredStaticValue(string decsyncDir, string[] pathAr
 	} catch (GLib.Error e) {
 		Log.w(e.message);
 	}
-	
+
 	return result;
 }
 

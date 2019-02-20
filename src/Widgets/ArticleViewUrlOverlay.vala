@@ -14,15 +14,15 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.ArticleViewUrlOverlay : Gtk.Revealer {
-	
+
 	private Gtk.Label m_label;
-	
+
 	public ArticleViewUrlOverlay()
 	{
 		m_label = new Gtk.Label("dummy");
 		m_label.get_style_context().add_class("osd");
 		m_label.height_request = 30;
-		
+
 		this.valign = Gtk.Align.END;
 		this.halign = Gtk.Align.START;
 		this.margin = 10;
@@ -31,7 +31,7 @@ public class FeedReader.ArticleViewUrlOverlay : Gtk.Revealer {
 		this.no_show_all = true;
 		this.add(m_label);
 	}
-	
+
 	public void setURL(string uri, Gtk.Align align)
 	{
 		int length = 45;
@@ -44,7 +44,7 @@ public class FeedReader.ArticleViewUrlOverlay : Gtk.Revealer {
 		m_label.width_chars = url.length;
 		this.halign = align;
 	}
-	
+
 	public void reveal(bool show)
 	{
 		if(show)
@@ -52,7 +52,7 @@ public class FeedReader.ArticleViewUrlOverlay : Gtk.Revealer {
 			this.visible = true;
 			m_label.show();
 		}
-		
+
 		this.set_reveal_child(show);
 	}
 }

@@ -21,31 +21,31 @@ namespace FeedReader.TwitterSecrets {
 }
 
 public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
-	
+
 	private Rest.OAuthProxy m_oauthObject;
 	private string m_tweet;
 	private int m_urlLength = 0;
-	
+
 	public TwitterAPI()
 	{
-		
+
 	}
-	
+
 	public void setupSystemAccounts(Gee.List<ShareAccount> accounts)
 	{
-		
+
 	}
-	
+
 	public string getRequestToken()
 	{
 		Logger.debug("TwitterAPI: get request token");
-		
+
 		m_oauthObject = new Rest.OAuthProxy (
 			TwitterSecrets.key,
 			TwitterSecrets.secret,
 			"https://api.twitter.com/",
 		false);
-		
+
 		try
 		{
 			m_oauthObject.request_token("oauth/request_token", TwitterSecrets.callback);
@@ -54,10 +54,10 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 		{
 			Logger.error("TwitterAPI.getRequestToken: %s".printf(e.message));
 		}
-		
+
 		return m_oauthObject.get_token();
 	}
-	
+
 	public bool getAccessToken(string id, string verifier)
 	{
 		try
@@ -68,20 +68,20 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 		{
 			Logger.error("TwitterAPI.getAccessToken: %s".printf(e.message));
 		}
-		
+
 		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/twitter/%s/".printf(id));
 		string token = m_oauthObject.get_token();
 		string secret = m_oauthObject.get_token_secret();
 		settings.set_string("oauth-access-token", token);
 		settings.set_string("oauth-access-token-secret", secret);
-		
+
 		var call = m_oauthObject.new_call();
 		call.set_function("1.1/account/verify_credentials.json");
 		call.set_method("GET");
 		call.add_param ("include_entities", "false");
 		call.add_param ("skip_status", "true");
 		call.add_param ("include_email", "true");
-		
+
 		try
 		{
 			call.run();
@@ -90,7 +90,7 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 		{
 			Logger.error(e.message);
 		}
-		
+
 		var parser = new Json.Parser();
 		try
 		{
@@ -101,9 +101,9 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 			Logger.error("Could not load response to Message from twitter");
 			Logger.error(e.message);
 		}
-		
+
 		var root_object = parser.get_root().get_object();
-		
+
 		if(root_object.has_member("screen_name"))
 		{
 			string screenName = "@" + root_object.get_string_member("screen_name");
@@ -113,23 +113,23 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 		{
 			settings.set_string("username", root_object.get_string_member("name"));
 		}
-		
-		
-		
+
+
+
 		var array = Settings.share("twitter").get_strv("account-ids");
 		array += id;
 		Settings.share("twitter").set_strv("account-ids", array);
-		
+
 		return true;
 	}
-	
-	
+
+
 	public bool addBookmark(string id, string url, bool system)
 	{
 		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/twitter/%s/".printf(id));
 		string token = settings.get_string("oauth-access-token");
 		string secret = settings.get_string("oauth-access-token-secret");
-		
+
 		var oauthObject = new Rest.OAuthProxy.with_token (
 			TwitterSecrets.key,
 			TwitterSecrets.secret,
@@ -137,12 +137,12 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 			secret,
 			"https://api.twitter.com/",
 		false);
-		
+
 		var call = oauthObject.new_call();
 		call.set_function("1.1/statuses/update.json");
 		call.set_method("POST");
 		call.add_param ("status", m_tweet.replace("$URL", url));
-		
+
 		try
 		{
 			call.run();
@@ -152,10 +152,10 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 			Logger.error(e.message);
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	public bool logout(string id)
 	{
 		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/twitter/%s/".printf(id));
@@ -164,10 +164,10 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 		{
 			settings.reset(key);
 		}
-		
+
 		var array = Settings.share("twitter").get_strv("account-ids");
 		string[] array2 = {};
-		
+
 		foreach(string i in array)
 		{
 			if(i != id)
@@ -177,72 +177,72 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 		}
 		Settings.share("twitter").set_strv("account-ids", array2);
 		deleteAccount(id);
-		
+
 		return true;
 	}
-	
+
 	public string getURL(string token)
 	{
 		return TwitterSecrets.base_uri
 		+ "oauth/authenticate"
 		+ "?oauth_token=" + token;
 	}
-	
+
 	public string getIconName()
 	{
 		return "feed-share-twitter";
 	}
-	
+
 	public string getUsername(string id)
 	{
 		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/twitter/%s/".printf(id));
 		return settings.get_string("username");
 	}
-	
+
 	public bool needSetup()
 	{
 		return true;
 	}
-	
+
 	public bool singleInstance()
 	{
 		return false;
 	}
-	
+
 	public bool useSystemAccounts()
 	{
 		return false;
 	}
-	
+
 	public string pluginID()
 	{
 		return "twitter";
 	}
-	
+
 	public string pluginName()
 	{
 		return "Twitter";
 	}
-	
+
 	public ServiceSetup? newSetup_withID(string id, string username)
 	{
 		return new TwitterSetup(id, this, username);
 	}
-	
+
 	public ServiceSetup? newSetup()
 	{
 		return new TwitterSetup(null, this);
 	}
-	
+
 	public ServiceSetup? newSystemAccount(string id, string username)
 	{
 		return null;
 	}
-	
+
 	public ShareForm? shareWidget(string url)
 	{
 		var widget = new TwitterForm(url);
-		
+
 		widget.setAPI.begin(this, (obj, res) => {
 			widget.setAPI.end(res);
 		});
@@ -251,21 +251,21 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 		});
 		return widget;
 	}
-	
+
 	public int getUrlLength()
 	{
 		if(m_urlLength > 0)
 		{
 			return m_urlLength;
 		}
-		
+
 		var array = Settings.share("twitter").get_strv("account-ids");
 		string id = array[0];
-		
+
 		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/twitter/%s/".printf(id));
 		string token = settings.get_string("oauth-access-token");
 		string secret = settings.get_string("oauth-access-token-secret");
-		
+
 		var oauthObject = new Rest.OAuthProxy.with_token (
 			TwitterSecrets.key,
 			TwitterSecrets.secret,
@@ -273,24 +273,24 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 			secret,
 			"https://api.twitter.com/",
 		false);
-		
+
 		var call = oauthObject.new_call();
 		call.set_function("1.1/help/configuration.json");
 		call.set_method("GET");
-		
+
 		try
 		{
 			call.run();
 		}
 		catch(Error e) {}
-		
+
 		var parser = new Json.Parser();
 		try
 		{
 			parser.load_from_data(call.get_payload());
 		}
 		catch(Error e) {}
-		
+
 		var root_object = parser.get_root().get_object();
 		m_urlLength = (int)root_object.get_int_member("short_url_length");
 		return m_urlLength;

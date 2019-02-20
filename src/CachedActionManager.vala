@@ -14,28 +14,28 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.CachedActionManager : GLib.Object {
-	
+
 	private CachedActions m_lastAction = CachedActions.NONE;
 	private string m_ids = "";
-	
+
 	private static CachedActionManager? m_manager = null;
-	
+
 	public static CachedActionManager get_default()
 	{
 		if(m_manager == null)
 		{
 			m_manager = new CachedActionManager();
 		}
-		
+
 		return m_manager;
 	}
-	
+
 	private CachedActionManager()
 	{
-		
+
 	}
-	
-	
+
+
 	public void markArticleRead(string id, ArticleStatus read)
 	{
 		var cachedAction = CachedActions.MARK_READ;
@@ -43,11 +43,11 @@ public class FeedReader.CachedActionManager : GLib.Object {
 		{
 			cachedAction = CachedActions.MARK_UNREAD;
 		}
-		
+
 		var action = new CachedAction(cachedAction, id, "");
 		addAction(action);
 	}
-	
+
 	public void markArticleStarred(string id, ArticleStatus marked)
 	{
 		var cachedAction = CachedActions.MARK_STARRED;
@@ -55,29 +55,29 @@ public class FeedReader.CachedActionManager : GLib.Object {
 		{
 			cachedAction = CachedActions.MARK_UNSTARRED;
 		}
-		
+
 		var action = new CachedAction(cachedAction, id, "");
 		addAction(action);
 	}
-	
+
 	public void markFeedRead(string id)
 	{
 		var action = new CachedAction(CachedActions.MARK_READ_FEED, id, "");
 		addAction(action);
 	}
-	
+
 	public void markCategoryRead(string id)
 	{
 		var action = new CachedAction(CachedActions.MARK_READ_CATEGORY, id, "");
 		addAction(action);
 	}
-	
+
 	public void markAllRead()
 	{
 		var action = new CachedAction(CachedActions.MARK_READ_ALL, "", "");
 		addAction(action);
 	}
-	
+
 	private void addAction(CachedAction action)
 	{
 		var db = DataBase.writeAccess();
@@ -90,7 +90,7 @@ public class FeedReader.CachedActionManager : GLib.Object {
 			db.deleteOppositeCachedAction(action);
 		}
 	}
-	
+
 	public void executeActions()
 	{
 		var db = DataBase.writeAccess();
@@ -99,12 +99,12 @@ public class FeedReader.CachedActionManager : GLib.Object {
 			Logger.debug("CachedActionManager - executeActions: no actions to perform");
 			return;
 		}
-		
-		
+
+
 		Logger.debug("CachedActionManager: executeActions");
-		
+
 		var actions = db.readCachedActions();
-		
+
 		foreach(CachedAction action in actions)
 		{
 			Logger.debug("CachedActionManager: executeActions %s %s".printf(action.getID(), action.getType().to_string()));
@@ -140,18 +140,18 @@ public class FeedReader.CachedActionManager : GLib.Object {
 				FeedServer.get_default().markAllItemsRead();
 				break;
 			}
-			
+
 			m_lastAction = action.getType();
 		}
-		
+
 		if(m_ids != "")
 		{
 			execute(m_ids.substring(1), m_lastAction);
 		}
-		
+
 		db.resetCachedActions();
 	}
-	
+
 	private void execute(string ids, CachedActions action)
 	{
 		Logger.debug("CachedActionManager: execute %s %s".printf(ids, action.to_string()));
@@ -165,5 +165,5 @@ public class FeedReader.CachedActionManager : GLib.Object {
 			break;
 		}
 	}
-	
+
 }

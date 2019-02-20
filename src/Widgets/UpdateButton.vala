@@ -14,7 +14,7 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.UpdateButton : Gtk.Button {
-	
+
 	private Gtk.Image m_icon;
 	private Gtk.Spinner m_spinner;
 	private bool m_status;
@@ -24,19 +24,19 @@ public class FeedReader.UpdateButton : Gtk.Button {
 	private bool m_isCancellable;
 	private Gtk.Popover m_Popover;
 	private string m_tooltip;
-	
+
 	public UpdateButton.from_icon_name(string iconname, string tooltip, bool progressPopup = false, bool cancellable = false)
 	{
 		m_icon = new Gtk.Image.from_icon_name(iconname, Gtk.IconSize.SMALL_TOOLBAR);
 		setup(tooltip, cancellable, progressPopup);
 	}
-	
+
 	public UpdateButton.from_resource(string iconname, string tooltip, bool progressPopup = false, bool cancellable = false)
 	{
 		m_icon = new Gtk.Image.from_resource(iconname);
 		setup(tooltip, cancellable, progressPopup);
 	}
-	
+
 	private void setup(string tooltip, bool progressPopup, bool cancellable)
 	{
 		m_hasPopup = progressPopup;
@@ -44,13 +44,13 @@ public class FeedReader.UpdateButton : Gtk.Button {
 		m_tooltip = tooltip;
 		m_spinner = new Gtk.Spinner();
 		m_spinner.set_size_request(16,16);
-		
+
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_duration(100);
 		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		m_stack.add_named(m_spinner, "spinner");
 		m_stack.add_named(m_icon, "icon");
-		
+
 		if(m_hasPopup)
 		{
 			m_ProgressText = new Gtk.Label(Settings.state().get_string("sync-status"));
@@ -59,7 +59,7 @@ public class FeedReader.UpdateButton : Gtk.Button {
 			m_Popover.add(m_ProgressText);
 			this.button_press_event.connect(onClick);
 		}
-		
+
 		this.add(m_stack);
 		this.set_relief(Gtk.ReliefStyle.NONE);
 		this.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
@@ -67,7 +67,7 @@ public class FeedReader.UpdateButton : Gtk.Button {
 		this.set_tooltip_text(tooltip);
 		this.show_all();
 	}
-	
+
 	public void updating(bool status, bool insensitive = true)
 	{
 		Logger.debug("UpdateButton: update status");
@@ -90,19 +90,19 @@ public class FeedReader.UpdateButton : Gtk.Button {
 			m_spinner.stop();
 		}
 	}
-	
+
 	public bool getStatus()
 	{
 		return m_status;
 	}
-	
+
 	public void setSensitive(bool sensitive)
 	{
 		// FIXME: dont set sensitive if canceling
 		Logger.debug("UpdateButton: setSensitive %s".printf(sensitive ? "true" : "false"));
 		this.sensitive = sensitive;
 	}
-	
+
 	public void setProgress(string text)
 	{
 		if(m_hasPopup)
@@ -110,26 +110,26 @@ public class FeedReader.UpdateButton : Gtk.Button {
 			m_ProgressText.set_text(text);
 		}
 	}
-	
+
 	private bool onClick(Gdk.EventButton event)
 	{
 		if(event.button != 3)
 		{
 			return false;
 		}
-		
+
 		if(m_status && !m_Popover.get_visible())
 		{
 			m_Popover.show_all();
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	public void setIcon(Gtk.Image icon)
 	{
 		m_icon = icon;
 	}
-	
+
 }

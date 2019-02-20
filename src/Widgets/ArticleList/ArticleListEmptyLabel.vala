@@ -14,7 +14,7 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
-	
+
 	public ArticleListEmptyLabel()
 	{
 		this.set_text(_("No Articles"));
@@ -28,7 +28,7 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 		this.set_justify(Gtk.Justification.CENTER);
 		this.show_all();
 	}
-	
+
 	public void build(string selectedID, FeedListType type, ArticleListState state, string searchTerm)
 	{
 		string message = "";
@@ -184,10 +184,10 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 					message = _("No articles");
 				}
 			}
-			
+
 		}
 		this.get_style_context().add_class("dim-label");
 		this.set_text(message);
 	}
-	
+
 }

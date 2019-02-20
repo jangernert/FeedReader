@@ -21,7 +21,7 @@ public class FeedReader.StringUtils {
 		{
 			return new Gee.ArrayList<string>.wrap(items);
 		}
-		
+
 		var res = new Gee.ArrayList<string>();
 		foreach(string item in items)
 		{
@@ -29,16 +29,16 @@ public class FeedReader.StringUtils {
 			{
 				res.add(item);
 			}
-			
+
 		}
 		return res;
 	}
-	
+
 	public static string join(Gee.Collection<string> l, string sep)
 	{
 		return string.joinv(sep, l.to_array());
 	}
-	
+
 	public static void stringbuilder_append_join(StringBuilder out, Gee.Collection<string> l, string sep)
 	{
 		bool first = true;
@@ -52,7 +52,7 @@ public class FeedReader.StringUtils {
 			first = false;
 		}
 	}
-	
+
 	public static Gee.List<string> sql_quote(Gee.List<string> l)
 	ensures (result.size == l.size)
 	{
@@ -60,7 +60,7 @@ public class FeedReader.StringUtils {
 		{
 			l[i] = SQLite.quote_string(l[i]);
 		}
-		
+
 		return l;
 	}
 }

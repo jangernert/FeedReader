@@ -442,7 +442,7 @@ int __nxml_utf_detection(char *r_buffer, size_t r_size, char **buffer,
 int64_t
 __nxml_int_charset(int ch, unsigned char *str, char *charset)
 {
-	if (!charset || strcasecmp(charset, "utf-8"))
+	if (charset && !strcasecmp(charset, "utf-8"))
 	{
 		str[0] = ch;
 		return 1;

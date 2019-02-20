@@ -73,9 +73,13 @@ public FeedRow(Feed feed, string parentCat, int level)
 
 
 		if(!Utils.onlyShowFeeds() && m_feed.getFeedID() != FeedID.ALL.to_string())
+		{
 			this.get_style_context().add_class("fr-sidebar-feed");
+		}
 		else
+		{
 			this.get_style_context().add_class("fr-sidebar-row");
+		}
 
 		m_box.pack_start(m_icon, false, false, 8);
 		m_box.pack_start(m_label, true, true, 0);
@@ -125,7 +129,9 @@ public FeedRow(Feed feed, string parentCat, int level)
 {
 	activateUnreadEventbox(false);
 	if(m_eventBox != null)
+	{
 		m_eventBox.button_press_event.disconnect(onClick);
+	}
 	this.drag_begin.disconnect(onDragBegin);
 	this.drag_data_get.disconnect(onDragDataGet);
 }
@@ -188,10 +194,14 @@ private bool onClick(Gdk.EventButton event)
 {
 	// only right click allowed
 	if(event.button != 3)
+	{
 		return false;
+	}
 
 	if(!Utils.canManipulateContent())
+	{
 		return false;
+	}
 
 	switch(event.type)
 	{
@@ -215,9 +225,13 @@ private bool onClick(Gdk.EventButton event)
 		});
 
 	if(m_feed.getUnread() != 0)
+	{
 		markAsRead_action.set_enabled(true);
+	}
 	else
+	{
 		markAsRead_action.set_enabled(false);
+	}
 
 	var rename_action = new GLib.SimpleAction("renameFeed", null);
 	rename_action.activate.connect(showRenamePopover);
@@ -343,7 +357,9 @@ public void upUnread()
 public void downUnread()
 {
 	if(m_feed.getUnread() > 0)
+	{
 		set_unread_count(m_feed.getUnread() - 1);
+	}
 }
 
 public void update(string text, uint unread_count)
@@ -405,7 +421,9 @@ public void reveal(bool reveal, uint duration = 500)
 	if(!reveal)
 	{
 		if(this.is_selected())
+		{
 			deselectRow();
+		}
 
 		m_timeout_source_id = GLib.Timeout.add(duration, () => {
 				this.hide();
@@ -418,7 +436,9 @@ public void reveal(bool reveal, uint duration = 500)
 public void activateUnreadEventbox(bool activate)
 {
 	if(m_unreadBox == null)
+	{
 		return;
+	}
 
 	if(activate)
 	{
@@ -437,7 +457,9 @@ public void activateUnreadEventbox(bool activate)
 private void RemoveThisFeed(Variant? parameter)
 {
 	if(this.is_selected())
+	{
 		moveUP();
+	}
 
 	uint time = 300;
 	this.reveal(false, time);

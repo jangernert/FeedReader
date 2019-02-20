@@ -37,7 +37,9 @@ public Grabber(Soup.Session session, Article article)
 {
 	m_article = article;
 	if(m_article.getURL().has_prefix("//"))
+	{
 		m_article.setURL("http:" + m_article.getURL());
+	}
 
 	m_articleURL = m_article.getURL();
 	m_firstPage = true;
@@ -96,10 +98,14 @@ public bool process(GLib.Cancellable? cancellable = null)
 	}
 
 	if(!checkContentType())
+	{
 		return false;
+	}
 
 	if(cancellable != null && cancellable.is_cancelled())
+	{
 		return false;
+	}
 
 	bool downloaded = false;
 
@@ -129,7 +135,9 @@ public bool process(GLib.Cancellable? cancellable = null)
 		{
 			// check again after possible redirect
 			if(!checkConfigFile())
+			{
 				return false;
+			}
 		}
 		else
 		{
@@ -139,12 +147,16 @@ public bool process(GLib.Cancellable? cancellable = null)
 	}
 
 	if(cancellable != null && cancellable.is_cancelled())
+	{
 		return false;
+	}
 
 	Logger.debug("Grabber: config found");
 
 	if(!downloaded && !download())
+	{
 		return false;
+	}
 
 
 	Logger.debug("Grabber: download success");
@@ -154,7 +166,9 @@ public bool process(GLib.Cancellable? cancellable = null)
 	Logger.debug("Grabber: empty article preped");
 
 	if(!parse(cancellable))
+	{
 		return false;
+	}
 
 	if(!m_foundSomething)
 	{
@@ -171,7 +185,9 @@ private bool checkContentType()
 	var message = new Soup.Message("HEAD", m_articleURL.escape(""));
 
 	if(message == null)
+	{
 		return false;
+	}
 
 	m_session.send_message(message);
 	var params = new GLib.HashTable<string, string>(null, null);
@@ -179,7 +195,9 @@ private bool checkContentType()
 	if(contentType != null)
 	{
 		if(contentType == "text/html")
+		{
 			return true;
+		}
 	}
 
 	Logger.debug(@"Grabber: type $contentType");
@@ -203,10 +221,14 @@ private bool download()
 		});
 
 	if(msg == null)
+	{
 		return false;
+	}
 
 	if(Settings.tweaks().get_boolean("do-not-track"))
+	{
 		msg.request_headers.append("DNT", "1");
+	}
 
 	m_session.send_message(msg);
 	msg.disconnect(handlerID);
@@ -329,7 +351,9 @@ private bool parse(GLib.Cancellable? cancellable = null)
 		{
 			string tmptitle = grabberUtils.getValue(doc, xpath, m_firstPage);
 			if(tmptitle != null && tmptitle != "")
+			{
 				m_title = tmptitle.chomp().chug();
+			}
 		}
 	}
 
@@ -348,7 +372,9 @@ private bool parse(GLib.Cancellable? cancellable = null)
 		{
 			string tmpAuthor = grabberUtils.getValue(doc, xpath);
 			if(tmpAuthor != null)
+			{
 				m_author = tmpAuthor.chomp().chug();
+			}
 		}
 	}
 
@@ -367,7 +393,9 @@ private bool parse(GLib.Cancellable? cancellable = null)
 		{
 			string tmpDate = grabberUtils.getValue(doc, xpath);
 			if(tmpDate != null)
+			{
 				m_date = tmpDate.chomp().chug();
+			}
 		}
 	}
 
@@ -503,9 +531,13 @@ private bool parse(GLib.Cancellable? cancellable = null)
 		foreach(string bodyXPath in bodyList)
 		{
 			if(grabberUtils.extractBody(doc, bodyXPath, m_root))
+			{
 				m_foundSomething = true;
+			}
 			else
+			{
 				Logger.info("Failed to find: " + bodyXPath);
+			}
 		}
 
 		if(m_foundSomething)
@@ -526,7 +558,9 @@ private bool parse(GLib.Cancellable? cancellable = null)
 	delete doc;
 
 	if(cancellable != null && cancellable.is_cancelled())
+	{
 		return false;
+	}
 
 	m_firstPage = false;
 
@@ -553,7 +587,9 @@ private bool parse(GLib.Cancellable? cancellable = null)
 	}
 
 	if(cancellable != null && cancellable.is_cancelled())
+	{
 		return false;
+	}
 
 	m_doc->dump_memory_enc(out m_html);
 	m_html = grabberUtils.postProcessing(ref m_html);
@@ -577,13 +613,19 @@ public string getArticle()
 public void print()
 {
 	if(m_title != null)
+	{
 		Logger.debug("Grabber: title: %s".printf(m_title));
+	}
 
 	if(m_author != null)
+	{
 		Logger.debug("Grabber: author: %s".printf(m_author));
+	}
 
 	if(m_date != null)
+	{
 		Logger.debug("Grabber: date: %s".printf(m_date));
+	}
 }
 
 public string? getAuthor()

@@ -22,9 +22,13 @@ Password m_htaccess_password;
 public freshUtils(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 {
 	if(settings_backend != null)
+	{
 		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.fresh", settings_backend);
+	}
 	else
+	{
 		m_settings = new GLib.Settings("org.gnome.feedreader.fresh");
+	}
 
 	var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 	                                  "URL", Secret.SchemaAttributeType.STRING,
@@ -55,13 +59,19 @@ public string getURL()
 	if(tmp_url != "")
 	{
 		if(!tmp_url.has_suffix("/"))
+		{
 			tmp_url = tmp_url + "/";
+		}
 
 		if(!tmp_url.has_suffix("/api/greader.php/"))
+		{
 			tmp_url = tmp_url + "api/greader.php/";
+		}
 
 		if(!tmp_url.has_prefix("http://") && !tmp_url.has_prefix("https://"))
+		{
 			tmp_url = "https://" + tmp_url;
+		}
 	}
 
 	return tmp_url;

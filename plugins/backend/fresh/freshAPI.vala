@@ -29,7 +29,9 @@ public LoginResponse login()
 	Logger.debug("fresh backend: login");
 
 	if(!Utils.ping(m_utils.getUnmodifiedURL()))
+	{
 		return LoginResponse.NO_CONNECTION;
+	}
 
 	return m_connection.getSID();
 }
@@ -39,7 +41,9 @@ public bool getSubscriptionList(Gee.List<Feed> feeds)
 	var response = m_connection.getRequest("reader/api/0/subscription/list?output=json");
 
 	if(response.status != 200)
+	{
 		return false;
+	}
 
 	var parser = new Json.Parser();
 	try
@@ -84,7 +88,9 @@ public bool getTagList(Gee.List<Category> categories)
 	string prefix = "user/-/label/";
 
 	if(response.status != 200)
+	{
 		return false;
+	}
 
 	var parser = new Json.Parser();
 	try
@@ -106,7 +112,9 @@ public bool getTagList(Gee.List<Category> categories)
 
 
 		if(!categorieID.has_prefix(prefix))
+		{
 			continue;
+		}
 
 		categories.add(
 			new Category (
@@ -128,7 +136,9 @@ public int getUnreadCounts()
 	var response = m_connection.getRequest("reader/api/0/unread-count?output=json");
 
 	if(response.status != 200)
+	{
 		return 0;
+	}
 
 	int count = 0;
 
@@ -170,9 +180,13 @@ public string? getStreamContents(
 	string path = "reader/api/0/stream/contents";
 
 	if(feedID != null)
+	{
 		path += "/" + feedID;
+	}
 	else if(labelID != null)
+	{
 		path += "/" + labelID;
+	}
 
 
 	var msg = new freshMessage();
@@ -183,17 +197,23 @@ public string? getStreamContents(
 	msg.add("ck", now.to_unix().to_string());
 
 	if(exclude != null)
+	{
 		msg.add("xt", exclude);
+	}
 
 	if(checkpoint != null)
+	{
 		msg.add("c", checkpoint);
+	}
 
 	Logger.debug("getStreamContents: %s".printf(msg.get()));
 
 	var response = m_connection.getRequest(path + "?" + msg.get());
 
 	if(response.status != 200)
+	{
 		return null;
+	}
 
 	var parser = new Json.Parser();
 	try
@@ -223,9 +243,13 @@ public string? getStreamContents(
 		{
 			string cat = cats.get_string_element(j);
 			if(cat.has_suffix("com.google/starred"))
+			{
 				marked = true;
+			}
 			else if(cat.has_suffix("com.google/read"))
+			{
 				read = true;
+			}
 		}
 
 		var enclosures = new Gee.ArrayList<Enclosure>();
@@ -235,7 +259,9 @@ public string? getStreamContents(
 
 			uint mediaCount = 0;
 			if(attachments != null)
+			{
 				mediaCount = attachments.get_length();
+			}
 
 			for(int j = 0; j < mediaCount; ++j)
 			{
@@ -269,7 +295,9 @@ public string? getStreamContents(
 
 
 	if(root.has_member("continuation") && root.get_string_member("continuation") != "")
+	{
 		return root.get_string_member("continuation");
+	}
 
 	return null;
 }
@@ -283,10 +311,14 @@ public void editTags(string articleIDs, string? addTag = null, string? removeTag
 	msg.add("T", m_connection.getToken());
 
 	if(addTag != null)
+	{
 		msg.add("a", addTag);
+	}
 
 	if(removeTag != null)
+	{
 		msg.add("r", removeTag);
+	}
 
 	foreach(string id in arrayID)
 	{
@@ -336,18 +368,25 @@ public Response editStream(
 
 	if(streamID != null)
 	{
-		foreach(string s in streamID)
+		foreach(string s in streamID) {
 			msg.add("s", s);
+		}
 	}
 
 	if(title != null)
+	{
 		msg.add("t", title);
+	}
 
 	if(add != null)
+	{
 		msg.add("a", add);
+	}
 
 	if(remove != null)
+	{
 		msg.add("r", remove);
+	}
 
 	var response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
 

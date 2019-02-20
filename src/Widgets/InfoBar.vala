@@ -31,7 +31,9 @@ public InfoBar(string text)
 	bar.set_show_close_button(true);
 	bar.response.connect((response_id) => {
 			if(response_id == Gtk.ResponseType.CLOSE)
-				this.set_reveal_child(false);
+			{
+			        this.set_reveal_child(false);
+			}
 		});
 
 	this.set_transition_duration(200);

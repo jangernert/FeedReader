@@ -51,7 +51,9 @@ public static void generatePreviews(Gee.List<Article> articles)
 				Logger.debug("Utils: generate preview for article: " + Article.getArticleID());
 				string output = Utils.UTF8fix(Article.getHTML(), true);
 				if(output != null)
+				{
 					output = output.strip();
+				}
 
 				if(output == "" || output == null)
 				{
@@ -151,7 +153,9 @@ public static bool springCleaningNecessary()
 	Logger.debug("difference: %f".printf(difference/GLib.TimeSpan.DAY));
 
 	if((difference/GLib.TimeSpan.DAY) >= Settings.general().get_int("spring-clean-after"))
+	{
 		doCleaning = true;
+	}
 
 	return doCleaning;
 }
@@ -176,7 +180,9 @@ public static bool arrayContains(string[] array, string key)
 	foreach(string s in array)
 	{
 		if(s == key)
+		{
 			return true;
+		}
 	}
 
 	return false;
@@ -396,19 +402,27 @@ public static string prepareSearchQuery(string raw_query)
 		{
 			string lower = s.down();
 			if(lower == "" || lower == "and" || lower == "or" || lower == "not" || lower == "near" || lower.has_prefix("near/"))
+			{
 				continue;
+			}
 
 			if(s.has_prefix("-"))
+			{
 				s = s.substring(1);
+			}
 
 			if(s == "")
+			{
 				continue;
+			}
 
 			s = "\"" + s + "*\"";
 		}
 
 		if(in_quote && quotes % 2 != 0)
+		{
 			in_quote = false;
+		}
 
 		prepared_query.append(s);
 		prepared_query.append(" ");
@@ -422,8 +436,9 @@ public static string prepareSearchQuery(string raw_query)
 public static int countChar(string s, unichar c)
 {
 	int count = 0;
-	for (int index = 0; (index = s.index_of_char(c, index)) >= 0; ++index, ++count)
+	for (int index = 0; (index = s.index_of_char(c, index)) >= 0; ++index, ++count) {
 		;
+	}
 	return count;
 }
 
@@ -497,21 +512,31 @@ public static void resetSettings(GLib.Settings settings)
 public static string URLtoFeedName(string? url)
 {
 	if(url == null)
+	{
 		return "";
+	}
 
 	var feedname = new GLib.StringBuilder(url);
 
 	if(feedname.str.has_suffix("/"))
+	{
 		feedname.erase(feedname.str.char_count()-1);
+	}
 
 	if(feedname.str.has_prefix("https://"))
+	{
 		feedname.erase(0, 8);
+	}
 
 	if(feedname.str.has_prefix("http://"))
+	{
 		feedname.erase(0, 7);
+	}
 
 	if(feedname.str.has_prefix("www."))
+	{
 		feedname.erase(0, 4);
+	}
 
 	return feedname.str;
 }
@@ -534,7 +559,9 @@ public static async bool ensure_path(string path_str)
 {
 	var path = GLib.File.new_for_path(path_str);
 	if(yield file_exists(path_str, FileType.DIRECTORY))
+	{
 		return true;
+	}
 
 	try
 	{
@@ -556,7 +583,9 @@ public static string gsettingReadString(GLib.Settings setting, string key)
 {
 	string val = setting.get_string(key);
 	if(val == "")
+	{
 		Logger.warning("Utils.gsettingReadString: failed to read %s %s".printf(setting.schema_id, key));
+	}
 
 	return val;
 }
@@ -564,10 +593,14 @@ public static string gsettingReadString(GLib.Settings setting, string key)
 public static void gsettingWriteString(GLib.Settings setting, string key, string val)
 {
 	if(val == "" || val == null)
+	{
 		Logger.warning("Utils.gsettingWriteString: resetting %s %s".printf(setting.schema_id, key));
+	}
 
 	if(!setting.set_string(key, val))
+	{
 		Logger.error("Utils.gsettingWriteString: writing %s %s failed".printf(setting.schema_id, key));
+	}
 }
 
 public static async uint8[] inputStreamToArray(InputStream stream, Cancellable? cancellable=null) throws Error
@@ -579,7 +612,9 @@ public static async uint8[] inputStreamToArray(InputStream stream, Cancellable? 
 		size_t bytesRead = 0;
 		yield stream.read_all_async(buffer, Priority.DEFAULT_IDLE, cancellable, out bytesRead);
 		if (bytesRead  == 0)
+		{
 			break;
+		}
 		result.append_vals(buffer, (uint)bytesRead);
 	}
 
@@ -591,7 +626,9 @@ public static string buildArticle(string html, string title, string url, string?
 	var article = new GLib.StringBuilder();
 	string author_date = "";
 	if(author != null)
+	{
 		author_date +=  _("posted by: %s, ").printf(author);
+	}
 
 	author_date += date;
 
@@ -679,12 +716,16 @@ public static string buildArticle(string html, string title, string url, string?
 	// Try to use the configured font if it exists
 	var font_setting = Settings.general().get_value("font").get_maybe();
 	if (font_setting != null)
+	{
 		font_options.add(font_setting.get_string());
+	}
 
 	// If there is no configured font, or it's broken, use the system default font
 	var system_font = new GLib.Settings("org.gnome.desktop.interface").get_string("document-font-name");
 	if (system_font != null)
+	{
 		font_options.add(system_font);
+	}
 
 	// Backup if the system font is broken too
 	font_options.add("sans");
@@ -698,11 +739,15 @@ public static string buildArticle(string html, string title, string url, string?
 		var desc = Pango.FontDescription.from_string(font);
 		font_families.add(desc.get_family());
 		if (font_size == null && desc.get_size() > 0)
+		{
 			font_size = (uint)GLib.Math.roundf(desc.get_size());
+		}
 	}
 
 	if (font_size == null)
+	{
 		font_size = 12;
+	}
 	font_size = font_size / Pango.SCALE;
 	string font_family = StringUtils.join(font_families, ", ");
 
@@ -756,18 +801,26 @@ public static bool canManipulateContent(bool? online = null)
 {
 	// if backend = local RSS -> return true;
 	if(Settings.general().get_string("plugin") == "local")
+	{
 		return true;
+	}
 
 	if(!FeedReaderBackend.get_default().supportFeedManipulation())
+	{
 		return false;
+	}
 
 	// when we already know wheather feedreader is online or offline
 	if(online != null)
 	{
 		if(online)
+		{
 			return true;
+		}
 		else
+		{
 			return false;
+		}
 	}
 
 	// otherwise check if online
@@ -797,13 +850,17 @@ public static GLib.Menu getMenu()
 public static bool onlyShowFeeds()
 {
 	if(Settings.general().get_boolean("only-feeds"))
+	{
 		return true;
+	}
 
 	var db = DataBase.readOnly();
 	if(!db.haveCategories()
 	   && !FeedReaderBackend.get_default().supportTags()
 	   && !db.haveFeedsWithoutCat())
+	{
 		return true;
+	}
 
 	return false;
 }
@@ -816,7 +873,9 @@ public static void saveImageDialog(string imagePath)
 		string articleName = "Article.pdf";
 		string? articleID = ColumnView.get_default().displayedArticle();
 		if(articleID != null)
+		{
 			articleName = DataBase.readOnly().read_article(articleID).getTitle();
+		}
 
 		var file = GLib.File.new_for_path(imagePath);
 		var mimeType = file.query_info("standard::content-type", 0, null).get_content_type();
@@ -904,9 +963,13 @@ public static Gtk.Image checkIcon(string name, string fallback, Gtk.IconSize siz
 {
 	Gtk.Image icon = null;
 	if(Gtk.IconTheme.get_default().lookup_icon(name, 0, Gtk.IconLookupFlags.FORCE_SVG) != null)
+	{
 		icon = new Gtk.Image.from_icon_name(name, size);
+	}
 	else
+	{
 		icon = new Gtk.Image.from_icon_name(fallback, size);
+	}
 
 	return icon;
 }
@@ -956,7 +1019,9 @@ public static uint getRelevantArticles()
 	int count = 0;
 
 	if(topRow != null)
+	{
 		count = DataBase.readOnly().getArticleCountNewerThanID(topRow, selectedRow[1], IDtype, state, searchTerm);
+	}
 
 	Logger.debug(@"getRelevantArticles: $count");
 	return count;

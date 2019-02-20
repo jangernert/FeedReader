@@ -71,7 +71,9 @@ public void setReady()
 public void setRemoveButtonSensitive(bool sensitive)
 {
 	if(FeedReaderApp.get_default().isOnline() && FeedReaderBackend.get_default().supportFeedManipulation())
+	{
 		m_removeButton.set_sensitive(sensitive);
+	}
 }
 
 public void setSelectedRow(FeedListType type, string id)

@@ -146,12 +146,14 @@ internal static Entry? fromLine(string line)
 	try {
 		var json = Json.from_string(line);
 		var array = json.get_array();
-		if (array == null || array.get_length() != 3) {
+		if (array == null || array.get_length() != 3)
+		{
 			Log.w("Invalid entry " + line);
 			return null;
 		}
 		var datetime = array.get_string_element(0);
-		if (datetime == null) {
+		if (datetime == null)
+		{
 			Log.w("Invalid entry " + line);
 			return null;
 		}
@@ -252,7 +254,8 @@ public void setEntriesForPath(Gee.List<string> path, Gee.Collection<Entry> entri
 
 		// Get the old version
 		int64 version = 0;
-		if (file.query_exists()) {
+		if (file.query_exists())
+		{
 			try {
 				var stream = new DataInputStream(file.read());
 				version = int64.parse(stream.read_line());         // Defaults to 0
@@ -284,26 +287,30 @@ public void initMonitor(T extra)
 	try {
 		var newEntriesDir = File.new_for_path(dir + "/new-entries");
 		var parent = newEntriesDir.get_parent();
-		if (!parent.query_exists()) {
+		if (!parent.query_exists())
+		{
 			parent.make_directory_with_parents();
 		}
 		monitor = new DirectoryMonitor(newEntriesDir);
 		monitor.changed.connect(pathString => {
 				var pathEncoded = new Gee.ArrayList<string>.wrap(pathString.split("/"));
 				pathEncoded.remove("");
-				if (pathEncoded.is_empty || pathEncoded.last()[0] == '.') {
+				if (pathEncoded.is_empty || pathEncoded.last()[0] == '.')
+				{
 				        return;
 				}
 				var path = new Gee.ArrayList<string>();
 				path.add_all_iterator(pathEncoded.map<string>(part => { return FileUtils.urldecode(part); }));
-				if (path.any_match(part => { return part == null; })) {
+				if (path.any_match(part => { return part == null; }))
+				{
 				        Log.w("Cannot decode path " + pathString);
 				        return;
 				}
 				var appId = path.first();
 				path.remove_at(0);
 				var entriesLocation = new EntriesLocation.getNewEntriesLocation(this, path, appId);
-				if (appId != ownAppId && entriesLocation.newEntriesFile.query_file_type(FileQueryInfoFlags.NONE) == FileType.REGULAR) {
+				if (appId != ownAppId && entriesLocation.newEntriesFile.query_file_type(FileQueryInfoFlags.NONE) == FileType.REGULAR)
+				{
 				        executeEntriesLocation(entriesLocation, extra);
 				        Log.d("Sync complete");
 				        syncComplete(extra);
@@ -340,7 +347,8 @@ private void executeEntriesLocation(EntriesLocation entriesLocation, T extra, Ge
 {
 	// Get the number of read bytes
 	int64 readBytes = 0;
-	if (entriesLocation.readBytesFile != null && entriesLocation.readBytesFile.query_exists()) {
+	if (entriesLocation.readBytesFile != null && entriesLocation.readBytesFile.query_exists())
+	{
 		try {
 			var stream = new DataInputStream(entriesLocation.readBytesFile.read());
 			readBytes = int64.parse(stream.read_line());         // Defaults to 0
@@ -350,10 +358,14 @@ private void executeEntriesLocation(EntriesLocation entriesLocation, T extra, Ge
 	}
 
 	// Write the new number of read bytes (= size of the entry file)
-	if (entriesLocation.readBytesFile != null) {
+	if (entriesLocation.readBytesFile != null)
+	{
 		try {
 			var size = entriesLocation.newEntriesFile.query_info("standard::size", FileQueryInfoFlags.NONE).get_size();
-			if (readBytes >= size) return;
+			if (readBytes >= size)
+			{
+				return;
+			}
 			FileUtils.writeFile(entriesLocation.readBytesFile, size.to_string());
 		} catch (GLib.Error e) {
 			Log.w(e.message);
@@ -373,14 +385,17 @@ private void executeEntriesLocation(EntriesLocation entriesLocation, T extra, Ge
 		string line;
 		while ((line = stream.read_line(null)) != null) {
 			var entryLine = Entry.fromLine(line);
-			if (entryLine == null) {
+			if (entryLine == null)
+			{
 				continue;
 			}
 			if ((keyPred == null || keyPred(entryLine.key)) &&
-			    (valuePred == null || valuePred(entryLine.value))) {
+			    (valuePred == null || valuePred(entryLine.value)))
+			{
 				var key = entryLine.key;
 				var entry = entriesMap.@get(key);
-				if (entry == null || entryLine.datetime > entry.datetime) {
+				if (entry == null || entryLine.datetime > entry.datetime)
+				{
 					entriesMap.@set(key, entryLine);
 				}
 			}
@@ -398,7 +413,8 @@ private void executeEntries(EntriesLocation entriesLocation, Gee.Collection<Entr
 	updateStoredEntries(entriesLocation, entries);
 
 	var listener = getListener(entriesLocation.path);
-	if (listener == null) {
+	if (listener == null)
+	{
 		Log.e("Unknown action for path " + FileUtils.pathToString(entriesLocation.path));
 		return;
 	}
@@ -408,28 +424,35 @@ private void executeEntries(EntriesLocation entriesLocation, Gee.Collection<Entr
 
 private void updateStoredEntries(EntriesLocation entriesLocation, Gee.Collection<Entry> entries)
 {
-	if (entriesLocation.storedEntriesFile == null) {
+	if (entriesLocation.storedEntriesFile == null)
+	{
 		return;
 	}
 
 	try {
 		var haveToFilterFile = false;
-		if (entriesLocation.storedEntriesFile.query_exists()) {
+		if (entriesLocation.storedEntriesFile.query_exists())
+		{
 			var stream = new DataInputStream(entriesLocation.storedEntriesFile.read());
 			string line;
 			while ((line = stream.read_line(null)) != null) {
 				var entryLine = Entry.fromLine(line);
-				if (entryLine == null) {
+				if (entryLine == null)
+				{
 					continue;
 				}
 				var entriesIterator = entries.iterator();
 				while (entriesIterator.has_next()) {
 					entriesIterator.next();
 					var entry = entriesIterator.get();
-					if (entry.key.equal(entryLine.key)) {
-						if (entry.datetime > entryLine.datetime) {
+					if (entry.key.equal(entryLine.key))
+					{
+						if (entry.datetime > entryLine.datetime)
+						{
 							haveToFilterFile = true;
-						} else {
+						}
+						else
+						{
 							entriesIterator.remove();
 						}
 					}
@@ -437,10 +460,12 @@ private void updateStoredEntries(EntriesLocation entriesLocation, Gee.Collection
 			}
 		}
 
-		if (haveToFilterFile) {
+		if (haveToFilterFile)
+		{
 			FileUtils.filterFile(entriesLocation.storedEntriesFile, line => {
 					var entryLine = Entry.fromLine(line);
-					if (entryLine == null) {
+					if (entryLine == null)
+					{
 					        return false;
 					}
 					return !entries.any_match(entry => { return entry.key.equal(entryLine.key); });
@@ -511,11 +536,13 @@ public void initStoredEntries()
 			        string line;
 			        while ((line = stream.read_line(null)) != null) {
 			                var entry = Entry.fromLine(line);
-			                if (entry == null) {
+			                if (entry == null)
+			                {
 			                        continue;
 					}
 			                if (maxDatetime == null || entry.datetime > maxDatetime ||
-			                    path.first() == ownAppId && entry.datetime == maxDatetime) {                     // Prefer own appId
+			                    path.first() == ownAppId && entry.datetime == maxDatetime)                       // Prefer own appId
+			                {
 			                        maxDatetime = entry.datetime;
 			                        appId = path.first();
 					}
@@ -525,13 +552,15 @@ public void initStoredEntries()
 			}
 			return true;
 		});
-	if (appId == null) {
+	if (appId == null)
+	{
 		Log.i("No appId found for initialization");
 		return;
 	}
 
 	// Copy the stored files and update the read bytes
-	if (appId != ownAppId) {
+	if (appId != ownAppId)
+	{
 		var appIdEncoded = FileUtils.urlencode(appId);
 
 		try {
@@ -582,13 +611,15 @@ public static Json.Node? getStoredStaticValue(string decsyncDir, string[] pathAr
 		var enumerator = storedEntriesDir.enumerate_children("standard::*", FileQueryInfoFlags.NONE);
 		FileInfo info;
 		while ((info = enumerator.next_file(null)) != null) {
-			if (info.get_name()[0] == '.') {
+			if (info.get_name()[0] == '.')
+			{
 				continue;
 			}
 
 			var appIdEncoded = info.get_name();
 			var file = File.new_for_path(decsyncDir + "/stored-entries/" + appIdEncoded + "/" + pathString);
-			if (!file.query_exists() || file.query_file_type(FileQueryInfoFlags.NONE) != FileType.REGULAR) {
+			if (!file.query_exists() || file.query_file_type(FileQueryInfoFlags.NONE) != FileType.REGULAR)
+			{
 				continue;
 			}
 
@@ -596,10 +627,12 @@ public static Json.Node? getStoredStaticValue(string decsyncDir, string[] pathAr
 			string line;
 			while ((line = stream.read_line(null)) != null) {
 				var entry = Entry.fromLine(line);
-				if (entry == null) {
+				if (entry == null)
+				{
 					continue;
 				}
-				if (entry.key.equal(key) && (maxDatetime == null || entry.datetime > maxDatetime)) {
+				if (entry.key.equal(key) && (maxDatetime == null || entry.datetime > maxDatetime))
+				{
 					maxDatetime = entry.datetime;
 					result = entry.value;
 				}
@@ -615,7 +648,8 @@ public static Json.Node? getStoredStaticValue(string decsyncDir, string[] pathAr
 private OnEntryUpdateListener<T>? getListener(Gee.List<string> path)
 {
 	foreach (var listener in listeners) {
-		if (listener.matchesPath(path)) {
+		if (listener.matchesPath(path))
+		{
 			return listener;
 		}
 	}
@@ -636,7 +670,8 @@ public string getDecsyncSubdir(string? decsyncBaseDir, string syncType, string? 
 {
 	string dir = decsyncBaseDir ?? getDefaultDecsyncBaseDir();
 	dir += "/" + FileUtils.urlencode(syncType);
-	if (collection != null) {
+	if (collection != null)
+	{
 		dir += "/" + FileUtils.urlencode(collection);
 	}
 	return dir;
@@ -667,17 +702,21 @@ public Gee.ArrayList<string> listDecsyncCollections(string? decsyncBaseDir, stri
 	FileInfo info;
 	Gee.ArrayList<string> result = new Gee.ArrayList<string>();
 	while ((info = enumerator.next_file(null)) != null) {
-		if (info.get_file_type() != FileType.DIRECTORY || info.get_name()[0] == '.') {
+		if (info.get_file_type() != FileType.DIRECTORY || info.get_name()[0] == '.')
+		{
 			continue;
 		}
-		if (ignoreDeleted) {
+		if (ignoreDeleted)
+		{
 			var deleted = Decsync.getStoredStaticValue(decsyncSubdir.get_child(info.get_name()).get_path(), {"info"}, stringToNode("deleted"));
-			if (deleted != null && deleted.get_boolean()) {
+			if (deleted != null && deleted.get_boolean())
+			{
 				continue;
 			}
 		}
 		var collection = FileUtils.urldecode(info.get_name());
-		if (collection != null) {
+		if (collection != null)
+		{
 			result.add(collection);
 		}
 	}
@@ -694,9 +733,12 @@ public Gee.ArrayList<string> listDecsyncCollections(string? decsyncBaseDir, stri
 public string getAppId(string appName, int? id = null)
 {
 	string appId = GLib.Environment.get_host_name() + "-" + appName;
-	if (id == null) {
+	if (id == null)
+	{
 		return appId;
-	} else {
+	}
+	else
+	{
 		return appId + "-" + "%05d".printf(id);
 	}
 }

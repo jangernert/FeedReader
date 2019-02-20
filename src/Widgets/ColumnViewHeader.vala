@@ -61,7 +61,9 @@ public ColumnViewHeader()
 	m_refresh_button.updating(updating);
 	m_refresh_button.clicked.connect(() => {
 			if(!m_refresh_button.getStatus())
-				refresh();
+			{
+			        refresh();
+			}
 			else
 			{
 			        cancel();
@@ -74,7 +76,9 @@ public ColumnViewHeader()
 	m_search = new Gtk.SearchEntry();
 	m_search.placeholder_text = _("Search Articles");
 	if(Settings.tweaks().get_boolean("restore-searchterm"))
+	{
 		m_search.text = Settings.state().get_string("search-term");
+	}
 
 	// connect after 160ms because Gtk.SearchEntry fires search_changed with 150ms delay
 	// with the timeout the signal should not trigger a newList() when restoring the state at startup
@@ -133,7 +137,8 @@ public ColumnViewHeader()
 private void set_window_buttons()
 {
 	string[] buttons = Gtk.Settings.get_default().gtk_decoration_layout.split(":");
-	if (buttons.length < 2) {
+	if (buttons.length < 2)
+	{
 		buttons = {buttons[0], ""};
 		Logger.warning("gtk_decoration_layout in unexpected format");
 	}

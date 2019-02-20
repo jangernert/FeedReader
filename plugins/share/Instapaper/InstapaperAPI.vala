@@ -180,13 +180,17 @@ public bool addBookmark(string id, string url, bool system)
 	message_soup.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message.data);
 
 	if(Settings.tweaks().get_boolean("do-not-track"))
+	{
 		message_soup.request_headers.append("DNT", "1");
+	}
 
 	session.send_message(message_soup);
 	string response = (string)message_soup.response_body.flatten().data;
 
 	if(response == null || response == "")
+	{
 		return false;
+	}
 
 	Logger.debug("InstaAPI: " + response);
 
@@ -209,7 +213,9 @@ public bool logout(string id)
 			{
 			        removed = Secret.password_clearv.end(async_res);
 			        if(!removed)
-					Logger.error(@"Could not delete password of InstaAPI account $id");
+			        {
+			                Logger.error(@"Could not delete password of InstaAPI account $id");
+				}
 			}
 			catch(GLib.Error e)
 			{
@@ -229,7 +235,9 @@ public bool logout(string id)
 	foreach(string i in array)
 	{
 		if(i != id)
+		{
 			array2 += i;
+		}
 	}
 	Settings.share("instapaper").set_strv("account-ids", array2);
 	deleteAccount(id);

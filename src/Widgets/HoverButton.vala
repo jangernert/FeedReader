@@ -41,9 +41,13 @@ public HoverButton(Gtk.Image inactive, Gtk.Image active, bool isActive)
 	m_button.add(m_stack);
 
 	if(isActive)
+	{
 		m_stack.set_visible_child_name("active");
+	}
 	else
+	{
 		m_stack.set_visible_child_name("inactive");
+	}
 
 
 
@@ -104,7 +108,9 @@ private bool onEnter(Gdk.EventCrossing event)
 private bool onLeave(Gdk.EventCrossing event)
 {
 	if(event.detail == Gdk.NotifyType.INFERIOR)
+	{
 		return false;
+	}
 
 	if(m_isActive)
 	{

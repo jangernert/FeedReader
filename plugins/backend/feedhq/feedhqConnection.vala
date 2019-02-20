@@ -35,11 +35,17 @@ public LoginResponse getToken()
 	Logger.debug("FeedHQ Connection: getToken()");
 
 	if(m_username == "" && m_passwd == "")
+	{
 		return LoginResponse.ALL_EMPTY;
+	}
 	if(m_username == "")
+	{
 		return LoginResponse.MISSING_USER;
+	}
 	if(m_passwd == "")
+	{
 		return LoginResponse.MISSING_PASSWD;
+	}
 
 	var message = new Soup.Message("POST", "https://feedhq.org/accounts/ClientLogin");
 	string message_string = "Email=" + m_username + "&Passwd=" + m_passwd;
@@ -114,7 +120,9 @@ private Response send_request(string path, string type, string? message_string =
 	message.request_headers.append("Authorization", oldauth);
 	var message_string_post = message_string + "&T=" + m_utils.getPostToken();
 	if(message_string != null)
+	{
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string_post.data);
+	}
 
 	m_session.send_message(message);
 
@@ -151,7 +159,9 @@ public feedhqMessage()
 public void add(string parameter, string val)
 {
 	if(request != "")
+	{
 		request += "&";
+	}
 
 	request += parameter;
 	request += "=";

@@ -29,7 +29,9 @@ private static ActionCache? m_cache = null;
 public static ActionCache get_default()
 {
 	if(m_cache == null)
+	{
 		m_cache = new ActionCache();
+	}
 
 	return m_cache;
 }
@@ -43,7 +45,9 @@ public void markArticleRead(string id, ArticleStatus read)
 {
 	var cachedAction = CachedActions.MARK_READ;
 	if(read == ArticleStatus.UNREAD)
+	{
 		cachedAction = CachedActions.MARK_UNREAD;
+	}
 
 	var action = new CachedAction(cachedAction, id, "");
 	addAction(action);
@@ -53,7 +57,9 @@ public void markArticleStarred(string id, ArticleStatus marked)
 {
 	var cachedAction = CachedActions.MARK_STARRED;
 	if(marked == ArticleStatus.UNMARKED)
+	{
 		cachedAction = CachedActions.MARK_UNSTARRED;
+	}
 
 	var action = new CachedAction(cachedAction, id, "");
 	addAction(action);
@@ -126,7 +132,9 @@ private void removeForFeed(string feedID)
 		   || a.getType() == CachedActions.MARK_UNREAD)
 		{
 			if (db == null)
+			{
 				db = DataBase.readOnly();
+			}
 			if(feedID == db.getFeedIDofArticle(a.getID()))
 			{
 				m_list.remove(a);
@@ -174,9 +182,13 @@ public ArticleStatus checkStarred(string articleID, ArticleStatus marked)
 {
 	var type = CachedActions.NONE;
 	if(marked == ArticleStatus.UNMARKED)
+	{
 		type = CachedActions.MARK_STARRED;
+	}
 	else if(marked == ArticleStatus.MARKED)
+	{
 		type = CachedActions.MARK_UNSTARRED;
+	}
 
 	foreach(CachedAction a in m_list)
 	{
@@ -184,10 +196,14 @@ public ArticleStatus checkStarred(string articleID, ArticleStatus marked)
 		   && a.getID() == articleID)
 		{
 			if(type == CachedActions.MARK_STARRED)
+			{
 				return ArticleStatus.MARKED;
+			}
 
 			if(type == CachedActions.MARK_UNSTARRED)
+			{
 				return ArticleStatus.UNMARKED;
+			}
 		}
 	}
 
@@ -202,7 +218,9 @@ public ArticleStatus checkRead(Article a)
 		{
 			if(action.getType() == CachedActions.MARK_UNREAD
 			   && action.getID() == a.getArticleID())
+			{
 				return ArticleStatus.UNREAD;
+			}
 		}
 	}
 	else if(a.getUnread() == ArticleStatus.UNREAD)
@@ -217,17 +235,23 @@ public ArticleStatus checkRead(Article a)
 
 			case CachedActions.MARK_READ_FEED:
 				if(action.getID() == a.getFeedID())
+				{
 					return ArticleStatus.READ;
+				}
 				break;
 
 			case CachedActions.MARK_READ_CATEGORY:
 				if (db == null)
+				{
 					db = DataBase.readOnly();
+				}
 				var feedIDs = db.getFeedIDofCategorie(a.getArticleID());
 				foreach(string feedID in feedIDs)
 				{
 					if(feedID == a.getFeedID())
+					{
 						return ArticleStatus.READ;
+					}
 				}
 				break;
 			}

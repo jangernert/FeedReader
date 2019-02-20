@@ -43,7 +43,9 @@ public LoginResponse getToken()
 	m_session.send_message(message);
 
 	if(message.status_code != 200)
+	{
 		return LoginResponse.NO_CONNECTION;
+	}
 
 	string response = (string)message.response_body.flatten().data;
 
@@ -91,7 +93,9 @@ public LoginResponse refreshToken()
 	m_session.send_message(message);
 
 	if(message.status_code != 200)
+	{
 		return LoginResponse.NO_CONNECTION;
+	}
 
 	string response = (string)message.response_body.flatten().data;
 
@@ -102,7 +106,9 @@ public LoginResponse refreshToken()
 		var root = parser.get_root().get_object();
 
 		if(!root.has_member("access_token"))
+		{
 			return getToken();
+		}
 
 		string accessToken = root.get_string_member("access_token");
 		int64 expires = (int)root.get_int_member("expires_in");
@@ -136,7 +142,9 @@ public Response send_request(string path, string? message_string = null)
 private Response send_post_request(string path, string type, string? message_string = null)
 {
 	if(!m_utils.accessTokenValid())
+	{
 		refreshToken();
+	}
 
 	var message = new Soup.Message(type, InoReaderSecret.base_uri + path);
 
@@ -144,7 +152,9 @@ private Response send_post_request(string path, string type, string? message_str
 	message.request_headers.append("Authorization", inoauth);
 
 	if(message_string != null)
+	{
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
+	}
 
 	m_session.send_message(message);
 

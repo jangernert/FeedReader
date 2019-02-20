@@ -32,7 +32,9 @@ public signal void callback (string content);
 public new static FeedReaderApp get_default()
 {
 	if(m_app == null)
+	{
 		m_app = new FeedReaderApp();
+	}
 
 	return m_app;
 }
@@ -169,7 +171,9 @@ public override void activate()
 						Logger.debug("FeedReader: feedAdded");
 						ColumnView.get_default().footerSetReady();
 						if(error)
-							ColumnView.get_default().footerShowError(errmsg);
+						{
+						        ColumnView.get_default().footerShowError(errmsg);
+						}
 						return GLib.Source.REMOVE;
 					});
 				});
@@ -271,7 +275,9 @@ public static void show_about(string[] args)
 	Gtk.AboutDialog dialog = new Gtk.AboutDialog();
 	dialog.response.connect ((response_id) => {
 			if(response_id == Gtk.ResponseType.CANCEL || response_id == Gtk.ResponseType.DELETE_EVENT)
-				Gtk.main_quit();
+			{
+			        Gtk.main_quit();
+			}
 		});
 
 	dialog.artists = AboutInfo.artists;

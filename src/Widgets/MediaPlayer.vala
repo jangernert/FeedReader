@@ -103,7 +103,9 @@ private void buildUI()
 			        double duration = (double)dur/1000000000;
 			        double percent = position*100.0/duration;
 			        if(m_seek_source_id == 0)
-					m_scale.set_value(percent);
+			        {
+			                m_scale.set_value(percent);
+				}
 			        calcTime();
 			}
 			return true;
@@ -182,7 +184,9 @@ private void buildUI()
 	this.get_style_context().add_class("osd");
 	this.margin = 40;
 	if(m_type == MediaType.VIDEO)
+	{
 		this.pack_start(bufferOverlay, true, true);
+	}
 	this.pack_start(hBox, false, false);
 	this.valign = Gtk.Align.END;
 	this.show_all();
@@ -212,9 +216,13 @@ private void togglePause()
 	}
 
 	if(m_muted)
+	{
 		m_player["volume"] = 0.0;
+	}
 	else
+	{
 		m_player["volume"] = 1.0;
+	}
 }
 
 private void switchDisplay()
@@ -430,9 +438,13 @@ private bool busCallback(Gst.Bus bus, Gst.Message message)
 		{
 			m_player.set_state(Gst.State.PLAYING);
 			if(m_type == MediaType.VIDEO)
+			{
 				m_bufferLabel.hide();
+			}
 			else
+			{
 				m_playStack.set_visible_child_name("button");
+			}
 		}
 		break;
 

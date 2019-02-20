@@ -105,7 +105,9 @@ private void clicked(Gtk.ListBoxRow row)
 	{
 		var widget = Share.get_default().shareWidget(shareRow.getType(), selectedArticle.getURL());
 		if(widget == null)
+		{
 			shareURL(id, selectedArticle.getURL());
+		}
 		else
 		{
 			m_stack.add_named(widget, "form");

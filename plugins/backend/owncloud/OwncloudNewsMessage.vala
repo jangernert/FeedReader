@@ -32,9 +32,13 @@ public OwnCloudNewsMessage(Soup.Session session, string destination, string user
 	m_destination = destination;
 
 	if(method == "GET")
+	{
 		m_contenttype = "application/x-www-form-urlencoded";
+	}
 	else
+	{
 		m_contenttype = "application/json";
+	}
 
 	m_parser = new Json.Parser();
 	m_message_soup = new Soup.Message(m_method, m_destination);
@@ -49,20 +53,28 @@ public void add_int(string type, int val)
 	if(m_method == "GET")
 	{
 		if(m_message_string.len > 0)
+		{
 			m_message_string.append("&");
+		}
 
 		m_message_string.append(type + "=" + val.to_string());
 	}
 	else
+	{
 		m_message_string.append(",\"" + type + "\":" + val.to_string());
+	}
 }
 
 public void add_int_array(string type, string values)
 {
 	if(m_method == "GET")
+	{
 		Logger.warning("OwnCloudNewsMessage.add_int_array: this should not happen");
+	}
 	else
+	{
 		m_message_string.append(",\"" + type + "\":[" + values + "]");
+	}
 }
 
 public void add_bool(string type, bool val)
@@ -70,12 +82,16 @@ public void add_bool(string type, bool val)
 	if(m_method == "GET")
 	{
 		if(m_message_string.len > 0)
+		{
 			m_message_string.append("&");
+		}
 
 		m_message_string.append(type + "=" + (val ? "true" : "false"));
 	}
 	else
+	{
 		m_message_string.append(",\"" + type + "\":" + (val ? "true" : "false"));
+	}
 }
 
 public void add_string(string type, string val)
@@ -83,12 +99,16 @@ public void add_string(string type, string val)
 	if(m_method == "GET")
 	{
 		if(m_message_string.len > 0)
+		{
 			m_message_string.append("&");
+		}
 
 		m_message_string.append(type + "=" + val);
 	}
 	else
+	{
 		m_message_string.append(",\"" + type + "\":\"" + val + "\"");
+	}
 }
 
 public ConnectionError send(bool ping = false)
@@ -99,7 +119,9 @@ public ConnectionError send(bool ping = false)
 	{
 		string destination = m_destination;
 		if(m_message_string.len > 0)
+		{
 			destination += "?" + m_message_string.str;
+		}
 		m_message_soup.set_uri(new Soup.URI(destination));
 		Logger.debug(destination);
 	}
@@ -110,11 +132,14 @@ public ConnectionError send(bool ping = false)
 	}
 
 	if(settingsTweaks.get_boolean("do-not-track"))
+	{
 		m_message_soup.request_headers.append("DNT", "1");
+	}
 
 	var status = m_session.send_message(m_message_soup);
 
 	if(status == 401)         // unauthorized
+
 	{
 		return ConnectionError.UNAUTHORIZED;
 	}

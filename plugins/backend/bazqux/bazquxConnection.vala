@@ -35,11 +35,17 @@ public LoginResponse getToken()
 	Logger.debug("bazqux Connection: getToken()");
 
 	if(m_username == "" && m_passwd == "")
+	{
 		return LoginResponse.ALL_EMPTY;
+	}
 	if(m_username == "")
+	{
 		return LoginResponse.MISSING_USER;
+	}
 	if(m_passwd == "")
+	{
 		return LoginResponse.MISSING_PASSWD;
+	}
 
 	var message = new Soup.Message("POST", "https://bazqux.com/accounts/ClientLogin/");
 	string message_string = "Email=" + m_username + "&Passwd=" + m_passwd;
@@ -90,7 +96,9 @@ private Response send_request(string path, string type, string? message_string =
 	message.request_headers.append("Authorization", oldauth);
 
 	if(message_string != null)
+	{
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
+	}
 
 	m_session.send_message(message);
 
@@ -109,7 +117,9 @@ public bool ping()
 	m_session.send_message(message);
 
 	if((string)message.response_body.data == "OK")
+	{
 		return true;
+	}
 
 	return false;
 }
@@ -128,7 +138,9 @@ public bazquxMessage()
 public void add(string parameter, string val)
 {
 	if(request != "")
+	{
 		request += "&";
+	}
 
 	request += parameter;
 	request += "=";

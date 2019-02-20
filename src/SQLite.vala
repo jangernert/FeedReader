@@ -52,7 +52,9 @@ requires (query != "")
 	Sqlite.Statement stmt;
 	int rc = m_db.prepare_v2(query, query.length, out stmt);
 	if(rc != Sqlite.OK)
+	{
 		error("Can't prepare statement: %d: %s\nSQL is %s".printf(m_db.errcode(), m_db.errmsg(), query));
+	}
 	return stmt;
 }
 
@@ -93,7 +95,9 @@ requires (query != "")
 		foreach(var param in params)
 		{
 			if(param == null)
+			{
 				stmt.bind_null(i);
+			}
 			else
 			{
 				// The order of operations matters here because floats and doubles

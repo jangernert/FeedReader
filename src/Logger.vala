@@ -41,7 +41,9 @@ public static void info(string message)
 public static void debug(string message)
 {
 	if(m_log_debug_information)
+	{
 		log(GLib.LogLevelFlags.LEVEL_DEBUG, message);
+	}
 }
 
 public static void init(bool verbose)

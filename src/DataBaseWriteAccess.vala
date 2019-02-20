@@ -19,7 +19,9 @@ public static new DataBase writeAccess()
 {
 	var database = new DataBase();
 	if(database.uninitialized())
+	{
 		database.init();
+	}
 
 	return database;
 }
@@ -282,9 +284,13 @@ public void updateArticlesByID(Gee.List<string> ids, string field)
 	// first reset all articles
 	var reset_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
 	if(field == "unread")
+	{
 		reset_query.update_int(field, ArticleStatus.READ.to_int());
+	}
 	else if(field == "marked")
+	{
 		reset_query.update_int(field, ArticleStatus.UNMARKED.to_int());
+	}
 	m_db.simple_query(reset_query.to_string());
 
 
@@ -294,9 +300,13 @@ public void updateArticlesByID(Gee.List<string> ids, string field)
 	var update_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
 
 	if(field == "unread")
+	{
 		update_query.update_int(field, ArticleStatus.UNREAD.to_int());
+	}
 	else if(field == "marked")
+	{
 		update_query.update_int(field, ArticleStatus.MARKED.to_int());
+	}
 
 	update_query.where_equal_param("articleID", "$ARTICLEID");
 
@@ -372,10 +382,14 @@ public void update_articles(Gee.List<Article> articles)
 		var marked = ActionCache.get_default().checkStarred(a.getArticleID(), a.getMarked());
 
 		if(unread != ArticleStatus.READ && unread != ArticleStatus.UNREAD)
+		{
 			Logger.warning(@"DataBase.update_articles: writing invalid unread status $unread for article " + a.getArticleID());
+		}
 
 		if(marked != ArticleStatus.MARKED && marked != ArticleStatus.UNMARKED)
+		{
 			Logger.warning(@"DataBase.update_articles: writing invalid marked status $marked for article " + a.getArticleID());
+		}
 
 		stmt.bind_int (unread_position, unread);
 		stmt.bind_int (marked_position, marked);
@@ -447,7 +461,9 @@ public void write_articles(Gee.List<Article> articles)
 		// if article time is in the future
 		var now = new GLib.DateTime.now_local();
 		if(article.getDate().compare(now) == 1)
+		{
 			article.SetDate(now);
+		}
 
 		int? weeks = ((DropArticles)Settings.general().get_enum("drop-articles-after")).to_weeks();
 		if(weeks != null && article.getDate().compare(now.add_weeks(-(int)weeks)) == -1)
@@ -649,7 +665,9 @@ public void move_feed(string feedID, string currentCatID, string? newCatID = nul
 	categories.remove(currentCatID);
 
 	if(newCatID != null)
+	{
 		categories.add(newCatID);
+	}
 
 	string catString = StringUtils.join(categories, ",");
 

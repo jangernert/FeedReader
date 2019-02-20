@@ -69,7 +69,9 @@ private bool IconLeave()
 private bool IconClicked(Gdk.EventButton event)
 {
 	if(event.button != 1)
+	{
 		return false;
+	}
 
 	switch(event.type)
 	{
@@ -93,7 +95,9 @@ private Cairo.Surface drawIcon(bool light = false)
 	color.parse(Constants.COLORS[m_color]);
 	double lighten = 1.0;
 	if(light)
+	{
 		lighten = 0.7;
+	}
 
 	var surface = this.get_window().create_similar_image_surface(0, size, size, 0);
 	Cairo.Context context = new Cairo.Context(surface);

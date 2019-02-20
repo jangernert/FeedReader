@@ -292,10 +292,13 @@ public Stacktrace (GLib.ProcessSignal sig = GLib.ProcessSignal.TTOU) {
 	this.sig = sig;
 	// The stacktrace is used likely to understand the inner
 	// working of the app so we displays everything.
-	if (is_custom) {
+	if (is_custom)
+	{
 		hide_installed_libraries = false;
 		error_background = Color.BLUE;
-	} else {
+	}
+	else
+	{
 		error_background = default_error_background;
 		highlight_color = default_highlight_color;
 	}
@@ -364,7 +367,9 @@ public static void register_handlers () {
 	Process.@signal (ProcessSignal.SEGV, handler);
 	Process.@signal (ProcessSignal.TRAP, handler);
 	if (critical_handling != CriticalHandler.IGNORE)
+	{
 		Process.@signal (ProcessSignal.ABRT, handler);
+	}
 }
 
 /**
@@ -389,12 +394,16 @@ public static CriticalHandler critical_handling  { get; set; default = CriticalH
 
 private static void handler (int sig) {
 	if( !enabled)
+	{
 		return;
+	}
 	Stacktrace stack = new Stacktrace ((ProcessSignal) sig);
 	stack.print ();
 	if (sig != ProcessSignal.TRAP ||
 	    (sig == ProcessSignal.TRAP && critical_handling == CriticalHandler.CRASH))
+	{
 		Process.exit (1);
+	}
 }
 
 }

@@ -213,17 +213,25 @@ public override LoginResponse login()
 public override void setArticleIsRead(string articleIDs, ArticleStatus read)
 {
 	if(read == ArticleStatus.READ)
+	{
 		m_api.edidTag(articleIDs, "user/-/state/com.google/read");
+	}
 	else
+	{
 		m_api.edidTag(articleIDs, "user/-/state/com.google/read", false);
+	}
 }
 
 public override void setArticleIsMarked(string articleID, ArticleStatus marked)
 {
 	if(marked == ArticleStatus.MARKED)
+	{
 		m_api.edidTag(articleID, "user/-/state/com.google/starred");
+	}
 	else
+	{
 		m_api.edidTag(articleID, "user/-/state/com.google/starred", false);
+	}
 }
 
 public override bool alwaysSetReadByID()
@@ -305,7 +313,9 @@ public override bool addFeed(string feedURL, string? catID, string? newCatName, 
 	}
 
 	if(!success)
+	{
 		errmsg = @"The old reader could not add $feedURL";
+	}
 
 	return success;
 }
@@ -375,10 +385,14 @@ public override bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> ca
 	if(m_api.getFeeds(feeds))
 	{
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return false;
+		}
 
 		if(m_api.getCategoriesAndTags(feeds, categories, tags))
+		{
 			return true;
+		}
 	}
 
 	return false;
@@ -404,7 +418,9 @@ public override void getArticles(int count, ArticleStatus whatToGet, DateTime? s
 		while(left > 0)
 		{
 			if(cancellable != null && cancellable.is_cancelled())
+			{
 				return;
+			}
 
 			if(left > 1000)
 			{
@@ -430,7 +446,9 @@ public override void getArticles(int count, ArticleStatus whatToGet, DateTime? s
 	while(left > 0)
 	{
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return;
+		}
 
 		if(left > 1000)
 		{

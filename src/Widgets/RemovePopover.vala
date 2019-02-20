@@ -84,7 +84,9 @@ private void removeTag()
 	ulong eventID = notification.dismissed.connect(() => {
 			var tag = DataBase.readOnly().read_tag(m_id);
 			if(tag != null)
-				FeedReaderBackend.get_default().deleteTag(tag);
+			{
+			        FeedReaderBackend.get_default().deleteTag(tag);
+			}
 		});
 	notification.action.connect(() => {
 			notification.disconnect(eventID);

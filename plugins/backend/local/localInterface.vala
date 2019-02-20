@@ -150,18 +150,18 @@ public override async void postLoginAction()
 {
 	SourceFunc callback = postLoginAction.callback;
 	new GLib.Thread<void*>(null, () => {
-		var children = m_feedlist.get_children();
-		foreach(var r in children)
-		{
-			var row = r as SuggestedFeedRow;
-			if(row.checked())
+			var children = m_feedlist.get_children();
+			foreach(var r in children)
 			{
-				FeedReaderBackend.get_default().addFeed(row.getURL(), row.getCategory(), false);
+			        var row = r as SuggestedFeedRow;
+			        if(row.checked())
+			        {
+			                FeedReaderBackend.get_default().addFeed(row.getURL(), row.getCategory(), false);
+				}
 			}
-		}
-		Idle.add((owned) callback);
-		return null;
-	});
+			Idle.add((owned) callback);
+			return null;
+		});
 	yield;
 }
 
@@ -177,7 +177,9 @@ private int sortFunc(Gtk.ListBoxRow row1, Gtk.ListBoxRow row2)
 	string name2 = r2.getName();
 
 	if(cat1 != cat2)
+	{
 		return cat1.collate(cat2);
+	}
 
 	return name1.collate(name2);
 }
@@ -207,7 +209,9 @@ private void headerFunc(Gtk.ListBoxRow row, Gtk.ListBoxRow? before)
 	string cat2 = r2.getCategory();
 
 	if(cat1 != cat2)
+	{
 		row.set_header(box);
+	}
 }
 
 
@@ -342,7 +346,9 @@ public override string createTag(string caption)
 
 	var db = DataBase.readOnly();
 	if(!db.isTableEmpty("tags"))
+	{
 		tagID = (int.parse(db.getMaxID("tags", "tagID")) + 1).to_string();
+	}
 
 	Logger.info("createTag: ID = " + tagID);
 	return tagID;
@@ -385,7 +391,8 @@ public override bool addFeed(string feedURL, string? catID, string? newCatName, 
 
 	if(feed != null)
 	{
-		if(!db.feed_exists(feed.getURL())) {
+		if(!db.feed_exists(feed.getURL()))
+		{
 			db.write_feeds(ListUtils.single(feed));
 			return true;
 		}
@@ -410,12 +417,16 @@ public override void addFeeds(Gee.List<Feed> feeds)
 		if(feed != null)
 		{
 			if(feed.getTitle() != "No Title")
+			{
 				feed.setTitle(f.getTitle());
+			}
 
 			finishedFeeds.add(feed);
 		}
 		else
+		{
 			Logger.error("Couldn't add Feed: " + f.getXmlUrl());
+		}
 	}
 
 	foreach(var feed in finishedFeeds)
@@ -500,7 +511,9 @@ public override void getArticles(int count, ArticleStatus whatToGet, DateTime? s
 	{
 		var threads = new ThreadPool<Feed>.with_owned_data((feed) => {
 				if(cancellable != null && cancellable.is_cancelled())
-					return;
+				{
+				        return;
+				}
 
 				Logger.debug("getArticles for feed: " + feed.getTitle());
 				string url = feed.getXmlUrl().escape("");
@@ -563,7 +576,9 @@ public override void getArticles(int count, ArticleStatus whatToGet, DateTime? s
 				        else
 				        {
 				                if (item.pub_date != null)
-							Logger.warning(@"RFC 822 date parser failed to parse $(item.pub_date). Falling back to DateTime.now()");
+				                {
+				                        Logger.warning(@"RFC 822 date parser failed to parse $(item.pub_date). Falling back to DateTime.now()");
+						}
 				                date = new DateTime.now_local();
 					}
 
@@ -571,7 +586,9 @@ public override void getArticles(int count, ArticleStatus whatToGet, DateTime? s
 				        string? content = m_utils.convert(item.description, locale);
 				        //Logger.info("Converted to: " + item.description);
 				        if(content == null)
-						content = _("Nothing to read here.");
+				        {
+				                content = _("Nothing to read here.");
+					}
 
 				        var enclosures = new Gee.ArrayList<Enclosure>();
 
@@ -583,7 +600,9 @@ public override void getArticles(int count, ArticleStatus whatToGet, DateTime? s
 
 				        string articleURL = item.link;
 				        if(articleURL.has_prefix("/"))
-						articleURL = feed.getURL() + articleURL.substring(1);
+				        {
+				                articleURL = feed.getURL() + articleURL.substring(1);
+					}
 
 				        var article = new Article(
 						articleID,

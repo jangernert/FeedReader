@@ -72,7 +72,9 @@ public Feed? downloadFeed(Soup.Session session, string feed_url, string feedID, 
 
 	if(doc.link != null
 	   && doc.link != "")
+	{
 		url = doc.link;
+	}
 
 	errmsg = "";
 	return new Feed(
@@ -88,10 +90,14 @@ public Feed? downloadFeed(Soup.Session session, string feed_url, string feedID, 
 public string? convert(string? text, string? locale)
 {
 	if(text == null)
+	{
 		return null;
+	}
 
 	if(locale == null)
+	{
 		return text;
+	}
 
 	try
 	{

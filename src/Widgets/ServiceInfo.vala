@@ -76,7 +76,9 @@ public void refresh()
 			m_label.set_label(user_name);
 			m_stack.set_visible_child_name("info");
 			if(server != "none")
+			{
 				this.set_tooltip_text(Utils.shortenURL(server));
+			}
 		}
 	}
 

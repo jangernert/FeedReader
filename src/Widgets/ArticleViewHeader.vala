@@ -194,7 +194,9 @@ public void setOffline()
 	m_share_button.sensitive = false;
 	if(Utils.canManipulateContent()
 	   && FeedReaderBackend.get_default().supportTags())
+	{
 		m_tag_button.sensitive = false;
+	}
 }
 
 public void setOnline()
@@ -204,7 +206,9 @@ public void setOnline()
 		m_share_button.sensitive = true;
 		if(Utils.canManipulateContent()
 		   && FeedReaderBackend.get_default().supportTags())
+		{
 			m_tag_button.sensitive = true;
+		}
 	}
 }
 
@@ -217,7 +221,9 @@ public void showMediaButton(bool show)
 public void refreshSahrePopover()
 {
 	if(m_sharePopover == null)
+	{
 		return;
+	}
 
 	m_sharePopover.refreshList();
 }

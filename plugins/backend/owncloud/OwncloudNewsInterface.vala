@@ -387,10 +387,14 @@ public override bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> ca
 	if(m_api.getFeeds(feeds))
 	{
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			return false;
+		}
 
 		if(m_api.getCategories(categories, feeds))
+		{
 			return true;
+		}
 	}
 
 	return false;
@@ -422,7 +426,9 @@ public override void getArticles(int count, ArticleStatus whatToGet, DateTime? s
 	if(feedID != null)
 	{
 		if(isTagID == true)
+		{
 			return;
+		}
 
 		id = int.parse(feedID);
 		type = OwncloudNewsAPI.OwnCloudType.FEED;
@@ -431,9 +437,13 @@ public override void getArticles(int count, ArticleStatus whatToGet, DateTime? s
 	var articles = new Gee.LinkedList<Article>();
 
 	if(count == -1)
+	{
 		m_api.getNewArticles(articles, DataBase.readOnly().getLastModified(), type, id);
+	}
 	else
+	{
 		m_api.getArticles(articles, 0, -1, read, type, id);
+	}
 
 	writeArticles(articles);
 }

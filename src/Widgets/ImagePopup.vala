@@ -131,7 +131,9 @@ public imagePopup(string imagePath, string? url, Gtk.Window parent, double img_h
 	m_zoomButton.add(new Gtk.Image.from_icon_name("zoom-in-symbolic", Gtk.IconSize.BUTTON));
 	m_zoomButton.toggled.connect(() => {
 			if(!m_zoomButton.get_active())
-				m_image.notify["scale"].disconnect(onImageScrolled);
+			{
+			        m_image.notify["scale"].disconnect(onImageScrolled);
+			}
 			if(m_zoomButton.get_active())
 			{
 			        m_scale.set_value(m_image.scale);
@@ -169,7 +171,9 @@ public imagePopup(string imagePath, string? url, Gtk.Window parent, double img_h
 		});
 	headerEvents.leave_notify_event.connect((event) => {
 			if(event.detail != Gdk.NotifyType.VIRTUAL && event.mode != Gdk.CrossingMode.NORMAL)
-				return false;
+			{
+			        return false;
+			}
 
 			m_hoverHeader = false;
 			return false;
@@ -351,10 +355,14 @@ private bool onEnter(Gdk.EventCrossing event)
 private bool onLeave(Gdk.EventCrossing event)
 {
 	if(event.detail != Gdk.NotifyType.VIRTUAL && event.mode != Gdk.CrossingMode.NORMAL)
+	{
 		return false;
+	}
 
 	if(m_dragWindow)
+	{
 		return false;
+	}
 
 	m_hoverImage = false;
 	m_revealer.set_reveal_child(false);
@@ -364,7 +372,9 @@ private bool onLeave(Gdk.EventCrossing event)
 private bool updateDragMomentum()
 {
 	if(!m_inDrag)
+	{
 		return false;
+	}
 
 	for(int i = 9; i > 0; --i)
 	{
@@ -383,7 +393,9 @@ private bool updateDragMomentum()
 private bool ScrollDragRelease()
 {
 	if(m_inDrag)
+	{
 		return true;
+	}
 
 	Gtk.Allocation allocation;
 	this.get_allocation(out allocation);
@@ -426,7 +438,9 @@ private bool ScrollDragRelease()
 		return false;
 	}
 	else
+	{
 		return true;
+	}
 }
 
 private void closeWindow()

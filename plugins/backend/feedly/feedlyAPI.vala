@@ -40,7 +40,9 @@ public LoginResponse login()
 	Logger.debug("feedly backend: login");
 
 	if(!Utils.ping("http://feedly.com/"))
+	{
 		return LoginResponse.NO_CONNECTION;
+	}
 
 	if(m_utils.getRefreshToken() == "")
 	{
@@ -71,7 +73,9 @@ private bool getUserID()
 	var response = m_connection.send_get_request_to_feedly ("/v3/profile/");
 
 	if(response.status != 200)
+	{
 		return false;
+	}
 
 	var parser = new Json.Parser();
 	try
@@ -92,23 +96,41 @@ private bool getUserID()
 		Logger.info("feedly: userID = " + m_userID);
 
 		if(root.has_member("email"))
+		{
 			m_utils.setEmail(root.get_string_member("email"));
+		}
 		else if(root.has_member("givenName"))
+		{
 			m_utils.setEmail(root.get_string_member("givenName"));
+		}
 		else if(root.has_member("fullName"))
+		{
 			m_utils.setEmail(root.get_string_member("fullName"));
+		}
 		else if(root.has_member("google"))
+		{
 			m_utils.setEmail(root.get_string_member("google"));
+		}
 		else if(root.has_member("reader"))
+		{
 			m_utils.setEmail(root.get_string_member("reader"));
+		}
 		else if(root.has_member("twitterUserId"))
+		{
 			m_utils.setEmail(root.get_string_member("twitterUserId"));
+		}
 		else if(root.has_member("facebookUserId"))
+		{
 			m_utils.setEmail(root.get_string_member("facebookUserId"));
+		}
 		else if(root.has_member("wordPressId"))
+		{
 			m_utils.setEmail(root.get_string_member("wordPressId"));
+		}
 		else if(root.has_member("windowsLiveId"))
+		{
 			m_utils.setEmail(root.get_string_member("windowsLiveId"));
+		}
 
 		return true;
 	}
@@ -121,7 +143,9 @@ private ConnectionError tokenStillValid()
 	var response = m_connection.send_get_request_to_feedly ("/v3/profile/");
 
 	if(response.status != 200)
+	{
 		return ConnectionError.NO_RESPONSE;
+	}
 
 	var parser = new Json.Parser ();
 	try
@@ -150,7 +174,9 @@ public bool getCategories(Gee.List<Category> categories)
 	var response = m_connection.send_get_request_to_feedly ("/v3/categories/");
 
 	if(response.status != 200)
+	{
 		return false;
+	}
 
 	var parser = new Json.Parser();
 	try
@@ -172,7 +198,9 @@ public bool getCategories(Gee.List<Category> categories)
 
 		if(categorieID.has_suffix("global.all")
 		   || categorieID.has_suffix("global.uncategorized"))
+		{
 			continue;
+		}
 
 		categories.add(
 			new Category (
@@ -195,7 +223,9 @@ public bool getFeeds(Gee.List<Feed> feeds)
 	var response = m_connection.send_get_request_to_feedly("/v3/subscriptions/");
 
 	if(response.status != 200)
+	{
 		return false;
+	}
 
 	var parser = new Json.Parser();
 	try
@@ -218,9 +248,13 @@ public bool getFeeds(Gee.List<Feed> feeds)
 
 		string? icon_url = null;
 		if(object.has_member("iconUrl"))
+		{
 			icon_url = object.get_string_member("iconUrl");
+		}
 		else if(object.has_member("visualUrl"))
+		{
 			icon_url = object.get_string_member("visualUrl");
+		}
 
 		uint catCount = object.get_array_member("categories").get_length();
 
@@ -231,7 +265,9 @@ public bool getFeeds(Gee.List<Feed> feeds)
 
 			if(categoryID.has_suffix("global.all")
 			   || categoryID.has_suffix("global.uncategorized"))
+			{
 				continue;
+			}
 
 			categories.add(categoryID);
 		}
@@ -257,7 +293,9 @@ public bool getTags(Gee.List<Tag> tags)
 	var response = m_connection.send_get_request_to_feedly("/v3/tags/");
 
 	if(response.status != 200)
+	{
 		return false;
+	}
 
 	var parser = new Json.Parser();
 	try{
@@ -296,16 +334,24 @@ public string? getArticles(Gee.List<Article> articles, int count, string? contin
 	string marked_tag = "user/" + m_userID + "/tag/global.saved";
 
 	if(whatToGet == ArticleStatus.MARKED)
+	{
 		steamID = marked_tag;
+	}
 	else if(whatToGet == ArticleStatus.UNREAD)
+	{
 		onlyUnread = "true";
+	}
 
 
 	if(tagID != "" && whatToGet == ArticleStatus.ALL)
+	{
 		steamID = tagID;
+	}
 
 	if(feed_id != "" && whatToGet == ArticleStatus.ALL)
+	{
 		steamID = feed_id;
+	}
 
 	var parser = new Json.Parser();
 
@@ -313,7 +359,9 @@ public string? getArticles(Gee.List<Article> articles, int count, string? contin
 	var entry_id_response = m_connection.send_get_request_to_feedly(streamCall);
 
 	if(entry_id_response.status != 200)
+	{
 		return null;
+	}
 
 	try
 	{
@@ -327,14 +375,18 @@ public string? getArticles(Gee.List<Article> articles, int count, string? contin
 
 	var root = parser.get_root().get_object();
 	if(!root.has_member("continuation"))
+	{
 		return null;
+	}
 
 	string cont = root.get_string_member("continuation");
 
 	var response = m_connection.send_post_string_request_to_feedly("/v3/entries/.mget", entry_id_response.data, "application/json");
 
 	if(response.status != 200)
+	{
 		return null;
+	}
 
 	try
 	{
@@ -385,11 +437,17 @@ public string? getArticles(Gee.List<Article> articles, int count, string? contin
 			{
 				var tag = tag_array.get_object_element(j).get_string_member("id");
 				if(tag == marked_tag)
+				{
 					marked = ArticleStatus.MARKED;
+				}
 				else if(tag.contains("global."))
+				{
 					continue;
+				}
 				else
+				{
 					tags.add(tag);
+				}
 			}
 		}
 
@@ -400,7 +458,9 @@ public string? getArticles(Gee.List<Article> articles, int count, string? contin
 
 			uint mediaCount = 0;
 			if(attachments != null)
+			{
 				mediaCount = attachments.get_length();
+			}
 
 			for(int j = 0; j < mediaCount; ++j)
 			{
@@ -440,7 +500,9 @@ public void getUnreadCounts()
 	var response = m_connection.send_get_request_to_feedly ("/v3/markers/counts");
 
 	if(response.status != 200)
+	{
 		return;
+	}
 
 	var parser = new Json.Parser ();
 	try
@@ -494,9 +556,13 @@ public void mark_as_read(string ids_string, string type, ArticleStatus read)
 	Json.Object object = new Json.Object();
 
 	if(read == ArticleStatus.READ)
+	{
 		object.set_string_member ("action", "markAsRead");
+	}
 	else if(read == ArticleStatus.UNREAD)
+	{
 		object.set_string_member ("action", "keepUnread");
+	}
 	object.set_string_member ("type", type);
 
 	Json.Array ids = new Json.Array();

@@ -68,7 +68,9 @@ private void trackUpper()
 	}
 
 	if(GLib.Math.fabs(vadjustment.upper - m_upperCache) > 2.0)
+	{
 		checkScrolledDown();
+	}
 
 	m_upperCache = vadjustment.upper;
 	m_valueCache = vadjustment.value;
@@ -77,9 +79,13 @@ private void trackUpper()
 private void trackValue()
 {
 	if(vadjustment.value > (m_valueCache + m_valueThreshold))
+	{
 		valueChanged(ScrollDirection.DOWN);
+	}
 	else if(vadjustment.value < (m_valueCache - m_valueThreshold))
+	{
 		valueChanged(ScrollDirection.UP);
+	}
 
 	checkScrolledTop();
 	checkScrolledDown();
@@ -99,7 +105,9 @@ private void checkScrolledTop()
 		GLib.Timeout.add(m_scrollCooldown, () => {
 				m_scrolledTopOnCooldown = false;
 				if(vadjustment.value < 2.0)
-					scrolledTop();
+				{
+				        scrolledTop();
+				}
 				return false;
 			});
 	}
@@ -190,9 +198,13 @@ public void scrollToPos(double pos, bool animate = true)
 		Logger.debug(@"ArticleListScroll.scrollToPos: %f".printf(pos+leftOverScroll));
 
 		if(pos == -1)
+		{
 			m_transitionDiff = (vadjustment.upper - vadjustment.page_size - vadjustment.value);
+		}
 		else
+		{
 			m_transitionDiff = (pos-this.vadjustment.value)+leftOverScroll;
+		}
 
 		m_transitionStartValue = this.vadjustment.value;
 		Logger.debug(@"ArticleListScroll.scrollDiff: startValue $m_transitionStartValue");
@@ -212,9 +224,13 @@ public double getScroll()
 private void setScroll(double pos)
 {
 	if(pos == -1)
+	{
 		this.vadjustment.value = this.vadjustment.upper - this.vadjustment.page_size;
+	}
 	else
+	{
 		this.vadjustment.value = pos;
+	}
 }
 
 public double getPageSize()
@@ -232,11 +248,15 @@ public int isVisible(Gtk.ListBoxRow row, int additionalRows = 0)
 
 	// row is (additionalRows * rowHeight) above the current viewport
 	if(y < -( (1+additionalRows) * rowHeight))
+	{
 		return -1;
+	}
 
 	// row is (additionalRows * rowHeight) below the current viewport
 	if(y > additionalRows * rowHeight + scrollHeight)
+	{
 		return 1;
+	}
 
 	// row is visible
 	return 0;
@@ -254,7 +274,9 @@ private bool scrollTick(Gtk.Widget widget, Gdk.FrameClock frame_clock)
 	double t = 1.0;
 
 	if(now < this.m_endTime)
+	{
 		t = (now - m_startTime) / (double)(m_endTime - m_startTime);
+	}
 
 	t = easeOutCubic(t);
 

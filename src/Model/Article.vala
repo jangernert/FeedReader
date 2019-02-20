@@ -198,14 +198,20 @@ public string getDateNice(bool addTime = false)
 		}
 	}
 	else
+	{
 		formats.add("%Y-%m-%d");
+	}
 
 	if(addTime)
 	{
 		if(m_clock_12_hour)
+		{
 			formats.add("%l:%M %p");
+		}
 		else
+		{
 			formats.add("%H:%M");
+		}
 	}
 
 	string format = StringUtils.join(formats, ", ");
@@ -250,13 +256,17 @@ public void setTags(Gee.List<string> tags)
 public void addTag(string tagID)
 {
 	if(!m_tags.contains(tagID))
+	{
 		m_tags.add(tagID);
+	}
 }
 
 public void removeTag(string tagID)
 {
 	if(m_tags.contains(tagID))
+	{
 		m_tags.remove(tagID);
+	}
 }
 
 public unowned Gee.List<Enclosure> getEnclosures()
@@ -272,7 +282,9 @@ public void setImages(Gee.List<Enclosure> enclosures)
 public void addEnclosure(Enclosure enc)
 {
 	if(!m_enclosures.contains(enc))
+	{
 		m_enclosures.add(enc);
+	}
 }
 
 public bool haveMedia()

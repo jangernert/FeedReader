@@ -67,7 +67,9 @@ public struct ResourceMetadata
 			catch (KeyFileError.KEY_NOT_FOUND e) {}
 			catch (KeyFileError.GROUP_NOT_FOUND e) {}
 			if(expires != null)
+			{
 				this.expires = new DateTime.from_unix_utc(expires);
+			}
 		}
 		catch (KeyFileError e)
 		{
@@ -115,11 +117,17 @@ public struct ResourceMetadata
 		{
 			var config = new KeyFile();
 			if(this.etag != null)
+			{
 				config.set_string(CACHE_GROUP, ETAG_KEY, this.etag);
+			}
 			if(this.last_modified != null)
+			{
 				config.set_string(CACHE_GROUP, LAST_MODIFIED_KEY, this.last_modified);
+			}
 			if(this.expires != null)
+			{
 				config.set_int64(CACHE_GROUP, EXPIRES_KEY, this.expires.to_unix());
+			}
 			var data = config.to_data();
 			try
 			{
@@ -143,10 +151,14 @@ public struct ResourceMetadata
 	public bool is_expired()
 	{
 		if(expires == null)
+		{
 			return true;
+		}
 
 		if(expires.compare(new DateTime.now_utc()) == 1)
+		{
 			return false;
+		}
 
 		return true;
 	}

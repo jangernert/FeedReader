@@ -186,7 +186,9 @@ public bool logout(string id)
 	foreach(string i in array)
 	{
 		if(i != id)
+		{
 			array2 += i;
+		}
 	}
 	Settings.share("wallabag").set_strv("account-ids", array2);
 	deleteAccount(id);
@@ -269,7 +271,9 @@ private void deletePassword(string id)
 			        removed = Secret.password_clearv.end(async_res);
 
 			        if(!removed)
-					Logger.error(@"WallabagAPI: could not delete password of account $id");
+			        {
+			                Logger.error(@"WallabagAPI: could not delete password of account $id");
+				}
 			}
 			catch(GLib.Error e)
 			{

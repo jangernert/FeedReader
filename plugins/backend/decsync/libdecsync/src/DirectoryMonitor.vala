@@ -37,7 +37,8 @@ private DirectoryMonitor.withPath(File dir, string path) throws GLib.Error
 	var currentDir = File.new_for_path(dir.get_path() + path);
 	mMonitor = currentDir.monitor_directory(FileMonitorFlags.NONE);
 	mMonitor.changed.connect((file, otherFile, event) => {
-			if (file.get_path() != mDir.get_path() + path) {
+			if (file.get_path() != mDir.get_path() + path)
+			{
 			        onEvent(path + "/" + file.get_basename(), event);
 			}
 		});
@@ -46,7 +47,8 @@ private DirectoryMonitor.withPath(File dir, string path) throws GLib.Error
 	var enumerator = currentDir.enumerate_children("standard::*", FileQueryInfoFlags.NONE);
 	FileInfo info = null;
 	while (((info = enumerator.next_file(null)) != null)) {
-		if (info.get_file_type() == FileType.DIRECTORY) {
+		if (info.get_file_type() == FileType.DIRECTORY)
+		{
 			var childMonitor = new DirectoryMonitor.withPath(mDir, path + "/" + info.get_name());
 			childMonitor.changed.connect((path) => {
 					changed(path);
@@ -62,7 +64,8 @@ private void onEvent(string path, FileMonitorEvent event)
 	switch (event) {
 	case FileMonitorEvent.DELETED:
 		foreach (var c in mChilds) {
-			if (c.mPath == path) {
+			if (c.mPath == path)
+			{
 				mChilds.remove(c);
 				break;
 			}
@@ -71,7 +74,8 @@ private void onEvent(string path, FileMonitorEvent event)
 	case FileMonitorEvent.CREATED:
 	case FileMonitorEvent.CHANGED:
 		var file = File.new_for_path(mDir.get_path() + path);
-		if (file.query_file_type(FileQueryInfoFlags.NONE) == FileType.DIRECTORY) {
+		if (file.query_file_type(FileQueryInfoFlags.NONE) == FileType.DIRECTORY)
+		{
 			try {
 				var childMonitor = new DirectoryMonitor.withPath(mDir, path);
 				childMonitor.changed.connect((path) => {
@@ -81,7 +85,9 @@ private void onEvent(string path, FileMonitorEvent event)
 			} catch (GLib.Error e) {
 				Log.w(e.message);
 			}
-		} else {
+		}
+		else
+		{
 			changed(path);
 		}
 		break;

@@ -49,7 +49,9 @@ public feedList () {
 			{
 			        if(selected_feed.getID() == m_selectedID
 			           && m_selectedType == FeedListType.FEED)
-					return;
+			        {
+			                return;
+				}
 
 			        m_selectedID = selected_feed.getID();
 			        m_selectedType = FeedListType.FEED;
@@ -62,7 +64,9 @@ public feedList () {
 			{
 			        if(selected_categorie.getID() == m_selectedID
 			           && m_selectedType == FeedListType.CATEGORY)
-					return;
+			        {
+			                return;
+				}
 
 			        m_selectedID = selected_categorie.getID();
 			        m_selectedType = FeedListType.CATEGORY;
@@ -75,7 +79,9 @@ public feedList () {
 			{
 			        if(selected_tag.getTag().getTagID() == m_selectedID
 			           && m_selectedType == FeedListType.TAG)
-					return;
+			        {
+			                return;
+				}
 
 			        m_selectedID = selected_tag.getTag().getTagID();
 			        m_selectedType = FeedListType.TAG;
@@ -87,9 +93,13 @@ public feedList () {
 
 	m_list.key_press_event.connect((event) => {
 			if(event.keyval == Gdk.Key.Down)
-				move(true);
+			{
+			        move(true);
+			}
 			else if(event.keyval == Gdk.Key.Up)
-				move(false);
+			{
+			        move(false);
+			}
 			else if(event.keyval == Gdk.Key.Left || event.keyval == Gdk.Key.Right)
 			{
 			        CategoryRow selected_categorie = m_list.get_selected_row() as CategoryRow;
@@ -120,7 +130,8 @@ public void move(bool down)
 
 	var FeedListChildren = m_list.get_children();
 
-	if(!down) {
+	if(!down)
+	{
 		FeedListChildren.reverse();
 	}
 
@@ -224,7 +235,9 @@ private bool isEmpty()
 {
 	var FeedChildList = m_list.get_children();
 	if(FeedChildList == null)
+	{
 		return true;
+	}
 
 	return false;
 }
@@ -236,9 +249,13 @@ private void createFeedlist(ArticleListState state, bool defaultSettings, bool m
 
 	uint unread = 0;
 	if(state == ArticleListState.MARKED)
+	{
 		unread = DataBase.readOnly().get_marked_total();
+	}
 	else
+	{
 		unread = DataBase.readOnly().get_unread_total();
+	}
 	var allFeed = new Feed(FeedID.ALL.to_string(), _("All Articles"), "", unread);
 
 	var row_separator1 = new FeedRow(separatorFeed, "-1", 0);
@@ -304,7 +321,9 @@ private void createFeedlist(ArticleListState state, bool defaultSettings, bool m
 							});
 						feedrow.drag_failed.connect(onDragEnd);
 						if(!Settings.general().get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
+						{
 							feedrow.reveal(true, 0);
+						}
 						feedrow.activateUnreadEventbox((state == ArticleListState.MARKED) ? false : true);
 						pos++;
 					}
@@ -326,7 +345,9 @@ private void createFeedlist(ArticleListState state, bool defaultSettings, bool m
 				});
 			feedrow.drag_failed.connect(onDragEnd);
 			if(!Settings.general().get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
+			{
 				feedrow.reveal(true, 0);
+			}
 			feedrow.activateUnreadEventbox((state == ArticleListState.MARKED) ? false : true);
 		}
 	}
@@ -353,7 +374,9 @@ private void restoreSelectedRow()
 			{
 				m_list.select_row(tmpRow);
 				if(m_selectedID != selectedRow[1])
+				{
 					tmpRow.activate();
+				}
 				return;
 			}
 		}
@@ -368,7 +391,9 @@ private void restoreSelectedRow()
 			{
 				m_list.select_row(tmpRow);
 				if(m_selectedID != selectedRow[1])
+				{
 					tmpRow.activate();
+				}
 				return;
 			}
 		}
@@ -383,7 +408,9 @@ private void restoreSelectedRow()
 			{
 				m_list.select_row(tmpRow);
 				if(m_selectedID != selectedRow[1])
+				{
 					tmpRow.activate();
+				}
 				return;
 			}
 		}
@@ -427,9 +454,13 @@ private void addMasterCategory(int length, string name)
 		);
 	CategoryRow.collapse.connect((collapse, catID, selectParent) => {
 			if(collapse)
-				collapseCategorieInternal(catID, selectParent);
+			{
+			        collapseCategorieInternal(catID, selectParent);
+			}
 			else
-				expandCategorieInternal(catID);
+			{
+			        expandCategorieInternal(catID);
+			}
 		});
 	m_list.insert(CategoryRow, length+1);
 	CategoryRow.setAsRead.connect(markSelectedRead);
@@ -452,9 +483,13 @@ private void addTagCategory(int length)
 		);
 	tagrow.collapse.connect((collapse, catID, selectParent) => {
 			if(collapse)
-				collapseCategorieInternal(catID, selectParent);
+			{
+			        collapseCategorieInternal(catID, selectParent);
+			}
 			else
-				expandCategorieInternal(catID);
+			{
+			        expandCategorieInternal(catID);
+			}
 		});
 	m_list.insert(tagrow, length+2);
 	tagrow.setAsRead.connect(markSelectedRead);
@@ -532,7 +567,9 @@ private void createCategories(ref Gee.List<Feed> feeds, bool masterCat, ArticleL
 					if(m_TagsDisplayed)
 					{
 						if(level == 1)
+						{
 							parent = CategoryID.MASTER.to_string();
+						}
 						level++;
 					}
 
@@ -548,9 +585,13 @@ private void createCategories(ref Gee.List<Feed> feeds, bool masterCat, ArticleL
 					expand = false;
 					CategoryRow.collapse.connect((collapse, catID, selectParent) => {
 							if(collapse)
-								collapseCategorieInternal(catID, selectParent);
+							{
+							        collapseCategorieInternal(catID, selectParent);
+							}
 							else
-								expandCategorieInternal(catID);
+							{
+							        expandCategorieInternal(catID);
+							}
 						});
 					m_list.insert(CategoryRow, pos);
 					CategoryRow.setAsRead.connect(markSelectedRead);
@@ -559,11 +600,15 @@ private void createCategories(ref Gee.List<Feed> feeds, bool masterCat, ArticleL
 					CategoryRow.drag_begin.connect((context) => {
 							onDragBegin(context);
 							if(supportMultiLevelCategories)
-								showNewCategory();
+							{
+							        showNewCategory();
+							}
 						});
 					CategoryRow.drag_failed.connect(onDragEnd);
 					if(!Settings.general().get_boolean("feedlist-only-show-unread") || item.getUnreadCount() != 0)
+					{
 						CategoryRow.reveal(true, 0);
+					}
 					CategoryRow.activateUnreadEventbox((state == ArticleListState.MARKED) ? false : true);
 					break;
 				}
@@ -638,9 +683,13 @@ public void refreshCounters(ArticleListState state)
 					if(Settings.general().get_boolean("feedlist-only-show-unread"))
 					{
 						if(tmpFeedRow.getUnreadCount() == 0)
+						{
 							tmpFeedRow.reveal(false);
+						}
 						else if(isCategorieExpanded(tmpFeedRow.getCatID()) || Utils.onlyShowFeeds())
+						{
 							tmpFeedRow.reveal(true);
+						}
 					}
 
 
@@ -665,9 +714,13 @@ public void refreshCounters(ArticleListState state)
 					if(Settings.general().get_boolean("feedlist-only-show-unread"))
 					{
 						if(tmpCatRow.getUnreadCount() == 0)
+						{
 							tmpCatRow.reveal(false);
+						}
 						else
+						{
 							tmpCatRow.reveal(true);
+						}
 					}
 
 					break;
@@ -694,7 +747,9 @@ public void refreshCounters(ArticleListState state)
 					tmpCatRow.activateUnreadEventbox(true);
 				}
 				if(Settings.general().get_boolean("feedlist-only-show-unread") && tmpCatRow.getUnreadCount() != 0)
+				{
 					tmpCatRow.reveal(true);
+				}
 
 				break;
 			}
@@ -783,7 +838,9 @@ private void expandCategorieInternal(string catID)
 		if(tmpFeedRow != null && tmpFeedRow.getCatID() == catID)
 		{
 			if(!Settings.general().get_boolean("feedlist-only-show-unread") || tmpFeedRow.getUnreadCount() != 0)
+			{
 				tmpFeedRow.reveal(true, m_expand_collapse_time);
+			}
 		}
 		if(tmpCatRow != null && tmpCatRow.getParent() == catID)
 		{
@@ -791,7 +848,9 @@ private void expandCategorieInternal(string catID)
 			{
 				tmpCatRow.reveal(true, m_expand_collapse_time);
 				if(tmpCatRow.isExpanded())
+				{
 					expandCategorieInternal(tmpCatRow.getID());
+				}
 			}
 		}
 		if(tmpTagRow != null && catID == CategoryID.TAGS.to_string())
@@ -811,7 +870,9 @@ public void expand_collapse_category(string catID, bool expand = true)
 		{
 			if((!expand && tmpCatRow.isExpanded())
 			   ||(expand && !tmpCatRow.isExpanded()))
+			{
 				tmpCatRow.expand_collapse(false);
+			}
 		}
 	}
 }
@@ -825,7 +886,9 @@ private bool isCategorieExpanded(string catID)
 	{
 		var tmpCatRow = row as CategoryRow;
 		if(tmpCatRow != null && tmpCatRow.getID() == catID && tmpCatRow.isExpanded())
+		{
 			return true;
+		}
 	}
 
 	return false;
@@ -836,7 +899,9 @@ public string getSelectedFeed()
 {
 	FeedRow selected_row = m_list.get_selected_row() as FeedRow;
 	if(selected_row != null)
+	{
 		return selected_row.getID();
+	}
 
 	return "";
 }
@@ -925,7 +990,9 @@ private bool getCatState(string id)
 	foreach(string str in list)
 	{
 		if(id == str)
+		{
 			return true;
+		}
 	}
 
 	return false;
@@ -952,11 +1019,14 @@ public void copySelectedFeedURL(string feed_id){
 	/*
 	        Copy selected feed url to clipboard
 	 */
-	if (feed_id != "" && feed_id != null) {
+	if (feed_id != "" && feed_id != null)
+	{
 		var feed = DataBase.readOnly().read_feed(feed_id);
-		if (feed != null) {
+		if (feed != null)
+		{
 			string feed_url = feed.getXmlUrl();
-			if (feed_url != null) {
+			if (feed_url != null)
+			{
 				Gdk.Display display = MainWindow.get_default().get_display();
 				Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display(display, Gdk.SELECTION_CLIPBOARD);
 
@@ -1181,7 +1251,9 @@ private bool onDragEnd(Gdk.DragContext context, Gtk.DragResult result)
 			   && tmpFeed.getID() != FeedID.ALL.to_string())
 			{
 				if(isCategorieExpanded(tmpFeed.getCatID()))
+				{
 					tmpFeed.reveal(true);
+				}
 			}
 		}
 		else if(tmpTag != null && isCategorieExpanded(CategoryID.TAGS.to_string()))

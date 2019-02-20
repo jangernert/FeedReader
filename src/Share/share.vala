@@ -23,7 +23,9 @@ private Goa.Client? m_client = null;
 public static Share get_default()
 {
 	if(m_share == null)
+	{
 		m_share = new Share();
+	}
 
 	return m_share;
 }
@@ -127,10 +129,14 @@ public Gee.List<ShareAccount> getAccountTypes()
 			if(plugin.singleInstance())
 			{
 			        if(plugin.needSetup() && !Settings.share(pluginID).get_boolean("enabled"))
-					singleInstance = true;
+			        {
+			                singleInstance = true;
+				}
 			}
 			else
-				singleInstance = true;
+			{
+			        singleInstance = true;
+			}
 
 			if(plugin.needSetup() && !plugin.useSystemAccounts() && singleInstance)
 			{
@@ -170,7 +176,9 @@ public string generateNewID()
 		});
 
 	if(!unique)
+	{
 		return generateNewID();
+	}
 
 	return id;
 }

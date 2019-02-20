@@ -64,11 +64,13 @@ public void onEntriesUpdate(Gee.List<string> path, Gee.Collection<Decsync.Entry>
 
 private bool pathEquals(Gee.List<string> path1, Gee.List<string> path2)
 {
-	if (path1.size != path2.size) {
+	if (path1.size != path2.size)
+	{
 		return false;
 	}
 	for (var i = 0; i < path1.size; ++i) {
-		if (path1[i] != path2[i]) {
+		if (path1[i] != path2[i])
+		{
 			return false;
 		}
 	}

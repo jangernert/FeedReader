@@ -84,7 +84,9 @@ public Response postRequest(string path, string input, string type)
 	var message = new Soup.Message("POST", m_utils.getURL()+path);
 
 	if(m_settingsTweaks.get_boolean("do-not-track"))
+	{
 		message.request_headers.append("DNT", "1");
+	}
 
 	message.request_headers.append("Authorization","GoogleLogin auth=%s".printf(m_utils.getToken()));
 	message.request_headers.append("Content-Type", type);
@@ -109,7 +111,9 @@ public Response getRequest(string path)
 	message.request_headers.append("Authorization","GoogleLogin auth=%s".printf(m_utils.getToken()));
 
 	if(m_settingsTweaks.get_boolean("do-not-track"))
+	{
 		message.request_headers.append("DNT", "1");
+	}
 
 	m_session.send_message(message);
 
@@ -138,7 +142,9 @@ public freshMessage()
 public void add(string parameter, string val)
 {
 	if(request != "")
+	{
 		request += "&";
+	}
 
 	request += parameter;
 	request += "=";

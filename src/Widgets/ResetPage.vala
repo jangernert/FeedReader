@@ -88,7 +88,9 @@ private void resetAllData()
 		}
 
 		if(!m_reset)
+		{
 			return;
+		}
 	}
 
 	// set "currently-updating" ourself to prevent the backend to start sync

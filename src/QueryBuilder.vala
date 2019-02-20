@@ -126,9 +126,12 @@ requires (m_type == QueryType.UPDATE
           || m_type == QueryType.SELECT
           || m_type == QueryType.DELETE)
 {
-	if (values.size == 0) {
+	if (values.size == 0)
+	{
 		m_conditions.add("1 <> 1");
-	} else {
+	}
+	else
+	{
 		var compound_values = new GLib.StringBuilder();
 		foreach(string value in values)
 		{
@@ -170,9 +173,13 @@ public string to_string()
 		query.append("INSERT ");
 
 		if(m_type == QueryType.INSERT_OR_IGNORE)
+		{
 			query.append("OR IGNORE ");
+		}
 		else if(m_type == QueryType.INSERT_OR_REPLACE)
+		{
 			query.append("OR REPLACE ");
+		}
 
 		query.append_printf("INTO %s (", m_table);
 		StringUtils.stringbuilder_append_join(query, m_fields, ", ");
@@ -188,7 +195,9 @@ public string to_string()
 		for(int i = 0; i < m_fields.size; i++)
 		{
 			if (i > 0)
+			{
 				query.append(", ");
+			}
 
 			query.append(m_fields.get(i));
 			query.append(" = ");
@@ -213,7 +222,8 @@ public string to_string()
 
 		append_conditions(query);
 
-		if (m_order_by_column != null) {
+		if (m_order_by_column != null)
+		{
 			query.append_printf(
 				" ORDER BY %s COLLATE NOCASE %s",
 				m_order_by_column,
@@ -221,10 +231,14 @@ public string to_string()
 		}
 
 		if (m_limit != null)
+		{
 			query.append_printf(" LIMIT %u", m_limit);
+		}
 
 		if (m_offset != null)
+		{
 			query.append_printf(" OFFSET %u", m_offset);
+		}
 		break;
 	}
 
@@ -234,7 +248,9 @@ public string to_string()
 private void append_conditions(StringBuilder query)
 {
 	if(m_conditions.size == 0)
+	{
 		return;
+	}
 
 	query.append(" WHERE ");
 	StringUtils.stringbuilder_append_join(query, m_conditions, " AND ");

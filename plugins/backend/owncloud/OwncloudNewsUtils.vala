@@ -22,9 +22,13 @@ Password m_htaccess_password;
 public OwncloudNewsUtils(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 {
 	if(settings_backend != null)
+	{
 		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.owncloud", settings_backend);
+	}
 	else
+	{
 		m_settings = new GLib.Settings("org.gnome.feedreader.owncloud");
+	}
 
 	var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 	                                  "URL", Secret.SchemaAttributeType.STRING,
@@ -52,15 +56,22 @@ public OwncloudNewsUtils(GLib.SettingsBackend? settings_backend, Secret.Collecti
 public string getURL()
 {
 	string tmp_url = Utils.gsettingReadString(m_settings, "url");
-	if(tmp_url != "") {
+	if(tmp_url != "")
+	{
 		if(!tmp_url.has_suffix("/"))
+		{
 			tmp_url = tmp_url + "/";
+		}
 
 		if(!tmp_url.has_suffix("/index.php/apps/news/api/v1-2/"))
+		{
 			tmp_url = tmp_url + "index.php/apps/news/api/v1-2/";
+		}
 
 		if(!tmp_url.has_prefix("http://") && !tmp_url.has_prefix("https://"))
+		{
 			tmp_url = "https://" + tmp_url;
+		}
 	}
 
 	Logger.debug("Nextcloud URL: " + tmp_url);

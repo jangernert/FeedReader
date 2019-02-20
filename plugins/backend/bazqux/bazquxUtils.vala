@@ -25,9 +25,13 @@ private Password m_password;
 public bazquxUtils(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 {
 	if(settings_backend != null)
+	{
 		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.bazqux", settings_backend);
+	}
 	else
+	{
 		m_settings = new GLib.Settings("org.gnome.feedreader.bazqux");
+	}
 
 	var password_schema = new Secret.Schema ("org.gnome.feedreader.bazqux", Secret.SchemaFlags.NONE,
 	                                         "type", Secret.SchemaAttributeType.STRING,

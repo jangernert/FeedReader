@@ -87,9 +87,13 @@ private bool populate()
 	m_label.set_line_wrap(true);
 	m_label.set_lines(2);
 	if(m_article.getUnread() == ArticleStatus.UNREAD)
+	{
 		m_label.get_style_context().add_class("headline-unread");
+	}
 	else
+	{
 		m_label.get_style_context().add_class("headline-read");
+	}
 	m_label.set_ellipsize(Pango.EllipsizeMode.END);
 	m_label.set_alignment(0.0f, 0.2f);
 	m_label.set_tooltip_text(m_article.getTitle());
@@ -117,11 +121,17 @@ private bool populate()
 	m_unread_eventbox.add(m_unread_stack);
 	m_unread_eventbox.show_all();
 	if(m_article.getUnread() == ArticleStatus.UNREAD)
+	{
 		m_unread_stack.set_visible_child_name("unread");
+	}
 	else if(m_article.getUnread() == ArticleStatus.READ)
+	{
 		m_unread_stack.set_visible_child_name("empty");
+	}
 	else
+	{
 		Logger.warning("ArticleRow: id %s - unread status undefined %i".printf(m_article.getArticleID(), m_article.getUnread()));
+	}
 
 	m_unread_eventbox.enter_notify_event.connect(unreadIconEnter);
 	m_unread_eventbox.leave_notify_event.connect(unreadIconLeave);
@@ -136,11 +146,17 @@ private bool populate()
 	m_marked_eventbox.add(m_marked_stack);
 	m_marked_eventbox.show_all();
 	if(m_article.getMarked() == ArticleStatus.MARKED)
+	{
 		m_marked_stack.set_visible_child_name("marked");
+	}
 	else if(m_article.getMarked() == ArticleStatus.UNMARKED)
+	{
 		m_marked_stack.set_visible_child_name("empty");
+	}
 	else
+	{
 		Logger.warning("ArticleRow: id %s - unread status undefined %i".printf(m_article.getArticleID(), m_article.getMarked()));
+	}
 
 	m_marked_eventbox.enter_notify_event.connect(markedIconEnter);
 	m_marked_eventbox.leave_notify_event.connect(markedIconLeave);
@@ -163,7 +179,9 @@ private bool populate()
 			short_preview = short_preview.strip();
 		}
 		else
+		{
 			short_preview = m_article.getPreview();
+		}
 	}
 
 
@@ -274,7 +292,9 @@ private Gtk.Image createFavIcon()
 	favicon.get_surface.begin((obj, res) => {
 			var surface = favicon.get_surface.end(res);
 			if(surface != null)
-				icon.surface = surface;
+			{
+			        icon.surface = surface;
+			}
 		});
 	ulong handler_id = favicon.surface_changed.connect((feed, surface) => {
 			icon.surface = surface;
@@ -302,7 +322,9 @@ private Gtk.Window getFeedIconWindow()
 private bool rowEnter(Gdk.EventCrossing event)
 {
 	if(event.detail == Gdk.NotifyType.INFERIOR)
+	{
 		return true;
+	}
 
 	m_hovering_row = true;
 
@@ -332,7 +354,9 @@ private bool rowEnter(Gdk.EventCrossing event)
 private bool rowLeave(Gdk.EventCrossing event)
 {
 	if(event.detail == Gdk.NotifyType.INFERIOR)
+	{
 		return true;
+	}
 
 	m_hovering_row = false;
 
@@ -364,7 +388,10 @@ private bool rowClick(Gdk.EventButton event)
 	switch (event.button) {
 	//if double left clicked, open the article in an external browser:
 	case 1:
-		if (event.type != Gdk.EventType.@2BUTTON_PRESS) return false;
+		if (event.type != Gdk.EventType.@2BUTTON_PRESS)
+		{
+			return false;
+		}
 
 		try{
 			Gtk.show_uri_on_window(MainWindow.get_default(), m_article.getURL(), Gdk.CURRENT_TIME);
@@ -483,10 +510,12 @@ public void updateUnread(ArticleStatus unread)
 private bool unreadIconEnter()
 {
 	m_hovering_unread = true;
-	if(m_article.getUnread() == ArticleStatus.READ) {
+	if(m_article.getUnread() == ArticleStatus.READ)
+	{
 		m_unread_stack.set_visible_child_name("unread");
 	}
-	else if(m_article.getUnread() == ArticleStatus.UNREAD) {
+	else if(m_article.getUnread() == ArticleStatus.UNREAD)
+	{
 		m_unread_stack.set_visible_child_name("read");
 	}
 	this.show_all();
@@ -497,10 +526,12 @@ private bool unreadIconEnter()
 private bool unreadIconLeave()
 {
 	m_hovering_unread = false;
-	if(m_article.getUnread() == ArticleStatus.READ) {
+	if(m_article.getUnread() == ArticleStatus.READ)
+	{
 		m_unread_stack.set_visible_child_name("read");
 	}
-	else{
+	else
+	{
 		m_unread_stack.set_visible_child_name("unread");
 	}
 	this.show_all();
@@ -574,10 +605,12 @@ public void updateMarked(ArticleStatus marked)
 private bool markedIconEnter()
 {
 	m_hovering_marked = true;
-	if(m_article.getMarked() == ArticleStatus.UNMARKED) {
+	if(m_article.getMarked() == ArticleStatus.UNMARKED)
+	{
 		m_marked_stack.set_visible_child_name("marked");
 	}
-	else if (m_article.getMarked() == ArticleStatus.MARKED) {
+	else if (m_article.getMarked() == ArticleStatus.MARKED)
+	{
 		m_marked_stack.set_visible_child_name("unmarked");
 	}
 	this.show_all();
@@ -588,10 +621,12 @@ private bool markedIconEnter()
 private bool markedIconLeave()
 {
 	m_hovering_marked = false;
-	if(m_article.getMarked() == ArticleStatus.UNMARKED) {
+	if(m_article.getMarked() == ArticleStatus.UNMARKED)
+	{
 		m_marked_stack.set_visible_child_name("unmarked");
 	}
-	else if(m_article.getMarked() == ArticleStatus.MARKED) {
+	else if(m_article.getMarked() == ArticleStatus.MARKED)
+	{
 		m_marked_stack.set_visible_child_name("marked");
 	}
 	this.show_all();
@@ -652,9 +687,11 @@ public void copyArticleURL(string article_id){
 	/*
 	        Copy selected article url to clipboard
 	 */
-	if (article_id != "") {
+	if (article_id != "")
+	{
 		Article? article =  DataBase.readOnly().read_article(article_id);
-		if (article != null) {
+		if (article != null)
+		{
 			string article_url = article.getURL();
 			Gdk.Display display = MainWindow.get_default().get_display ();
 			Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display (display, Gdk.SELECTION_CLIPBOARD);
@@ -667,7 +704,9 @@ public void copyArticleURL(string article_id){
 public void reveal(bool reveal, uint duration = 500)
 {
 	if(!reveal)
+	{
 		this.set_size_request(0, 0);
+	}
 	m_revealer.set_transition_duration(duration);
 	m_revealer.set_reveal_child(reveal);
 }
@@ -687,7 +726,9 @@ public bool hasTag(string tagID)
 	foreach(string tag in m_article.getTagIDs())
 	{
 		if(tag == tagID)
+		{
 			return true;
+		}
 	}
 
 	return false;

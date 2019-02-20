@@ -95,19 +95,27 @@ private void addRow(ArticleListBalance balance, bool reverse = false, bool anima
 
 	var priority = GLib.Priority.DEFAULT_IDLE;
 	if(ColumnView.get_default().playingMedia())
+	{
 		priority = GLib.Priority.HIGH_IDLE;
+	}
 
 	m_idleID = GLib.Idle.add(() => {
 
 			if(m_lazyQeue == null || m_lazyQeue.size == 0)
-				return false;
+			{
+			        return false;
+			}
 
 			Article item;
 
 			if(reverse)
-				item = m_lazyQeue.last();
+			{
+			        item = m_lazyQeue.last();
+			}
 			else
-				item = m_lazyQeue.first();
+			{
+			        item = m_lazyQeue.first();
+			}
 
 			// check if row is already there
 			if(m_articles.has_key(item.getArticleID()))
@@ -143,9 +151,13 @@ private void addRow(ArticleListBalance balance, bool reverse = false, bool anima
 			this.insert(newRow, item.getPos());
 
 			if(animate)
-				newRow.reveal(true, 150);
+			{
+			        newRow.reveal(true, 150);
+			}
 			else
-				newRow.reveal(true, 0);
+			{
+			        newRow.reveal(true, 0);
+			}
 
 			return false;
 		}, priority);
@@ -205,7 +217,9 @@ private void selectAfter(ArticleRow row, int time)
 
 	m_selectSourceID = Timeout.add(time, () => {
 			if(!ColumnView.get_default().searchFocused())
-				row.activate();
+			{
+			        row.activate();
+			}
 			m_selectSourceID = 0;
 			return false;
 		});
@@ -225,7 +239,9 @@ public ArticleStatus toggleReadSelected()
 	ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
 
 	if(selectedRow == null)
+	{
 		return ArticleStatus.READ;
+	}
 
 	return selectedRow.toggleUnread();
 }
@@ -235,7 +251,9 @@ public ArticleStatus toggleMarkedSelected()
 	ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
 
 	if(selectedRow == null)
+	{
 		return ArticleStatus.UNMARKED;
+	}
 
 	return selectedRow.toggleMarked();
 }
@@ -249,7 +267,9 @@ public Article? getSelectedArticle()
 {
 	ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
 	if(selectedRow != null)
+	{
 		return selectedRow.getArticle();
+	}
 
 	return null;
 }
@@ -258,10 +278,14 @@ public string getSelectedURL()
 {
 	ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
 	if(selectedRow != null)
+	{
 		return selectedRow.getURL();
+	}
 
 	if(this.get_children().length() == 0)
+	{
 		return "empty";
+	}
 
 	return "";
 }
@@ -274,7 +298,9 @@ public int move(bool down)
 	{
 		ArticleRow? firstRow = getFirstRow();
 		if(firstRow == null)
+		{
 			return 0;
+		}
 		else
 		{
 			selectAfter(firstRow, time);
@@ -289,7 +315,9 @@ public int move(bool down)
 	var rows = this.get_children();
 
 	if(!down)
+	{
 		rows.reverse();
+	}
 
 	int current = rows.index(selectedRow);
 	uint length = rows.length();
@@ -298,7 +326,9 @@ public int move(bool down)
 	{
 		current++;
 		if(current >= length)
+		{
 			return 0;
+		}
 
 		nextRow = rows.nth_data(current) as ArticleRow;
 	}
@@ -309,7 +339,9 @@ public int move(bool down)
 	Logger.debug(@"ArticleListBox.move: height: $height");
 
 	if(down)
+	{
 		return height;
+	}
 
 	return -height;
 }
@@ -321,7 +353,9 @@ public void removeRow(ArticleRow row, int animateDuration = 700)
 	m_articles.unset(id);
 	GLib.Timeout.add(animateDuration + 50, () => {
 			if(row.get_parent() != null)
-				this.remove(row);
+			{
+			        this.remove(row);
+			}
 			return false;
 		});
 }
@@ -401,7 +435,9 @@ public void setVisibleRows(Gee.HashSet<string> visibleArticles)
 	// mark all rows that are not visible now and have been before as read
 	m_visibleArticles.foreach((id) => {
 			if(!visibleArticles.contains(id))
-				invisibleRows.add(id);
+			{
+			        invisibleRows.add(id);
+			}
 			return true;
 		});
 
@@ -428,7 +464,9 @@ public void removeTagFromSelectedRow(string tagID)
 	ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
 
 	if(selectedRow == null)
+	{
 		return;
+	}
 
 	selectedRow.removeTag(tagID);
 }
@@ -438,12 +476,16 @@ public ArticleRow? getFirstRow()
 	var children = this.get_children();
 
 	if(children == null)
+	{
 		return null;
+	}
 
 	var firstRow = children.first().data as ArticleRow;
 
 	if(firstRow == null)
+	{
 		return null;
+	}
 
 	return firstRow;
 }
@@ -453,12 +495,16 @@ public ArticleRow? getLastRow()
 	var children = this.get_children();
 
 	if(children == null)
+	{
 		return null;
+	}
 
 	var lastRow = children.last().data as ArticleRow;
 
 	if(lastRow == null)
+	{
 		return null;
+	}
 
 	return lastRow;
 }
@@ -471,9 +517,13 @@ public bool selectedIsFirst()
 	var lastRow = children.first().data as ArticleRow;
 
 	if(n == 0)
+	{
 		return true;
+	}
 	else if(m_state == ArticleListState.UNREAD && n == 1 && !lastRow.isBeingRevealed())
+	{
 		return true;
+	}
 
 	return false;
 }
@@ -487,9 +537,13 @@ public bool selectedIsLast()
 	var lastRow = children.last().data as ArticleRow;
 
 	if(n + 1 == length)
+	{
 		return true;
+	}
 	else if(m_state == ArticleListState.UNREAD && n + 2 == length && !lastRow.isBeingRevealed())
+	{
 		return true;
+	}
 
 	return false;
 }
@@ -502,7 +556,9 @@ public void markAllAsRead()
 	{
 		var tmpRow = row as ArticleRow;
 		if(tmpRow != null)
+		{
 			tmpRow.updateUnread(ArticleStatus.READ);
+		}
 	}
 }
 
@@ -512,7 +568,9 @@ public int selectedRowPosition()
 
 	int scroll = 0;
 	if(selectedRow == null)
+	{
 		return scroll;
+	}
 
 	var FeedChildList = this.get_children();
 	foreach(Gtk.Widget row in FeedChildList)
@@ -551,7 +609,9 @@ private void highlightRow(string articleID)
 	{
 		var tmpRow = row as ArticleRow;
 		if(tmpRow != null && tmpRow.getID() != articleID)
+		{
 			tmpRow.opacity = 0.5;
+		}
 	}
 }
 
@@ -562,7 +622,9 @@ private void unHighlightRow()
 	{
 		var tmpRow = row as ArticleRow;
 		if(tmpRow != null)
+		{
 			tmpRow.opacity = 1.0;
+		}
 	}
 }
 
@@ -581,7 +643,9 @@ public int getSizeForState()
 		{
 			var tmpRow = row as ArticleRow;
 			if(tmpRow != null && tmpRow.getArticle().getUnread() == ArticleStatus.UNREAD)
+			{
 				unread += 1;
+			}
 		}
 		return unread;
 	}
@@ -598,11 +662,15 @@ public bool needLoadMore(int height)
 	{
 		var tmpRow = row as ArticleRow;
 		if(tmpRow != null && tmpRow.isRevealed())
+		{
 			rowHeight += tmpRow.get_allocated_height();
+		}
 	}
 
 	if(rowHeight < height + 100)
+	{
 		return true;
+	}
 
 	return false;
 }
@@ -624,7 +692,9 @@ public void setAllUpdated(bool updated = false)
 	{
 		var tmpRow = row as ArticleRow;
 		if(tmpRow != null)
+		{
 			tmpRow.setUpdated(updated);
+		}
 	}
 }
 

@@ -47,7 +47,9 @@ public static bool extractBody(Html.Doc* doc, string xpath, Xml.Node* destinatio
 		destination->add_child(node);
 
 		if(!foundSomething)
+		{
 			foundSomething = true;
+		}
 	}
 
 	delete res;
@@ -126,7 +128,9 @@ public static bool repairURL(string xpath, string attr, Html.Doc* doc, string ar
 	{
 		Xml.Node* node = res->nodesetval->item(i);
 		if(node->get_prop(attr) != null)
+		{
 			node->set_prop(attr, completeURL(node->get_prop(attr), articleURL));
+		}
 	}
 
 	delete res;
@@ -214,7 +218,9 @@ public static void stripNode(Html.Doc* doc, string xpath)
 		{
 			Xml.Node* node = res->nodesetval->item(i);
 			if(node == null)
+			{
 				continue;
+			}
 
 			node->unlink();
 			node->free_list();
@@ -241,7 +247,9 @@ public static void onlyRemoveNode(Html.Doc* doc, string xpath)
 			{
 				Xml.Node* node = res->nodesetval->item(i);
 				if(node == null)
+				{
 					continue;
+				}
 
 				Xml.Node* parent = node->parent;
 				Xml.Node* children = node->children;
@@ -290,9 +298,13 @@ public static bool removeAttributes(Html.Doc* doc, string? tag, string attribute
 	Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
 	Xml.XPath.Object* res;
 	if(tag == null)
+	{
 		res = cntx.eval_expression("//*[@%s]".printf(attribute));
+	}
 	else
+	{
 		res = cntx.eval_expression("//%s[@%s]".printf(tag, attribute));
+	}
 
 	if(res == null)
 	{
@@ -378,7 +390,9 @@ public static void stripIDorClass(Html.Doc* doc, string IDorClass)
 public static string cleanString(string? text)
 {
 	if(text == null)
+	{
 		return "";
+	}
 
 	var tmpText =  text.replace("\n", "");
 	var array = tmpText.split(" ");
@@ -403,7 +417,9 @@ public static string completeURL(string incompleteURL, string articleURL)
 		index = 8;
 	}
 	else
+	{
 		index = articleURL.index_of_char('.', 0);
+	}
 
 	string baseURL = "";
 
@@ -495,7 +511,9 @@ public static bool saveImages(Soup.Session session, Html.Doc* doc, Article artic
 	for(int i = 0; i < res->nodesetval->length(); i++)
 	{
 		if(cancellable != null && cancellable.is_cancelled())
+		{
 			break;
+		}
 
 		Xml.Node* node = res->nodesetval->item(i);
 		if(node->get_prop("src") != null)
@@ -511,7 +529,9 @@ public static bool saveImages(Soup.Session session, Html.Doc* doc, Article artic
 				string? original = downloadImage(session, node->get_prop("src"), article, i+1);
 
 				if(original == null)
+				{
 					continue;
+				}
 
 				string? parentURL = checkParent(session, node);
 				if(parentURL != null)
@@ -541,7 +561,9 @@ public static bool saveImages(Soup.Session session, Html.Doc* doc, Article artic
 						node->set_prop("FR_huge", original);
 					}
 					else
+					{
 						node->set_prop("src", original);
+					}
 				}
 			}
 		}
@@ -555,7 +577,9 @@ public static bool saveImages(Soup.Session session, Html.Doc* doc, Article artic
 public static string? downloadImage(Soup.Session session, string? url, Article article, int nr, bool parent = false)
 {
 	if(url == null || url.down().has_prefix("data:image"))
+	{
 		return null;
+	}
 
 	string fixedURL = url;
 	string imgPath = GLib.Environment.get_user_data_dir();
@@ -566,9 +590,13 @@ public static string? downloadImage(Soup.Session session, string? url, Article a
 	}
 
 	if(article.getArticleID() == "" && article.getFeedID() == "")
+	{
 		imgPath += "/debug-article/ArticleImages/";
+	}
 	else
+	{
 		imgPath += "/feedreader/data/images/%s/%s/".printf(article.getFeedFileName(), article.getArticleFileName());
+	}
 
 	var path = GLib.File.new_for_path(imgPath);
 	try
@@ -583,7 +611,9 @@ public static string? downloadImage(Soup.Session session, string? url, Article a
 	string localFilename = imgPath + nr.to_string();
 
 	if(parent)
+	{
 		localFilename += "_parent";
+	}
 
 	if(!FileUtils.test(localFilename, GLib.FileTest.EXISTS))
 	{
@@ -596,7 +626,9 @@ public static string? downloadImage(Soup.Session session, string? url, Article a
 		}
 
 		if(Settings.tweaks().get_boolean("do-not-track"))
+		{
 			message_dlImg.request_headers.append("DNT", "1");
+		}
 
 		var status = session.send_message(message_dlImg);
 		if(status == 200)
@@ -645,16 +677,22 @@ private static string? resizeImg(string path)
 		Gdk.PixbufFormat? format = Gdk.Pixbuf.get_file_info(path, out width, out height);
 
 		if(format == null || height == null || width == null)
+		{
 			return null;
+		}
 
 		if(width > 2000 || height > 2000)
 		{
 			int nHeight = 1000;
 			int nWidth = 1000;
 			if(width > height)
+			{
 				nHeight = -1;
+			}
 			else if(height > width)
+			{
 				nWidth = -1;
+			}
 
 			var img = new Gdk.Pixbuf.from_file_at_scale(path, nWidth, nHeight, true);
 			img.save(path + "_resized", "png");
@@ -694,11 +732,17 @@ private static int compareImageSize(string file1, string file2)
 
 	if(height1 == height2
 	   && width1 == width2)
+	{
 		return 0;
+	}
 	else if(height1*width1 > height2*width2)
+	{
 		return 1;
+	}
 	else
+	{
 		return -1;
+	}
 }
 
 // check if the parent node is a link that points to a picture
@@ -719,18 +763,24 @@ private static string? checkParent(Soup.Session session, Xml.Node* node)
 		if(url != "" && url != null)
 		{
 			if(url.has_prefix("//"))
+			{
 				url = "http:" + url;
+			}
 
 			var message = new Soup.Message("HEAD", url);
 			if(message == null)
+			{
 				return null;
+			}
 			session.send_message(message);
 			var params = new GLib.HashTable<string, string>(null, null);
 			string? contentType = message.response_headers.get_content_type(out params);
 			size = message.response_headers.get_content_length();
 			var message2 = new Soup.Message("HEAD", smallImgURL);
 			if(message2 == null)
+			{
 				return null;
+			}
 			session.send_message(message2);
 			origSize = message2.response_headers.get_content_length();
 			if(contentType != null)
@@ -741,12 +791,18 @@ private static string? checkParent(Soup.Session session, Xml.Node* node)
 					if(size != 0 && origSize != 0)
 					{
 						if(size > origSize)
+						{
 							return url;
+						}
 						else
+						{
 							return null;
+						}
 					}
 					else
+					{
 						return url;
+					}
 				}
 			}
 		}
@@ -791,9 +847,13 @@ public static string postProcessing(ref string html)
 		html = html.replace(broken_iframe, fixed_iframe);
 		pos3 = html.index_of("<iframe", pos1+7);
 		if(pos3 == pos1 || pos3 > html.length)
+		{
 			break;
+		}
 		else
+		{
 			pos1 = pos3;
+		}
 	}
 	Logger.debug("GrabberUtils: postProcessing done");
 	return html;

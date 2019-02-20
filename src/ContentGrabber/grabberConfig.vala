@@ -95,17 +95,23 @@ public GrabberConfig(string filename)
 				else if(line.has_prefix("tidy:"))
 				{
 					if(extractValue("tidy:", line) == "no")
+					{
 						m_tidy = false;
+					}
 				}
 				else if(line.has_prefix("prune:"))
 				{
 					if(extractValue("prune:", line) == "no")
+					{
 						m_prune = false;
+					}
 				}
 				else if(line.has_prefix("autodetect_on_failure:"))
 				{
 					if(extractValue("autodetect_on_failure:", line) == "no")
+					{
 						m_autodetectOnFailure = false;
+					}
 				}
 				else if(line.has_prefix("single_page_link:"))
 				{
@@ -231,25 +237,41 @@ public void print()
 	}
 
 	if(m_tidy)
+	{
 		Logger.debug("tidy: yes");
+	}
 	else
+	{
 		Logger.debug("tidy: no");
+	}
 
 	if(m_prune)
+	{
 		Logger.debug("prune: yes");
+	}
 	else
+	{
 		Logger.debug("prune: no");
+	}
 
 	if(m_autodetectOnFailure)
+	{
 		Logger.debug("autodetectOnFailure: yes");
+	}
 	else
+	{
 		Logger.debug("autodetectOnFailure: no");
+	}
 
 	if(m_singlePageLink != null)
+	{
 		Logger.debug("singlePageLink: " + m_singlePageLink);
+	}
 
 	if(m_nextPageLink != null)
+	{
 		Logger.debug("nextPageLink: " + m_nextPageLink);
+	}
 
 	if(m_replace.size != 0)
 	{
@@ -261,7 +283,9 @@ public void print()
 	}
 
 	if(m_testURL != null)
+	{
 		Logger.debug("testURL: " + m_testURL);
+	}
 }
 
 

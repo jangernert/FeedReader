@@ -147,9 +147,13 @@ public string getArticleListSelectedRow()
 public void setArticleListTopRow(Article? article)
 {
 	if(article == null)
+	{
 		m_ArticleListTopRow = null;
+	}
 	else
+	{
 		m_ArticleListTopRow = article.getArticleID();
+	}
 }
 
 public string getArticleListTopRow()

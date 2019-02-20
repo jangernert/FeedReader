@@ -14,304 +14,304 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.Share : GLib.Object {
-
-private Gee.List<ShareAccount> m_accounts;
-private Peas.ExtensionSet m_plugins;
-private static Share? m_share = null;
-private Goa.Client? m_client = null;
-
-public static Share get_default()
-{
-	if(m_share == null)
+	
+	private Gee.List<ShareAccount> m_accounts;
+	private Peas.ExtensionSet m_plugins;
+	private static Share? m_share = null;
+	private Goa.Client? m_client = null;
+	
+	public static Share get_default()
 	{
-		m_share = new Share();
+		if(m_share == null)
+		{
+			m_share = new Share();
+		}
+		
+		return m_share;
 	}
-
-	return m_share;
-}
-
-private Share()
-{
-	var engine = Peas.Engine.get_default();
-	engine.add_search_path(Constants.INSTALL_LIBDIR + "/pluginsShare/", null);
-	engine.enable_loader("python3");
-
-	m_plugins = new Peas.ExtensionSet(engine, typeof(ShareAccountInterface));
-
-	m_plugins.extension_added.connect((info, extension) => {
+	
+	private Share()
+	{
+		var engine = Peas.Engine.get_default();
+		engine.add_search_path(Constants.INSTALL_LIBDIR + "/pluginsShare/", null);
+		engine.enable_loader("python3");
+		
+		m_plugins = new Peas.ExtensionSet(engine, typeof(ShareAccountInterface));
+		
+		m_plugins.extension_added.connect((info, extension) => {
 			var plugin = (extension as ShareAccountInterface);
 			plugin.addAccount.connect(accountAdded);
 			plugin.deleteAccount.connect(() => {
 				refreshAccounts();
 			});
 		});
-
-	//m_plugins.extension_removed.connect((info, extension) => {});
-
-	checkSystemAccounts();
-
-	foreach(var plugin in engine.get_plugin_list())
-	{
-		engine.try_load_plugin(plugin);
+		
+		//m_plugins.extension_removed.connect((info, extension) => {});
+		
+		checkSystemAccounts();
+		
+		foreach(var plugin in engine.get_plugin_list())
+		{
+			engine.try_load_plugin(plugin);
+		}
+		
+		refreshAccounts();
 	}
-
-	refreshAccounts();
-}
-
-public void refreshAccounts()
-{
-	Logger.debug("Share: refreshAccounts");
-	m_accounts = new Gee.ArrayList<ShareAccount>();
-	m_plugins.foreach((@set, info, exten) => {
+	
+	public void refreshAccounts()
+	{
+		Logger.debug("Share: refreshAccounts");
+		m_accounts = new Gee.ArrayList<ShareAccount>();
+		m_plugins.foreach((@set, info, exten) => {
 			var plugin = (exten as ShareAccountInterface);
 			var plugID = plugin.pluginID();
 			plugin.setupSystemAccounts(m_accounts);
 			if(!plugin.singleInstance())
 			{
-			        var accounts = Settings.share(plugID).get_strv("account-ids");
-			        foreach(string accountID in accounts)
-			        {
-			                m_accounts.add(
+				var accounts = Settings.share(plugID).get_strv("account-ids");
+				foreach(string accountID in accounts)
+				{
+					m_accounts.add(
 						new ShareAccount(
 							accountID,
 							plugID,
 							plugin.getUsername(accountID),
 							plugin.getIconName(),
 							plugin.pluginName()
-							)
-						);
+						)
+					);
 				}
 			}
 			else if(!plugin.needSetup()
-			        || (plugin.needSetup() && Settings.share(plugID).get_boolean("enabled")))
+			|| (plugin.needSetup() && Settings.share(plugID).get_boolean("enabled")))
 			{
-			        m_accounts.add(
+				m_accounts.add(
 					new ShareAccount(
 						plugID,
 						plugID,
 						plugin.pluginName(),
 						plugin.getIconName(),
 						plugin.pluginName()
-						)
-					);
+					)
+				);
 			}
 		});
-
-	// load gresource-icons from the plugins
-	Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
-}
-
-private ShareAccountInterface? getInterface(string type)
-{
-	ShareAccountInterface? plug = null;
-
-	m_plugins.foreach((@set, info, exten) => {
+		
+		// load gresource-icons from the plugins
+		Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
+	}
+	
+	private ShareAccountInterface? getInterface(string type)
+	{
+		ShareAccountInterface? plug = null;
+		
+		m_plugins.foreach((@set, info, exten) => {
 			var plugin = (exten as ShareAccountInterface);
-
+			
 			if(plugin.pluginID() == type)
 			{
-			        plug = plugin;
+				plug = plugin;
 			}
 		});
-
-	return plug;
-}
-
-public Gee.List<ShareAccount> getAccountTypes()
-{
-	var accounts = new Gee.ArrayList<ShareAccount>();
-
-	m_plugins.foreach((@set, info, exten) => {
+		
+		return plug;
+	}
+	
+	public Gee.List<ShareAccount> getAccountTypes()
+	{
+		var accounts = new Gee.ArrayList<ShareAccount>();
+		
+		m_plugins.foreach((@set, info, exten) => {
 			var plugin = (exten as ShareAccountInterface);
 			var pluginID = plugin.pluginID();
-
+			
 			bool singleInstance = false;
 			if(plugin.singleInstance())
 			{
-			        if(plugin.needSetup() && !Settings.share(pluginID).get_boolean("enabled"))
-			        {
-			                singleInstance = true;
+				if(plugin.needSetup() && !Settings.share(pluginID).get_boolean("enabled"))
+				{
+					singleInstance = true;
 				}
 			}
 			else
 			{
-			        singleInstance = true;
+				singleInstance = true;
 			}
-
+			
 			if(plugin.needSetup() && !plugin.useSystemAccounts() && singleInstance)
 			{
-			        accounts.add(new ShareAccount("", pluginID, "", plugin.getIconName(), plugin.pluginName()));
+				accounts.add(new ShareAccount("", pluginID, "", plugin.getIconName(), plugin.pluginName()));
 			}
 		});
-
-	return accounts;
-}
-
-
-public Gee.List<ShareAccount> getAccounts()
-{
-	return m_accounts;
-}
-
-public string generateNewID()
-{
-	string id = Utils.string_random(12);
-	bool unique = true;
-
-	m_plugins.foreach((@set, info, exten) => {
+		
+		return accounts;
+	}
+	
+	
+	public Gee.List<ShareAccount> getAccounts()
+	{
+		return m_accounts;
+	}
+	
+	public string generateNewID()
+	{
+		string id = Utils.string_random(12);
+		bool unique = true;
+		
+		m_plugins.foreach((@set, info, exten) => {
 			var plugin = (exten as ShareAccountInterface);
 			var plugID = plugin.pluginID();
 			if(plugin.needSetup() && !plugin.singleInstance())
 			{
-			        string[] ids = Settings.share(plugID).get_strv("account-ids");
-			        foreach(string i in ids)
-			        {
-			                if(i == id)
-			                {
-			                        unique = false;
-			                        return;
+				string[] ids = Settings.share(plugID).get_strv("account-ids");
+				foreach(string i in ids)
+				{
+					if(i == id)
+					{
+						unique = false;
+						return;
 					}
 				}
 			}
 		});
-
-	if(!unique)
-	{
-		return generateNewID();
-	}
-
-	return id;
-}
-
-public void accountAdded(string id, string type, string username, string iconName, string accountName)
-{
-	Logger.debug("Share: %s account added for user: %s".printf(type, username));
-	m_accounts.add(new ShareAccount(id, type, username, iconName, accountName));
-}
-
-
-public string getUsername(string accountID)
-{
-	foreach(var account in m_accounts)
-	{
-		if(account.getID() == accountID)
+		
+		if(!unique)
 		{
-			return getInterface(account.getType()).getUsername(accountID);
+			return generateNewID();
 		}
+		
+		return id;
 	}
-
-	return "";
-}
-
-
-public bool addBookmark(string accountID, string url)
-{
-	foreach(var account in m_accounts)
+	
+	public void accountAdded(string id, string type, string username, string iconName, string accountName)
 	{
-		if(account.getID() == accountID)
-		{
-			return getInterface(account.getType()).addBookmark(accountID, url, account.isSystemAccount());
-		}
+		Logger.debug("Share: %s account added for user: %s".printf(type, username));
+		m_accounts.add(new ShareAccount(id, type, username, iconName, accountName));
 	}
-
-	return false;
-}
-
-public bool needSetup(string accountID)
-{
-	foreach(var account in m_accounts)
+	
+	
+	public string getUsername(string accountID)
 	{
-		if(account.getID() == accountID)
+		foreach(var account in m_accounts)
 		{
-			return getInterface(account.getType()).needSetup();
+			if(account.getID() == accountID)
+			{
+				return getInterface(account.getType()).getUsername(accountID);
+			}
 		}
+		
+		return "";
 	}
-
-	return false;
-}
-
-public ServiceSetup? newSetup_withID(string accountID)
-{
-	foreach(var account in m_accounts)
+	
+	
+	public bool addBookmark(string accountID, string url)
 	{
-		if(account.getID() == accountID)
+		foreach(var account in m_accounts)
 		{
-			return getInterface(account.getType()).newSetup_withID(account.getID(), account.getUsername());
+			if(account.getID() == accountID)
+			{
+				return getInterface(account.getType()).addBookmark(accountID, url, account.isSystemAccount());
+			}
 		}
+		
+		return false;
 	}
-
-	return null;
-}
-
-public ServiceSetup? newSetup(string type)
-{
-	return getInterface(type).newSetup();
-}
-
-public ServiceSetup? newSystemAccount(string accountID)
-{
-	foreach(var account in m_accounts)
+	
+	public bool needSetup(string accountID)
 	{
-		if(account.getID() == accountID)
+		foreach(var account in m_accounts)
 		{
-			return getInterface(account.getType()).newSystemAccount(account.getID(), account.getUsername());
+			if(account.getID() == accountID)
+			{
+				return getInterface(account.getType()).needSetup();
+			}
 		}
+		
+		return false;
 	}
-
-	return null;
-}
-
-public ShareForm? shareWidget(string type, string url)
-{
-	ShareForm? form = null;
-
-	m_plugins.foreach((@set, info, exten) => {
+	
+	public ServiceSetup? newSetup_withID(string accountID)
+	{
+		foreach(var account in m_accounts)
+		{
+			if(account.getID() == accountID)
+			{
+				return getInterface(account.getType()).newSetup_withID(account.getID(), account.getUsername());
+			}
+		}
+		
+		return null;
+	}
+	
+	public ServiceSetup? newSetup(string type)
+	{
+		return getInterface(type).newSetup();
+	}
+	
+	public ServiceSetup? newSystemAccount(string accountID)
+	{
+		foreach(var account in m_accounts)
+		{
+			if(account.getID() == accountID)
+			{
+				return getInterface(account.getType()).newSystemAccount(account.getID(), account.getUsername());
+			}
+		}
+		
+		return null;
+	}
+	
+	public ShareForm? shareWidget(string type, string url)
+	{
+		ShareForm? form = null;
+		
+		m_plugins.foreach((@set, info, exten) => {
 			var plugin = (exten as ShareAccountInterface);
-
+			
 			if(plugin.pluginID() == type)
 			{
-			        form = plugin.shareWidget(url);
+				form = plugin.shareWidget(url);
 			}
 		});
-
-	return form;
-}
-
-private void checkSystemAccounts()
-{
-	try
+		
+		return form;
+	}
+	
+	private void checkSystemAccounts()
 	{
-		m_client = new Goa.Client.sync();
-		if(m_client != null)
+		try
 		{
-			m_client.account_added.connect((obj) => {
+			m_client = new Goa.Client.sync();
+			if(m_client != null)
+			{
+				m_client.account_added.connect((obj) => {
 					Logger.debug("share: account added");
 					accountsChanged(obj);
 				});
-			m_client.account_changed.connect((obj) => {
+				m_client.account_changed.connect((obj) => {
 					Logger.debug("share: account changed");
 					accountsChanged(obj);
 				});
-			m_client.account_removed.connect((obj) => {
+				m_client.account_removed.connect((obj) => {
 					Logger.debug("share: account removed");
 					accountsChanged(obj);
 				});
+			}
+			else
+			{
+				Logger.error("share: goa not available");
+			}
 		}
-		else
+		catch(GLib.Error e)
 		{
-			Logger.error("share: goa not available");
+			Logger.error("share.checkSystemAccounts: %s".printf(e.message));
 		}
 	}
-	catch(GLib.Error e)
+	
+	private void accountsChanged(Goa.Object object)
 	{
-		Logger.error("share.checkSystemAccounts: %s".printf(e.message));
+		refreshAccounts();
+		SettingsDialog.get_default().refreshAccounts();
+		ColumnView.get_default().getHeader().refreshSahrePopover();
 	}
-}
-
-private void accountsChanged(Goa.Object object)
-{
-	refreshAccounts();
-	SettingsDialog.get_default().refreshAccounts();
-	ColumnView.get_default().getHeader().refreshSahrePopover();
-}
 }

@@ -14,180 +14,180 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
-
-public ArticleListEmptyLabel()
-{
-	this.set_text(_("No Articles"));
-	this.get_style_context().add_class("h2");
-	this.set_ellipsize(Pango.EllipsizeMode.END);
-	this.set_line_wrap_mode(Pango.WrapMode.WORD);
-	this.set_line_wrap(true);
-	this.set_lines(3);
-	this.set_margin_left(30);
-	this.set_margin_right(30);
-	this.set_justify(Gtk.Justification.CENTER);
-	this.show_all();
-}
-
-public void build(string selectedID, FeedListType type, ArticleListState state, string searchTerm)
-{
-	string message = "";
-	string name = "";
-	string search = Utils.parseSearchTerm(searchTerm);
-	if(selectedID != FeedID.ALL.to_string() && selectedID != FeedID.CATEGORIES.to_string())
+	
+	public ArticleListEmptyLabel()
 	{
-		switch(type)
-		{
-		case FeedListType.FEED:
-			var feed = DataBase.readOnly().read_feed(selectedID);
-			name = feed != null ? feed.getTitle() : "";
-			if(state == ArticleListState.UNREAD)
-			{
-				if(searchTerm != "")
-				{
-					message = _(@"No unread articles that fit \"$search\" in feed \"$name\"");
-				}
-				else
-				{
-					message = _(@"No unread articles in feed \"$name\"");
-				}
-			}
-			else if(state == ArticleListState.MARKED)
-			{
-				if(searchTerm != "")
-				{
-					message = _(@"No starred articles that fit \"$search\" in feed \"$name\"");
-				}
-				else
-				{
-					message = _(@"No starred articles in feed \"$name\"");
-				}
-			}
-			else if(state == ArticleListState.ALL)
-			{
-				if(searchTerm != "")
-				{
-					message = _(@"No articles that fit \"$search\" in feed \"$name\"");
-				}
-				else
-				{
-					message = _(@"No articles in feed \"$name\"");
-				}
-			}
-			break;
-		case FeedListType.TAG:
-			name = DataBase.readOnly().getTagName(selectedID);
-			if(state == ArticleListState.UNREAD)
-			{
-				if(searchTerm != "")
-				{
-					message = _(@"No unread articles that fit \"$search\" in tag \"$name\"");
-				}
-				else
-				{
-					message = _(@"No unread articles in tag \"$name\"");
-				}
-			}
-			else if(state == ArticleListState.MARKED)
-			{
-				if(searchTerm != "")
-				{
-					message = _(@"No starred articles that fit \"$search\" in tag \"$name\"");
-				}
-				else
-				{
-					message = _(@"No starred articles in tag \"$name\"");
-				}
-			}
-			else if(state == ArticleListState.ALL)
-			{
-				if(searchTerm != "")
-				{
-					message = _(@"No articles that fit \"$search\" in tag \"$name\"");
-				}
-				else
-				{
-					message = _(@"No articles in tag \"$name\"");
-				}
-			}
-			break;
-		case FeedListType.CATEGORY:
-			name = DataBase.readOnly().getCategoryName(selectedID);
-			if(state == ArticleListState.UNREAD)
-			{
-				if(searchTerm != "")
-				{
-					message = _(@"No unread articles that fit \"$search\" in category \"$name\"");
-				}
-				else
-				{
-					message = _(@"No unread articles in category \"$name\"");
-				}
-			}
-			else if(state == ArticleListState.MARKED)
-			{
-				if(searchTerm != "")
-				{
-					message = _(@"No starred articles that fit \"$search\" in category \"$name\"");
-				}
-				else
-				{
-					message = _(@"No starred articles in category \"$name\"");
-				}
-			}
-			else if(state == ArticleListState.ALL)
-			{
-				if(searchTerm != "")
-				{
-					message = _(@"No articles that fit \"$search\" in category \"$name\"");
-				}
-				else
-				{
-					message = _(@"No articles in category \"$name\"");
-				}
-			}
-			break;
-		}
+		this.set_text(_("No Articles"));
+		this.get_style_context().add_class("h2");
+		this.set_ellipsize(Pango.EllipsizeMode.END);
+		this.set_line_wrap_mode(Pango.WrapMode.WORD);
+		this.set_line_wrap(true);
+		this.set_lines(3);
+		this.set_margin_left(30);
+		this.set_margin_right(30);
+		this.set_justify(Gtk.Justification.CENTER);
+		this.show_all();
 	}
-	else
+	
+	public void build(string selectedID, FeedListType type, ArticleListState state, string searchTerm)
 	{
-		if(state == ArticleListState.UNREAD)
+		string message = "";
+		string name = "";
+		string search = Utils.parseSearchTerm(searchTerm);
+		if(selectedID != FeedID.ALL.to_string() && selectedID != FeedID.CATEGORIES.to_string())
 		{
-			if(searchTerm != "")
+			switch(type)
 			{
-				message = _(@"No unread articles that fit \"$search\"");
-			}
-			else
-			{
-				message = _("No unread articles");
+				case FeedListType.FEED:
+				var feed = DataBase.readOnly().read_feed(selectedID);
+				name = feed != null ? feed.getTitle() : "";
+				if(state == ArticleListState.UNREAD)
+				{
+					if(searchTerm != "")
+					{
+						message = _(@"No unread articles that fit \"$search\" in feed \"$name\"");
+					}
+					else
+					{
+						message = _(@"No unread articles in feed \"$name\"");
+					}
+				}
+				else if(state == ArticleListState.MARKED)
+				{
+					if(searchTerm != "")
+					{
+						message = _(@"No starred articles that fit \"$search\" in feed \"$name\"");
+					}
+					else
+					{
+						message = _(@"No starred articles in feed \"$name\"");
+					}
+				}
+				else if(state == ArticleListState.ALL)
+				{
+					if(searchTerm != "")
+					{
+						message = _(@"No articles that fit \"$search\" in feed \"$name\"");
+					}
+					else
+					{
+						message = _(@"No articles in feed \"$name\"");
+					}
+				}
+				break;
+				case FeedListType.TAG:
+				name = DataBase.readOnly().getTagName(selectedID);
+				if(state == ArticleListState.UNREAD)
+				{
+					if(searchTerm != "")
+					{
+						message = _(@"No unread articles that fit \"$search\" in tag \"$name\"");
+					}
+					else
+					{
+						message = _(@"No unread articles in tag \"$name\"");
+					}
+				}
+				else if(state == ArticleListState.MARKED)
+				{
+					if(searchTerm != "")
+					{
+						message = _(@"No starred articles that fit \"$search\" in tag \"$name\"");
+					}
+					else
+					{
+						message = _(@"No starred articles in tag \"$name\"");
+					}
+				}
+				else if(state == ArticleListState.ALL)
+				{
+					if(searchTerm != "")
+					{
+						message = _(@"No articles that fit \"$search\" in tag \"$name\"");
+					}
+					else
+					{
+						message = _(@"No articles in tag \"$name\"");
+					}
+				}
+				break;
+				case FeedListType.CATEGORY:
+				name = DataBase.readOnly().getCategoryName(selectedID);
+				if(state == ArticleListState.UNREAD)
+				{
+					if(searchTerm != "")
+					{
+						message = _(@"No unread articles that fit \"$search\" in category \"$name\"");
+					}
+					else
+					{
+						message = _(@"No unread articles in category \"$name\"");
+					}
+				}
+				else if(state == ArticleListState.MARKED)
+				{
+					if(searchTerm != "")
+					{
+						message = _(@"No starred articles that fit \"$search\" in category \"$name\"");
+					}
+					else
+					{
+						message = _(@"No starred articles in category \"$name\"");
+					}
+				}
+				else if(state == ArticleListState.ALL)
+				{
+					if(searchTerm != "")
+					{
+						message = _(@"No articles that fit \"$search\" in category \"$name\"");
+					}
+					else
+					{
+						message = _(@"No articles in category \"$name\"");
+					}
+				}
+				break;
 			}
 		}
-		else if(state == ArticleListState.MARKED)
+		else
 		{
-			if(searchTerm != "")
+			if(state == ArticleListState.UNREAD)
 			{
-				message = _(@"No starred articles that fit \"$search\"");
+				if(searchTerm != "")
+				{
+					message = _(@"No unread articles that fit \"$search\"");
+				}
+				else
+				{
+					message = _("No unread articles");
+				}
 			}
-			else
+			else if(state == ArticleListState.MARKED)
 			{
-				message = _("No starred articles");
+				if(searchTerm != "")
+				{
+					message = _(@"No starred articles that fit \"$search\"");
+				}
+				else
+				{
+					message = _("No starred articles");
+				}
 			}
+			else if(state == ArticleListState.ALL)
+			{
+				if(searchTerm != "")
+				{
+					message = _(@"No articles that fit \"$search\"");
+				}
+				else
+				{
+					message = _("No articles");
+				}
+			}
+			
 		}
-		else if(state == ArticleListState.ALL)
-		{
-			if(searchTerm != "")
-			{
-				message = _(@"No articles that fit \"$search\"");
-			}
-			else
-			{
-				message = _("No articles");
-			}
-		}
-
+		this.get_style_context().add_class("dim-label");
+		this.set_text(message);
 	}
-	this.get_style_context().add_class("dim-label");
-	this.set_text(message);
-}
-
+	
 }

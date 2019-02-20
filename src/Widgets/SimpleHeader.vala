@@ -15,26 +15,26 @@
 
 public class FeedReader.SimpleHeader : Gtk.HeaderBar
 {
-private Gtk.Button m_backButton;
-
-public signal void back();
-
-public SimpleHeader()
-{
-	m_backButton = new Gtk.Button.from_icon_name("go-previous-symbolic");
-	m_backButton.no_show_all = true;
-	m_backButton.clicked.connect(() => {
+	private Gtk.Button m_backButton;
+	
+	public signal void back();
+	
+	public SimpleHeader()
+	{
+		m_backButton = new Gtk.Button.from_icon_name("go-previous-symbolic");
+		m_backButton.no_show_all = true;
+		m_backButton.clicked.connect(() => {
 			back();
 		});
-
-	this.pack_start(m_backButton);
-	this.show_close_button = true;
-	this.set_title("FeedReader");
-}
-
-public void showBackButton(bool show)
-{
-	m_backButton.visible = show;
-}
-
+		
+		this.pack_start(m_backButton);
+		this.show_close_button = true;
+		this.set_title("FeedReader");
+	}
+	
+	public void showBackButton(bool show)
+	{
+		m_backButton.visible = show;
+	}
+	
 }

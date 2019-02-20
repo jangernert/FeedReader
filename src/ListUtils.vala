@@ -14,9 +14,9 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.ListUtils {
-public static Gee.List<T> single<T>(T v)
-ensures (result.size == 1)
-{
-	return new Gee.ArrayList<T>.wrap(new T[] { v });
-}
+	public static Gee.List<T> single<T>(T v)
+	ensures (result.size == 1)
+	{
+		return new Gee.ArrayList<T>.wrap(new T[] { v });
+	}
 }

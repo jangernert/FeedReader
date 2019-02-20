@@ -14,128 +14,109 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.OPMLparser : GLib.Object {
-
-private string m_opmlString;
-private uint m_level = 0;
-private Gee.List<Feed> m_feeds = new Gee.ArrayList<Feed>();
-
-public OPMLparser(string opml)
-{
-	m_opmlString = opml;
-}
-
-public Gee.List<Feed> parse()
-{
-	if(!m_feeds.is_empty)
+	
+	private string m_opmlString;
+	private uint m_level = 0;
+	private Gee.List<Feed> m_feeds = new Gee.ArrayList<Feed>();
+	
+	public OPMLparser(string opml)
 	{
-		Logger.error("OPMLParser is not meant to be re-used!");
-		m_feeds = new Gee.ArrayList<Feed>();
+		m_opmlString = opml;
 	}
-
-	Xml.Doc* doc = Xml.Parser.read_doc(m_opmlString, null, null, 0);
-	if(doc == null)
+	
+	public Gee.List<Feed> parse()
 	{
-		Logger.error("OPML: parsing xml failed");
-		return m_feeds;
-	}
-
-	Xml.Node* root = doc->get_root_element();
-	if(root->name != "opml")
-	{
-		return m_feeds;
-	}
-
-	Logger.debug("OPML version: " + root->get_prop("version"));
-
-	for(var node = root->children; node != null; node = node->next)
-	{
-		if(node->type == Xml.ElementType.ELEMENT_NODE)
+		if(!m_feeds.is_empty)
 		{
-			switch(node->name)
-			{
-			case "head":
-				parseHead(node);
-				break;
-
-			case "body":
-				parseTree(node);
-				break;
-			}
+			Logger.error("OPMLParser is not meant to be re-used!");
+			m_feeds = new Gee.ArrayList<Feed>();
 		}
-	}
-
-	return m_feeds;
-}
-
-private void parseHead(Xml.Node* root)
-{
-	Logger.debug("Parse OPML head");
-	for(var node = root->children; node != null; node = node->next)
-	{
-		if(node->type == Xml.ElementType.ELEMENT_NODE)
+		
+		Xml.Doc* doc = Xml.Parser.read_doc(m_opmlString, null, null, 0);
+		if(doc == null)
 		{
-			switch(node->name)
-			{
-			case "title":
-				Logger.debug("Title: " + node->get_content());
-				break;
-
-			case "dateCreated":
-				Logger.debug("dateCreated: " + node->get_content());
-				break;
-
-			case "dateModified":
-				Logger.debug("dateModified: " + node->get_content());
-				break;
-			}
+			Logger.error("OPML: parsing xml failed");
+			return m_feeds;
 		}
-	}
-}
-
-private void parseTree(Xml.Node* root, string? catID = null)
-{
-	m_level++;
-	Logger.debug(@"Parse OPML tree level $m_level");
-	for(var node = root->children; node != null; node = node->next)
-	{
-		if(node->type == Xml.ElementType.ELEMENT_NODE)
+		
+		Xml.Node* root = doc->get_root_element();
+		if(root->name != "opml")
 		{
-			if(!hasProp(node, "xmlUrl"))
+			return m_feeds;
+		}
+		
+		Logger.debug("OPML version: " + root->get_prop("version"));
+		
+		for(var node = root->children; node != null; node = node->next)
+		{
+			if(node->type == Xml.ElementType.ELEMENT_NODE)
 			{
-				if(hasProp(node, "title") || !hasProp(node, "schema-version"))
+				switch(node->name)
 				{
-					parseCat(node, catID);
+					case "head":
+					parseHead(node);
+					break;
+					
+					case "body":
+					parseTree(node);
+					break;
 				}
 			}
-			else
+		}
+		
+		return m_feeds;
+	}
+	
+	private void parseHead(Xml.Node* root)
+	{
+		Logger.debug("Parse OPML head");
+		for(var node = root->children; node != null; node = node->next)
+		{
+			if(node->type == Xml.ElementType.ELEMENT_NODE)
 			{
-				parseFeed(node, catID);
+				switch(node->name)
+				{
+					case "title":
+					Logger.debug("Title: " + node->get_content());
+					break;
+					
+					case "dateCreated":
+					Logger.debug("dateCreated: " + node->get_content());
+					break;
+					
+					case "dateModified":
+					Logger.debug("dateModified: " + node->get_content());
+					break;
+				}
 			}
 		}
 	}
-	m_level--;
-}
-
-private void parseCat(Xml.Node* node, string? parentCatID = null)
-{
-	string title = "No Title";
-	if(hasProp(node, "text"))
+	
+	private void parseTree(Xml.Node* root, string? catID = null)
 	{
-		title = node->get_prop("text");
+		m_level++;
+		Logger.debug(@"Parse OPML tree level $m_level");
+		for(var node = root->children; node != null; node = node->next)
+		{
+			if(node->type == Xml.ElementType.ELEMENT_NODE)
+			{
+				if(!hasProp(node, "xmlUrl"))
+				{
+					if(hasProp(node, "title") || !hasProp(node, "schema-version"))
+					{
+						parseCat(node, catID);
+					}
+				}
+				else
+				{
+					parseFeed(node, catID);
+				}
+			}
+		}
+		m_level--;
 	}
-	else if(hasProp(node, "title"))
-	{
-		title = node->get_prop("title");
-	}
-
-	Logger.debug(space() + "Category: " + title);
-	string catID = FeedReaderBackend.get_default().addCategory(title, parentCatID, true);
-	parseTree(node, catID);
-}
-
-private void parseFeed(Xml.Node* node, string? catID = null)
-{
-	if(node->get_prop("type") == "rss" || node->get_prop("type") == "atom")
+	
+	private void parseCat(Xml.Node* node, string? parentCatID = null)
 	{
 		string title = "No Title";
 		if(hasProp(node, "text"))
@@ -146,52 +127,71 @@ private void parseFeed(Xml.Node* node, string? catID = null)
 		{
 			title = node->get_prop("title");
 		}
-		string feedURL = node->get_prop("xmlUrl");
-
-		string website = "";
-
-		if(hasProp(node, "htmlUrl"))
-		{
-			website = node->get_prop("htmlUrl");
-			Logger.debug(space() + "Feed: " + title + " website: " + website + " feedURL: " + feedURL);
-		}
-		else
-		{
-			Logger.debug(space() + "Feed: " + title + " feedURL: " + feedURL);
-		}
-
-		var categories = new Gee.ArrayList<string>();
-		if(catID == null)
-		{
-			categories.add(FeedServer.get_default().uncategorizedID());
-		}
-		else
-		{
-			categories.add(catID);
-		}
-
-		m_feeds.add(new Feed("", title, website, 0, categories, null, feedURL));
+		
+		Logger.debug(space() + "Category: " + title);
+		string catID = FeedReaderBackend.get_default().addCategory(title, parentCatID, true);
+		parseTree(node, catID);
 	}
-}
-
-private bool hasProp(Xml.Node* node, string prop)
-{
-	if(node->get_prop(prop) != null)
+	
+	private void parseFeed(Xml.Node* node, string? catID = null)
 	{
-		return true;
+		if(node->get_prop("type") == "rss" || node->get_prop("type") == "atom")
+		{
+			string title = "No Title";
+			if(hasProp(node, "text"))
+			{
+				title = node->get_prop("text");
+			}
+			else if(hasProp(node, "title"))
+			{
+				title = node->get_prop("title");
+			}
+			string feedURL = node->get_prop("xmlUrl");
+			
+			string website = "";
+			
+			if(hasProp(node, "htmlUrl"))
+			{
+				website = node->get_prop("htmlUrl");
+				Logger.debug(space() + "Feed: " + title + " website: " + website + " feedURL: " + feedURL);
+			}
+			else
+			{
+				Logger.debug(space() + "Feed: " + title + " feedURL: " + feedURL);
+			}
+			
+			var categories = new Gee.ArrayList<string>();
+			if(catID == null)
+			{
+				categories.add(FeedServer.get_default().uncategorizedID());
+			}
+			else
+			{
+				categories.add(catID);
+			}
+			
+			m_feeds.add(new Feed("", title, website, 0, categories, null, feedURL));
+		}
 	}
-
-	return false;
-}
-
-private string space()
-{
-	string tmp = "";
-	for(int i = 1; i < m_level; i++)
+	
+	private bool hasProp(Xml.Node* node, string prop)
 	{
-		tmp += "	";
+		if(node->get_prop(prop) != null)
+		{
+			return true;
+		}
+		
+		return false;
 	}
-
-	return tmp;
-}
+	
+	private string space()
+	{
+		string tmp = "";
+		for(int i = 1; i < m_level; i++)
+		{
+			tmp += "	";
+		}
+		
+		return tmp;
+	}
 }

@@ -14,74 +14,74 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.Settings : GLib.Object {
-
-private static GLib.Settings? m_general = null;
-private static GLib.Settings? m_tweaks = null;
-private static GLib.Settings? m_state = null;
-private static GLib.Settings? m_keys = null;
-private static Gee.HashMap<string, GLib.Settings>? m_share = null;
-
-public static GLib.Settings general()
-{
-	if(m_general == null)
+	
+	private static GLib.Settings? m_general = null;
+	private static GLib.Settings? m_tweaks = null;
+	private static GLib.Settings? m_state = null;
+	private static GLib.Settings? m_keys = null;
+	private static Gee.HashMap<string, GLib.Settings>? m_share = null;
+	
+	public static GLib.Settings general()
 	{
-		m_general = new GLib.Settings("org.gnome.feedreader");
+		if(m_general == null)
+		{
+			m_general = new GLib.Settings("org.gnome.feedreader");
+		}
+		
+		return m_general;
 	}
-
-	return m_general;
-}
-
-public static GLib.Settings tweaks()
-{
-	if(m_tweaks == null)
+	
+	public static GLib.Settings tweaks()
 	{
-		m_tweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
+		if(m_tweaks == null)
+		{
+			m_tweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
+		}
+		
+		return m_tweaks;
 	}
-
-	return m_tweaks;
-}
-
-public static GLib.Settings state()
-{
-	if(m_state == null)
+	
+	public static GLib.Settings state()
 	{
-		m_state = new GLib.Settings("org.gnome.feedreader.saved-state");
+		if(m_state == null)
+		{
+			m_state = new GLib.Settings("org.gnome.feedreader.saved-state");
+		}
+		
+		return m_state;
 	}
-
-	return m_state;
-}
-
-public static GLib.Settings keybindings()
-{
-	if(m_keys == null)
+	
+	public static GLib.Settings keybindings()
 	{
-		m_keys = new GLib.Settings("org.gnome.feedreader.keybindings");
+		if(m_keys == null)
+		{
+			m_keys = new GLib.Settings("org.gnome.feedreader.keybindings");
+		}
+		
+		return m_keys;
 	}
-
-	return m_keys;
-}
-
-public static GLib.Settings? share(string pluginName)
-{
-	if(m_share == null)
+	
+	public static GLib.Settings? share(string pluginName)
 	{
-		m_share = new Gee.HashMap<string, GLib.Settings>();
+		if(m_share == null)
+		{
+			m_share = new Gee.HashMap<string, GLib.Settings>();
+		}
+		
+		if(m_share.has_key(pluginName))
+		{
+			return m_share.get(pluginName);
+		}
+		else
+		{
+			var settings = new GLib.Settings(@"org.gnome.feedreader.share.$pluginName");
+			m_share.set(pluginName, settings);
+			return settings;
+		}
 	}
-
-	if(m_share.has_key(pluginName))
+	
+	private Settings()
 	{
-		return m_share.get(pluginName);
+		
 	}
-	else
-	{
-		var settings = new GLib.Settings(@"org.gnome.feedreader.share.$pluginName");
-		m_share.set(pluginName, settings);
-		return settings;
-	}
-}
-
-private Settings()
-{
-
-}
 }

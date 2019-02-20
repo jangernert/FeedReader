@@ -405,6 +405,7 @@ public class FeedReader.decsyncInterface : FeedServerInterface {
 				);
 				return true;
 			}
+			errmsg = _("Can't add feed because it already exists: ") + feedURL;
 		}
 
 		return false;

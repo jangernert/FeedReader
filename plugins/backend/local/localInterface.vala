@@ -396,6 +396,7 @@ public class FeedReader.localInterface : FeedServerInterface {
 				db.write_feeds(ListUtils.single(feed));
 				return true;
 			}
+			errmsg = _("Can't add feed because it already exists: ") + feedURL;
 		}
 
 		return false;

@@ -33,7 +33,7 @@ public class FeedReader.FeedHQInterface : FeedServerInterface {
 
 	public override BackendFlags getFlags()
 	{
-		return (BackendFlags.HOSTED | BackendFlags.PROPRIETARY | BackendFlags.PAID);
+		return (BackendFlags.HOSTED | BackendFlags.FREE_SOFTWARE | BackendFlags.PAID);
 	}
 
 	public override string getID()

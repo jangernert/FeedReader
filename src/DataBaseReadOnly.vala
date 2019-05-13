@@ -507,7 +507,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 				query.select_field(order_by);
 
-				if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
+				if(Settings.general().get_boolean("articlelist-oldest-first"))
 				{
 					query2.where(@"$order_by < (%s)".printf(query.to_string()));
 				}
@@ -570,7 +570,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					}
 
 					bool desc = true;
-					if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
+					if(Settings.general().get_boolean("articlelist-oldest-first"))
 					{
 						desc = false;
 					}
@@ -1016,7 +1016,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					}
 
 					bool desc = true;
-					if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
+					if(Settings.general().get_boolean("articlelist-oldest-first"))
 					{
 						desc = false;
 					}
@@ -1032,7 +1032,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					var query = articleQuery(id, selectedType, state, searchTerm);
 
 					string desc = "DESC";
-					if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
+					if(Settings.general().get_boolean("articlelist-oldest-first"))
 					{
 						desc = "ASC";
 					}

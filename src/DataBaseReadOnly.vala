@@ -677,12 +677,11 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 					return id;
 				}
 
-				public bool feed_exists(string feed_url)
+				public bool feed_exists(string xml_url)
 				{
-					var rows = m_db.execute("SELECT COUNT(*) FROM main.feeds WHERE url = ? LIMIT 1", { feed_url });
+					var rows = m_db.execute("SELECT COUNT(*) FROM main.feeds WHERE xmlURL = ? LIMIT 1", { xml_url });
 					assert(rows.size == 1 && rows[0].size == 1);
-					// FIXME: Why > 1 and not > 0?
-					return rows[0][0].to_int() > 1;
+					return rows[0][0].to_int() > 0;
 				}
 
 				public Feed? read_feed(string feedID)

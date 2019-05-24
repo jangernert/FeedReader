@@ -56,9 +56,6 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		m_feedList.newFeedSelected.connect((feedID) => {
 			Logger.debug("ContentPage: new Feed selected");
 			m_articleList.setSelectedType(FeedListType.FEED);
-			m_article_view.clearContent();
-			m_headerbar.showArticleButtons(false);
-			m_headerbar.clearTitle();
 			m_articleList.setSelectedFeed(feedID);
 			newArticleList();
 
@@ -76,9 +73,6 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		m_feedList.newTagSelected.connect((tagID) => {
 			Logger.debug("ContentPage: new Tag selected");
 			m_articleList.setSelectedType(FeedListType.TAG);
-			m_article_view.clearContent();
-			m_headerbar.showArticleButtons(false);
-			m_headerbar.clearTitle();
 			m_articleList.setSelectedFeed(tagID);
 			newArticleList();
 			m_footer.setRemoveButtonSensitive(true);
@@ -88,9 +82,6 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		m_feedList.newCategorieSelected.connect((categorieID) => {
 			Logger.debug("ContentPage: new Category selected");
 			m_articleList.setSelectedType(FeedListType.CATEGORY);
-			m_article_view.clearContent();
-			m_headerbar.showArticleButtons(false);
-			m_headerbar.clearTitle();
 			m_articleList.setSelectedFeed(categorieID);
 			newArticleList();
 
@@ -178,14 +169,12 @@ public class FeedReader.ColumnView : Gtk.Paned {
 
 		m_headerbar.change_state.connect((state, transition) => {
 			setArticleListState(state);
-			clearArticleView();
 			newArticleList(transition);
 		});
 
 		m_headerbar.search_term.connect((searchTerm) => {
 			Logger.debug("MainWindow: new search term");
 			setSearchTerm(searchTerm);
-			clearArticleView();
 			newArticleList();
 		});
 
@@ -528,7 +517,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 	public void clear()
 	{
 		m_articleList.clear();
-		m_article_view.clearContent();
+		clearArticleView();
 		m_feedList.clear();
 	}
 }

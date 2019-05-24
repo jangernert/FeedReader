@@ -105,7 +105,7 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 		m_header_left.pack_start(m_modeButton);
 		m_header_left.pack_start(m_refresh_button);
 
-		m_header_right = new ArticleViewHeader("view-fullscreen-symbolic", _("Read article fullscreen"));
+		m_header_right = new ArticleViewHeader(false);
 		m_header_right.show_close_button = true;
 		m_header_right.get_style_context().add_class("header_left");
 		m_header_right.get_style_context().add_class("titlebar");

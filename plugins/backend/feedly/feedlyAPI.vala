@@ -403,13 +403,17 @@ public class FeedReader.FeedlyAPI : Object {
 		{
 			Json.Object object = array.get_object_element(i);
 			string id = object.get_string_member("id");
-			string title = object.get_string_member("title");
-			string? author = object.get_string_member("author");
-			string summaryContent = object.has_member("summary") ? object.get_object_member("summary").get_string_member("content") : null;
-			string content = object.has_member("content") ? object.get_object_member("content").get_string_member("content") : summaryContent;
-			bool unread = object.get_boolean_member("unread");
-			string url = object.has_member("alternate") ? object.get_array_member("alternate").get_object_element(0).get_string_member("href") : null;
-			string feedID = object.get_object_member("origin").get_string_member("streamId");
+			string? title = object.has_member("title") ? object.get_string_member("title") : null;
+			string? author = object.has_member("author") ? object.get_string_member("author") : null;
+			var summary = object.has_member("summary") ? object.get_object_member("summary") : null;
+			string? summaryContent = summary != null && summary.has_member("content") ? summary.get_string_member("content") : null;
+			var content_obj = object.has_member("content") ? object.get_object_member("content") : null;
+			string? content = content_obj != null && content_obj.has_member("content") ? content_obj.get_string_member("content") : summaryContent;
+			bool unread = object.has_member("unread") ? object.get_boolean_member("unread") : false;
+			var alternate = object.has_member("alternate") ? object.get_array_member("alternate") : null;
+			var first_alternate = alternate != null && alternate.get_length() >= 1 ? alternate.get_object_element(0) : null;
+			string url = first_alternate != null && first_alternate.has_member("href") ? first_alternate.get_string_member("href") : null;
+			string feedID = object.has_member("origin") ? object.get_object_member("origin").get_string_member("streamId") : null;
 
 			DateTime date = new DateTime.now_local();
 			if(object.has_member("updated") && object.get_int_member("updated") > 0)

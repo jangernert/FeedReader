@@ -624,10 +624,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		{
 			m_currentList.selectRow(selectedRow, 300);
 		}
-		if(!m_currentList.has_id(selectedRow))
-		{
-			Settings.state().set_string("articlelist-selected-row", "");
-		}
 	}
 
 	private void restoreScrollPos()

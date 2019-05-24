@@ -605,7 +605,7 @@ public class FeedReader.FeedbinInterface : FeedServerInterface {
 						0,
 						feed_categories,
 						favicon_uri,
-					subscription.feed_url)
+						subscription.feed_url)
 				);
 			}
 		}
@@ -739,10 +739,7 @@ public class FeedReader.FeedbinInterface : FeedServerInterface {
 							entry.content,
 							entry.summary,
 							entry.author,
-							entry.published != null ? entry.published : entry.created_at,
-							-1,
-							null,
-						null)
+							entry.published != null ? entry.published : entry.created_at)
 					);
 				}
 				writeArticles(articles);

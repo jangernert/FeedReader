@@ -23,10 +23,13 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 	private HoverButton m_mark_button;
 	private HoverButton m_read_button;
 	private Gtk.Button m_fullscreen_button;
+	private Gtk.Button m_close_button;
 	private SharePopover? m_sharePopover = null;
+
 	public signal void toggledMarked();
 	public signal void toggledRead();
 	public signal void fsClick();
+	public signal void closeArticle();
 	public signal void popClosed();
 	public signal void popOpened();
 
@@ -39,6 +42,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		var read_icon = new Gtk.Image.from_icon_name("feed-read-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var unread_icon = new Gtk.Image.from_icon_name("feed-unread-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var fs_icon = new Gtk.Image.from_icon_name(fullscreen ? "view-restore-symbolic" : "view-fullscreen-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var close_icon = new Gtk.Image.from_icon_name("window-close-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 
 		m_mark_button = new HoverButton(unmarked_icon, marked_icon, false);
 		m_mark_button.sensitive = false;
@@ -59,6 +63,16 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		m_fullscreen_button.sensitive = false;
 		m_fullscreen_button.clicked.connect(() => {
 			fsClick();
+		});
+
+		m_close_button = new Gtk.Button();
+		m_close_button.add(close_icon);
+		m_close_button.set_relief(Gtk.ReliefStyle.NONE);
+		m_close_button.set_focus_on_click(false);
+		m_close_button.set_tooltip_text(_("Close article"));
+		m_close_button.sensitive = false;
+		m_close_button.clicked.connect(() => {
+			closeArticle();
 		});
 
 		m_tag_button = new Gtk.Button();
@@ -126,6 +140,10 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 			popClosed();
 		});
 
+		if (!fullscreen)
+		{
+			this.pack_start(m_close_button);
+		}
 		this.pack_start(m_fullscreen_button);
 		this.pack_start(m_mark_button);
 		this.pack_start(m_read_button);
@@ -141,6 +159,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		m_mark_button.sensitive = show;
 		m_read_button.sensitive = show;
 		m_fullscreen_button.sensitive = show;
+		m_close_button.sensitive = show;
 		m_share_button.sensitive = (show && FeedReaderApp.get_default().isOnline());
 		m_print_button.sensitive = show;
 

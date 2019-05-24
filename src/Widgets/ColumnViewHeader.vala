@@ -27,6 +27,7 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 	public signal void search_term(string searchTerm);
 	public signal void toggledMarked();
 	public signal void toggledRead();
+	public signal void closeArticle();
 
 
 	public ColumnViewHeader()
@@ -121,6 +122,9 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 			ColumnView.get_default().hidePane();
 			ColumnView.get_default().enterFullscreenArticle();
 			MainWindow.get_default().fullscreen();
+		});
+		m_header_right.closeArticle.connect(() => {
+			closeArticle();
 		});
 
 		Gtk.Settings.get_default().notify["gtk-decoration-layout"].connect(set_window_buttons);

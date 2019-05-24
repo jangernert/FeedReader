@@ -200,6 +200,10 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		m_headerbar.toggledRead.connect(() => {
 			toggleReadSelectedArticle();
 		});
+
+		m_headerbar.closeArticle.connect(() => {
+			clearArticleView();
+		});
 	}
 
 	public void hidePane()

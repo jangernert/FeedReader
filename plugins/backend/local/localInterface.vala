@@ -391,7 +391,7 @@ public class FeedReader.localInterface : FeedServerInterface {
 
 		if(feed != null)
 		{
-			if(!db.feed_exists(feed.getURL()))
+			if(!db.feed_exists(feed.getXmlUrl()))
 			{
 				db.write_feeds(ListUtils.single(feed));
 				return true;

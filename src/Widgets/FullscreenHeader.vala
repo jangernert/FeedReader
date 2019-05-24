@@ -23,7 +23,7 @@ public class FeedReader.FullscreenHeader : Gtk.EventBox {
 
 	public FullscreenHeader()
 	{
-		m_header = new ArticleViewHeader("view-restore-symbolic", _("Leave fullscreen mode"));
+		m_header = new ArticleViewHeader(true);
 		m_header.get_style_context().add_class("titlebar");
 		m_header.get_style_context().add_class("imageOverlay");
 		m_header.valign = Gtk.Align.START;

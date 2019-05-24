@@ -30,7 +30,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 	public signal void popClosed();
 	public signal void popOpened();
 
-	public ArticleViewHeader(string fsIcon, string fsTooltip)
+	public ArticleViewHeader(bool fullscreen)
 	{
 		var share_icon = Utils.checkIcon("emblem-shared-symbolic", "feed-share-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var tag_icon = new Gtk.Image.from_icon_name("feed-tag-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
@@ -38,7 +38,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		var unmarked_icon = new Gtk.Image.from_icon_name("feed-unmarked-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var read_icon = new Gtk.Image.from_icon_name("feed-read-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var unread_icon = new Gtk.Image.from_icon_name("feed-unread-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
-		var fs_icon = new Gtk.Image.from_icon_name(fsIcon, Gtk.IconSize.SMALL_TOOLBAR);
+		var fs_icon = new Gtk.Image.from_icon_name(fullscreen ? "view-restore-symbolic" : "view-fullscreen-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 
 		m_mark_button = new HoverButton(unmarked_icon, marked_icon, false);
 		m_mark_button.sensitive = false;
@@ -55,7 +55,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		m_fullscreen_button.add(fs_icon);
 		m_fullscreen_button.set_relief(Gtk.ReliefStyle.NONE);
 		m_fullscreen_button.set_focus_on_click(false);
-		m_fullscreen_button.set_tooltip_text(fsTooltip);
+		m_fullscreen_button.set_tooltip_text(fullscreen ? _("Leave fullscreen mode") : _("Read article fullscreen"));
 		m_fullscreen_button.sensitive = false;
 		m_fullscreen_button.clicked.connect(() => {
 			fsClick();

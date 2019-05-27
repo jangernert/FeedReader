@@ -413,12 +413,12 @@ public class FeedReader.OwncloudNewsInterface : FeedServerInterface {
 
 			switch(whatToGet)
 			{
-				case ArticleStatus.ALL:
+			case ArticleStatus.ALL:
 				break;
-				case ArticleStatus.UNREAD:
+			case ArticleStatus.UNREAD:
 				read = false;
 				break;
-				case ArticleStatus.MARKED:
+			case ArticleStatus.MARKED:
 				type = OwncloudNewsAPI.OwnCloudType.STARRED;
 				break;
 			}
@@ -438,7 +438,7 @@ public class FeedReader.OwncloudNewsInterface : FeedServerInterface {
 
 			if(count == -1)
 			{
-				m_api.getNewArticles(articles, DataBase.readOnly().getLastModified(), type, id);
+				m_api.getNewArticles(articles, (int)since.to_unix(), type, id);
 			}
 			else
 			{

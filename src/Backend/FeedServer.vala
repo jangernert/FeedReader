@@ -285,8 +285,12 @@ public class FeedReader.FeedServer : GLib.Object {
 			db.dropOldArticles(-(int)drop_weeks);
 		}
 
-		var now = new DateTime.now_local();
-		Settings.state().set_int("last-sync", (int)now.to_unix());
+		int last_modified = db.getLastModified();
+		if (last_modified == 0)
+		{
+			last_modified = (int)new DateTime.now_local().to_unix();
+		}
+		Settings.state().set_int("last-sync", last_modified);
 
 		db.checkpoint();
 		FeedReaderBackend.get_default().newFeedList();
@@ -383,8 +387,12 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		Settings.general().reset("content-grabber");
 
-		var now = new DateTime.now_local();
-		Settings.state().set_int("last-sync", (int)now.to_unix());
+		int last_modified = db.getLastModified();
+		if (last_modified == 0)
+		{
+			last_modified = (int)new DateTime.now_local().to_unix();
+		}
+		Settings.state().set_int("last-sync", last_modified);
 
 		return;
 	}

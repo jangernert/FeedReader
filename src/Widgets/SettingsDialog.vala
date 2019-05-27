@@ -153,6 +153,9 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
 		var drop_articles = new SettingDropbox(_("Delete articles after"), Settings.general(), "drop-articles-after",
 		{_("Never"), _("1 Week"), _("1 Month"), _("6 Months")});
+		drop_articles.changed.connect(() => {
+			Settings.state().reset("last-sync");
+		});
 
 		var service_settings = headline(_("Additional Functionality:"));
 

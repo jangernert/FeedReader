@@ -482,9 +482,7 @@ public class FeedReader.decsyncInterface : FeedServerInterface {
 		var feeds = DataBase.readOnly().read_feeds();
 		var articles = new Gee.ArrayList<Article>();
 		GLib.Mutex mutex = GLib.Mutex();
-		var now = new GLib.DateTime.now_local();
-		int? weeks = ((DropArticles)Settings.general().get_enum("drop-articles-after")).to_weeks();
-		var dropDate = weeks == null ? null : now.add_weeks(-(int)weeks);
+		DateTime? dropDate = ((DropArticles)Settings.general().get_enum("drop-articles-after")).to_start_date();
 
 		try
 		{

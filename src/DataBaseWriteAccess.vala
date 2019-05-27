@@ -83,12 +83,12 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		Settings.state().set_int("last-spring-cleaning", (int)now.to_unix());
 	}
 
-	public void dropOldArticles(int weeks)
+	public void dropOldArticles(int max_age_days)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.select_field("articleID");
 		query.select_field("feedID");
-		query.where("datetime(date, 'unixepoch', 'localtime') <= datetime('now', '-%i days')".printf(weeks*7));
+		query.where(@"datetime(date, 'unixepoch', 'localtime') <= datetime('now', '-$(max_age_days) days')");
 		query.where_equal_int("marked", ArticleStatus.UNMARKED.to_int());
 		if(FeedServer.get_default().useMaxArticles())
 		{
@@ -456,6 +456,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		assert (guidHash_position > 0);
 		assert (modified_position > 0);
 
+		DateTime? drop_date = ((DropArticles)Settings.general().get_enum("drop-articles-after")).to_start_date();
 		foreach(var article in articles)
 		{
 			// if article time is in the future
@@ -465,8 +466,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 				article.SetDate(now);
 			}
 
-			int? weeks = ((DropArticles)Settings.general().get_enum("drop-articles-after")).to_weeks();
-			if(weeks != null && article.getDate().compare(now.add_weeks(-(int)weeks)) == -1)
+			if(drop_date != null && article.getDate().compare(drop_date) == -1)
 			{
 				Logger.info("Ignoring old article: %s".printf(article.getTitle()));
 				continue;

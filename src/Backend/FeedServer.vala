@@ -279,10 +279,10 @@ public class FeedReader.FeedServer : GLib.Object {
 			Notification.send(newArticles, new_and_unread);
 		}
 
-		var drop_weeks = drop_articles.to_weeks();
-		if(drop_weeks != null)
+		var article_max_age_days = drop_articles.to_days();
+		if(article_max_age_days != null)
 		{
-			db.dropOldArticles(-(int)drop_weeks);
+			db.dropOldArticles(article_max_age_days);
 		}
 
 		int last_modified = db.getLastModified();

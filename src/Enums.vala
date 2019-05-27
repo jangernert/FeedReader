@@ -177,32 +177,32 @@ namespace FeedReader {
 		ONE_MONTH,
 		SIX_MONTHS;
 
-		public int? to_weeks()
+		public int? to_days()
 		{
 			switch(this)
 			{
-				case NEVER:
+			case NEVER:
 				return null;
-				case ONE_WEEK:
-				return 1;
-				case ONE_MONTH:
-				return 4;
-				case SIX_MONTHS:
-				return 24;
-				default:
+			case ONE_WEEK:
+				return 7;
+			case ONE_MONTH:
+				return 31;
+			case SIX_MONTHS:
+				return 186;
+			default:
 				assert_not_reached();
 			}
 		}
 
 		public DateTime? to_start_date()
 		{
-			int? weeks = to_weeks();
-			if(weeks == null)
+			int? days = to_days();
+			if(days == null)
 			{
 				return null;
 			}
 
-			return new DateTime.now_utc().add_weeks(-(int)weeks);
+			return new DateTime.now_utc().add_days(-(int)days);
 		}
 	}
 

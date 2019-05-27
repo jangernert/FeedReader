@@ -73,7 +73,16 @@
 	<developer_name>Jan Lukas Gernert</developer_name>
 	<project_group>GNOME</project_group>
 	<releases>
-		<release version="2.9.0" date="2019-02-10">
+		<release version="2.9.1" date="2019-03-27">
+			<description>
+				<ul>
+					<li>Add button to close current article</li>
+					<li>Don't automatically close current article when changing feeds</li>
+					<li>NextCloud: Sync fixes</li>
+				</ul>
+			</description>
+		</release>
+		<release version="2.9.0" date="2019-03-24">
 			<description>
 				<ul>
 					<li>Support new GNOME guidelines for the primary menu</li>

@@ -438,7 +438,7 @@ public class FeedReader.OwncloudNewsInterface : FeedServerInterface {
 
 			if(count == -1)
 			{
-				m_api.getNewArticles(articles, (int)since.to_unix(), type, id);
+				m_api.getNewArticles(articles, since != null ? (int)since.to_unix() : 0, type, id);
 			}
 			else
 			{

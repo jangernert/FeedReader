@@ -73,6 +73,13 @@
 	<developer_name>Jan Lukas Gernert</developer_name>
 	<project_group>GNOME</project_group>
 	<releases>
+		<release version="2.9.2" date="2019-03-28">
+			<description>
+				<ul>
+					<li>NextCloud: Fix for crash during sync in some cases</li>
+				</ul>
+			</description>
+		</release>
 		<release version="2.9.1" date="2019-03-27">
 			<description>
 				<ul>

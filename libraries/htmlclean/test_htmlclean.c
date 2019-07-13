@@ -48,24 +48,61 @@ int main(int argc, char** argv)
 		test_no_change
 	);
 
-	// g_test_add_data_func (
-	// 	"/htmlclean/nochange/escapedhtml",
-	// 	"this string contains &amp; escaped HTML",
-	// 	test_no_change
-	// );
-
-	// Previous versions of the parser crashed or hung when given these inputs
 	g_test_add_data_func (
-		"/htmlclean/nochange/justopen",
-		"<",
+		"/htmlclean/nochange/escapedhtml",
+		"this string contains &amp; escaped HTML",
+		test_no_change
+	);
+
+	g_test_add_data_func (
+		"/htmlclean/nochange/escapedhtml2",
+		"CSS, &amp;lt;pre&gt;, and trailing whitespace lead to browser layout weirdness",
+		test_no_change
+	);
+
+	g_test_add_data_func (
+		"/htmlclean/nochange/justlt",
+		"&lt;",
+		test_no_change
+	);
+
+	g_test_add_data_func (
+		"/htmlclean/nochange/justgt",
+		"&gt;",
 		test_no_change
 	);
 
 	g_test_add_data_func (
 		"/htmlclean/nochange/justamp",
-		"&",
+		"&amp;",
 		test_no_change
 	);
+
+	// Previous versions of the parser crashed or hung when given these inputs
+	// These get escaped, even though they're not not ambiguous in this situation
+	g_test_add_data_func (
+		"/htmlclean/change/justamp",
+		&(inout_t){
+			"&",
+			"&amp;"
+		},
+		test_change);
+
+	g_test_add_data_func (
+		"/htmlclean/change/justlt",
+		&(inout_t){
+			"<",
+			"&lt;"
+		},
+		test_change);
+
+	g_test_add_data_func (
+		"/htmlclean/change/justgt",
+		&(inout_t){
+			">",
+			"&gt;"
+		},
+		test_change);
 
 	return g_test_run ();
 }

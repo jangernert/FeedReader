@@ -82,7 +82,8 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		m_unread_stack.set_transition_duration(50);
 		m_marked_stack.set_transition_duration(50);
 
-		m_label = new Gtk.Label(m_article.getTitle());
+		m_label = new Gtk.Label(null);
+		m_label.set_markup(m_article.getTitle());
 		m_label.set_line_wrap_mode(Pango.WrapMode.WORD);
 		m_label.set_line_wrap(true);
 		m_label.set_lines(2);
@@ -185,7 +186,8 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		}
 
 
-		var body_label = new Gtk.Label(short_preview);
+		var body_label = new Gtk.Label(null);
+		body_label.set_markup(short_preview);
 		body_label.opacity = 0.7;
 		body_label.get_style_context().add_class("preview");
 		body_label.set_alignment(0.0f, 0.0f);
@@ -195,7 +197,11 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		body_label.set_lines(2);
 
 		var feed = DataBase.readOnly().read_feed(m_article.getFeedID());
-		var feedLabel = new Gtk.Label(feed != null ? feed.getTitle() : "");
+		var feedLabel = new Gtk.Label(null);
+		if (feed != null)
+		{
+			feedLabel.set_markup(feed.getTitle());
+		}
 		feedLabel.get_style_context().add_class("preview");
 		feedLabel.opacity = 0.6;
 		feedLabel.set_alignment(0.0f, 0.5f);

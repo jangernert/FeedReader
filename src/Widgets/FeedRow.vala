@@ -46,7 +46,8 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_icon = createFavIcon();
 			m_icon.margin_start = level * 24;
 
-			m_label = new Gtk.Label(m_feed.getTitle());
+			m_label = new Gtk.Label(null);
+			m_label.set_markup(m_feed.getTitle());
 			m_label.set_size_request (0, rowhight);
 			m_label.set_ellipsize (Pango.EllipsizeMode.END);
 			m_label.set_alignment(0, 0.5f);

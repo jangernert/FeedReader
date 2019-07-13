@@ -26,6 +26,37 @@
 #include "glib.h"
 #include "gumbo.h"
 
+// After parsing, we need to re-escape HTML so we don't remove literal <> and &
+// For example if the original text was "The &lt;pre&gt; element is an HTML element", we want
+// our final output to be "The &lt;pre&gt; element is an HTML element", not "The <pre> element
+// is an HTML element" (which would get stripped if we ran it through this again)
+// Returns a new string!
+static char* reescape_xml_entities(const char* text)
+{
+	size_t len = strlen(text);
+	GString* result = g_string_sized_new(len);
+	for (size_t i = 0; i < len; ++i)
+	{
+		char c = text[i];
+		switch (c)
+		{
+			case '<':
+				g_string_append(result, "&lt;");
+				break;
+			case '>':
+				g_string_append(result, "&gt;");
+				break;
+			case '&':
+				g_string_append(result, "&amp;");
+				break;
+			default:
+				g_string_append_c(result, c);
+				break;
+		}
+	}
+	return g_string_free(result, FALSE);
+}
+
 char *cleantext(GumboNode *node)
 {
 	if (node->type == GUMBO_NODE_TEXT)
@@ -92,5 +123,8 @@ char *htmlclean_strip_html(const char *input)
 	{
 		return g_strdup("");
 	}
-	return cleaned;
+
+	char* cleaned_escaped = reescape_xml_entities(cleaned);
+	free(cleaned);
+	return cleaned_escaped;
 }

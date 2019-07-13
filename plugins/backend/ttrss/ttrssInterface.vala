@@ -161,6 +161,8 @@ public class FeedReader.ttrssInterface : FeedServerInterface {
 		m_urlEntry.set_text(m_utils.getUnmodifiedURL());
 		m_userEntry.set_text(m_utils.getUser());
 		m_passwordEntry.set_text(m_utils.getPasswd());
+		m_authUserEntry.set_text(m_utils.getHtaccessUser());
+		m_authPasswordEntry.set_text(m_utils.getHtaccessPasswd());
 
 		return box;
 	}
@@ -180,7 +182,9 @@ public class FeedReader.ttrssInterface : FeedServerInterface {
 		}
 		m_utils.setURL(url);
 		m_utils.setUser(m_userEntry.get_text().strip());
-		m_utils.setPassword(m_passwordEntry.get_text().strip());
+		m_utils.setPassword(m_passwordEntry.get_text());
+		m_utils.setHtaccessUser(m_authUserEntry.get_text().strip());
+		m_utils.setHtAccessPassword(m_authPasswordEntry.get_text());
 	}
 
 	public override bool supportTags()

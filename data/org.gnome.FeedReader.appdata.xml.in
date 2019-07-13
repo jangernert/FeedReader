@@ -73,6 +73,14 @@
 	<developer_name>Jan Lukas Gernert</developer_name>
 	<project_group>GNOME</project_group>
 	<releases>
+		<release version="2.10.0" date="2019-07-13">
+			<description>
+				<ul>
+					<li>Fix handling of escaped HTML in articles and titles</li>
+					<li>TT-RSS: Fix support for HTTP auth in addition to TT-RSS auth</li>
+				</ul>
+			</description>
+		</release>
 		<release version="2.9.2" date="2019-03-28">
 			<description>
 				<ul>

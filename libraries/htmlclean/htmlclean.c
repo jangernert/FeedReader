@@ -79,7 +79,7 @@ char *cleantext(GumboNode *node)
 	}
 }
 
-char *htmlclean_strip_html(char *input)
+char *htmlclean_strip_html(const char *input)
 {
 	char *cleaned = NULL;
 	if (input != NULL)

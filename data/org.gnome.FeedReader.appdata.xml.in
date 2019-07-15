@@ -67,7 +67,7 @@
 	<content_rating type="oars-1.0" />
 	<launchable type="desktop-id">org.gnome.FeedReader.desktop</launchable>
 	<url type="homepage">https://jangernert.github.io/FeedReader/</url>
-	<url type="bugtracker">https://github.com/jangernert/FeedReader/isssues/</url>
+	<url type="bugtracker">https://github.com/jangernert/FeedReader/issues</url>
 	<url type="translate">https://hosted.weblate.org/projects/feedreader/</url>
 	<url type="donation">https://www.bountysource.com/teams/jangernert-feedreader/issues</url>
 	<developer_name>Jan Lukas Gernert</developer_name>

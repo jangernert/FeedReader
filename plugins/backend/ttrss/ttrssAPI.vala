@@ -222,7 +222,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 
 					for(uint i = 0; i < feed_count; i++)
 					{
-						var feed_node = response.get_object_element(i);
+						var feed_node = response.get_object_element(feed_count - i - 1);
 						string feed_id = UntypedJson.Object.get_string_member(feed_node, "id");
 						string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir + feed_id + ".ico" : null;
 
@@ -264,7 +264,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 
 			for(uint i = 0; i < feed_count; i++)
 			{
-				var feed_node = response.get_object_element(i);
+				var feed_node = response.get_object_element(feed_count - i - 1);
 				string feed_id = UntypedJson.Object.get_string_member(feed_node, "id");
 				string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir + feed_id + ".ico" : null;
 

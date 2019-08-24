@@ -9,7 +9,6 @@ Terminal=false
 Type=Application
 X-GNOME-UsesNotifications=true
 X-GNOME-Gettext-Domain=FeedReader
-X-GNOME-Keywords=
 MimeType=x-scheme-handler/feedreader;
 Actions=AboutDialog;
 

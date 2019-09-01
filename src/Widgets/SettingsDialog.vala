@@ -115,7 +115,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 			ColumnView.get_default().reloadArticleView();
 		});
 
-		var fontfamilly = new SettingFont(_("Font Familly"), Settings.general(), "font");
+		var fontfamilly = new SettingFont(_("Font Family"), Settings.general(), "font");
 		fontfamilly.changed.connect(() => {
 			ColumnView.get_default().reloadArticleView();
 		});

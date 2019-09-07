@@ -159,7 +159,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
 		var service_settings = headline(_("Additional Functionality:"));
 
-		var grabber = new SettingSwitch(_("Content Grabber"), Settings.general(),"content-grabber");
+		var grabber = new SettingSwitch(_("Download Full Text"), Settings.general(),"content-grabber");
 
 		var images = new SettingSwitch(_("Download Images"), Settings.general(),"download-images");
 

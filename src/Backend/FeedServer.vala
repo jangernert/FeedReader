@@ -57,7 +57,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				var secrets = Secret.Collection.for_alias_sync(secret_service, Secret.COLLECTION_DEFAULT, Secret.CollectionFlags.NONE);
 				if(secrets == null)
 				{
-					secrets = Secret.Collection.create_sync(secret_service, "Login", Secret.COLLECTION_DEFAULT, Secret.CollectionCreateFlags.COLLECTION_CREATE_NONE);
+					secrets = Secret.Collection.create_sync(secret_service, "Login", Secret.COLLECTION_DEFAULT, Secret.CollectionCreateFlags.NONE);
 				}
 
 				var settings_backend = null; // FIXME: Why does SettingsBackend.get_default() crash on Arch Linux?

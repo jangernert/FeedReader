@@ -54,6 +54,7 @@ public Json.Node objectToNode(Json.Object input)
 	return node;
 }
 
+[Version (deprecated = true, deprecated_since = "1.1.1", replacement = "groupByPath")]
 public Gee.MultiMap<K, V> groupBy<T, K, V>(Gee.Collection<T> inputs, Gee.MapFunc<K, T> k, Gee.MapFunc<V, T>? f = null)
 {
 	var resultsMap = new Gee.HashMultiMap<K, V>();
@@ -65,4 +66,30 @@ public Gee.MultiMap<K, V> groupBy<T, K, V>(Gee.Collection<T> inputs, Gee.MapFunc
 	}
 
 	return resultsMap;
+}
+
+public int pathCompare(Gee.List<string> lhs, Gee.List<string> rhs)
+{
+        for (int i = 0; i < lhs.size && i < rhs.size; ++i) {
+                if (lhs[i] < rhs[i]) return -1;
+                if (lhs[i] > rhs[i]) return 1;
+        }
+        if (lhs.size < rhs.size) return -1;
+        if (lhs.size > rhs.size) return 1;
+        return 0;
+}
+
+public Gee.MultiMap<Gee.List<string>, V> groupByPath<T, V>(
+        Gee.Collection<T> inputs,
+        Gee.MapFunc<Gee.List<string>, T> toPath,
+        Gee.MapFunc<V, T>? f = null)
+{
+        var resultsMap = new Gee.TreeMultiMap<Gee.List<string>, V>(pathCompare);
+        foreach (var input in inputs)
+        {
+                var path = toPath(input);
+                var value = f == null ? input : f(input);
+                resultsMap.@set(path, value);
+        }
+        return resultsMap;
 }

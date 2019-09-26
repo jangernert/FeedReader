@@ -18,6 +18,11 @@
 
 public class Unit { public Unit() {} }
 
+public errordomain DecsyncError {
+	INVALID_INFO,
+	UNSUPPORTED_VERSION
+}
+
 /**
  * The `DecSync` class represents an interface to synchronized key-value mappings stored on the file
  * system.
@@ -63,6 +68,7 @@ public class Unit { public Unit() {} }
  * listener whose method [OnEntryUpdateListener.matchesPath] returns true.
  * @property syncComplete an optional function which is called when a sync is complete. For example,
  * it can be used to update the UI.
+ * @throws DecsyncException if a DecSync configuration error occurred.
  */
 public class Decsync<T> : GLib.Object {
 
@@ -77,12 +83,14 @@ public class Decsync<T> : GLib.Object {
 	 */
 	public signal void syncComplete(T extra);
 
-	public Decsync(string dir, string ownAppId, Gee.Iterable<OnEntryUpdateListener<T>> listeners)
+	public Decsync(string dir, string ownAppId, Gee.Iterable<OnEntryUpdateListener<T>> listeners) throws DecsyncError
 	{
 		this.dir = dir;
 		this.ownAppId = ownAppId;
 		this.ownAppIdEncoded = FileUtils.urlencode(ownAppId);
 		this.listeners = listeners;
+
+		checkDecsyncSubdirInfo(dir);
 	}
 
 	/**
@@ -208,7 +216,7 @@ public class Decsync<T> : GLib.Object {
 	 */
 	public void setEntries(Gee.Collection<EntryWithPath> entriesWithPath)
 	{
-		var multiMap = groupBy<EntryWithPath, Gee.List<string>, Entry>(
+		var multiMap = groupByPath<EntryWithPath, Entry>(
 			entriesWithPath,
 			entryWithPath => { return entryWithPath.path; },
 			entryWithPath => { return entryWithPath.entry; }
@@ -294,7 +302,7 @@ public class Decsync<T> : GLib.Object {
 				}
 				var path = new Gee.ArrayList<string>();
 				path.add_all_iterator(pathEncoded.map<string>(part => { return FileUtils.urldecode(part); }));
-				if (path.any_match(part => { return part == null; })) {
+				if (path.fold<bool>((part, seed) => { return part == null || seed; }, false)) {
 					Log.w("Cannot decode path " + pathString);
 					return;
 				}
@@ -441,7 +449,7 @@ public class Decsync<T> : GLib.Object {
 					if (entryLine == null) {
 						return false;
 					}
-					return !entries.any_match(entry => { return entry.key.equal(entryLine.key); });
+					return entries.fold<bool>((entry, seed) => { return !entry.key.equal(entryLine.key) && seed; }, true);
 				});
 			}
 
@@ -451,6 +459,21 @@ public class Decsync<T> : GLib.Object {
 				return true;
 			});
 			FileUtils.writeFile(entriesLocation.storedEntriesFile, builder.str, true);
+
+			var maxDatetime = entries.fold<string?>((entry, seed) => { if (seed == null || entry.datetime > seed) return entry.datetime; else return seed; }, null);
+			if (maxDatetime != null) {
+				var latestStoredEntryFile = File.new_for_path(dir + "/info/" + ownAppIdEncoded + "/latest-stored-entry");
+				string? latestDatetime = null;
+				try {
+					var stream = new DataInputStream(latestStoredEntryFile.read());
+					latestDatetime = stream.read_line();
+				} catch (GLib.Error e) {
+					Log.w(e.message);
+				}
+				if (latestDatetime == null || maxDatetime > latestDatetime) {
+					FileUtils.writeFile(latestStoredEntryFile, maxDatetime);
+				}
+			}
 		}
 		catch (GLib.Error e)
 		{
@@ -497,36 +520,7 @@ public class Decsync<T> : GLib.Object {
 	public void initStoredEntries()
 	{
 		// Get the most up-to-date appId
-		string? appId = null;
-		string? maxDatetime = null;
-		FileUtils.listFilesRecursiveRelative(File.new_for_path(dir + "/stored-entries"))
-			.filter(path => { return !path.is_empty; })
-			.@foreach(path => {
-				var pathString = FileUtils.pathToString(path);
-				try {
-					var file = File.new_for_path(dir + "/stored-entries/" + pathString);
-					var stream = new DataInputStream(file.read());
-					string line;
-					while ((line = stream.read_line(null)) != null) {
-						var entry = Entry.fromLine(line);
-						if (entry == null) {
-							continue;
-						}
-						if (maxDatetime == null || entry.datetime > maxDatetime ||
-								path.first() == ownAppId && entry.datetime == maxDatetime) { // Prefer own appId
-							maxDatetime = entry.datetime;
-							appId = path.first();
-						}
-					}
-				} catch (GLib.Error e) {
-					Log.w(e.message);
-				}
-				return true;
-			});
-		if (appId == null) {
-			Log.i("No appId found for initialization");
-			return;
-		}
+		var appId = latestAppId();
 
 		// Copy the stored files and update the read bytes
 		if (appId != ownAppId) {
@@ -563,14 +557,65 @@ public class Decsync<T> : GLib.Object {
     }
 
 	/**
+	 * Returns the most up-to-date appId. This is the appId which has stored the most recent entry.
+	 * In case of a tie, the appId corresponding to the current application is used, if possible.
+	 */
+	public string latestAppId()
+	{
+		string? latestAppId = null;
+		string? latestDatetime = null;
+		var infoDir = File.new_for_path(dir + "/info");
+		try {
+			var enumerator = infoDir.enumerate_children("standard::*", FileQueryInfoFlags.NONE);
+			FileInfo info;
+			while ((info = enumerator.next_file(null)) != null) {
+				if (info.get_name()[0] == '.') {
+					continue;
+				}
+
+				var appId = FileUtils.urldecode(info.get_name());
+				var file = File.new_for_path(dir + "/info/" + info.get_name() + "/latest-stored-entry");
+
+				if (appId == null ||
+					!file.query_exists() ||
+					file.query_file_type(FileQueryInfoFlags.NONE) != FileType.REGULAR)
+				{
+					continue;
+				}
+
+				string? datetime = null;
+				try {
+					var stream = new DataInputStream(file.read());
+					datetime = stream.read_line();
+				} catch (GLib.Error e) {
+					Log.w(e.message);
+				}
+				if (datetime > latestDatetime ||
+					appId == ownAppId && datetime == latestDatetime)
+				{
+					latestDatetime = datetime;
+					latestAppId = appId;
+				}
+			}
+		} catch (GLib.Error e) {
+			Log.w(e.message);
+		}
+
+		return latestAppId ?? ownAppId;
+	}
+
+	/**
 	 * Returns the value of the given [key] in the map of the given [path], and in the given
 	 * [DecSync directory][decsyncDir] without specifying an appId, or `null` if there is no
 	 * such value. The use of this method is discouraged. It is recommended to use the method
 	 * [executeStoredEntries] when possible.
+	 *
+	 * @throws DecsyncException if a DecSync configuration error occurred.
 	 */
-	public static Json.Node? getStoredStaticValue(string decsyncDir, string[] pathArray, Json.Node key)
+	public static Json.Node? getStoredStaticValue(string decsyncDir, string[] pathArray, Json.Node key) throws DecsyncError
 	{
 		Log.d("Get value for key " + Json.to_string(key, false) + " for path " + string.joinv("/", pathArray) + " in " + decsyncDir);
+		checkDecsyncSubdirInfo(decsyncDir);
 		var path = toList(pathArray);
 		var pathString = FileUtils.pathToString(path);
 		Json.Node? result = null;
@@ -621,6 +666,59 @@ public class Decsync<T> : GLib.Object {
 	}
 }
 
+private void checkDecsyncSubdirInfo(string decsyncSubdir) throws DecsyncError
+{
+	var syncTypes = new Gee.ArrayList<string>.wrap({"rss", "contacts", "calendars"});
+	var file = File.new_for_path(decsyncSubdir);
+	File? decsyncDir = null;
+	if (syncTypes.contains(file.get_basename())) {
+		decsyncDir = file.get_parent();
+	} else if (syncTypes.contains(file.get_parent().get_basename())) {
+		decsyncDir = file.get_parent().get_parent();
+	}
+	if (decsyncDir != null) {
+		checkDecsyncInfo(decsyncDir.get_path());
+	}
+}
+
+/**
+ * Checks whether the .decsync-info file in [decsyncDir] is of the right format and contains a
+ * supported version. If it does not exist, a new one with version 1 is created.
+ *
+ * @throws DecsyncException if a DecSync configuration error occurred.
+ */
+public void checkDecsyncInfo(string decsyncDir) throws DecsyncError
+{
+	var infoFile = File.new_for_path(decsyncDir).get_child(".decsync-info");
+	if (infoFile.query_exists()) {
+		int64 version;
+		try {
+			var stream = new DataInputStream(infoFile.read());
+			var text = stream.read_line();
+			var obj = Json.from_string(text).get_object();
+			version = obj.get_int_member("version");
+		} catch (GLib.Error e) {
+			throw new DecsyncError.INVALID_INFO("Invalid .decsync-info.\n" + e.message);
+		}
+		if (version != 1) {
+			throw new DecsyncError.UNSUPPORTED_VERSION("Unsupported DecSync version.\n" +
+					"Required version: " + version.to_string() + ".\n" +
+					"Supported version: 1.");
+		}
+	} else {
+		var obj = new Json.Object();
+		obj.set_int_member("version", 1);
+		var json = new Json.Node(Json.NodeType.OBJECT);
+		json.set_object(obj);
+		var text = Json.to_string(json, false);
+		try {
+			FileUtils.writeFile(infoFile, text);
+		} catch (GLib.Error e) {
+			throw new DecsyncError.INVALID_INFO("Could not write .decsync-info.\n" + e.message);
+		}
+	}
+}
+
 /**
  * Returns the path to the DecSync subdirectory in a [decsyncBaseDir] for a [syncType] and
  * optionally with a [collection].
@@ -657,9 +755,11 @@ public string getDefaultDecsyncBaseDir()
  * @param syncType the type of data to sync. For example, "contacts" or "calendars".
  * @param ignoreDeleted `true` to ignore deleted collections. A collection is considered deleted if
  * the most recent value of the key "deleted" with the path ["info"] is set to `true`.
+ * @throws DecsyncException if a DecSync configuration error occurred.
  */
 public Gee.ArrayList<string> listDecsyncCollections(string? decsyncBaseDir, string syncType, bool ignoreDeleted = true) throws GLib.Error
 {
+	checkDecsyncInfo(decsyncBaseDir ?? getDefaultDecsyncBaseDir());
 	var decsyncSubdir = File.new_for_path(getDecsyncSubdir(decsyncBaseDir, syncType));
 	var enumerator = decsyncSubdir.enumerate_children("standard::*", FileQueryInfoFlags.NONE);
 	FileInfo info;

@@ -31,34 +31,6 @@ public class FeedReader.decsyncInterface : FeedServerInterface {
 		m_session.timeout = 5;
 	}
 
-	private bool initDecsync()
-	{
-		var decsyncDir = m_utils.getDecsyncDir();
-		if (decsyncDir == "")
-		{
-			return false;
-		}
-		var dir = getDecsyncSubdir(decsyncDir, "rss");
-		var ownAppId = getAppId("FeedReader");
-		var listeners = new Gee.ArrayList<OnEntryUpdateListener>();
-		listeners.add(new DecsyncListeners.ReadMarkListener(true, this));
-		listeners.add(new DecsyncListeners.ReadMarkListener(false, this));
-		listeners.add(new DecsyncListeners.SubscriptionsListener(this));
-		listeners.add(new DecsyncListeners.FeedNamesListener(this));
-		listeners.add(new DecsyncListeners.CategoriesListener(this));
-		listeners.add(new DecsyncListeners.CategoryNamesListener(this));
-		listeners.add(new DecsyncListeners.CategoryParentsListener(this));
-		m_sync = new Decsync<Unit>(dir, ownAppId, listeners);
-		m_sync.syncComplete.connect((extra) => {
-			FeedReaderBackend.get_default().updateBadge();
-			refreshFeedListCounter();
-			newFeedList();
-			updateArticleList();
-		});
-		m_sync.initMonitor(new Unit());
-		return true;
-	}
-
 	public override string getWebsite()
 	{
 		return "https://github.com/39aldo39/DecSync";
@@ -262,13 +234,36 @@ public class FeedReader.decsyncInterface : FeedServerInterface {
 
 	public override LoginResponse login()
 	{
-		if (initDecsync())
-		{
-			return LoginResponse.SUCCESS;
-		}
-		else
+		var decsyncDir = m_utils.getDecsyncDir();
+		if (decsyncDir == "")
 		{
 			return LoginResponse.ALL_EMPTY;
+		}
+		var dir = getDecsyncSubdir(decsyncDir, "rss");
+		var ownAppId = getAppId("FeedReader");
+		var listeners = new Gee.ArrayList<OnEntryUpdateListener>();
+		listeners.add(new DecsyncListeners.ReadMarkListener(true, this));
+		listeners.add(new DecsyncListeners.ReadMarkListener(false, this));
+		listeners.add(new DecsyncListeners.SubscriptionsListener(this));
+		listeners.add(new DecsyncListeners.FeedNamesListener(this));
+		listeners.add(new DecsyncListeners.CategoriesListener(this));
+		listeners.add(new DecsyncListeners.CategoryNamesListener(this));
+		listeners.add(new DecsyncListeners.CategoryParentsListener(this));
+		try
+		{
+			m_sync = new Decsync<Unit>(dir, ownAppId, listeners);
+			m_sync.syncComplete.connect((extra) => {
+				FeedReaderBackend.get_default().updateBadge();
+				refreshFeedListCounter();
+				newFeedList();
+				updateArticleList();
+			});
+			m_sync.initMonitor(new Unit());
+			return LoginResponse.SUCCESS;
+		}
+		catch (DecsyncError e)
+		{
+			return LoginResponse.API_ERROR;
 		}
 	}
 

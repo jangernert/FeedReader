@@ -265,7 +265,7 @@ public class FeedReader.freshInterface : FeedServerInterface {
 
 	public override bool serverAvailable()
 	{
-		return Utils.ping(m_utils.getUnmodifiedURL());
+		return Utils.ping(m_utils.getApiURL()); // Ping with api URL
 	}
 
 	public override void setArticleIsRead(string articleIDs, ArticleStatus read)

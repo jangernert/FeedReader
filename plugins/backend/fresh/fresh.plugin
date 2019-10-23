@@ -2,7 +2,7 @@
 Module=fresh
 Loader=C
 Name=freshRSS
-Version=0.1
+Version=0.2
 Description=Add freshRSS backend to FeedReader
 Authors=Jan Lukas Gernert <jangernert@gmail.com>
 Copyright=Copyright © 2015-16 Jan Lukas Gernert

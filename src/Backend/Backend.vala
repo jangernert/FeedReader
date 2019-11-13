@@ -865,14 +865,20 @@ namespace FeedReader {
 				}
 			}
 
-			string errmsg;
-			bool success = FeedServer.get_default().addFeed(feedURL, catID, newCatName, out feedID, out errmsg);
-			errmsg = success ? "" : errmsg;
-			feedAdded(!success, errmsg);
-			if(success)
-			{
-				startSync();
-			}
+			asyncPayload pl = () => {
+				string errmsg;
+				bool success = FeedServer.get_default().addFeed(feedURL, catID, newCatName, out feedID, out errmsg);
+				errmsg = success ? "" : errmsg;
+				feedAdded(!success, errmsg);
+				if(success)
+				{
+					m_cancellable.reset();
+					sync(false, m_cancellable);
+				}
+			};
+			callAsync.begin((owned)pl, (obj, res) => {
+				callAsync.end(res);
+			});
 		}
 
 		public void removeFeed(string feedID)

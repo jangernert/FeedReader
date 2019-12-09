@@ -52,7 +52,8 @@ sudo apt-get install \
 	libgstreamer-plugins-base1.0-dev \
 	libgoa-1.0-dev \
 	libcurl-dev \
-	libpeas-dev
+	libpeas-dev \
+	libgumbo-dev
 ```
 
 ### Fedora

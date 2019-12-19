@@ -2,6 +2,12 @@
 
 <a href="https://flathub.org/apps/details/org.gnome.FeedReader"><img src="https://flathub.org/assets/badges/flathub-badge-i-en.png" alt="Download on Flathub" width="190px"></a>
 
+# This project is no longer activily maintained!
+
+I am for quite some time already working on a spiritual successor called [NewsFlash](https://gitlab.com/news-flash/news_flash_gtk). Its a complete rewrite in rust with an overhauled architecture and a bit more opinionated and focused interface. I hope to have a first preview release ready soon.
+Regarding FeedReader: I am thankful for all the people who helped maintain this project and sent in pull requests the last few years. But currently there is nobody who regularly reviews pull requests, triages bug reports and does releases from time to time. If someone is willing to take over, I am happy to get you started. - Jan Lukas Gernert
+
+ 
 
 # [FeedReader](http://jangernert.github.io/FeedReader/)
 

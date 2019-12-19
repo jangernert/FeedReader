@@ -117,6 +117,11 @@ public class FeedReader.freshUtils : GLib.Object {
 		return Utils.gsettingReadString(m_settings, "url");
 	}
 
+	public string getApiURL()
+	{
+		return getURL()[0:-12];
+	}
+
 	public string getPasswd()
 	{
 		return m_password.get_password();

@@ -28,7 +28,7 @@ public class FeedReader.freshAPI : Object {
 	{
 		Logger.debug("fresh backend: login");
 
-		if(!Utils.ping(m_utils.getUnmodifiedURL()))
+		if(!Utils.ping(m_utils.getApiURL())) // Ping with api URL
 		{
 			return LoginResponse.NO_CONNECTION;
 		}

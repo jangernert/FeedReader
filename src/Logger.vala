@@ -49,6 +49,5 @@ public class FeedReader.Logger : GLib.Object {
 	public static void init(bool verbose)
 	{
 		m_log_debug_information = verbose;
-		GLib.Log.set_writer_func((LogWriterFunc)GLib.Log.writer_standard_streams);
 	}
 }

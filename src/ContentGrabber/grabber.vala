@@ -56,15 +56,28 @@ public class FeedReader.Grabber : GLib.Object {
 
 	private bool checkConfigFile()
 	{
-		string filepath = Constants.INSTALL_PREFIX + "/share/feedreader/GrabberConfig/";
+		var filepaths = new Gee.ArrayList<string> ();
+		string userconf = GLib.Environment.get_user_data_dir() + "/feedreader/GrabberConfig/";
+		if(FileUtils.test(userconf, GLib.FileTest.EXISTS))
+		{
+			filepaths.add(userconf);
+		}
+		string globalconf = Constants.INSTALL_PREFIX + "/share/feedreader/GrabberConfig/";
+		if(FileUtils.test(globalconf, GLib.FileTest.EXISTS))
+		{
+			filepaths.add(globalconf);
+		}
 
 		string hostName = grabberUtils.buildHostName(m_articleURL, false);
-		string filename = filepath + hostName + ".txt";
-		if(FileUtils.test(filename, GLib.FileTest.EXISTS))
+		foreach(string filepath in filepaths)
 		{
-			m_config = new GrabberConfig(filename);
-			Logger.debug("Grabber: using config %s.txt".printf(hostName));
-			return true;
+			string filename = filepath + hostName + ".txt";
+			if(FileUtils.test(filename, GLib.FileTest.EXISTS))
+			{
+				m_config = new GrabberConfig(filename);
+				Logger.debug("Grabber: using config %s.txt".printf(hostName));
+				return true;
+			}
 		}
 
 		Logger.debug("Grabber: no config (%s.txt) found for article: %s".printf(hostName, m_articleURL));
@@ -72,15 +85,17 @@ public class FeedReader.Grabber : GLib.Object {
 		string newHostName = grabberUtils.buildHostName(m_articleURL, true);
 		if(hostName != newHostName)
 		{
-			filename = filepath + newHostName + ".txt";
-			if(FileUtils.test("%s%s.txt".printf(filename, newHostName), GLib.FileTest.EXISTS))
+			foreach(string filepath in filepaths)
 			{
-				m_config = new GrabberConfig(filename);
-				Logger.debug("Grabber: using config %s.txt".printf(newHostName));
-				return true;
+				string filename = filepath + newHostName + ".txt";
+				if(FileUtils.test("%s%s.txt".printf(filename, newHostName), GLib.FileTest.EXISTS))
+				{
+					m_config = new GrabberConfig(filename);
+					Logger.debug("Grabber: using config %s.txt".printf(newHostName));
+					return true;
+				}
 			}
 		}
-
 
 		Logger.debug("Grabber: no config (%s.txt) - cutSubdomain - found for article: %s".printf(newHostName, m_articleURL));
 		return false;

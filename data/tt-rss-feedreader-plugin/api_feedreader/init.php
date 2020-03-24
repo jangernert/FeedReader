@@ -20,7 +20,7 @@ class Api_feedreader extends Plugin {
 	function init($host)
 	{
 		$this->host = $host;
-		$this->dbh = $host->get_dbh();
+		$this->dbh = $host->get_pdo();
 		$this->host->add_api_method("addLabel", $this);
 		$this->host->add_api_method("removeLabel", $this);
 		$this->host->add_api_method("renameLabel", $this);

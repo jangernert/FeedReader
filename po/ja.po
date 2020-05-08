@@ -1246,6 +1246,10 @@ msgstr "真夜中"
 msgid "Parchment"
 msgstr "証書"
 
+#: src/Widgets/SettingsDialog.vala:111
+msgid "Gruvbox"
+msgstr ""
+
 #: src/Widgets/SettingsDialog.vala:116
 msgid "Font Familly"
 msgstr ""

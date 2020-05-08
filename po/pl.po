@@ -1281,6 +1281,10 @@ msgstr "Północ"
 msgid "Parchment"
 msgstr "Pergamin"
 
+#: src/Widgets/SettingsDialog.vala:111
+msgid "Gruvbox"
+msgstr ""
+
 #: src/Widgets/SettingsDialog.vala:116
 msgid "Font Familly"
 msgstr "Grupa czcionek"

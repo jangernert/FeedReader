@@ -1265,6 +1265,10 @@ msgstr "한 밤중"
 msgid "Parchment"
 msgstr "양피지"
 
+#: src/Widgets/SettingsDialog.vala:111
+msgid "Gruvbox"
+msgstr ""
+
 #: src/Widgets/SettingsDialog.vala:116
 msgid "Font Familly"
 msgstr ""

@@ -155,7 +155,8 @@ namespace FeedReader {
 		DEFAULT,
 		SPRING,
 		MIDNIGHT,
-		PARCHMENT
+		PARCHMENT,
+		GRUVBOX
 	}
 
 	public enum FeedListTheme {

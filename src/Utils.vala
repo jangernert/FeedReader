@@ -689,6 +689,10 @@ switch(Settings.general().get_enum("article-theme"))
 	case ArticleTheme.PARCHMENT:
 	theme += "parchment";
 	break;
+
+	case ArticleTheme.GRUVBOX:
+	theme += "gruvbox";
+	break;
 }
 
 string theme_id = "$THEME";

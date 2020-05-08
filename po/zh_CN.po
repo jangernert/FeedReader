@@ -1270,6 +1270,10 @@ msgstr "暗夜"
 msgid "Parchment"
 msgstr "复古"
 
+#: src/Widgets/SettingsDialog.vala:111
+msgid "Gruvbox"
+msgstr ""
+
 #: src/Widgets/SettingsDialog.vala:116
 msgid "Font Familly"
 msgstr "字体"

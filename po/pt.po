@@ -1252,6 +1252,10 @@ msgstr "Meia-noite"
 msgid "Parchment"
 msgstr "Pergaminho"
 
+#: src/Widgets/SettingsDialog.vala:111
+msgid "Gruvbox"
+msgstr ""
+
 #: src/Widgets/SettingsDialog.vala:116
 msgid "Font Familly"
 msgstr ""

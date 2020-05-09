@@ -605,12 +605,3 @@ body.theme.gruvbox div.frcontent h3,
 body.theme.gruvbox div.frcontent h4 {
     color: #928374;
 }
-
-body.theme.midnight div.frcontent body,
-body.theme.midnight div.frcontent ul,
-body.theme.midnight div.frcontent figcaption,
-body.theme.midnight div.frcontent h5,
-body.theme.midnight div.frcontent h6,
-body.theme.midnight div.frcontent p {
-    color: #fbf1c7;
-}
